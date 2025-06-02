@@ -1,0 +1,34 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between title and any right-side buttons if added */
+  padding: 0 1.5rem;
+  background-color: #1e293b;
+  color: white;
+  z-index: 1100; /* Higher than sidebar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  white-space: nowrap;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggle-btn.open {
+  transform: rotate(90deg);
+}

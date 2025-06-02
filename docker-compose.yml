@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Frontend Service (React)
+  frontend:
+    build:
+      context: ./frontend  # Point to your React project directory
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: ["npm", "start"]
+    ports:
+      - "3000:3000"  # Expose React app on port 3000
+    networks:
+      - e700_network
+    depends_on:
+      - backend
+
+  # Backend Service (Django)
+  backend:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: [ "sh", "-c", "./wait-for-it.sh db:5432 -- python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000" ]
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - e700_network
+
+  # Database Service (PostgreSQL)
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ilmsair
+      POSTGRES_DB: nams_700
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+    networks:
+      - e700_network
+
+networks:
+  e700_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
