@@ -15,12 +15,12 @@ import Modify from './Modify';
 import FlyingOperations from './FlyingOperations';
 import NewEntry from './NewEntry';
 import ViewE700 from './ViewE700';
-import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import USLog from './USLog';
 import AircraftHeader from './AircraftHeader';
 import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
+import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
 
 function App() {
   return (
@@ -28,7 +28,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboardCards" element={<DashboardCards />} />
         <Route path="/e700" element={<E700Page />} /> {/* ✅ New route */}
@@ -40,7 +39,7 @@ function App() {
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />
         <Route path="/dashboard/modify" element={<Modify />} />
-        <Route path="/dashboard/prepare" element={<Prepare />} />
+        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
         <Route path="/flying-operations" element={<FlyingOperations />} />
         <Route path="/newEntry" element={<NewEntry />} />
         <Route path="/viewE700" element={<ViewE700 />} />

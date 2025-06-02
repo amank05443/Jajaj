@@ -98,7 +98,3 @@ return(
   export default PilotAcceptance;
 
 
-
-
-
-

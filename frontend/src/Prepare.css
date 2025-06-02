@@ -1,14 +1,17 @@
-.boxMain{
+.boxMain1{
     width: 1350px;
-    max-height: 80vh;
-    /*background-image: url("../public/nambkgrnd2.jpg");*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: cover;*/
-    /*opacity: min(4);*/
+    max-height: 100vh;
+    background-image: url("../public/ross-parmly.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: min(4);
+
+}
+.leadingParticulars_tab{
     background: linear-gradient(135deg, rgba(255,255,255,0.1),rgba(255,255,255,0));
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
     border: 1px solid rgba(255,255,255,0.18);
-
+    border-radius: 10px;
 }
