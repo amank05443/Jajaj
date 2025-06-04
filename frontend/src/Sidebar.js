@@ -28,8 +28,8 @@ function Sidebar({ isOpen }) {
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
       <nav className="sidebar-nav">
-          <Link to='./Modify'><FaPencil />&nbsp;&nbsp;<span>Modify E700</span></Link>
-          <Link to='/ViewLeadingParticulars'><FaChartBar />&nbsp;&nbsp;<span>Leading Particulars</span></Link>
+          <Link to='./modify'><FaPencil />&nbsp;&nbsp;<span>Modify E700</span></Link>
+          <Link to='./prepare'><FaChartBar />&nbsp;&nbsp;<span>Leading Particulars</span></Link>
 
           <div className="dropdown-section">
               <button name="ldhc"  onClick={handleState} className="dropdown-toggle"><span><FaTools />&nbsp;&nbsp;LDHC</span></button>

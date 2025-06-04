@@ -25,24 +25,20 @@ const colorPalette = [
 function AircraftHeader() {
  return (
   <Box sx={{px:3,width:'100%',mt:2}}>
-
-   <Paper elevation ={4} sx={{width:'95%',maxWidth:'1000px',minHeight:'250px',margin:'0 auto',ml:'5%',p:3,display:'grid',
-   gridTemplateColumns:'repeat(3,1fr)',gap:2,
-   backgroundColor:'#f7fbff',borderRadius:3,}}>
-
-   {aircraftData.map((item,index) => {
-    const { bg,text } = colorPalette[index % colorPalette.length];
-    return(
-    <Paper key={index} elevation={2} sx={{p:2,borderRadius:2,bgcolor:bg,display:'flex',alignItems:'center',gap:1.5,}}>
-    <Typography variant="subtitle2" sx={{fontWeight:600,color:text,fontSize:'1rem'}}>
-    {item.label}
-    </Typography>
-    <Typography variant="body1" sx={{fontWeight:500,color:text}}>{item.value}</Typography>
-    </Paper>
-   );
-   })}
+    <Paper elevation ={4} sx={{width:'95%',maxWidth:'1000px',minHeight:'250px',margin:'0 auto',ml:'5%',p:3,display:'grid',
+        gridTemplateColumns:'repeat(3,1fr)',gap:2,backgroundColor:'#e1f5fe',borderRadius:3,}}>
+        {aircraftData.map((item,index) => {const { bg,text } = colorPalette[index % colorPalette.length];
+        return(
+            <Paper key={index} elevation={2} sx={{p:2,borderRadius:2,bgcolor:bg,display:'flex',alignItems:'center',gap:1.5,}}>
+                <Typography variant="subtitle2" sx={{fontWeight:600,color:text,fontSize:'1rem'}}>
+                    {item.label}
+                </Typography>
+                <Typography variant="body1" sx={{fontWeight:500,color:text}}>{item.value}</Typography>
+            </Paper>
+        );
+        })}
    </Paper>
-   </Box>
+  </Box>
  );
 }
 

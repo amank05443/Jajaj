@@ -40,7 +40,7 @@ export default function ModifyE700(){
             animate={{opacity:1,y:0}}
             transition={{duration:0.5}}
         >
-                <Header/>
+
                 <AircraftHeader/>
             <Paper
                 elevation={4}

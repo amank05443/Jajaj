@@ -106,10 +106,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ CORS CONFIGURATION
-CORS_ALLOW_ALL_ORIGINS = True  # Set this to True *only during development*
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-# ]
+# CORS_ALLOW_ALL_ORIGINS = True  # Set this to True *only during development*
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 CORS_ALLOW_CREDENTIALS = True  # Required to allow sending cookies
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -120,9 +120,13 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
-CSRF_COOKIE_HTTPONLY = False  # Allows JS to read the cookie
+CSRF_COOKIE_HTTPONLY = False
+CSRF_TRUSTED_NAME = 'csrfToken'
 CSRF_COOKIE_SAMESITE = 'Lax'  # Or 'None' if you're on different domains with HTTPS
-CSRF_COOKIE_SECURE = False    # Set True only for HTTPS in production
+CSRF_COOKIE_SECURE = False
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False# Set True only for HTTPS in production
 
 
 

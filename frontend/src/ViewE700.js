@@ -9,7 +9,9 @@ import './ViewE700.css';
 import {FaChartBar, FaClock, FaEye, FaFileAlt, FaPlane, FaTools} from "react-icons/fa";
 import App from "./App";
 
-const Section1 = () => <Typography>This is Section 1 content</Typography>
+const Section1 = () => <Typography>This is Section 1 content
+<button>print</button>
+</Typography>
 const Section2 = () => <Typography>This is Section 2 content</Typography>
 const Section3 = () => <Typography>This is Section 3 content</Typography>
 const Section4 = () => <Typography>This is Section 4 content</Typography>
@@ -40,7 +42,7 @@ const tabData = [
 
   return (
       <>
-            <Header/>
+          
   <Box sx={{minHeight:"100vh",backgroundColor:"#f8f9fd",p:4,fontFamily:"Roboto,sans-serif",}}>
    <Typography  align = "center" fontWeight="bold" fontSize="40px" color="blue">
    View E-700 Forms

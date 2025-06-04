@@ -1,6 +1,6 @@
 from django.db import models
 # models.py
-# from django.db import models
+from django.db import models
 
 class Quals(models.Model):
     objects         = None

@@ -15,31 +15,35 @@ import Modify from './Modify';
 import FlyingOperations from './FlyingOperations';
 import NewEntry from './NewEntry';
 import ViewE700 from './ViewE700';
+import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import USLog from './USLog';
 import AircraftHeader from './AircraftHeader';
 import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
-import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   return (
   <E700DataProvider>
     <Router>
+   <Header />
       <Routes>
+        <Route path="/" element={<UpdateE700 />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/create-profile" element={<CreateProfile />} />
+        <Route element={<PrivateRoute />}/>
+        <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboardCards" element={<DashboardCards />} />
         <Route path="/e700" element={<E700Page />} /> {/* ✅ New route */}
         <Route path="/sidebar" element={<Sidebar />} /> {/* ✅ New route */}
-        <Route path="/header" element={<Header />} />
+
         <Route path="/footer" element={<Footer />} />
-        <Route path="/" element={<UpdateE700 />} /> {/* Optional: default to login */}
-        <Route path="/create-profile" element={<CreateProfile />} />
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />
         <Route path="/dashboard/modify" element={<Modify />} />
-        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
+        <Route path="/dashboard/prepare" element={<Prepare />} />
         <Route path="/flying-operations" element={<FlyingOperations />} />
         <Route path="/newEntry" element={<NewEntry />} />
         <Route path="/viewE700" element={<ViewE700 />} />

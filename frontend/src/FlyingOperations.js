@@ -26,7 +26,6 @@ export default function Prepare () {
 
   return (
    <div className="dashboard-container">
-      <Header />
       <div className="dashboard-body"
       style={{padding:'2',paddingBottom:'1000px',overflowY:'auto',maxHeight:'calc(200vh-250px)', }}>
 

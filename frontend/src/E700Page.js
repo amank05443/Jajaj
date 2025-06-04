@@ -10,7 +10,6 @@ const E700Page = () => {
 
      return (
          <div className="dashboard-container" >
-             <Header />
              <div className="dashboard-body">
                  <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="40vh" marginLeft="33%" mb="300px" mt="100px">
                      {/*<Paper elevation={3} sx={{p:5,borderRadius:4,boxShadow:'10px 4px 20px rgba(0,0,0,0.1)',minHeight:'200px'}}>*/}

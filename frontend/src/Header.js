@@ -1,21 +1,78 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
+import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Box, Typography, IconButton, Tooltip
 } from '@mui/material';
 import { Home, Menu as MenuIcon, ContactMail, Info, Logout } from '@mui/icons-material';
 
-const Header = ({ username, pno, onLogout }) => {
+
+const Header = ({ onLogout }) => {
+    const [user,setUser] = useState(null);
+
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    if (typeof onLogout === 'function') {  // Ensure onLogout is a function
-      onLogout(); // Call the logout handler
-      navigate('/'); // Redirect to login after logout
+  function getCookie  (name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '')
+    {
+        const cookies = document.cookie.split(';');
+        for(let i = 0;i<cookies.length;i++) {
+            const cookie=cookies[i].trim();
+            if (cookie.substring(0,name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+
+  const handleLogout = async () => {
+    try {
+    await axios.get('http://localhost:8000/csrf/',
+    {withCredentials:true});
+    const csrfToken = getCookie('csrftoken');
+        await axios.post('http://localhost:8000/logout/',{},
+        {
+        withCredentials:true,
+        headers:{
+            'X-CSRFToken':csrfToken
+        }
+        });
+            localStorage.removeItem('user');
+            localStorage.removeItem('session_id');
+            localStorage.removeItem('user_id');
+            setUser(null);
+            navigate('/login');
+        } catch (err) {
+            console.error('Logout failed:',err);
+            }
+    };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+  try {
+        const res = await
+            axios.get('http://localhost:8000/user-profile/',{
+            withCredentials:true
+  });
+
+    if (res.data.success) {
+        const{name,rank,pno,session_id,id}=res.data.user;
+        localStorage.setItem('session_id',session_id);
+        localStorage.setItem('user_id',id);
+
+        setUser({name,rank,pno});
     } else {
-      console.error('onLogout is not a function');
+        console.warn('User not logged in');
+        }
+    } catch (err) {
+        console.error('Error fetching user data:',err);
     }
   };
+    fetchUser();
+  },[]);
 
   return (
     <AppBar position="static" sx={{ display:'flex',backgroundColor: '#FOF8FF',width:'100%',margin:0,padding:0,}}>
@@ -39,11 +96,12 @@ const Header = ({ username, pno, onLogout }) => {
         {/* Right: Username and Logout */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Display username if logged in */}
-          {username ? (
+          {user ? (
             <>
               <Typography variant="body1" sx={{ color: '#D3D3D3' }}>
-                {username} (PNO: {pno})
+                {user.name}({user.rank})
               </Typography>
+
               <Tooltip title="Logout">
                 <IconButton onClick={handleLogout} sx={{ color: '#D3D3D3' }} aria-label="Logout">
                   <Logout />
@@ -52,10 +110,7 @@ const Header = ({ username, pno, onLogout }) => {
             </>
           ) : (
             <>
-              <Typography variant="body1" sx={{ color: '#D3D3D3' }}>
-                Guest
-              </Typography>
-              {/* Login button if user is not logged in */}
+
               <Tooltip title="Login">
                 <IconButton onClick={() => navigate('/')} sx={{ color: '#D3D3D3' }} aria-label="Login">
                   <Logout /> {/* Change this to a Login icon if needed */}
@@ -70,239 +125,3 @@ const Header = ({ username, pno, onLogout }) => {
 };
 
 export default Header;
-
-//
-//import * as React from 'react';
-//import { styled, alpha } from '@mui/material/styles';
-//import AppBar from '@mui/material/AppBar';
-//import Box from '@mui/material/Box';
-//import Toolbar from '@mui/material/Toolbar';
-//import IconButton from '@mui/material/IconButton';
-//import Typography from '@mui/material/Typography';
-//import InputBase from '@mui/material/InputBase';
-//import Badge from '@mui/material/Badge';
-//import MenuItem from '@mui/material/MenuItem';
-//import Menu from '@mui/material/Menu';
-//import MenuIcon from '@mui/icons-material/Menu';
-//import SearchIcon from '@mui/icons-material/Search';
-//import AccountCircle from '@mui/icons-material/AccountCircle';
-//import MailIcon from '@mui/icons-material/Mail';
-//import NotificationsIcon from '@mui/icons-material/Notifications';
-//import MoreIcon from '@mui/icons-material/MoreVert';
-//
-//const Search = styled('div')(({ theme }) => ({
-//  position: 'relative',
-//  borderRadius: theme.shape.borderRadius,
-//  backgroundColor: alpha(theme.palette.common.white, 0.15),
-//  '&:hover': {
-//    backgroundColor: alpha(theme.palette.common.white, 0.25),
-//  },
-//  marginRight: theme.spacing(2),
-//  marginLeft: 0,
-//  width: '100%',
-//  [theme.breakpoints.up('sm')]: {
-//    marginLeft: theme.spacing(3),
-//    width: 'auto',
-//  },
-//}));
-//
-//const SearchIconWrapper = styled('div')(({ theme }) => ({
-//  padding: theme.spacing(0, 2),
-//  height: '100%',
-//  position: 'absolute',
-//  pointerEvents: 'none',
-//  display: 'flex',
-//  alignItems: 'center',
-//  justifyContent: 'center',
-//}));
-//
-//const StyledInputBase = styled(InputBase)(({ theme }) => ({
-//  color: 'inherit',
-//  '& .MuiInputBase-input': {
-//    padding: theme.spacing(1, 1, 1, 0),
-//    // vertical padding + font size from searchIcon
-//    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//    transition: theme.transitions.create('width'),
-//    width: '100%',
-//    [theme.breakpoints.up('md')]: {
-//      width: '20ch',
-//    },
-//  },
-//}));
-//
-//export default function PrimarySearchAppBar() {
-//  const [anchorEl, setAnchorEl] = React.useState(null);
-//  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-//
-//  const isMenuOpen = Boolean(anchorEl);
-//  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-//
-//  const handleProfileMenuOpen = (event) => {
-//    setAnchorEl(event.currentTarget);
-//  };
-//
-//  const handleMobileMenuClose = () => {
-//    setMobileMoreAnchorEl(null);
-//  };
-//
-//  const handleMenuClose = () => {
-//    setAnchorEl(null);
-//    handleMobileMenuClose();
-//  };
-//
-//  const handleMobileMenuOpen = (event) => {
-//    setMobileMoreAnchorEl(event.currentTarget);
-//  };
-//
-//  const menuId = 'primary-search-account-menu';
-//  const renderMenu = (
-//    <Menu
-//      anchorEl={anchorEl}
-//      anchorOrigin={{
-//        vertical: 'top',
-//        horizontal: 'right',
-//      }}
-//      id={menuId}
-//      keepMounted
-//      transformOrigin={{
-//        vertical: 'top',
-//        horizontal: 'right',
-//      }}
-//      open={isMenuOpen}
-//      onClose={handleMenuClose}
-//    >
-//      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-//      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-//    </Menu>
-//  );
-//
-//  const mobileMenuId = 'primary-search-account-menu-mobile';
-//  const renderMobileMenu = (
-//    <Menu
-//      anchorEl={mobileMoreAnchorEl}
-//      anchorOrigin={{
-//        vertical: 'top',
-//        horizontal: 'right',
-//      }}
-//      id={mobileMenuId}
-//      keepMounted
-//      transformOrigin={{
-//        vertical: 'top',
-//        horizontal: 'right',
-//      }}
-//      open={isMobileMenuOpen}
-//      onClose={handleMobileMenuClose}
-//    >
-//      <MenuItem>
-//        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-//          <Badge badgeContent={4} color="error">
-//            <MailIcon />
-//          </Badge>
-//        </IconButton>
-//        <p>Messages</p>
-//      </MenuItem>
-//      <MenuItem>
-//        <IconButton
-//          size="large"
-//          aria-label="show 7 new notifications"
-//          color="inherit"
-//        >
-//          <Badge badgeContent={17} color="error">
-//            <NotificationsIcon />
-//          </Badge>
-//        </IconButton>
-//        <p>Notifications</p>
-//      </MenuItem>
-//      <MenuItem onClick={handleProfileMenuOpen}>
-//        <IconButton
-//          size="large"
-//          aria-label="account of current user"
-//          aria-controls="primary-search-account-menu"
-//          aria-haspopup="true"
-//          color="inherit"
-//        >
-//          <AccountCircle />
-//        </IconButton>
-//        <p>Profile</p>
-//      </MenuItem>
-//    </Menu>
-//  );
-//
-//  return (
-//    <Box sx={{ flexGrow: 1 }}>
-//      <AppBar position="static">
-//        <Toolbar>
-//          <IconButton
-//            size="large"
-//            edge="start"
-//            color="inherit"
-//            aria-label="open drawer"
-//            sx={{ mr: 2 }}
-//          >
-//
-//            <MenuIcon />
-//          </IconButton>
-//          <Typography
-//            variant="h6"
-//            noWrap
-//            component="div"
-//            sx={{ display: { xs: 'none', sm: 'block' } }}
-//          >
-//           <h5 className="sidebar-title">✈️ E700</h5>
-//          </Typography>
-//          <Search>
-//            <SearchIconWrapper>
-//              <SearchIcon />
-//            </SearchIconWrapper>
-//            <StyledInputBase
-//              placeholder="Search…"
-//              inputProps={{ 'aria-label': 'search' }}
-//            />
-//          </Search>
-//          <Box sx={{ flexGrow: 1 }} />
-//          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-//            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-//              <Badge badgeContent={4} color="error">
-//                <MailIcon />
-//              </Badge>
-//            </IconButton>
-//            <IconButton
-//              size="large"
-//              aria-label="show 17 new notifications"
-//              color="inherit"
-//            >
-//              <Badge badgeContent={17} color="error">
-//                <NotificationsIcon />
-//              </Badge>
-//            </IconButton>
-//            <IconButton
-//              size="large"
-//              edge="end"
-//              aria-label="account of current user"
-//              aria-controls={menuId}
-//              aria-haspopup="true"
-//              onClick={handleProfileMenuOpen}
-//              color="inherit"
-//            >
-//              <AccountCircle />
-//            </IconButton>
-//          </Box>
-//          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-//            <IconButton
-//              size="large"
-//              aria-label="show more"
-//              aria-controls={mobileMenuId}
-//              aria-haspopup="true"
-//              onClick={handleMobileMenuOpen}
-//              color="inherit"
-//            >
-//              <MoreIcon />
-//            </IconButton>
-//          </Box>
-//        </Toolbar>
-//      </AppBar>
-//      {renderMobileMenu}
-//      {renderMenu}
-//    </Box>
-//  );
-//}

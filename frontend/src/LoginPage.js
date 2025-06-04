@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 
 const LoginPage = () => {
   const [pno, setPno] = useState('');
-  const [password, setPassword] = useState('');
+  const [login_pwd, setLogin_pwd] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -23,7 +23,8 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 //    setError('');
-    if (!pno || !password) {
+
+    if (!pno || !login_pwd) {
       setError('Both fields are required');
       return;
     }
@@ -32,7 +33,7 @@ const LoginPage = () => {
       const csrfToken = Cookies.get('csrftoken');
       const response = await axios.post(
         'http://localhost:8000/login/',
-        { pno, password },
+        { pno, login_pwd},
         {
           headers: {
             'X-CSRFToken': csrfToken,
@@ -42,8 +43,14 @@ const LoginPage = () => {
         }
       );
 
+      console.log("Login response:",response.data);
+
       if (response.data.success) {
-        await axios.get('http://localhost:8000/csrf/', { withCredentials: true });
+        const profile = await
+        axios.get('http://localhost:8000/csrf/', { withCredentials: true });
+
+        localStorage.setItem('user',
+        JSON.stringify(profile.data.user));
         navigate('/e700');
       } else {
         setError('Invalid credentials');
@@ -54,13 +61,9 @@ const LoginPage = () => {
   };
 
   const handlePullData = async () => {
-    const ipRes = await fetch("https://api.ipify.org?format=json");
-    const { ip } = await ipRes.json();
 
     const res = await fetch("http://localhost:8085/pull-schema-and-data", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ip_address: ip })
     });
 
     const data = await res.json();
@@ -69,14 +72,17 @@ const LoginPage = () => {
 
   return (
     <Box
-      sx={{display: 'flex',
+      sx={{
+        display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
         backgroundColor: '#e3f2fd',
+        minHeight: '100vh',
         backgroundImage: 'url("/ross-parmly-rf6ywHVkrlY-unsplash.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         p: 2
@@ -92,40 +98,11 @@ const LoginPage = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Main Content */}
+
       <Container maxWidth="sm" sx={{ pt: 12, pb: 6 }}>
         <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
 
-          {/* Pull DB Data */}
-          {/*<Paper elevation={6} sx={{ p: 4, borderRadius: 3, backgroundColor: '#fff', mb: 4 }}>*/}
-          {/*  <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', color: '#1565c0', mb: 2 }}>*/}
-          {/*    Download E-700*/}
-          {/*  </Typography>*/}
-          {/*  <Box display="flex" justifyContent="center">*/}
-          {/*    <motion.div whileHover={{ scale: 1.05 }}>*/}
-          {/*      <Button*/}
-          {/*        onClick={handlePullData}*/}
-          {/*        sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}*/}
-          {/*      >*/}
-          {/*        Click Here*/}
-          {/*      </Button>*/}
-          {/*    </motion.div>*/}
-          {/*  </Box>*/}
-          {/*</Paper>*/}
-
-          {/* Login Box */}
-          <div className="login_tab"
-                style={{background: 'linear-gradient(135deg, rgba(255,255,255,0.1),rgba(255,255,255,0))',
-                WebkitBackdropFilter: 'blur(20px)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',
-                border: '1px solid rgba(255,255,255,0.18)',
-                borderRadius: '10px',
-                height: '40%',
-                width: '80%',
-                margin: 'auto',
-                padding: '20px'}}
-          >
+          <Paper elevation={4} sx={{ p: 4, borderRadius: 3, backgroundColor: '#fff' }}>
             <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 600, color: '#1565c0' }}>
               Login
             </Typography>
@@ -135,15 +112,23 @@ const LoginPage = () => {
             <form onSubmit={handleLogin}>
               <Grid container spacing={3} justifyContent="center">
                 <Grid item xs={12}>
-                  <TextField label="P No (User ID)" fullWidth value={pno}  onChange={(e) => setPno(e.target.value)}
+                  <TextField
+                    label="P No (User ID)"
+                    fullWidth
+                    value={pno}
+                    onChange={(e) => setPno(e.target.value)}
                     autoComplete="off"
                     margin="normal"
                   />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <TextField type="password" label="Password" fullWidth value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                  <TextField
+                    type="password"
+                    label="Password"
+                    fullWidth
+                    value={login_pwd}
+                    onChange={(e) => setLogin_pwd(e.target.value)}
                     margin="normal"
                   />
                 </Grid>
@@ -152,14 +137,20 @@ const LoginPage = () => {
                   <Grid container spacing={2} justifyContent="center">
                     <Grid item>
                       <motion.div whileHover={{ scale: 1.05 }}>
-                        <Button type="submit" variant="contained" sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
+                        >
                           Login
                         </Button>
                       </motion.div>
                     </Grid>
                     <Grid item>
                       <motion.div whileHover={{ scale: 1.05 }}>
-                        <Button variant="contained" sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
+                        <Button
+                          variant="contained"
+                          sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
                           onClick={() => navigate('/create-profile')}
                         >
                           Create Profile
@@ -170,7 +161,7 @@ const LoginPage = () => {
                 </Grid>
               </Grid>
             </form>
-          </div>
+          </Paper>
         </motion.div>
       </Container>
 
