@@ -1,13 +1,8 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.forms.models import model_to_dict
-from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
@@ -18,11 +13,18 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
+#------------------------------------------------- Import All Models Here -------------------------------------------
+from .models.users import Users
 from .models.aircraft_masters import AircraftMasters
 from .models.aircraft_roles import AircraftRoles
 from .models.aircraft_types import AircraftTypes
 from .models.quals import Quals
-from .serializers import QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer
+from .models.ranks import Ranks
+from .models.fuel_tanks import FuelTanks
+
+#------------------------------------------------- Import All Serializers  Here -------------------------------------------
+from .serializers import UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer, FuelTanksSerializer
+
 
 # @api_view(['GET'])
 # class AircraftDetailView(APIView):
@@ -33,12 +35,9 @@ from .serializers import QualsSerializer, AircraftMastersSerializer, AircraftTyp
 #             return Response(serializer.data)
 #         except AircraftMasters.DoesNotExist:
 #             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
-from userprofile.models.ranks import Ranks
-from userprofile.models.quals import Quals
-from userprofile.models.users import Users
-from userprofile.models.aircraft_masters import AircraftMasters
-from userprofile.models.fuel_tanks import FuelTanks
-from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer
+
+
+
 
 
 @api_view(['POST'])
@@ -62,7 +61,7 @@ class Quals_view(ListAPIView):
     queryset = Quals.objects.all()
     serializer_class = QualsSerializer
 
-class AircraftDetailView(ListAPIView):
+class AircraftSideNoView(ListAPIView):
     # queryset = AircraftMasters.objects.all()
     # side_no= data.get('side_no')
     queryset = AircraftMasters.objects.all()

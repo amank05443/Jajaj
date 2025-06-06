@@ -92,7 +92,6 @@ export default function Modify () {
 
   return (
    <div className="dashboard-container">
-      <Header />
       <div className="dashboard-body"
       style={{padding:'2',paddingBottom:'1000px',overflowY:'auto',maxHeight:'calc(200vh-250px)',}}>
    <Box p={3}>

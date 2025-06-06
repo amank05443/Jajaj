@@ -11,7 +11,7 @@ from django.db import models
 class FuelTanks(models.Model):
     id = models.BigIntegerField(primary_key=True)
     tank_group = models.CharField(blank=True, null=True)
-    capacity = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    capacity = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     denominations = models.CharField(blank=True, null=True)
     aircraft_type_id = models.BigIntegerField(blank=True, null=True)
 

@@ -1,16 +1,11 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-from .models import  Quals, AircraftMasters, AircraftTypes, AircraftRoles
+from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles, FuelTanks
 
-class QualsSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Quals
+        model = Users
         fields = '__all__'
-from userprofile.models.ranks import Ranks
-from userprofile.models.quals import Quals
-from userprofile.models.users import Users
-from userprofile.models.aircraft_masters import AircraftMasters
-from userprofile.models.fuel_tanks import FuelTanks
 
 class RanksSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,9 +35,4 @@ class AircraftRolesSerializer(serializers.ModelSerializer):
 class FuelTanksSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuelTanks
-        fields = '__all__'
-
-class UsersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Users
         fields = '__all__'

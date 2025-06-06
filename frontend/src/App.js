@@ -22,6 +22,7 @@ import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
 import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
 import QualsForm from './LeadingParticulars/QualsForm';
+import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import PrivateRoute from './PrivateRoute';
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
         <Route path="/aircraftHeader" element={<AircraftHeader />} />
         <Route path="/formQuals" element={<QualsForm />} />
       </Routes>
+      <Footer />
     </Router>
   </E700DataProvider>
   );
