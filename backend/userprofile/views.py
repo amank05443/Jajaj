@@ -1,7 +1,14 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.forms.models import model_to_dict
+from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
+from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view
@@ -11,6 +18,21 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
+from .models.aircraft_masters import AircraftMasters
+from .models.aircraft_roles import AircraftRoles
+from .models.aircraft_types import AircraftTypes
+from .models.quals import Quals
+from .serializers import QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer
+
+# @api_view(['GET'])
+# class AircraftDetailView(APIView):
+#     def get(requests):
+#         try:
+#             aircraft = AircraftMasters.objects.all()
+#             serializer = AircraftMastersSerializer(aircraft)
+#             return Response(serializer.data)
+#         except AircraftMasters.DoesNotExist:
+#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 from userprofile.models.ranks import Ranks
 from userprofile.models.quals import Quals
 from userprofile.models.users import Users
@@ -35,6 +57,43 @@ def create_qual(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class Quals_view(ListAPIView):
+    # queryset = AircraftMasters.objects.all()
+    queryset = Quals.objects.all()
+    serializer_class = QualsSerializer
+
+class AircraftDetailView(ListAPIView):
+    # queryset = AircraftMasters.objects.all()
+    # side_no= data.get('side_no')
+    queryset = AircraftMasters.objects.all()
+    serializer_class = AircraftMastersSerializer
+
+# class AircraftAllDetailView(ListAPIView):
+#     # queryset = AircraftMasters.objects.all()
+#     # side_no= data.get('side_no')
+#     queryset = AircraftMasters.objects.all()
+#     serializer_class = AircraftMastersSerializer
+
+# def aircraft_all_detail_view(request, side_no ):
+#     data= list(AircraftMasters.objects.filter(id=side_no).values())
+#     return JsonResponse(data, safe=False)
+
+def aircraft_all_detail_view(request, side_no ):
+    try:
+        aircraft1= AircraftMasters.objects.get(id=side_no)
+        data = model_to_dict(aircraft1)
+        ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
+        ac_type = AircraftTypes.objects.get(id=aircraft1.aircraft_type_id)
+        data['ac_type'] = ac_type.aircraft_name
+        ac_roles = ', '.join(r.role for r in ac_roles_qs)
+        data['roles'] = ac_roles
+        # data = {"aircraft_type_id": aircraft1.aircraft_type_id,
+        #         "aircraft_details" : aircraft1,
+        #         "roles": air_roles
+        #         }
+        return JsonResponse(data)
+    except AircraftMasters.DoesNotExist:
+        return JsonResponse({"error": "<UNK>"})
 class list_quals(ListAPIView):
     # queryset = Quals.objects.all()
     queryset = Quals.objects.exclude(abbreviation__isnull=True)
@@ -166,6 +225,9 @@ def register_view(request):
         return JsonResponse({'success': True, 'message': 'Profile created successfully'}, status=201)
 
     except Exception as e:
+        print('[REGISTER ERROR]', e)
+        return JsonResponse({'success': False, 'message': 'Server error'}, status=500)
+
         import traceback
         print('[REGISTER ERROR]',e)
         traceback.print_exc()

@@ -1,4 +1,3 @@
-from django.db import models
 # models.py
 from django.db import models
 
@@ -11,5 +10,5 @@ class Quals(models.Model):
     class Meta:
         db_table = 'quals'
 
-    def __str__(self):
-        return f"{self.abbreviation} {self.qual} {self.user_type}"
+    # def __str__(self):
+    #     return f"{self.abbreviation} {self.qual} {self.user_type}"

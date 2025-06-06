@@ -15,12 +15,13 @@ import Modify from './Modify';
 import FlyingOperations from './FlyingOperations';
 import NewEntry from './NewEntry';
 import ViewE700 from './ViewE700';
-import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import USLog from './USLog';
 import AircraftHeader from './AircraftHeader';
 import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
+import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
+import QualsForm from './LeadingParticulars/QualsForm';
 import PrivateRoute from './PrivateRoute';
 
 function App() {
@@ -43,12 +44,13 @@ function App() {
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />
         <Route path="/dashboard/modify" element={<Modify />} />
-        <Route path="/dashboard/prepare" element={<Prepare />} />
+        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
         <Route path="/flying-operations" element={<FlyingOperations />} />
         <Route path="/newEntry" element={<NewEntry />} />
         <Route path="/viewE700" element={<ViewE700 />} />
         <Route path="/usLog" element={<USLog />} />
         <Route path="/aircraftHeader" element={<AircraftHeader />} />
+        <Route path="/formQuals" element={<QualsForm />} />
       </Routes>
     </Router>
   </E700DataProvider>
