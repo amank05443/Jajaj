@@ -21,24 +21,11 @@ from .models.aircraft_types import AircraftTypes
 from .models.quals import Quals
 from .models.ranks import Ranks
 from .models.fuel_tanks import FuelTanks
+from .models.ecu_masters import EcuMasters
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
-from .serializers import UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer, FuelTanksSerializer
-
-
-# @api_view(['GET'])
-# class AircraftDetailView(APIView):
-#     def get(requests):
-#         try:
-#             aircraft = AircraftMasters.objects.all()
-#             serializer = AircraftMastersSerializer(aircraft)
-#             return Response(serializer.data)
-#         except AircraftMasters.DoesNotExist:
-#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
-
-
-
-
+from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
+                          FuelTanksSerializer, EcuMastersSerializer)
 
 @api_view(['POST'])
 def create_rank(request):
@@ -61,8 +48,8 @@ class Quals_view(ListAPIView):
     queryset = Quals.objects.all()
     serializer_class = QualsSerializer
 
+# --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
 class AircraftSideNoView(ListAPIView):
-    # queryset = AircraftMasters.objects.all()
     # side_no= data.get('side_no')
     queryset = AircraftMasters.objects.all()
     serializer_class = AircraftMastersSerializer
@@ -77,19 +64,17 @@ class AircraftSideNoView(ListAPIView):
 #     data= list(AircraftMasters.objects.filter(id=side_no).values())
 #     return JsonResponse(data, safe=False)
 
-def aircraft_all_detail_view(request, side_no ):
+def aircraft_all_detail_view(request, id ):
     try:
-        aircraft1= AircraftMasters.objects.get(id=side_no)
+        aircraft1= AircraftMasters.objects.get(id=id)
         data = model_to_dict(aircraft1)
-        ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
+        # ecu_details = list(EcuMasters.objects.filter(aircraft_master_id=id).values())
+        # data['ecu_details'] = model_to_dict(ecu_details)
         ac_type = AircraftTypes.objects.get(id=aircraft1.aircraft_type_id)
         data['ac_type'] = ac_type.aircraft_name
+        ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
         ac_roles = ', '.join(r.role for r in ac_roles_qs)
         data['roles'] = ac_roles
-        # data = {"aircraft_type_id": aircraft1.aircraft_type_id,
-        #         "aircraft_details" : aircraft1,
-        #         "roles": air_roles
-        #         }
         return JsonResponse(data)
     except AircraftMasters.DoesNotExist:
         return JsonResponse({"error": "<UNK>"})

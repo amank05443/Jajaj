@@ -6,3 +6,4 @@ from .aircraft_masters import AircraftMasters
 from .aircraft_types import AircraftTypes
 from .aircraft_roles import AircraftRoles
 from .fuel_tanks import FuelTanks
+from .ecu_masters import EcuMasters
