@@ -17,6 +17,7 @@ from userprofile.models.users import Users
 from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer
+from django.contrib.auth.decorators import login_required
 
 
 @api_view(['POST'])
@@ -40,6 +41,7 @@ class list_quals(ListAPIView):
     queryset = Quals.objects.exclude(abbreviation__isnull=True)
     serializer_class = QualsSerializer
 
+@login_required
 class AircraftDetailView(APIView):
     def get(self,request,side_no,format=None):
         try:

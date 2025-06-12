@@ -8,7 +8,7 @@ import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import WeightAndBalanceTab from './PrepareE700/WeightAndBalanceTab';
 import CompassDataTab from './PrepareE700/CompassDataTab';
 import InspectionTab from './PrepareE700/InspectionTab';
-import './Prepare.css';
+import './css/Prepare.css';
 import { E700DataContext } from './E700DataContext';
 import Header from './Header';
 import Footer from './Footer';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlane, FaTools, FaClock, FaChartBar, FaCompare, FaEye } from 'react-icons/fa';
-import './DashboardCards.css';
+import './css/DashboardCards.css';
 
 const cards = [
   {

@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './UpdateE700';
 import LoginPage from './LoginPage';
@@ -24,13 +25,33 @@ import PostFlying from './FlyingOperations/PostFlying';
 import PrivateRoute from './PrivateRoute';
 
 function App() {
+    const[user,setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await axios.get('http://loaclhost:8000/user-profile/',{
+                withCredentials:true,
+                });
+                if (res.data.response) {
+                    const{name,rank,pno} = res.data.user;
+                    setUser({name,rank,pno});
+                }
+                } catch(err) {
+                    console.error('Failed to fetch user:',err);
+            }
+        };
+        fetchUser();
+        },
+    []);
+
   return (
   <E700DataProvider>
     <Router>
-   <Header />
+   <Header user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<UpdateE700 />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route path="/create-profile" element={<CreateProfile />} />
         <Route element={<PrivateRoute />}/>
         <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />

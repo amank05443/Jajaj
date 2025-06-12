@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 
-const LoginPage = () => {
+const LoginPage = ({setUser}) => {
   const [pno, setPno] = useState('');
   const [login_pwd, setLogin_pwd] = useState('');
   const [error, setError] = useState('');
@@ -22,7 +22,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-//    setError('');
+    setError('');
 
     if (!pno || !login_pwd) {
       setError('Both fields are required');
@@ -43,15 +43,19 @@ const LoginPage = () => {
         }
       );
 
-      console.log("Login response:",response.data);
-
       if (response.data.success) {
-        const profile = await
-        axios.get('http://localhost:8000/csrf/', { withCredentials: true });
+        const profileRes = await
+        axios.get('http://localhost:8000/user-profile/', { withCredentials: true });
 
-        localStorage.setItem('user',
-        JSON.stringify(profile.data.user));
+       if (profileRes.data.success) {
+       const {name,rank,pno} = profileRes.data.user;
+       const userData = {name,rank,pno};
+       localStorage.setItem('user',
+        JSON.stringify({userData}));
+
+        setUser(userData);
         navigate('/e700');
+        }
       } else {
         setError('Invalid credentials');
       }

@@ -7,8 +7,7 @@ import {
 import { Home, Menu as MenuIcon, ContactMail, Info, Logout } from '@mui/icons-material';
 
 
-const Header = ({ onLogout }) => {
-    const [user,setUser] = useState(null);
+const Header = ({ user,setUser }) => {
 
   const navigate = useNavigate();
 
@@ -49,30 +48,6 @@ const Header = ({ onLogout }) => {
             console.error('Logout failed:',err);
             }
     };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-  try {
-        const res = await
-            axios.get('http://localhost:8000/user-profile/',{
-            withCredentials:true
-  });
-
-    if (res.data.success) {
-        const{name,rank,pno,session_id,id}=res.data.user;
-        localStorage.setItem('session_id',session_id);
-        localStorage.setItem('user_id',id);
-
-        setUser({name,rank,pno});
-    } else {
-        console.warn('User not logged in');
-        }
-    } catch (err) {
-        console.error('Error fetching user data:',err);
-    }
-  };
-    fetchUser();
-  },[]);
 
   return (
     <AppBar position="static" sx={{ display:'flex',backgroundColor: '#FOF8FF',width:'100%',margin:0,padding:0,}}>
