@@ -1,23 +1,30 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+
 class Users(models.Model):
-    pno = models.CharField(max_length=10,null=False, blank=False)
-    user_name = models.CharField(max_length=100,null=False, blank=False)
-    rank_id = models.DecimalField(max_digits=10,decimal_places=0,null=True, blank=True)
-    customer_id = models.DecimalField(max_digits=10,decimal_places=0,null=True, blank=True)
-    login_pwd = models.CharField(max_length=256,null=True, blank=True)
-    pwd_date_updated = models.DateField(null=True, blank=True)
-    pwd_valid_upto = models.DateField(null=True, blank=True)
-    pin= models.DecimalField(max_digits=6,decimal_places=0,null=True, blank=True)
-    pin_date_updated = models.DateField(null=True, blank=True)
-    pin_valid_upto = models.DateField(null=True, blank=True)
-    fsi_yn = models.CharField(max_length=1,null=True, blank=True)
-    active_yn = models.CharField(max_length=1,null=True, blank=True)
+    id = models.BigIntegerField(primary_key=True)
+    pno = models.CharField()
+    user_name = models.CharField()
+    rank = models.ForeignKey('Ranks', models.DO_NOTHING, blank=True, null=True)
+    designation_id = models.BigIntegerField(blank=True, null=True)
+    user_type_id = models.BigIntegerField(blank=True, null=True)
+    customer = models.ForeignKey('Customers', models.DO_NOTHING, blank=True, null=True)
+    login_pwd = models.CharField(blank=True, null=True)
+    pwd_date_updated = models.DateField(blank=True, null=True)
+    pwd_valid_upto = models.DateField(blank=True, null=True)
+    pin = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    pin_date_updated = models.DateField(blank=True, null=True)
+    pin_valid_upto = models.DateField(blank=True, null=True)
+    fsi_yn = models.CharField(blank=True, null=True)
+    active_yn = models.CharField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'users'
-
-    # def __str__(self):
-    #     return (f"{self.pno} {self.user_name} {self.rank_id} {self.customer_id} {self.login_pwd} {self.pwd_date_updated}"
-    #             f"{self.pwd_valid_upto} {self.pin} {self.pin_date_updated} {self.pin_valid_upto}"
-    #             f"{self.fsi_yn} {self.active_yn}")

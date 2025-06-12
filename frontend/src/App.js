@@ -24,6 +24,10 @@ import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars'
 import QualsForm from './LeadingParticulars/QualsForm';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import PrivateRoute from './PrivateRoute';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.energyblue.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.office.css';
+import JqxGrid from 'jqwidgets-scripts/jqwidgets/jqx-all';
 
 function App() {
   return (

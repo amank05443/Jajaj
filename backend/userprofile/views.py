@@ -22,10 +22,11 @@ from .models.quals import Quals
 from .models.ranks import Ranks
 from .models.fuel_tanks import FuelTanks
 from .models.ecu_masters import EcuMasters
+from .models.tyre_pressures import TyrePressures
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
 from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
-                          FuelTanksSerializer, EcuMastersSerializer)
+                          FuelTanksSerializer, EcuMastersSerializer, TyrePressuresSerializer)
 
 @api_view(['POST'])
 def create_rank(request):
@@ -48,6 +49,11 @@ class Quals_view(ListAPIView):
     queryset = Quals.objects.all()
     serializer_class = QualsSerializer
 
+# def Quals_view(request):
+#     user=request.user
+#     data= user.Users_set.values('user_name','rank_id','pno')
+#     return JsonResponse(list(data), safe=False)
+
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
 class AircraftSideNoView(ListAPIView):
     # side_no= data.get('side_no')
@@ -68,16 +74,19 @@ def aircraft_all_detail_view(request, id ):
     try:
         aircraft1= AircraftMasters.objects.get(id=id)
         data = model_to_dict(aircraft1)
-        # ecu_details = list(EcuMasters.objects.filter(aircraft_master_id=id).values())
-        # data['ecu_details'] = model_to_dict(ecu_details)
+        ecu_details = list(EcuMasters.objects.filter(aircraft_master_id=id).values())
+        data['ecu_details'] = ecu_details
         ac_type = AircraftTypes.objects.get(id=aircraft1.aircraft_type_id)
         data['ac_type'] = ac_type.aircraft_name
+        lg_tyre_pressure = list(TyrePressures.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values())
+        data['lg_tyre_pressure'] = lg_tyre_pressure
         ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
         ac_roles = ', '.join(r.role for r in ac_roles_qs)
         data['roles'] = ac_roles
         return JsonResponse(data)
     except AircraftMasters.DoesNotExist:
         return JsonResponse({"error": "<UNK>"})
+
 class list_quals(ListAPIView):
     # queryset = Quals.objects.all()
     queryset = Quals.objects.exclude(abbreviation__isnull=True)

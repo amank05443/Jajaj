@@ -1,19 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import Sidebar from '../Sidebar';
-import '../Dashboard.css';
 import axios from 'axios';
 import {Grid, TextField, Typography, Paper,Box,Link} from '@mui/material';
 import {FaPlane, FaTools,FaAtlas, FaClock, FaFileAlt, FaChartBar,FaGlobeAsia,FaCalendar,FaWeight,FaCalculator, FaCogs} from 'react-icons/fa';
 
+
 const ViewLeadingParticulars=() => {
  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
  const [sidebarOpen, setSidebarOpen] = useState(true);
-
  const [aircrafts, setAircrafts] = useState([]);
  const [selectedAircraft, setSelectedAircraft] = useState('');
  const [aircraftDetails, setAircraftDetails] = useState(null);
 
-//  False: To fetch side no until session work completed.
  useEffect(() => {
         axios.get('/api/aircraftSideNo')
             .then(response => {setAircrafts(response.data);})
@@ -27,7 +24,51 @@ const ViewLeadingParticulars=() => {
         .catch(error => {console.error('Error aircraft Marks:' , error);});
     }
  },[selectedAircraft])
-// background: 'linear-gradient(to right,#87CEEB, #FFE6CC )',
+
+ const TyreGrid=()=>{
+     useEffect(() => {
+         if (aircraftDetails.lg_tyre_pressure && aircraftDetails.lg_tyre_pressure.length>0){
+             const source={
+                 datatype: 'array',
+                 datafields: [
+                     {name: 'id', type: 'number'},
+                     {name: 'ac_condition', type: 'string'},
+                     {name: 'max_main', type: 'number'},
+                     {name: 'max_nose_tail', type: 'number'},
+                 ],
+                 localdata: aircraftDetails.lg_tyre_pressure,
+             };
+             const dataAdapter= new window.jqx.dataAdapter(source);
+             window.$("#jqxGrid").jqxGrid({
+                 autowidth:400,
+                 autoheight: true,
+                 theme: 'office',
+                 // selectionmode: 'checkbox',
+                 pageable: true,
+                 sortable: true,
+                 editable: false,
+                 columnsresize: true,
+                 enabletooltips: true,
+                 altrows: true,
+                 showfilterrow: true,
+                 filterable:true,
+                 showtoolbar:true,
+                 rendergridrows:true,
+                 columnsreorder:true,
+                 source: dataAdapter,
+                 columns:[
+                     {text: 'ID', datafield: 'id', width: 80, editable: true},
+                     {text: 'A/C Condition', datafield: 'ac_condition', width: 100},
+                     {text: 'Main', datafield: 'max_main', width: 80},
+                     {text: 'Nose/ Tail', datafield: 'max_nose_tail', width: 80}
+                 ]
+             });
+
+         }
+     }, []);
+     return <div id={'jqxGrid'}></div>
+ }
+
  return (
     <div >
         <div  className= "body_leading" style={{ height: '91vh', margin:'4px'}}>
@@ -47,7 +88,7 @@ const ViewLeadingParticulars=() => {
             {aircraftDetails && (
                 <div style={{marginLeft:'7px', marginRight: '6px'}}>
                     <Grid container spacing= {2} sx={{fontSize:"14px"}}>
-    {/*--------------------------------------------------------------------- First row ---------------------------------------------------*/}
+                        {/*---------------------------------------- First row ---------------------------------------------------*/}
                         <Grid size={12}>
                             <table border="1" cellPadding="2" style={{width:'100%' ,fontSize:'15px'}} >
                                 <tbody>
@@ -73,10 +114,10 @@ const ViewLeadingParticulars=() => {
                             <Typography ><FaGlobeAsia /> Aircraft Primary / Secondary Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <u style= {{color: 'green'}}>{aircraftDetails.roles||'NA'}</u></Typography>
                         </Grid>*/}
 
-    {/*--------------------------------------------------------------------------- Second row ---------------------------------------------------------------------------*/}
+                        {/*----------------------------------------------------- Second row -------------------------------------------------------*/}
                         <Grid size={12}>
                             <Grid container spacing= {2} >
-                            {/*-----------------------------------------Second row First Two Grid (Ecu and Aircraft Details)----------------------------------------*/}
+                                    {/*---------------------------Second row First Grid (Ecu and Aircraft Details)----------------------------------*/}
                                 <Grid size={9}>
                                     <Grid container spacing= {2}>
                                         <Grid  size={7}>
@@ -94,23 +135,33 @@ const ViewLeadingParticulars=() => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr >
-                                                        <td>Engine PORT</td>
-                                                        <td>Type 1</td>
-                                                        <td>Mark 1</td>
-                                                        <td>Serial Number 1</td>
-                                                        <td>06 Jun 2025</td>
+                                                    {/*<tr>
+                                                        <td>Engine {aircraftDetails.ecu_details[0].location || '00'}</td>
+                                                        <td>{aircraftDetails.ecu_details[0].type || '00'}</td>
+                                                        <td>{aircraftDetails.ecu_details[0].mark || '00'}</td>
+                                                        <td>{aircraftDetails.ecu_details[0].serial_no || '00'}</td>
+                                                        <td>{aircraftDetails.ecu_details[0].date_of_fitment || '00'}</td>
                                                     </tr>
-                                                    <tr >
-                                                        <td>Engine STBD</td>
-                                                        <td >Type 2</td>
-                                                        <td>Mark 2</td>
-                                                        <td>Serial Number 2</td>
-                                                        <td>06 Jun 2025</td>
+                                                        <tr >
+                                                        <td>Engine {aircraftDetails.ecu_details[1].location ||'00'}</td>
+                                                    <td>{aircraftDetails.ecu_details[1].type || '00'}</td>
+                                                    <td>{aircraftDetails.ecu_details[1].mark || '00'}</td>
+                                                    <td>{aircraftDetails.ecu_details[1].serial_no || '00'}</td>
+                                                    <td>{aircraftDetails.ecu_details[1].date_of_fitment || '00'}</td>
+                                                </tr>*/}
+                                                {aircraftDetails.ecu_details.map((engine,index) => (
+                                                    <tr key={index}>
+                                                        <td>Engine {engine.location ||' '}</td>
+                                                        <td>{engine.type ||'--'}</td>
+                                                        <td>{engine.mark ||'--'}</td>
+                                                        <td>{engine.serial_no ||'NA'}</td>
+                                                        <td>{engine.date_of_fitment ||'Not Available'}</td>
                                                     </tr>
+                                                ))}
                                                 </tbody>
                                             </table>
                                         </Grid>
+                                        {/*-------------------------------Second row Second Grid (Aircraft Clock details)------------------------------------*/}
                                         <Grid  size={5}>
                                              <table border="1" cellPadding="6" style={{width:'100%'}} >
                                                 <thead>
@@ -140,7 +191,7 @@ const ViewLeadingParticulars=() => {
                                                 </tbody>
                                              </table>
                                         </Grid>
-                            {/*--------------------------------------------- Third row First Two Grid (OLGs & Gases)-----------------------------------------------*/}
+                                        {/*--------------------------------------- Third row First Grid (OLGs & Gases)-------------------------------*/}
                                         <Grid  size={7}>
                                             <table border="1" cellPadding="6" style={{width:'100%'}} >
                                                 <thead>
@@ -148,10 +199,14 @@ const ViewLeadingParticulars=() => {
                                                         <th colspan={5} style={{background:'#FFD5E0'}}><FaCogs /> OLGs & Gases </th>
                                                     </tr>
                                                     <tr >
-                                                       <th >System</th>
-                                                       <th colspan={3}>Type</th>
-
-                                                       <th >Alternate/ Substitute</th>
+                                                       <th rowSpan={2} >System</th>
+                                                       <th colSpan={3}>Standard</th>
+                                                       <th rowSpan={2}>Alternate/ Substitute</th>
+                                                    </tr>
+                                                    <tr >
+                                                       <th >Type</th>
+                                                       <th >Store Ref</th>
+                                                       <th > GOST / NATO</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -172,9 +227,33 @@ const ViewLeadingParticulars=() => {
                                                 </tbody>
                                             </table>
                                         </Grid>
+                                        {/*---------------------------------- Third row Second Grid (Landing Gear & Tyre pressure)----------------------------*/}
+                                        <Grid  size={5}>
+                                             <table border="1" cellPadding="6" style={{width:'100%'}} >
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan={3} style={{background:'#FFD5E0'}}><FaClock/> Landing Gear & Tyre Pressure </th>
+                                                    </tr>
+                                                    <tr >
+                                                       <th >A/C Condition</th>
+                                                       <th >Main</th>
+                                                       <th >Nose / Tail</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {aircraftDetails.lg_tyre_pressure.map((landing_gear,index) => (
+                                                    <tr key={index}>
+                                                        <td>{landing_gear.ac_condition ||' '}</td>
+                                                        <td>{landing_gear.max_main ||'--'}</td>
+                                                        <td>{landing_gear.max_nose_tail ||'--'}</td>
+                                                    </tr>
+                                                ))}
+                                                </tbody>
+                                             </table>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                        {/*----------------------------------------- Second & Third row Last Grid (Basic Information)-------------------------------------------------------*/}
+                                {/*--------------------- Second & Third row Last Grid (Basic Information)---------------------------------*/}
                                 <Grid  size={3} >
                                      <table border="1" cellPadding="2" style={{width:'100%'}} >
                                         <thead>
@@ -245,6 +324,8 @@ const ViewLeadingParticulars=() => {
                                             </tr>
                                         </tbody>
                                      </table>
+                                    {/*---------------Grid----------------------*/}
+                                    <TyreGrid />
                                 </Grid>
                             </Grid>
                         </Grid>
