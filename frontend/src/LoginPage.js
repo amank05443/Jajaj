@@ -43,14 +43,7 @@ const LoginPage = () => {
         }
       );
 
-      console.log("Login response:",response.data);
-
       if (response.data.success) {
-        const profile = await
-        axios.get('http://localhost:8000/csrf/', { withCredentials: true });
-
-        localStorage.setItem('user',
-        JSON.stringify(profile.data.user));
         navigate('/e700');
       } else {
         setError('Invalid credentials');

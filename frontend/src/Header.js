@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Box, Typography, IconButton, Tooltip
@@ -12,43 +13,28 @@ const Header = ({ onLogout }) => {
 
   const navigate = useNavigate();
 
-  function getCookie  (name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '')
-    {
-        const cookies = document.cookie.split(';');
-        for(let i = 0;i<cookies.length;i++) {
-            const cookie=cookies[i].trim();
-            if (cookie.substring(0,name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-            }
-        }
-    }
-    return cookieValue;
-    }
-
   const handleLogout = async () => {
     try {
-    await axios.get('http://localhost:8000/csrf/',
-    {withCredentials:true});
-    const csrfToken = getCookie('csrftoken');
+        const csrfToken = Cookies.get('csrftoken');
         await axios.post('http://localhost:8000/logout/',{},
-        {
-        withCredentials:true,
-        headers:{
-            'X-CSRFToken':csrfToken
-        }
-        });
-            localStorage.removeItem('user');
-            localStorage.removeItem('session_id');
-            localStorage.removeItem('user_id');
-            setUser(null);
-            navigate('/login');
-        } catch (err) {
-            console.error('Logout failed:',err);
+            {
+                withCredentials:true,
+                headers:{
+                    'X-CSRFToken':csrfToken
+                }
             }
-    };
+        );
+        localStorage.removeItem('user');
+        localStorage.removeItem('session_id');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('aircraft_type_id');
+        localStorage.removeItem('aircraft_master_id');
+        setUser(null);
+        navigate('/login');
+    } catch (err) {
+        console.error('Logout failed:',err);
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,9 +46,7 @@ const Header = ({ onLogout }) => {
 
     if (res.data.success) {
         const{name,rank,pno,session_id,id}=res.data.user;
-        localStorage.setItem('session_id',session_id);
         localStorage.setItem('user_id',id);
-
         setUser({name,rank,pno});
     } else {
         console.warn('User not logged in');

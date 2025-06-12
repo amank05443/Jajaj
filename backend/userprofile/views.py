@@ -107,6 +107,27 @@ class AircraftDetailView(APIView):
         except AircraftMasters.DoesNotExist:
             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 
+
+class AircraftTypeDetailsView(ListAPIView):
+    queryset = AircraftTypes.objects.all()
+    serializer_class = AircraftTypesSerializer
+
+# class AircraftDetailsView(ListAPIView):
+#     def get(self,request,aircraft_type_id):
+#         try:
+#             aircraft = AircraftMasters.objects.get(aircraft_type_id=aircraft_type_id)
+#             serializer = AircraftMastersSerializer(aircraft)
+#             return Response(serializer.data)
+#         except AircraftMasters.DoesNotExist:
+#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
+
+def AircraftDetailsView(request,aircraft_type_id):
+    try:
+        data = list(AircraftMasters.objects.filter(aircraft_type_id=aircraft_type_id).values())
+        return JsonResponse(data,safe=False)
+    except AircraftMasters.DoesNotExist:
+        return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
+
 # CSRF Token View: Ensures CSRF token is set
 @ensure_csrf_cookie
 def get_csrf_token(request):
@@ -120,6 +141,7 @@ def login_view(request):
         data = json.loads(request.body)
         pno = data.get('pno')
         password = data.get('login_pwd')
+        print(data)
 
         # Check if PNO and password are provided
         if not pno or not password:
@@ -145,7 +167,6 @@ def login_view(request):
                                  'name':user.user_name,
                                  'pno':user.pno,
                                  'session_id': request.session.session_key
-
                              },
                              })
 

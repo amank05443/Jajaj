@@ -1,29 +1,108 @@
 
-import React from 'react';
-import { Paper, Box,Button,Typography} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
+import {
+  TextField, Button, Container, Box, Typography,Grid, Alert, AppBar,CircularProgress,
+  Toolbar, CssBaseline, Paper,FormControl,InputLabel,Select,MenuItem
+} from '@mui/material';
+import { motion } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
 
 const E700Page = () => {
      const navigate = useNavigate();
 
+     const [aircraftTypes,setAircraftTypes] = useState([]);
+     const [aircraftDetails,setAircraftDetails] = useState([]);
+
+     const [selectedAircraftType,setSelectedAircraftType] = useState('');
+     const [selectedAircraftDetail,setSelectedAircraftDetail] = useState('');
+
+     const [loading, setLoading] = useState(true);
+     const [status, setStatus] = useState('');
+
+     useEffect(() => {
+        axios.get('http://localhost:8000/api/aircraft-type-details')
+        .then(response => {
+            setAircraftTypes(response.data);
+            setLoading(false);
+        })
+        .catch(error => {
+             console.error('Error fetching Aircraft Types', error);
+             setLoading(false);
+        });
+     },[]);
+
+     useEffect(() => {
+        if(selectedAircraftType) {
+             axios.get(`/api/aircraft-details/${selectedAircraftType}`)
+            .then(response => setAircraftDetails(response.data));
+        } else {
+            setAircraftDetails([]);
+        }
+     },[selectedAircraftType]);
+
+     const handleChange =(event) => {
+        setSelectedAircraftType(event.target.value);
+     };
+     const handleChange1 =(e) => {
+        setSelectedAircraftDetail(e.target.value);
+     };
+
+     //to save a/c type and master id into local storage
+     const handleSelection=()=>{
+        if(!selectedAircraftDetail){
+            setStatus("Please select A/C Side No.");
+            return;
+        }
+        localStorage.setItem('aircraft_type_id',selectedAircraftType);
+        localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
+        navigate('/dashboard');
+     };
+
+     if (loading) return <CircularProgress />
+
      return (
          <div className="dashboard-container" >
              <div className="dashboard-body">
-                 <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="40vh" marginLeft="33%" mb="300px" mt="100px">
-                     {/*<Paper elevation={3} sx={{p:5,borderRadius:4,boxShadow:'10px 4px 20px rgba(0,0,0,0.1)',minHeight:'200px'}}>*/}
-                     <Paper elevation={3} sx={{p:6, background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', color: 'white' , minHeight:'110px'}}>
+                 <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" height="40vh" marginLeft="33%" mb="300px" mt="100px">
+                      <Paper elevation={3} sx={{p:6, background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', color: 'white' , minHeight:'110px'}}>
                          <Typography variant="h4" align="center"> <animate> <b>Welcome to Seven Hundred !!</b></animate></Typography>
-                         <Box mt={4} align="center">
-                             <Button style={{boxShadow: '0 4px 8px rgba(0,0,0,0.2)', background:'rgb(44,210,113)', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '4px'}} onClick={() => navigate('/prepare')} >Prepare/ Verify E 700 Details</Button>
-                             {/*<Button variant="contained"  color="primary" onClick={() => navigate('/prepare')} >Prepare/ Verify E 700 Details</Button>*/}
-                             {/*<Button variant="contained" color="secondary" onClick={() => navigate('/modify')}  >Modify E700</Button>*/}
-                         </Box>
-                     </Paper>
+                         <form>
+                            <Grid container xs={6}>
+                                 <Grid item sm={6}>
+                                    <InputLabel id="aircraft-type-label" sx={{color: 'white'}}>Aircraft Type</InputLabel>
+                                    <Select labelId="aircraft-type-label" id="aircraft-type-select" value={selectedAircraftType} label="Aircraft Type" sx={{backgroundColor: 'white'}} onChange={handleChange}>
+                                        <option value="">--Select Aircraft--</option>
+                                        {aircraftTypes.map((aircraftType) => (
+                                            <MenuItem key={aircraftType.id} value={aircraftType.id}>
+                                                {aircraftType.aircraft_name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                 </Grid>
+                                <Grid item sm={6} >
+                                    <InputLabel id="aircraft-side-no-label" sx={{color: 'white'}}>Aircraft Side No.</InputLabel>
+                                    <Select labelId="aircraft-side-no-label" id="aircraft-side-no-select"  value={selectedAircraftDetail} label="Aircraft Side No" sx={{backgroundColor: 'white'}} onChange={handleChange1}>
+                                        {aircraftDetails.map((aircraft) => (
+                                            <MenuItem key={aircraft.id} value={aircraft.id}>
+                                                {aircraft.side_no}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    <p>{aircraftDetails.id}</p>
+                                </Grid>
+                                <Box mt={4} align="center">
+                                    <Button style={{boxShadow: '0 4px 8px rgba(0,0,0,0.2)', background:'rgb(44,210,113)', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '4px'}} onClick={handleSelection} >Prepare/ Verify E 700 Details</Button>
+                                </Box>
+                            </Grid>
+                        </form>
+                      </Paper>
                  </Box>
              </div>
-             <Footer />
+             <Footer/>
          </div>
      );
 };
