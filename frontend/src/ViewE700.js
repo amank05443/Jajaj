@@ -4,7 +4,7 @@ import {motion,AnimatePresence} from "framer-motion";
 import Header from './Header';
 import Footer from './Footer';
 import DescriptionIcon from "@mui/icons-material/Description";
-import './ViewE700.css';
+import './css/ViewE700.css';
 
 import {FaChartBar, FaClock, FaEye, FaFileAlt, FaPlane, FaTools} from "react-icons/fa";
 import App from "./App";

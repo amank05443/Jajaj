@@ -61,7 +61,6 @@ function App() {
         <Route path="/dashboardCards" element={<DashboardCards />} />
         <Route path="/e700" element={<E700Page />} /> {/* ✅ New route */}
         <Route path="/sidebar" element={<Sidebar />} /> {/* ✅ New route */}
-
         <Route path="/footer" element={<Footer />} />
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />

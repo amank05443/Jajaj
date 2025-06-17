@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import DashboardCards from './DashboardCards';
 import Sidebar from './Sidebar';
-import Header from './Header';
-import Footer from './Footer';
 import './css/Dashboard.css';
 import AircraftHeader from './AircraftHeader';
 
@@ -16,7 +14,6 @@ function Dashboard() {
         <main className="dashboard-main">
             <AircraftHeader/>
             <DashboardCards />
-            <Footer />
         </main>
       </div>
     </div>
