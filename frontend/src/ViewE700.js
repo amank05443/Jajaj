@@ -15,24 +15,12 @@ const Section1 = () => <Typography>This is Section 1 content
 const Section2 = () => <Typography>This is Section 2 content</Typography>
 const Section3 = () => <Typography>This is Section 3 content</Typography>
 const Section4 = () => <Typography>This is Section 4 content</Typography>
-// const Section5 = () => <Typography>This is Section 5 content</Typography>
-// const Section6 = () => <Typography>This is Section 6 content</Typography>
-// const Section7 = () => <Typography>This is Section 7 content</Typography>
-// const Section8 = () => <Typography>This is Section 8 content</Typography>
-// const Section9 = () => <Typography>This is Section 9 content</Typography>
-// const Section10 = () => <Typography>This is Section 10 content</Typography>
 
 const tabData = [
  { label:"Section 1",content:<Section1 />},
  { label:"Section 2",content:<Section2 />},
  { label:"Section 3",content:<Section3 />},
  { label:"Section 4",content:<Section4 />},
- // { label:"Section 5",content:<Section5 />},
- // { label:"Section 6",content:<Section6 />},
- // { label:"Section 7",content:<Section7 />},
- // { label:"Section 8",content:<Section8 />},
- // { label:"Section 9",content:<Section9 />},
- // { label:"Section 10",content:<Section10 />},
  ];
 
  const ViewE700 = () => {
@@ -67,14 +55,7 @@ const tabData = [
          <AnimatePresence mode="wait">
           <motion.div key={selectedTab} initial={{opacity:0,y:30}} animate={{opacity:1,y:0}}
             exit={{opacity:0,y: -20}} transition={{duration:0.4}}>
-   {/*<Paper elevation={2} className={`Section_${selectedTab}`} */}
-   {/*      role="tabpanel"*/}
-   {/*      id={`tabpanel-${selectedTab}`}*/}
-   {/*      area-labelledby={`tab-${selectedTab}`}>*/}
-   {/*      <Typography variant="h6">{tabData[selectedTab].label}</Typography>*/}
-   {/*/!*      <Box  mt={2}>{tabData[selectedTab].content}</Box>*!/</Paper>*/}
-   {/*           <Box  className={`Section_${selectedTab}`} mt={2}>{tabData[selectedTab].content}</Box>*/}
-              <div className={`Section_${selectedTab}`} style={{height:"100vh"}}>{tabData[selectedTab].content}</div>
+               <div className={`Section_${selectedTab}`} style={{height:"100vh"}}>{tabData[selectedTab].content}</div>
           </motion.div>
 
    </AnimatePresence>

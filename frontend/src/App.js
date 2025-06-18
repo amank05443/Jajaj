@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import UpdateE700 from './UpdateE700';
+import UpdateE700 from './welcome';
 import LoginPage from './LoginPage';
 import Dashboard from './Dashboard';
 import DashboardCards from './DashboardCards';
@@ -61,6 +61,7 @@ function App() {
         <Route path="/dashboardCards" element={<DashboardCards />} />
         <Route path="/e700" element={<E700Page />} /> {/* ✅ New route */}
         <Route path="/sidebar" element={<Sidebar />} /> {/* ✅ New route */}
+
         <Route path="/footer" element={<Footer />} />
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />

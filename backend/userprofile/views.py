@@ -13,6 +13,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
+
 from userprofile.models.ranks import Ranks
 from userprofile.models.quals import Quals
 from userprofile.models.users import Users
@@ -20,6 +21,13 @@ from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer
 from django.contrib.auth.decorators import login_required
+
+#---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
+from django.apps import apps
+from django.core.exceptions import ObjectDoesNotExist
+from .serializers import get_dynamic_serializer
+from rest_framework.viewsets import ViewSet
+
 #------------------------------------------------- Import All Models Here -------------------------------------------
 from .models.users import Users
 from .models.aircraft_masters import AircraftMasters
@@ -31,21 +39,6 @@ from .models.fuel_tanks import FuelTanks
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
 from .serializers import UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer, FuelTanksSerializer
-
-
-# @api_view(['GET'])
-# class AircraftDetailView(APIView):
-#     def get(requests):
-#         try:
-#             aircraft = AircraftMasters.objects.all()
-#             serializer = AircraftMastersSerializer(aircraft)
-#             return Response(serializer.data)
-#         except AircraftMasters.DoesNotExist:
-#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
-
-
-
-
 
 @api_view(['POST'])
 def create_rank(request):
@@ -74,16 +67,6 @@ class AircraftSideNoView(ListAPIView):
     queryset = AircraftMasters.objects.all()
     serializer_class = AircraftMastersSerializer
 
-# class AircraftAllDetailView(ListAPIView):
-#     # queryset = AircraftMasters.objects.all()
-#     # side_no= data.get('side_no')
-#     queryset = AircraftMasters.objects.all()
-#     serializer_class = AircraftMastersSerializer
-
-# def aircraft_all_detail_view(request, side_no ):
-#     data= list(AircraftMasters.objects.filter(id=side_no).values())
-#     return JsonResponse(data, safe=False)
-
 def aircraft_all_detail_view(request, side_no ):
     try:
         aircraft1= AircraftMasters.objects.get(id=side_no)
@@ -93,15 +76,12 @@ def aircraft_all_detail_view(request, side_no ):
         data['ac_type'] = ac_type.aircraft_name
         ac_roles = ', '.join(r.role for r in ac_roles_qs)
         data['roles'] = ac_roles
-        # data = {"aircraft_type_id": aircraft1.aircraft_type_id,
-        #         "aircraft_details" : aircraft1,
-        #         "roles": air_roles
-        #         }
         return JsonResponse(data)
     except AircraftMasters.DoesNotExist:
         return JsonResponse({"error": "<UNK>"})
+
+
 class list_quals(ListAPIView):
-    # queryset = Quals.objects.all()
     queryset = Quals.objects.exclude(abbreviation__isnull=True)
     serializer_class = QualsSerializer
 
@@ -119,15 +99,6 @@ class AircraftDetailView(APIView):
 class AircraftTypeDetailsView(ListAPIView):
     queryset = AircraftTypes.objects.all()
     serializer_class = AircraftTypesSerializer
-
-# class AircraftDetailsView(ListAPIView):
-#     def get(self,request,aircraft_type_id):
-#         try:
-#             aircraft = AircraftMasters.objects.get(aircraft_type_id=aircraft_type_id)
-#             serializer = AircraftMastersSerializer(aircraft)
-#             return Response(serializer.data)
-#         except AircraftMasters.DoesNotExist:
-#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 
 def AircraftDetailsView(request,aircraft_type_id):
     try:
@@ -149,7 +120,6 @@ def login_view(request):
         data = json.loads(request.body)
         pno = data.get('pno')
         password = data.get('login_pwd')
-        print(data)
 
         # Check if PNO and password are provided
         if not pno or not password:
@@ -260,3 +230,85 @@ def register_view(request):
         print('[REGISTER ERROR]',e)
         traceback.print_exc()
         return JsonResponse({'success':False,'message':'Server error'},status=500)
+
+
+    # DYNAMIC VIEWS.....@Abhishek_singh #13jun25
+class DynamicModelView(ViewSet):
+    def get_model_class(self,table ):
+        try:
+            model_name = ''.join(part.capitalize() for part in table.split('_'))
+            return apps.get_model('userprofile',model_name)
+        except LookupError:
+            return None
+
+    def get(self,request,table,pk=None):
+        Model = self.get_model_class(table)
+        if not Model:
+            return Response({'error':'Model not found'}, status=404)
+
+        include = request.query_params.getlist("include")
+        serializer_class = get_dynamic_serializer(Model)
+
+        if pk:
+            try:
+                obj = Model.objects.get(pk=pk)
+            except ObjectDoesNotExist:
+                return Response({'error':'Object not found'}, status=404)
+            serializer = serializer_class(obj, context={'include':include})
+            return Response(serializer.data)
+
+        #Filtering based on query params
+        filters ={}
+        for key,value in request.query_params.items():
+            if key != 'include':
+                filters[key] = value
+        queryset = Model.objects.filter(**filters)
+
+        serializer = serializer_class(queryset,many=True,context={'include':include})
+        return Response(serializer.data)
+
+    def post(self,request,table):
+        Model = self.get_model_class(table)
+        if not Model:
+            return Response({'error':'Model not found'}, status=404)
+
+        serializer_class = get_dynamic_serializer(Model)
+        serializer = serializer_class(data=request.data)
+        if serializer.is_valid():
+            instance = serializer.save()
+            return Response(serializer_class(instance).data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def put(self,request,table,pk):
+        Model = self.get_model_class(table)
+        if not Model:
+            return Response({'error':'Model not found'}, status=404)
+
+        try:
+            instance = Model.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error':'Object not found'}, status=404)
+
+        serializer_class = get_dynamic_serializer(Model)
+        partial = request.method == 'PATCH'
+        serializer = serializer_class(instance,data=request.data,partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def list(self,request,table):
+        Model = self.get_model_class(table)
+        queryset = Model.objects.all()
+
+        #filter using query params
+        for key,value in request.query_params.items():
+            if key != "include":
+                queryset = queryset.filter(**{key:value})
+
+        #Handle "include" param
+        include = request.query_params.get('include')
+        serializer_class = get_dynamic_serializer(Model)
+        serializer = serializer_class(queryset,many=True,context={'request':request})
+
+        return Response(serializer.data)
