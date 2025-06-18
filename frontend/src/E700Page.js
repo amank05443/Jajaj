@@ -69,7 +69,7 @@ const E700Page = () => {
              <div className="dashboard-body">
                  <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" height="60vh" marginLeft="33%" mb="300px" mt="100px">
                       <Paper elevation={3} sx={{p:6, background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', color: 'white' , minHeight:'100px'}}>
-                         <Typography variant="h4" gutterbottom align="center"> <animate> <b> <u>Welcome to Seven Hundred !! </u></b> </animate></Typography>
+                         <Typography variant="h4" gutterbottom align="center"> <animate> <b> <u>1111Welcome to Seven Hundred !! </u></b> </animate></Typography>
                             <Grid container direction="column" spacing={2} xs={6}>
                                  <Grid item sm={6}>
                                  <Box align="center">
