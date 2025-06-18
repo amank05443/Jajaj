@@ -2,6 +2,47 @@
 from rest_framework import serializers
 from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles, FuelTanks
 
+
+
+#--for dynamic views and urls
+def get_dynamic_serializer(model_class):
+    class DynamicSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = model_class
+            fields = '__all__'
+
+
+        def to_representation(self, instance):
+            data = super().to_representation(instance)
+            include = self.context.get('include',[])
+            if isinstance(include,str):
+                include = [f.strip() for f in include.split(',')]
+            if isinstance(include,list) and len(include)==1 and isinstance(include[0],str) and ',' in include[0]:
+                include = [i.strip() for i in include[0].split(',')]
+
+            for field_name in include:
+                try:
+                    related = getattr(instance, field_name, None)
+                    if related is None:
+                        data[field_name] = None
+                    elif hasattr(related, 'all'):
+                        related_qs = related.all()
+                        if related_qs:
+                            rel_model = related_qs.model
+                            rel_serializer = get_dynamic_serializer(rel_model)
+                            data[field_name] = rel_serializer(related_qs,many=True).data
+                        else:
+                            data[field_name] = []
+                    else:
+                        rel_model = related.__class__
+                        rel_serializer = get_dynamic_serializer(rel_model)
+                        data[field_name] = rel_serializer(related, context={}).data
+                except Exception as e:
+                    data[field_name] = f'Error: {str(e)}'
+            return data
+
+    return DynamicSerializer
+
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import UpdateE700 from './UpdateE700';
+import UpdateE700 from './welcome';
 import LoginPage from './LoginPage';
 import Dashboard from './Dashboard';
 import DashboardCards from './DashboardCards';
@@ -29,7 +29,7 @@ function App() {
   return (
   <E700DataProvider>
     <Router>
-   <Header />
+    <Header />
       <Routes>
         <Route path="/" element={<UpdateE700 />} />
         <Route path="/login" element={<LoginPage />} />

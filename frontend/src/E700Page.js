@@ -8,7 +8,6 @@ import {
   Toolbar, CssBaseline, Paper,FormControl,InputLabel,Select,MenuItem
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import Header from './Header';
 import Footer from './Footer';
 
 const E700Page = () => {
@@ -20,18 +19,15 @@ const E700Page = () => {
      const [selectedAircraftType,setSelectedAircraftType] = useState('');
      const [selectedAircraftDetail,setSelectedAircraftDetail] = useState('');
 
-     const [loading, setLoading] = useState(true);
      const [status, setStatus] = useState('');
 
      useEffect(() => {
         axios.get('http://localhost:8000/api/aircraft-type-details')
         .then(response => {
             setAircraftTypes(response.data);
-            setLoading(false);
         })
         .catch(error => {
              console.error('Error fetching Aircraft Types', error);
-             setLoading(false);
         });
      },[]);
 
@@ -55,14 +51,13 @@ const E700Page = () => {
      const handleSelection=()=>{
         if(!selectedAircraftDetail){
             setStatus("Please select A/C Side No.");
+            console.log(status);
             return;
         }
         localStorage.setItem('aircraft_type_id',selectedAircraftType);
         localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
         navigate('/dashboard');
      };
-
-     if (loading) return <CircularProgress />
 
      return (
          <div className="dashboard-container" >
@@ -102,7 +97,6 @@ const E700Page = () => {
                       </Paper>
                  </Box>
              </div>
-             <Footer/>
          </div>
      );
 };
