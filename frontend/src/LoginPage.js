@@ -7,12 +7,14 @@ import {
   Grid, Alert, AppBar, Toolbar, CssBaseline, Paper
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import {useAuth} from './AuthContext';
 
 const LoginPage = () => {
   const [pno, setPno] = useState('');
   const [login_pwd, setLogin_pwd] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const{setIsAuthenticated,setUser} = useAuth();
 
   useEffect(() => {
     axios.get('http://localhost:8000/csrf/', { withCredentials: true })
@@ -22,7 +24,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-//    setError('');
+    setError('');
 
     if (!pno || !login_pwd) {
       setError('Both fields are required');
@@ -38,15 +40,20 @@ const LoginPage = () => {
           headers: {
             'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
+
           },
           withCredentials: true,
         }
       );
 
       if (response.data.success) {
-        navigate('/e700');
+        setUser(response.data.user);
+        setIsAuthenticated(true);
+        navigate('/e700',{replace:true});
       } else {
         setError('Invalid credentials');
+        setIsAuthenticated(false);
+        setUser(null);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
