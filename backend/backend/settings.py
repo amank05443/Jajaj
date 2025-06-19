@@ -127,6 +127,9 @@ CSRF_COOKIE_SECURE = False
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False# Set True only for HTTPS in production
+SESSION_COOKIE_AGE = 9000 #inactivity based log out set session expiry time
+SESSION_SAVE_EVERY_REQUEST = True # Reset timer for each request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 
