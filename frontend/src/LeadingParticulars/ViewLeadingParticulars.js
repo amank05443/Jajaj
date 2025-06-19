@@ -29,6 +29,7 @@ const ViewLeadingParticulars=() => {
 
  return (
     <div >
+
         <div style={{background: 'linear-gradient(to right,#87CEEB, #FFE6CC )', height: '91vh', margin:'4px'}}>
             <div style={{padding: 12, position:'relative', display:'flex', height: '3vh', backgroundImage: 'linear-gradient(to right, #FFE6CC, #87CEEB,#FFD5E0 )'}}>
                 <h2 style={{position: 'absolute', left:'50%',transform:'translateX(-50%)',fontSize:'20px',margin:0}}>Leading Particulars</h2>
