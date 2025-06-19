@@ -28,19 +28,6 @@ import PrivateRoute from './PrivateRoute';
 
 import {AuthProvider,useAuth} from './AuthContext';
 
-const AppContent = () => {
-    const {isAuthenticated} = useAuth();
-
-    return (
-        <>
-        {isAuthenticated && <Header />}
-      {/* {isAuthenticated && <Sidebar />}*/}
-
-
-
-
-
-
 //         --------------------------------  JQX Widget Functional  -----------------------------------
 import 'jqwidgets-scripts/jqwidgets/jqxcore'
 import 'jqwidgets-scripts/jqwidgets/jqxdata'
@@ -69,11 +56,15 @@ import 'jqwidgets-scripts/jqwidgets/styles/jqx.energyblue.css';
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.office.css';
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.material.css';
 
-function App() {
-  return (
-  <E700DataProvider>
-    <Router>
-   <Header />
+
+const AppContent = () => {
+    const {isAuthenticated} = useAuth();
+
+    return (
+        <>
+        {isAuthenticated && <Header />}
+      {/* {isAuthenticated && <Sidebar />}*/}
+
       <Routes>
         <Route path="/" element={<UpdateE700 />} />
         <Route path="/login" element={<LoginPage />} />
