@@ -8,3 +8,6 @@ from .aircraft_roles import AircraftRoles
 from .fuel_tanks import FuelTanks
 from .ecu_masters import EcuMasters
 from .tyre_pressures import TyrePressures
+from .pols import Pols
+from .systems import Systems
+from .items import Items

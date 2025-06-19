@@ -1,6 +1,6 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles, FuelTanks, EcuMasters, TyrePressures
+from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles, FuelTanks, EcuMasters, TyrePressures, Pols, Systems
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,4 +45,14 @@ class EcuMastersSerializer(serializers.ModelSerializer):
 class TyrePressuresSerializer(serializers.ModelSerializer):
     class Meta:
         model = TyrePressures
+        fields = '__all__'
+
+class PolsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pols
+        fields = '__all__'
+
+class SystemsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Systems
         fields = '__all__'

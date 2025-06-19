@@ -23,6 +23,8 @@ from .models.ranks import Ranks
 from .models.fuel_tanks import FuelTanks
 from .models.ecu_masters import EcuMasters
 from .models.tyre_pressures import TyrePressures
+from .models.pols import Pols
+from .models.systems import Systems
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
 from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
@@ -83,12 +85,21 @@ def aircraft_all_detail_view(request, id ):
         ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
         ac_roles = ', '.join(r.role for r in ac_roles_qs)
         data['roles'] = ac_roles
+
+        olg_gases= list(Pols.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values('id','system', 'type_of_pol', 'description', 'substitute_id', 'nato_code'))
+        system_ids_o = [item['system'] for item in olg_gases]
+        system_lookup = {s.id: s.system for s in Systems.objects.filter(id__in=system_ids_o)}
+        for item in olg_gases:
+            item['system_name'] = system_lookup.get(item['system'], '')
+        olg_gases_fuel=[item for item in olg_gases if item['type_of_pol'] == 'F']
+        olg_gases_oil = [item for item in olg_gases if item['type_of_pol'] != 'F']
+        data['olg_gases_fuel'] = olg_gases_fuel
+        data['olg_gases'] = olg_gases_oil
         return JsonResponse(data)
     except AircraftMasters.DoesNotExist:
         return JsonResponse({"error": "<UNK>"})
 
 class list_quals(ListAPIView):
-    # queryset = Quals.objects.all()
     queryset = Quals.objects.exclude(abbreviation__isnull=True)
     serializer_class = QualsSerializer
 
