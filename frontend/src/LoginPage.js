@@ -7,12 +7,14 @@ import {
   Grid, Alert, AppBar, Toolbar, CssBaseline, Paper
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import {useAuth} from './AuthContext';
 
-const LoginPage = ({setUser}) => {
+const LoginPage = () => {
   const [pno, setPno] = useState('');
   const [login_pwd, setLogin_pwd] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const{setIsAuthenticated,setUser} = useAuth();
 
   useEffect(() => {
     axios.get('http://localhost:8000/csrf/', { withCredentials: true })
@@ -38,26 +40,20 @@ const LoginPage = ({setUser}) => {
           headers: {
             'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
+
           },
           withCredentials: true,
         }
       );
 
       if (response.data.success) {
-        const profileRes = await
-        axios.get('http://localhost:8000/user-profile/', { withCredentials: true });
-
-       if (profileRes.data.success) {
-       const {name,rank,pno} = profileRes.data.user;
-       const userData = {name,rank,pno};
-       localStorage.setItem('user',
-        JSON.stringify({userData}));
-
-        setUser(userData);
-        navigate('/e700');
-        }
+        setUser(response.data.user);
+        setIsAuthenticated(true);
+        navigate('/e700',{replace:true});
       } else {
         setError('Invalid credentials');
+        setIsAuthenticated(false);
+        setUser(null);
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

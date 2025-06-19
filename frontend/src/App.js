@@ -26,43 +26,54 @@ import QualsForm from './LeadingParticulars/QualsForm';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import PrivateRoute from './PrivateRoute';
 
-function App() {
-    const[user,setUser] = useState(null);
+import {AuthProvider,useAuth} from './AuthContext';
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get('http://loaclhost:8000/user-profile/',{
-                withCredentials:true,
-                });
-                if (res.data.response) {
-                    const{name,rank,pno} = res.data.user;
-                    setUser({name,rank,pno});
-                }
-                } catch(err) {
-                    console.error('Failed to fetch user:',err);
-            }
-        };
-        fetchUser();
-        },
-    []);
+//         --------------------------------  JQX Widget Functional  -----------------------------------
+import 'jqwidgets-scripts/jqwidgets/jqxcore'
+import 'jqwidgets-scripts/jqwidgets/jqxdata'
+import 'jqwidgets-scripts/jqwidgets/jqxbuttons'
+import 'jqwidgets-scripts/jqwidgets/jqxscrollbar'
+import 'jqwidgets-scripts/jqwidgets/jqxmenu'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid'
+import 'jqwidgets-scripts/jqwidgets/jqxtoolbar'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.selection'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.columnsresize'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.filter'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.sort'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.edit'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.columnsreorder'
+import 'jqwidgets-scripts/jqwidgets/jqxgrid.pager'
+import 'jqwidgets-scripts/jqwidgets/jqxdropdownlist'
+import 'jqwidgets-scripts/jqwidgets/jqxlistbox'
+// import JqxGrid from 'jqwidgets-scripts/jqwidgets/jqx-all';
+// import JqxGrid from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
+import JqxGrid from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
 
-  return (
-  <E700DataProvider>
-    <Router>
-   <Header user={user} setUser={setUser} />
+//     ------------------------------  JQX Widget Style & CSS  ------------------------------------
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.light.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.energyblue.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.office.css';
+import 'jqwidgets-scripts/jqwidgets/styles/jqx.material.css';
+
+
+const AppContent = () => {
+    const {isAuthenticated} = useAuth();
+
+    return (
+        <>
+        {isAuthenticated && <Header />}
+      {/* {isAuthenticated && <Sidebar />}*/}
+
       <Routes>
         <Route path="/" element={<UpdateE700 />} />
-        <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/create-profile" element={<CreateProfile />} />
-        <Route element={<PrivateRoute />}/>
+        <Route element={<PrivateRoute />}>
         <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboardCards" element={<DashboardCards />} />
-        <Route path="/e700" element={<E700Page />} /> {/* ✅ New route */}
-        <Route path="/sidebar" element={<Sidebar />} /> {/* ✅ New route */}
-
-        <Route path="/footer" element={<Footer />} />
+        <Route path="/e700" element={<E700Page />} />
         <Route path="/prepare" element={<Prepare />} />
         <Route path="/modify" element={<Modify />} />
         <Route path="/dashboard/modify" element={<Modify />} />
@@ -73,10 +84,24 @@ function App() {
         <Route path="/usLog" element={<USLog />} />
         <Route path="/aircraftHeader" element={<AircraftHeader />} />
         <Route path="/formQuals" element={<QualsForm />} />
+        </Route>
       </Routes>
-      <Footer />
-    </Router>
-  </E700DataProvider>
+
+      {isAuthenticated && <Footer/>}
+      </>
+      );
+      };
+
+      function App() {
+        return (
+         <AuthProvider>
+        <E700DataProvider>
+         <Router>
+         <AppContent />
+
+        </Router>
+        </E700DataProvider>
+    </AuthProvider>
   );
 }
 
