@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import {useParams} from './Utils/useParams';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Box, Typography, IconButton, Tooltip
@@ -11,7 +12,8 @@ import {useAuth} from './AuthContext';
 
 const Header = () => {
     const {isAuthenticated,setIsAuthenticated,user,setUser} = useAuth();
-
+//    const [user,setUser] = useState(null);
+    const {params,setParam,setMultipleParams,loading,clearParams} = useParams();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -25,6 +27,7 @@ const Header = () => {
                 }
             }
         );
+        clearParams();
       setUser(null);
       setIsAuthenticated(false);
       Cookies.remove('csrftoken')
@@ -44,7 +47,9 @@ const Header = () => {
   });
 
     if (res.data.success) {
-       setUser(res.data.user);
+        const{name,rank,pno,session_id,id}=res.data.user;
+        setParam('user_id',id);
+        setUser(res.data.user);
        setIsAuthenticated(true);
     } else {
         setIsAuthenticated(false);

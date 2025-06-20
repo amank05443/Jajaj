@@ -10,6 +10,7 @@ import Footer from './Footer';
 import Sidebar from './Sidebar';
 import E700Page from './E700Page'; // ✅ Import the new E-700 page
 import {E700DataProvider} from './E700DataContext'; // ✅ Import the new E-700 page
+import {ParamsProvider} from './Utils/useParams';//✅useParams context
 import CreateProfile from './CreateProfile';
 import Prepare from './Prepare';
 import Modify from './Modify';
@@ -86,8 +87,7 @@ const AppContent = () => {
         <Route path="/formQuals" element={<QualsForm />} />
         </Route>
       </Routes>
-
-      {isAuthenticated && <Footer/>}
+        {isAuthenticated && <Footer/>}
       </>
       );
       };
@@ -95,13 +95,14 @@ const AppContent = () => {
       function App() {
         return (
          <AuthProvider>
-        <E700DataProvider>
-         <Router>
-         <AppContent />
-
-        </Router>
-        </E700DataProvider>
-    </AuthProvider>
+            <ParamsProvider>
+                <E700DataProvider>
+                    <Router>
+                        <AppContent />
+                    </Router>
+                </E700DataProvider>
+            </ParamsProvider>
+        </AuthProvider>
   );
 }
 

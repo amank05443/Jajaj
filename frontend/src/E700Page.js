@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
+import {useParams} from './Utils/useParams';
 import {
   TextField, Button, Container, Box, Typography,Grid, Alert, AppBar,CircularProgress,
   Toolbar, CssBaseline, Paper,FormControl,InputLabel,Select,MenuItem
@@ -12,6 +13,9 @@ import Footer from './Footer';
 
 const E700Page = () => {
      const navigate = useNavigate();
+
+     //params context
+    const {params,setParam,setMultipleParams,loading} = useParams();
 
      const [aircraftTypes,setAircraftTypes] = useState([]);
      const [aircraftDetails,setAircraftDetails] = useState([]);
@@ -53,9 +57,13 @@ const E700Page = () => {
             setStatus("Please select A/C Side No.");
             console.log(status);
             return;
-        }
-        localStorage.setItem('aircraft_type_id',selectedAircraftType);
-        localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
+        };
+//        localStorage.setItem('aircraft_type_id',selectedAircraftType);
+//        localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
+        setMultipleParams({
+            'aircraft_type_id':selectedAircraftType,
+            'aircraft_master_id':selectedAircraftDetail});
+        console.log("Current Params:", params);
         navigate('/dashboard');
      };
 

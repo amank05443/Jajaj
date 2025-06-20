@@ -27,6 +27,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import get_dynamic_serializer
 from rest_framework.viewsets import ViewSet
 
+#---for useParams()---
+
+
 #------------------------------------------------- Import All Models Here -------------------------------------------
 from .models.users import Users
 from .models.aircraft_masters import AircraftMasters
@@ -41,8 +44,8 @@ from .models.pols import Pols
 from .models.systems import Systems
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
-from .serializers import UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
-                          FuelTanksSerializer, EcuMastersSerializer, TyrePressuresSerializer
+from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
+                          FuelTanksSerializer, EcuMastersSerializer, TyrePressuresSerializer)
 
 @api_view(['POST'])
 def create_rank(request):
@@ -353,3 +356,21 @@ class DynamicModelView(ViewSet):
         serializer = serializer_class(queryset,many=True,context={'request':request})
 
         return Response(serializer.data)
+
+
+#.....useParams().....
+@csrf_protect
+@require_GET
+def get_params(request):
+    params = request.session.get('params',{})
+    return JsonResponse({'params': params})
+
+@csrf_protect
+@require_POST
+def set_params(request):
+    try:
+        data = json.loads(request.body)
+        request.session['params'] = data
+        return JsonResponse({'status':'saved', 'params': data})
+    except Exception as e:
+        return JsonResponse({'error':str(e)}, status=400)
