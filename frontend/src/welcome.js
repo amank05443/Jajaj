@@ -8,14 +8,14 @@ const UpdateE700 = () => {
      const navigate = useNavigate();
 
      return (
-         <div className="dashboard-container" >
-            {/* Top App Bar */}
-      <AppBar position="fixed" sx={{ background: '#1565c0' }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 'bold' }}>e-700</Typography>
-          <Typography variant="subtitle1">CNAMS</Typography>
-        </Toolbar>
-      </AppBar>
+//         <div className="dashboard-container" >
+//            {/* Top App Bar */}
+//      <AppBar position="fixed" sx={{ background: '#1565c0' }}>
+//        <Toolbar>
+//          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 'bold' }}>e-700</Typography>
+//          <Typography variant="subtitle1">CNAMS</Typography>
+//        </Toolbar>
+//      </AppBar>
 
              <div className="dashboard-body">
                  <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="40vh" marginLeft="30%" mt="12%" >
@@ -27,19 +27,19 @@ const UpdateE700 = () => {
                      </Paper>
                  </Box>
              </div>
-            {/* Footer */}
-                 <AppBar
-                position="fixed"
-             component="footer"
-                sx={{ backgroundColor: '#1565c0', top: 'auto', bottom: 0 }}
-                >
-                <Toolbar sx={{ justifyContent: 'center' }}>
-                    <Typography variant="body2" color="inherit">
-                      © {new Date().getFullYear()}
-                  </Typography>
-                  </Toolbar>
-             </AppBar>
-                </div>
+//            {/* Footer */}
+//                 <AppBar
+//                position="fixed"
+//             component="footer"
+//                sx={{ backgroundColor: '#1565c0', top: 'auto', bottom: 0 }}
+//                >
+//                <Toolbar sx={{ justifyContent: 'center' }}>
+//                    <Typography variant="body2" color="inherit">
+//                      © {new Date().getFullYear()}
+//                  </Typography>
+//                  </Toolbar>
+//             </AppBar>
+//                </div>
      );
 };
 

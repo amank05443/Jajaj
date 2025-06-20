@@ -5,10 +5,12 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Box, Typography, IconButton, Tooltip
 } from '@mui/material';
-import { Home, Menu as MenuIcon, ContactMail, Info, Logout,CircleNotificationsOutlined,AirplanemodeActive } from '@mui/icons-material';
+import { Home, Menu as MenuIcon, ContactMail, Info, Logout } from '@mui/icons-material';
+import {useAuth} from './AuthContext';
 
-const Header = ({ onLogout }) => {
-    const [user,setUser] = useState(null);
+
+const Header = () => {
+    const {isAuthenticated,setIsAuthenticated,user,setUser} = useAuth();
 
   const navigate = useNavigate();
 
@@ -23,17 +25,15 @@ const Header = ({ onLogout }) => {
                 }
             }
         );
-        localStorage.removeItem('user');
-        localStorage.removeItem('session_id');
-        localStorage.removeItem('user_id');
-        localStorage.removeItem('aircraft_type_id');
-        localStorage.removeItem('aircraft_master_id');
-        setUser(null);
-        navigate('/login');
-    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+      Cookies.remove('csrftoken')
+      Cookies.remove('sessionid')
+      navigate('/login');
+      } catch (err) {
         console.error('Logout failed:',err);
-    }
-  };
+      }
+      };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,44 +44,51 @@ const Header = ({ onLogout }) => {
   });
 
     if (res.data.success) {
-        const{name,rank,pno,session_id,id}=res.data.user;
-        localStorage.setItem('user_id',id);
-        setUser({name,rank,pno});
+       setUser(res.data.user);
+       setIsAuthenticated(true);
     } else {
-        console.warn('User not logged in');
+        setIsAuthenticated(false);
+        setUser(null);
         }
     } catch (err) {
         console.error('Error fetching user data:',err);
+          setIsAuthenticated(false);
+           setUser(null);
     }
   };
+
     fetchUser();
-  },[]);
+  }, [setUser,setIsAuthenticated]);
+
+
+
   return (
     <AppBar position="static" sx={{ display:'flex',backgroundColor: '#FOF8FF',width:'100%',margin:0,padding:0}}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Left icons */}
         <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-
           <IconButton component={RouterLink} to="/dashboard" sx={{ color: '#D3D3D3' }} aria-label="Home">
-            <AirplanemodeActive />
-            <Typography variant= "h6">E700</Typography>
+            <Home />
           </IconButton>
-
           <IconButton component={RouterLink} to="/menu" sx={{ color: '#D3D3D3' }} aria-label="Menu">
             <MenuIcon />
+          </IconButton>
+          <IconButton component={RouterLink} to="/contact" sx={{ color: '#D3D3D3' }} aria-label="Contact Us">
+            <ContactMail />
+          </IconButton>
+          <IconButton component={RouterLink} to="/about" sx={{ color: '#D3D3D3' }} aria-label="About Us">
+            <Info />
           </IconButton>
         </Box>
 
         {/* Right: Username and Logout */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Display username if logged in */}
-          {user ? (
+          {isAuthenticated && user ? (
             <>
               <Typography variant="body1" sx={{ color: '#D3D3D3' }}>
-
                 {user.name}({user.rank})
               </Typography>
-
 
               <Tooltip title="Logout">
                 <IconButton onClick={handleLogout} sx={{ color: '#D3D3D3' }} aria-label="Logout">
@@ -93,17 +100,13 @@ const Header = ({ onLogout }) => {
             <>
 
               <Tooltip title="Login">
-                <IconButton onClick={() => navigate('/')} sx={{ color: '#D3D3D3' }} aria-label="Login">
+                <IconButton onClick={() => navigate('/login')} sx={{ color: '#D3D3D3' }} aria-label="Login">
                   <Logout /> {/* Change this to a Login icon if needed */}
                 </IconButton>
               </Tooltip>
             </>
           )}
-             <IconButton component={RouterLink} to="/notifications" sx={{ color: '#D3D3D3' }} aria-label="Notifications">
-             <CircleNotificationsOutlined />
-          </IconButton>
         </Box>
-
       </Toolbar>
     </AppBar>
   );

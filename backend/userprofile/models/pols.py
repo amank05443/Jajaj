@@ -14,12 +14,12 @@ class Pols(models.Model):
     description = models.CharField(blank=True, null=True)
     sect_ref = models.CharField(blank=True, null=True)
     nato_code = models.CharField(blank=True, null=True)
-    # substitute_id = models.BigIntegerField(blank=True, null=True)
-    # system = models.ForeignKey('Systems', models.DO_NOTHING, blank=True, null=True)
+    substitute_id = models.BigIntegerField(blank=True, null=True)
+    system = models.ForeignKey('Systems', models.DO_NOTHING, blank=True, null=True)
     aircraft_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
     us_spec = models.CharField(blank=True, null=True)
     capacity = models.CharField(blank=True, null=True)
-    # item = models.ForeignKey('Items', models.DO_NOTHING, blank=True, null=True)
+    item = models.ForeignKey('Items', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -5,8 +5,6 @@ import {useNavigate} from 'react-router-dom';
  import Header from './Header';
  import Footer from './Footer';
  import axios from 'axios';
-
-
 const USLog = () => {
 const navigate = useNavigate();
 const[entries,setEntries] = useState([]);

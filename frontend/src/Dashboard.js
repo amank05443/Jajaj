@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import DashboardCards from './DashboardCards';
 import Sidebar from './Sidebar';
+import Header from './Header';
+
 import './css/Dashboard.css';
 import AircraftHeader from './AircraftHeader';
 
