@@ -52,7 +52,7 @@ const E700Page = () => {
      };
 
      //to save a/c type and master id into local storage
-     const handleSelection=()=>{
+     const handleSelection=async ()=>{
         if(!selectedAircraftDetail){
             setStatus("Please select A/C Side No.");
             console.log(status);
@@ -60,9 +60,13 @@ const E700Page = () => {
         };
 //        localStorage.setItem('aircraft_type_id',selectedAircraftType);
 //        localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
-        setMultipleParams({
+         if(!loading){
+           await setMultipleParams({
             'aircraft_type_id':selectedAircraftType,
             'aircraft_master_id':selectedAircraftDetail});
+         } else {
+             console.warn('Params not loaded yet.Skipping update.');
+         }
         console.log("Current Params:", params);
         navigate('/dashboard');
      };

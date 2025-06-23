@@ -370,7 +370,9 @@ def get_params(request):
 def set_params(request):
     try:
         data = json.loads(request.body)
-        request.session['params'] = data
+        params = request.session.get('params',{})
+        params.update(data)
+        request.session['params'] = params
         return JsonResponse({'status':'saved', 'params': data})
     except Exception as e:
         return JsonResponse({'error':str(e)}, status=400)

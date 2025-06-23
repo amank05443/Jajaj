@@ -3,6 +3,7 @@ import axios from 'axios';
 import Sidebar from '../Sidebar';
 import {Grid, TextField, Typography, Paper,Box,Link} from '@mui/material';
 import {FaPlane, FaTools,FaAtlas, FaClock, FaFileAlt, FaChartBar,FaGlobeAsia,FaCalendar,FaWeight,FaCalculator, FaCogs} from 'react-icons/fa';
+import {useParams} from '../Utils/useParams'
 
 const ViewLeadingParticulars=() => {
     // const [isSidebarOpen, setIsSidebarOpen]= useState(true);
@@ -15,21 +16,26 @@ const ViewLeadingParticulars=() => {
     const [aircraftDetails, setAircraftDetails] = useState(null);
 
 
- // useEffect(() => {
- //        axios.get('/api/aircraftSideNo')
- //            .then(response => {setAircrafts(response.data);})
- //            .catch(error => {console.error('Error aircraft types:' , error);});
- // },[]);
+
+    const {params,loading} = useParams();
+
 //  False: To all the details of an aircraft from aircraft master table.
  useEffect(() => {
-    const aircraft_master_id= localStorage.getItem('aircraft_master_id');
-    setSelectedAircraft(aircraft_master_id);
-    if(selectedAircraft){
-        axios.get(`/api/leadingParticularsOfAircraft/${selectedAircraft}`)
-        .then(response => {setAircraftDetails(response.data); console.log('Aircraft data found :');console.log(response.data);console.log(response.data.olg_gases);})
-        .catch(error => {console.error('Error aircraft Marks:' , error);});
+     if(!loading){
+         const aircraft_master_id= params.aircraft_master_id;
+         setSelectedAircraft(aircraft_master_id);
+        if(selectedAircraft) {
+                axios.get(`/api/leadingParticularsOfAircraft/${selectedAircraft}`)
+                .then(response => {
+                    setAircraftDetails(response.data);
+                    console.log('Aircraft data found :');console.log(response.data);console.log(response.data.olg_gases);
+                })
+                .catch(error => {
+                    console.error('Error aircraft Marks:', error);
+                });
+        }
     }
- },[selectedAircraft])
+ },[selectedAircraft,params,loading])
 
  const FuelGrid=()=>{
      useEffect(() => {
@@ -351,7 +357,8 @@ const ViewLeadingParticulars=() => {
                                             </Grid>
                                             <Grid size={8}>
                                                 {/*---------------Grid 1------------------*/}
-                                                <div onClick={toggleGrid}
+                                                {/*<div onClick={toggleGrid}*/}
+                                                <div
                                                      style={{
                                                          cursor: 'pointer',
                                                          backgroundColor: '#eee',
@@ -361,9 +368,10 @@ const ViewLeadingParticulars=() => {
                                                          border: '1px solid #ccc',
                                                          borderRadius: '5px',
                                                          userSelect: 'none'
-                                                     }}>{showGrid ? '📜' : '📕'} OLGs & Gases
+                                                     }}>
+                                                    <button onClick={()=> setShowGrid('OilAndGasesGrid')}>{showGrid ? '📜' : '📕'} OLGs & Gases</button>
                                                 </div>
-                                                {showGrid && (
+                                                {showGrid === 'OilAndGasesGrid' && (
                                                     <div style={{marginTop: '1px', border: '1px solid'}}>
                                                         <OilAndGasesGrid/>
                                                     </div>
@@ -371,7 +379,23 @@ const ViewLeadingParticulars=() => {
                                             </Grid>
                                             <Grid size={4}>
                                                 {/*---------------Grid 2------------------*/}
-                                                <FuelGrid/>
+                                                <div style={{
+                                                         cursor: 'pointer',
+                                                         backgroundColor: '#eee',
+                                                         padding: '10px',
+                                                         fontSize: '18px',
+                                                         fontWeight: 'bold',
+                                                         border: '1px solid #ccc',
+                                                         borderRadius: '5px',
+                                                         userSelect: 'none'
+                                                     }}>
+                                                    <button onClick={()=> setShowGrid('FuelGrid')}>{showGrid ? '📜' : '📕'} Fuels</button>
+                                                </div>
+                                                {showGrid === 'FuelGrid' && (
+                                                    <div style={{marginTop: '1px', border: '1px solid'}}>
+                                                        <FuelGrid/>
+                                                    </div>
+                                                )}
                                             </Grid>
                                         </Grid>
                                     </Grid>
