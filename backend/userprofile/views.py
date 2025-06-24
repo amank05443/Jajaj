@@ -353,7 +353,7 @@ class DynamicModelView(ViewSet):
         #Handle "include" param
         include = request.query_params.get('include')
         serializer_class = get_dynamic_serializer(Model)
-        serializer = serializer_class(queryset,many=True,context={'request':request})
+        serializer = serializer_class(queryset,many=True,context={'include':include})
 
         return Response(serializer.data)
 

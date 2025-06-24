@@ -11,7 +11,6 @@ def get_dynamic_serializer(model_class):
             model = model_class
             fields = '__all__'
 
-
         def to_representation(self, instance):
             data = super().to_representation(instance)
             include = self.context.get('include',[])
@@ -40,7 +39,6 @@ def get_dynamic_serializer(model_class):
                 except Exception as e:
                     data[field_name] = f'Error: {str(e)}'
             return data
-
     return DynamicSerializer
 
 class UsersSerializer(serializers.ModelSerializer):

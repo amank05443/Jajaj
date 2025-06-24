@@ -4,7 +4,13 @@ import Sidebar from '../Sidebar';
 import {Grid, TextField, Typography, Paper,Box,Link} from '@mui/material';
 import {FaPlane, FaTools,FaAtlas, FaClock, FaFileAlt, FaChartBar,FaGlobeAsia,FaCalendar,FaWeight,FaCalculator, FaCogs} from 'react-icons/fa';
 
+import useTableApi from '../Utils/useTableApi';
+
 const ViewLeadingParticulars=() => {
+
+    const {data:users,loading} = useTableApi('pols',{query:{type_of_pol:"O"},related:['aircraft_type','system'],autoFetch:true});
+    if(!loading){console.log(users)};
+
     // const [isSidebarOpen, setIsSidebarOpen]= useState(true);
     // const sidebarRef= useRef();
     const gridRef= useRef(null);
