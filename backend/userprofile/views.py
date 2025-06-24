@@ -68,26 +68,11 @@ class Quals_view(ListAPIView):
     queryset = Quals.objects.all()
     serializer_class = QualsSerializer
 
-# def Quals_view(request):
-#     user=request.user
-#     data= user.Users_set.values('user_name','rank_id','pno')
-#     return JsonResponse(list(data), safe=False)
-
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
 class AircraftSideNoView(ListAPIView):
     # side_no= data.get('side_no')
     queryset = AircraftMasters.objects.all()
     serializer_class = AircraftMastersSerializer
-
-# class AircraftAllDetailView(ListAPIView):
-#     # queryset = AircraftMasters.objects.all()
-#     # side_no= data.get('side_no')
-#     queryset = AircraftMasters.objects.all()
-#     serializer_class = AircraftMastersSerializer
-
-# def aircraft_all_detail_view(request, side_no ):
-#     data= list(AircraftMasters.objects.filter(id=side_no).values())
-#     return JsonResponse(data, safe=False)
 
 def aircraft_all_detail_view(request, id ):
     try:
@@ -135,14 +120,6 @@ class AircraftTypeDetailsView(ListAPIView):
     queryset = AircraftTypes.objects.all()
     serializer_class = AircraftTypesSerializer
 
-# class AircraftDetailsView(ListAPIView):
-#     def get(self,request,aircraft_type_id):
-#         try:
-#             aircraft = AircraftMasters.objects.get(aircraft_type_id=aircraft_type_id)
-#             serializer = AircraftMastersSerializer(aircraft)
-#             return Response(serializer.data)
-#         except AircraftMasters.DoesNotExist:
-#             return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 
 def AircraftDetailsView(request,aircraft_type_id):
     try:

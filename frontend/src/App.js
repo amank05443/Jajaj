@@ -26,6 +26,8 @@ import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars'
 import QualsForm from './LeadingParticulars/QualsForm';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
+import AutoLogoutHandler from './AutoLogoutHandler';
 
 import {AuthProvider,useAuth} from './AuthContext';
 
@@ -64,12 +66,26 @@ const AppContent = () => {
     return (
         <>
         {isAuthenticated && <Header />}
+        <AutoLogoutHandler />
       {/* {isAuthenticated && <Sidebar />}*/}
 
       <Routes>
-        <Route path="/" element={<UpdateE700 />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/create-profile" element={<CreateProfile />} />
+        <Route path="/" element={
+        <PublicRoute>
+            <UpdateE700 />
+        </PublicRoute>
+        } />
+        <Route path="/login" element={
+        <PublicRoute>
+            <LoginPage />
+        </PublicRoute>
+        } />
+        <Route path="/create-profile" element={
+        <PublicRoute>
+            <CreateProfile />
+        </PublicRoute>
+        } />
+
         <Route element={<PrivateRoute />}>
         <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
         <Route path="/dashboard" element={<Dashboard />} />
