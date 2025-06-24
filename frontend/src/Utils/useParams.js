@@ -27,21 +27,33 @@ export const ParamsProvider = ({children}) => {
         }
     };
 
-    const setParam = (key,value) => {
+    const setParam = async (key,value) => {
         const updated = {...params,[key]:value};
         setParamsState(updated);
-        syncWithSession(updated);
+        try {
+            await syncWithSession(updated);
+        } catch(e) {
+            console.error('Failed to sync param:',e);
+        }
     };
 
-    const setMultipleParams = (newParams) => {
+    const setMultipleParams = async (newParams) => {
         const updated = {...params,...newParams};
         setParamsState(updated);
-        syncWithSession(updated);
+        try {
+            await syncWithSession(updated);
+        } catch(e) {
+            console.error('Failed to sync multiple params:',e);
+        }
     };
 
-    const clearParams = () => {
+    const clearParams = async () => {
         setParamsState({});
-        syncWithSession({});
+        try {
+            await syncWithSession({});
+        } catch(e) {
+            console.error('Failed to clear params:',e);
+        }
     };
 
     return (

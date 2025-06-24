@@ -17,8 +17,8 @@ const UpdateE700 = () => {
 //        </Toolbar>
 //      </AppBar>
 
-             <div className="dashboard-body">
-                 <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="40vh" marginLeft="30%" mt="12%" >
+             <div className="dashboard-body" style={{display:"flex",justifyContent:"center", alignItems: "center", height: '100vh' }}>
+                 <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="40vh" >
                       <Paper elevation={3} sx={{p:6, background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', color: 'white' , minHeight:'110px'}}>
                          <Typography variant="h4" align="center"> <animate> <b>Welcome to Seven Hundred !!</b></animate></Typography>
                          <Box mt={4} align="center">

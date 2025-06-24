@@ -48,7 +48,9 @@ const Header = () => {
 
     if (res.data.success) {
         const{name,rank,pno,session_id,id}=res.data.user;
-        setParam('user_id',id);
+        if(!loading){
+            await setParam('user_id',id);
+        }
         setUser(res.data.user);
        setIsAuthenticated(true);
     } else {
@@ -63,7 +65,7 @@ const Header = () => {
   };
 
     fetchUser();
-  }, [setUser,setIsAuthenticated]);
+  }, [setUser,setIsAuthenticated,loading]);
 
 
 

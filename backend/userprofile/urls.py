@@ -37,5 +37,9 @@ urlpatterns = [
     #Dynamic views & urls
     path('api/<str:table>/',dynamic_view),
     path('api/<str:table>/<int:pk>/', detail_view),
+
+    # --useParams()---
+    path('api/params/get/', views.get_params),
+    path('api/params/set/', views.set_params),
 ]
 
