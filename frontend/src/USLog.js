@@ -2,8 +2,8 @@
 import React,{useState,useEffect} from 'react';
 import {Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Typography} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
- import Header from './Header';
- import Footer from './Footer';
+ import Header from './Layout/Header';
+ import Footer from './Layout/Footer';
  import axios from 'axios';
 const USLog = () => {
 const navigate = useNavigate();

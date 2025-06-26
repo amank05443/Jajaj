@@ -9,7 +9,7 @@ import {
   Toolbar, CssBaseline, Paper,FormControl,InputLabel,Select,MenuItem
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import Footer from './Footer';
+import Footer from './Layout/Footer';
 
 const E700Page = () => {
      const navigate = useNavigate();

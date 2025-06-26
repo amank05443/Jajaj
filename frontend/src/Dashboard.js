@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import DashboardCards from './DashboardCards';
-import Sidebar from './Sidebar';
-import Header from './Header';
+import Sidebar from './Layout/Sidebar';
+import Header from './Layout/Header';
 
 import './css/Dashboard.css';
-import AircraftHeader from './AircraftHeader';
+import AircraftHeader from './Layout/AircraftHeader';
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);

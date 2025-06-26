@@ -3,8 +3,8 @@ import {Typography,Box,Button,Grid,Container,Card,CardContent,TextField,FormGrou
 import {
     AccessTime, Flight,Person,Build,Code,ReportProblem,Warning,HourglassEmpty,Home,Gavel,VpnKey,Search
 } from '@mui/icons-material';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
 import CompletionDetails from "./CompletionDetails";
 
 

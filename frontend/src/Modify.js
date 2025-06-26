@@ -14,8 +14,8 @@ import WeightAndBalanceTab from './PrepareE700/WeightAndBalanceTab';
 import CompassDataTab from './PrepareE700/CompassDataTab';
 import InspectionTab from './PrepareE700/InspectionTab';
 import { E700DataContext } from './E700DataContext';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
 
 export default function Modify () {
  const { formData, setFormData } = useContext(E700DataContext);

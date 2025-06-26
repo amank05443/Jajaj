@@ -7,8 +7,8 @@ import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
 import { E700DataContext } from './E700DataContext';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
 
 export default function Prepare () {
  const [tabIndex, setTabIndex] = useState(0);

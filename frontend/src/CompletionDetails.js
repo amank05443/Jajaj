@@ -13,9 +13,9 @@ import {
     Add as AddIcon
 } from '@mui/icons-material';
 import {motion} from 'framer-motion';
- import Header from './Header';
- import Footer from './Footer';
-  import AircraftHeader from './AircraftHeader';
+ import Header from './Layout/Header';
+ import Footer from './Layout/Footer';
+  import AircraftHeader from './Layout/AircraftHeader';
 
 const trades = ['AE Tradesman','AL Tradesman','AR Tradesman','AO Tradesman'];
 const supervisors = ['AE Supervisor','AL Supervisor','AR Supervisor','AO Supervisor'];

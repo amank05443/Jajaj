@@ -44,7 +44,7 @@ import {
 
 const Footer=  () =>{
 return(
-<AppBar component = "footer" position="fixed" sx={{
+<AppBar component = "footer" position="relative" sx={{
      top:'auto',
      bottom: 0,
      backgroundColor: '#fff',

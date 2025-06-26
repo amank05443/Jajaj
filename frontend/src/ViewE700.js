@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {Box, Tabs, Tab, Paper, Typography, useTheme, FormControlLabel, Checkbox, FormGroup} from '@mui/material';
 import {motion,AnimatePresence} from "framer-motion";
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
 import DescriptionIcon from "@mui/icons-material/Description";
 import './css/ViewE700.css';
 

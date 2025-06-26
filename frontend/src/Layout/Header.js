@@ -1,13 +1,13 @@
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {useParams} from './Utils/useParams';
+import {useParams} from '../Utils/useParams';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Box, Typography, IconButton, Tooltip
 } from '@mui/material';
 import { Home, Menu as MenuIcon, ContactMail, Info, Logout } from '@mui/icons-material';
-import {useAuth} from './AuthContext';
+import {useAuth} from '../Authentication/AuthContext';
 
 
 const Header = () => {

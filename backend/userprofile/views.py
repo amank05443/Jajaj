@@ -320,6 +320,7 @@ class DynamicModelView(ViewSet):
 
     def list(self,request,table):
         Model = self.get_model_class(table)
+        print(Model)
         queryset = Model.objects.all()
 
         #filter using query params
@@ -331,7 +332,6 @@ class DynamicModelView(ViewSet):
         include = request.query_params.get('include')
         serializer_class = get_dynamic_serializer(Model)
         serializer = serializer_class(queryset,many=True,context={'include':include})
-
         return Response(serializer.data)
 
 

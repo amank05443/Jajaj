@@ -2,12 +2,12 @@ import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './welcome';
-import LoginPage from './LoginPage';
+import LoginPage from './Authentication/LoginPage';
 import Dashboard from './Dashboard';
 import DashboardCards from './DashboardCards';
-import Header from './Header';
-import Footer from './Footer';
-import Sidebar from './Sidebar';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
+import Sidebar from './Layout/Sidebar';
 import E700Page from './E700Page'; // ✅ Import the new E-700 page
 import {E700DataProvider} from './E700DataContext'; // ✅ Import the new E-700 page
 import {ParamsProvider} from './Utils/useParams';//✅useParams context
@@ -18,18 +18,16 @@ import FlyingOperations from './FlyingOperations';
 import NewEntry from './NewEntry';
 import ViewE700 from './ViewE700';
 import USLog from './USLog';
-import AircraftHeader from './AircraftHeader';
+import AircraftHeader from './Layout/AircraftHeader';
 import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
 import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
-import QualsForm from './LeadingParticulars/QualsForm';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
-import PrivateRoute from './PrivateRoute';
-import PublicRoute from './PublicRoute';
-import AutoLogoutHandler from './AutoLogoutHandler';
-
-import {AuthProvider,useAuth} from './AuthContext';
+import PrivateRoute from './Authentication/PrivateRoute';
+import PublicRoute from './Authentication/PublicRoute';
+import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
+import {AuthProvider,useAuth} from './Authentication/AuthContext';
 
 //         --------------------------------  JQX Widget Functional  -----------------------------------
 import 'jqwidgets-scripts/jqwidgets/jqxcore'
@@ -100,7 +98,6 @@ const AppContent = () => {
         <Route path="/viewE700" element={<ViewE700 />} />
         <Route path="/usLog" element={<USLog />} />
         <Route path="/aircraftHeader" element={<AircraftHeader />} />
-        <Route path="/formQuals" element={<QualsForm />} />
         </Route>
       </Routes>
         {isAuthenticated && <Footer/>}

@@ -60,7 +60,7 @@ export default function CustomGrid({tableName,columns,filterField}){
     const sortedFilteredRows = applySortFilter(rows,getComparator(order,orderBy),filterText,filterField);
     const paginatedRows = sortedFilteredRows.slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage);
 
-    return (
+    return (\
         <Paper sx={{mt:3,p:2}}>
             <Box mb={2}>
                 <TextField label={`Search by ${String(filterField)}`} value={filterText}

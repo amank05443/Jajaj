@@ -79,7 +79,7 @@ const AutoLogoutHandler = () => {
     const {setUser,setIsAuthenticated,isAuthenticated} = useAuth();
 
     const [showWarning,setShowWarning] = useState(false);
-    const [countdown,setCountDown] = useState(30);
+    const [countdown,setCountDown] = useState(300);
     const countdownRef = useRef(null);
     const hasLoggedOutRef = useRef(false);
     const logoutTimerRef = useRef(null);
@@ -131,13 +131,13 @@ const AutoLogoutHandler = () => {
 
     const checkInactivity = () => {
         const now = Date.now();
-        const diffInSeconds = (now-lastActivityRef.current) / 1000;
+        const diffInSeconds = (now-lastActivityRef.current) / 3000;
         console.log('Inactivity:',diffInSeconds.toFixed(1),'seconds');
 
-        if (diffInSeconds >= 30 && diffInSeconds < 60 && !showWarning) {
+        if (diffInSeconds >= 3000 && diffInSeconds < 6000 && !showWarning) {
             setShowWarning(true);
-            setCountDown(30);
-            } else if (diffInSeconds >=90) {
+            setCountDown(300);
+            } else if (diffInSeconds >=9000) {
             logout();
         }
         };
@@ -182,7 +182,7 @@ const AutoLogoutHandler = () => {
         activityEvents.forEach((event) =>
             window.addEventListener(event,handleActivity));
 
-            logoutTimerRef.current = setInterval(checkInactivity,10000);
+            logoutTimerRef.current = setInterval(checkInactivity,30000);
 
             return () => {
                 clearInterval(logoutTimerRef.current);
