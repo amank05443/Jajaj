@@ -1,4 +1,4 @@
-#!/home/dev14/Videos/e700/backend/venv/bin/python3
+#!/home/dev10/Videos/e700/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
