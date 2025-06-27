@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {useNavigate} from 'react-router-dom';
+import {useAuth} from './Authentication/AuthContext';
 import {useParams} from './Utils/useParams';
 import {
   TextField, Button, Container, Box, Typography,Grid, Alert, AppBar,CircularProgress,
@@ -13,9 +14,8 @@ import Footer from './Layout/Footer';
 
 const E700Page = () => {
      const navigate = useNavigate();
-
      //params context
-    const {params,setParam,setMultipleParams,loading} = useParams();
+     const {params,setParam,setMultipleParams,loading} = useParams();
 
      const [aircraftTypes,setAircraftTypes] = useState([]);
      const [aircraftDetails,setAircraftDetails] = useState([]);
@@ -58,16 +58,10 @@ const E700Page = () => {
             console.log(status);
             return;
         };
-//        localStorage.setItem('aircraft_type_id',selectedAircraftType);
-//        localStorage.setItem('aircraft_master_id',selectedAircraftDetail);
-         if(!loading){
-           await setMultipleParams({
+        setMultipleParams({
             'aircraft_type_id':selectedAircraftType,
-            'aircraft_master_id':selectedAircraftDetail});
-         } else {
-             console.warn('Params not loaded yet.Skipping update.');
-         }
-        console.log("Current Params:", params);
+            'aircraft_master_id':selectedAircraftDetail
+        });
         navigate('/dashboard');
      };
 

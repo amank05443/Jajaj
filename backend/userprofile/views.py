@@ -165,6 +165,7 @@ def login_view(request):
                                  'id':user.id,
                                  'name':user.user_name,
                                  'pno':user.pno,
+                                 'rank':rank_abbr,
                                  'session_id': request.session.session_key
                              },
                              })
