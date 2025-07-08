@@ -59,7 +59,7 @@ function Sidebar({ isOpen }) {
               {isWeightBalanceData && (
                   <div className="dropdown-menu">
                       <Link to=''><FaCalendar />&nbsp;&nbsp;<span>Basic Weight and Moments</span></Link>
-                      <Link to=''><FaCalculator />&nbsp;&nbsp;<span>Variable / Expendable Load Items</span></Link>
+                      <Link to='../WeightAndBalanceData/VariableExpandableLoadItemsForm'><FaCalculator />&nbsp;&nbsp;<span>Variable / Expendable Load Items</span></Link>
                   </div>
               )}
           </div>

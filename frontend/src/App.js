@@ -28,6 +28,8 @@ import PrivateRoute from './Authentication/PrivateRoute';
 import PublicRoute from './Authentication/PublicRoute';
 import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
 import {AuthProvider,useAuth} from './Authentication/AuthContext';
+import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
+
 
 //         --------------------------------  JQX Widget Functional  -----------------------------------
 import 'jqwidgets-scripts/jqwidgets/jqxcore'
@@ -98,6 +100,8 @@ const AppContent = () => {
         <Route path="/viewE700" element={<ViewE700 />} />
         <Route path="/usLog" element={<USLog />} />
         <Route path="/aircraftHeader" element={<AircraftHeader />} />
+        <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
+
         </Route>
       </Routes>
         {isAuthenticated && <Footer/>}

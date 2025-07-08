@@ -4,27 +4,39 @@ import axios from './axiosSetup';
 const ParamsContext = createContext();
 
 export const ParamsProvider = ({children}) => {
-    const [params,setParamsState] = useState({});
+    const [params,setParamsState] = useState(() => {
+        const stored = sessionStorage.getItem("params");
+        return stored ? JSON.parse(stored) : {};
+    });
     const [loading,setLoading] = useState(true);
+    const [error,setError] = useState(null);
 
     useEffect(() => {
-        axios.get('/api/params/get/')
-        .then(res => {
-            setParamsState(res.data.params || {});
-        })
-        .catch(err => {
-            console.error("Error loading params:",err);
-        })
-        .finally(() => setLoading(false));
+        let isMounted = true;
+
+        const fetchParams = async () => {
+            try {
+                const res = await axios.get('/api/params/get/');
+                if (isMounted && res?.data?.params) {
+                    setParamsState(res.data.params);
+                 sessionStorage.setItem("params", JSON.stringify(res.data.params));
+                }
+            } catch (err) {
+                console.error("Error loading params:",err);
+                if(isMounted) setError(err);
+            } finally {
+                if(isMounted) setLoading(false);
+            }
+        };
+        fetchParams();
+        return () => {
+            isMounted = false;
+        };
     },[]);
 
     //update Django session
     const syncWithSession = async (updatedParams) => {
-        try {
-            await axios.post('/api/params/set/',updatedParams);
-        } catch (err){
-            console.error("Error syncing params to session:",err);
-        }
+        await axios.post('/api/params/set/',updatedParams);
     };
 
     const setParam = async (key,value) => {
@@ -34,6 +46,7 @@ export const ParamsProvider = ({children}) => {
             await syncWithSession(updated);
         } catch(e) {
             console.error('Failed to sync param:',e);
+            setError(e);
         }
     };
 
@@ -44,20 +57,23 @@ export const ParamsProvider = ({children}) => {
             await syncWithSession(updated);
         } catch(e) {
             console.error('Failed to sync multiple params:',e);
+            setError(e);
         }
     };
 
     const clearParams = async () => {
         setParamsState({});
+        sessionStorage.removeItem("params");
         try {
             await syncWithSession({});
         } catch(e) {
             console.error('Failed to clear params:',e);
+            setError(e);
         }
     };
 
     return (
-        <ParamsContext.Provider value={{params,setParam,setMultipleParams,clearParams,loading}}>
+        <ParamsContext.Provider value={{params,setParam,setMultipleParams,clearParams,loading,error}}>
             {children}
         </ParamsContext.Provider>
     );
