@@ -2,9 +2,11 @@ import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './welcome';
+import {useParams} from './Utils/useParams'
 import LoginPage from './Authentication/LoginPage';
 import Dashboard from './Dashboard';
 import DashboardCards from './DashboardCards';
+// import Sidebar1 from './Sidebar1';
 import Header from './Layout/Header';
 import Footer from './Layout/Footer';
 import Sidebar from './Layout/Sidebar';
@@ -30,6 +32,7 @@ import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
 import {AuthProvider,useAuth} from './Authentication/AuthContext';
 import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
 
+// import {AuthProvider,useAuth} from './AuthContext';
 
 //         --------------------------------  JQX Widget Functional  -----------------------------------
 import 'jqwidgets-scripts/jqwidgets/jqxcore'
@@ -62,61 +65,79 @@ import 'jqwidgets-scripts/jqwidgets/styles/jqx.material.css';
 
 const AppContent = () => {
     const {isAuthenticated} = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen]= useState(true);
+    const  toggleSidebar= ()=> setIsSidebarOpen((prev)=> !prev);
+    const {params} = useParams();
+    const aircraft_master_id= params.aircraft_master_id;
 
     return (
-        <>
-        {isAuthenticated && <Header />}
-        <AutoLogoutHandler />
-      {/* {isAuthenticated && <Sidebar />}*/}
+            // <>
+                <Router>
+                    <div style={{display: 'flex', flexDirection: 'column', minHeight:'100vh'}}>
+                        {/*<div style={{minHeight:'8vh' ,marginLeft:60}}>*/}
+                        {/*    {isAuthenticated && <Header />}*/}
+                        {/*</div>*/}
+                        <div style={{display: 'flex', flex:1}}>
+                            <div >
+                                {isAuthenticated && aircraft_master_id && <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>}
+                            </div>
+                            <div style={{flex: 1, overflowY: 'auto',padding: 2}}>
+                                <div >
+                                    {isAuthenticated && <Header />}
+                                </div>
+                                <div >
+                                    <Routes>
+                                         <Route path="/" element={
+                                        <PublicRoute>
+                                            <UpdateE700 />
+                                        </PublicRoute>
+                                        } />
+                                        <Route path="/login" element={
+                                        <PublicRoute>
+                                            <LoginPage />
+                                        </PublicRoute>
+                                        } />
+                                        <Route path="/create-profile" element={
+                                        <PublicRoute>
+                                            <CreateProfile />
+                                        </PublicRoute>
+                                        } />
+                                        <Route element={<PrivateRoute />}>
+                                        <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
+                                        <Route path="/dashboard" element={<Dashboard />} />
+                                        {/*<Route path="/sidebar" element={<Sidebar />} />*/}
+                                        <Route path="/dashboardCards" element={<DashboardCards />} />
+                                        <Route path="/e700" element={<E700Page />} />
+                                        <Route path="/prepare" element={<Prepare />} />
+                                        <Route path="/modify" element={<Modify />} />
+                                        <Route path="/dashboard/modify" element={<Modify />} />
+                                        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
+                                        <Route path="/flying-operations" element={<FlyingOperations />} />
+                                        <Route path="/newEntry" element={<NewEntry />} />
+                                        <Route path="/viewE700" element={<ViewE700 />} />
+                                        <Route path="/usLog" element={<USLog />} />
+                                        <Route path="/aircraftHeader" element={<AircraftHeader />} />
+                                        <Route path="/formQuals" element={<QualsForm />} />
+                                    </Route>
+                                    </Routes>
+                                </div>
+                                <div >
+                                    {isAuthenticated && <Footer/>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Router>
+            // </>
+        );
+};
 
-      <Routes>
-        <Route path="/" element={
-        <PublicRoute>
-            <UpdateE700 />
-        </PublicRoute>
-        } />
-        <Route path="/login" element={
-        <PublicRoute>
-            <LoginPage />
-        </PublicRoute>
-        } />
-        <Route path="/create-profile" element={
-        <PublicRoute>
-            <CreateProfile />
-        </PublicRoute>
-        } />
-
-        <Route element={<PrivateRoute />}>
-        <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboardCards" element={<DashboardCards />} />
-        <Route path="/e700" element={<E700Page />} />
-        <Route path="/prepare" element={<Prepare />} />
-        <Route path="/modify" element={<Modify />} />
-        <Route path="/dashboard/modify" element={<Modify />} />
-        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
-        <Route path="/flying-operations" element={<FlyingOperations />} />
-        <Route path="/newEntry" element={<NewEntry />} />
-        <Route path="/viewE700" element={<ViewE700 />} />
-        <Route path="/usLog" element={<USLog />} />
-        <Route path="/aircraftHeader" element={<AircraftHeader />} />
-        <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
-
-        </Route>
-      </Routes>
-        {isAuthenticated && <Footer/>}
-      </>
-      );
-      };
-
-      function App() {
+function App() {
         return (
          <AuthProvider>
             <ParamsProvider>
                 <E700DataProvider>
-                    <Router>
-                        <AppContent />
-                    </Router>
+                    <AppContent />
                 </E700DataProvider>
             </ParamsProvider>
         </AuthProvider>
