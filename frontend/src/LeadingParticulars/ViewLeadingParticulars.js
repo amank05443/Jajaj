@@ -1,16 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
-import Sidebar from '../Layout/Sidebar';
 import {Grid, TextField, Typography, Paper,Box,Link} from '@mui/material';
 import {FaPlane, FaTools,FaAtlas, FaClock, FaFileAlt, FaChartBar,FaGlobeAsia,FaCalendar,FaWeight,FaCalculator, FaCogs} from 'react-icons/fa';
 import {useParams} from '../Utils/useParams'
-import useTableApi from '../Utils/useTableApi';
 
 const ViewLeadingParticulars=() => {
-    const gridRef= useRef(null);
+    const [showFuelGrid, setShowFuelGrid] = useState(false);
     const [showGrid, setShowGrid] = useState(false);
     const toggleGrid = () => setShowGrid(!showGrid);
-    const [aircrafts, setAircrafts] = useState([]);
+    const toggleFuelGrid = () => setShowFuelGrid(!showFuelGrid);
     const [selectedAircraft, setSelectedAircraft] = useState('');
     const [aircraftDetails, setAircraftDetails] = useState(null);
     const {params,loading} = useParams();
@@ -20,11 +18,11 @@ const ViewLeadingParticulars=() => {
      if(!loading){
          const aircraft_master_id= params.aircraft_master_id;
          setSelectedAircraft(aircraft_master_id);
-                 if(selectedAircraft) {
+        if(selectedAircraft) {
                 axios.get(`/api/leadingParticularsOfAircraft/${selectedAircraft}`)
                 .then(response => {
                     setAircraftDetails(response.data);
-                    console.log('Aircraft data found :');console.log(response.data);console.log(response.data.olg_gases);
+                    console.log('Aircraft data found :');console.log(response.data);
                 })
                 .catch(error => {
                     console.error('Error aircraft Marks:', error);
@@ -89,14 +87,14 @@ const ViewLeadingParticulars=() => {
                  localdata: aircraftDetails.olg_gases,
              };
              const dataAdapter= new window.jqx.dataAdapter(source);
-             const inittoolbar = (toolbar) => {
-                 const container= document.createElement('div');
-                 container.style.margin= '5px';
-                 container.style.fontWeight= 'bold';
-                 container.style.fontSize= '16px';
-                 container.innerHTML= '<h3 style="display: inline-block; margin: 0;"> OLGs & Gases</h3>';
-                 toolbar[0].appendChild(container);
-             };
+             // const inittoolbar = (toolbar) => {
+             //     const container= document.createElement('div');
+             //     container.style.margin= '5px';
+             //     container.style.fontWeight= 'bold';
+             //     container.style.fontSize= '16px';
+             //     container.innerHTML= '<h3 style="display: inline-block; margin: 0;"> OLGs & Gases</h3>';
+             //     toolbar[0].appendChild(container);
+             // };
 
              window.$("#jqxGrid1").jqxGrid({
                  width:'100%',
@@ -112,8 +110,8 @@ const ViewLeadingParticulars=() => {
                  altrows: true,
                  // showfilterrow: true,
                  filterable:true,
-                 showtoolbar:true,
-                 rendertoolbar: inittoolbar,
+                 // showtoolbar:true,
+                 // rendertoolbar: inittoolbar,
                  rendergridrows:true,
                  columnsreorder:true,
                  source: dataAdapter,
@@ -142,33 +140,12 @@ const ViewLeadingParticulars=() => {
 
  return (
     <div className={'layout-container'}>
-        {/*<div ref={sidebarRef}>*/}
-        {/*    <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}/>*/}
-        {/*</div>*/}
         <div className={`main-content }`}>
             {/*<h1>------------------------------Leading Particulars----------------------------------</h1>*/}
             <div className="body_leading" style={{height: 'auto', margin: '4px'}}>
-                <div style={{
-                    padding: 12,
-                    position: 'relative',
-                    display: 'flex',
-                    height: '3vh',
-                    backgroundImage: 'linear-gradient(to right, #FFE6CC, #87CEEB,#FFD5E0 )'
-                    }}>
-                    <h2 style={{
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        fontSize: '20px',
-                        margin: 0
-                    }}>Leading Particulars</h2>
-                    <h2 style={{
-                        marginLeft: '90%',
-                        fontWeight: 'bold',
-                        fontSize: '15px',
-                        color: 'crimson',
-                        margin: 0
-                    }}>MOD Form 701</h2>
+                <div style={{padding: 12, position: 'relative', display: 'flex', height: '3vh', backgroundImage: 'linear-gradient(to right, #FFE6CC, #87CEEB,#FFD5E0 )'}}>
+                    <h2 style={{position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: '20px', margin: 0}}>Leading Particulars</h2>
+                    <h2 style={{marginLeft: '90%', fontWeight: 'bold', fontSize: '15px', color: 'crimson', margin: 0}}>MOD Form 701</h2>
                 </div>
 
                 {aircraftDetails && (
@@ -288,11 +265,7 @@ const ViewLeadingParticulars=() => {
                                             </Grid>
                                             {/*--------------------------------------- Third row First Grid (OLGs & Gases)-------------------------------*/}
                                             <Grid size={7}>
-                                                <div style={{
-                                                    height: '200px',
-                                                    overflowY: 'auto',
-                                                    border: '1px solid #ccc'
-                                                }}>
+                                                <div style={{height: '200px', overflowY: 'auto', border: '1px solid #ccc'}}>
                                                     <table border="1" cellPadding="6" style={{width: '100%'}}>
                                                         <thead style={{width: '100%', borderCollapse: 'collapse'}}>
                                                         <tr>
@@ -353,21 +326,11 @@ const ViewLeadingParticulars=() => {
                                             </Grid>
                                             <Grid size={8}>
                                                 {/*---------------Grid 1------------------*/}
-                                                {/*<div onClick={toggleGrid}*/}
-                                                <div
-                                                     style={{
-                                                         cursor: 'pointer',
-                                                         backgroundColor: '#eee',
-                                                         padding: '10px',
-                                                         fontSize: '18px',
-                                                         fontWeight: 'bold',
-                                                         border: '1px solid #ccc',
-                                                         borderRadius: '5px',
-                                                         userSelect: 'none'
-                                                     }}>
-                                                    <button onClick={()=> setShowGrid('OilAndGasesGrid')}>{showGrid ? '📜' : '📕'} OLGs & Gases</button>
+                                                <div onClick={toggleGrid}
+                                                     style={{cursor: 'pointer', backgroundColor: '#eee', padding: '10px', fontSize: '18px', fontWeight: 'bold', border: '1px solid #ccc', borderRadius: '5px', userSelect: 'none'
+                                                     }}>{showGrid ? '📜' : '📕'} OLGs & Gases
                                                 </div>
-                                                {showGrid === 'OilAndGasesGrid' && (
+                                                {showGrid && (
                                                     <div style={{marginTop: '1px', border: '1px solid'}}>
                                                         <OilAndGasesGrid/>
                                                     </div>
@@ -375,19 +338,13 @@ const ViewLeadingParticulars=() => {
                                             </Grid>
                                             <Grid size={4}>
                                                 {/*---------------Grid 2------------------*/}
-                                                <div style={{
-                                                         cursor: 'pointer',
-                                                         backgroundColor: '#eee',
-                                                         padding: '10px',
-                                                         fontSize: '18px',
-                                                         fontWeight: 'bold',
-                                                         border: '1px solid #ccc',
-                                                         borderRadius: '5px',
-                                                         userSelect: 'none'
-                                                     }}>
-                                                    <button onClick={()=> setShowGrid('FuelGrid')}>{showGrid ? '📜' : '📕'} Fuels</button>
+                                                <div onClick={toggleFuelGrid}
+                                                    style={{
+                                                        cursor: 'pointer', backgroundColor: '#eee', padding: '10px', fontSize: '18px', fontWeight: 'bold', border: '1px solid #ccc', borderRadius: '5px', userSelect: 'none'
+                                                     }}>{showFuelGrid ? '📜' : '📕'} Fuels
+                                                    {/*<button onClick={()=> setShowFuelGrid}>{showFuelGrid ? '📜' : '📕'} Fuels</button>*/}
                                                 </div>
-                                                {showGrid === 'FuelGrid' && (
+                                                {showFuelGrid  && (
                                                     <div style={{marginTop: '1px', border: '1px solid'}}>
                                                         <FuelGrid/>
                                                     </div>

@@ -25,7 +25,7 @@ const colorPalette = [
 function AircraftHeader() {
  return (
   <Box sx={{px:3,width:'100%',mt:2}}>
-    <Paper elevation ={4} sx={{width:'95%',maxWidth:'1000px',minHeight:'250px',margin:'0 auto',ml:'5%',p:3,display:'grid',
+    <Paper elevation ={4} sx={{width:'95%',maxWidth:'1050px',minHeight:'250px',margin:'0 auto',ml:'5%',p:3,display:'grid',
         gridTemplateColumns:'repeat(3,1fr)',gap:2,backgroundColor:'#e1f5fe',borderRadius:3,}}>
         {aircraftData.map((item,index) => {const { bg,text } = colorPalette[index % colorPalette.length];
         return(

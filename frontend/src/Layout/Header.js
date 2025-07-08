@@ -4,27 +4,39 @@ import Cookies from 'js-cookie';
 import {useParams} from '../Utils/useParams';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
-  AppBar, Toolbar, Box, Typography, IconButton, Tooltip
+  AppBar, Toolbar, Box, Typography, IconButton, Tooltip,Avatar,Menu,MenuItem,Divider,ListItemIcon
 } from '@mui/material';
-import { Home, Menu as MenuIcon, ContactMail, Info, Logout } from '@mui/icons-material';
+import { Home, Menu as MenuIcon, ContactMail, Info, Logout ,Settings,AccountCircle,HelpOutline,FileCopy} from '@mui/icons-material';
 import {useAuth} from '../Authentication/AuthContext';
 
 
 const Header = () => {
     const {user,isAuthenticated,logout} = useAuth();
+    const {clearParams} = useParams();
     const navigate = useNavigate();
+    const [anchorEl,setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
+
     const handleLogout= () => {
+        clearParams();
+
         logout();
+        handleMenuClose();
         navigate('/login');
     };
   return (
-    <AppBar position="static" sx={{ display:'flex',backgroundColor: '#FOF8FF',width:'100%',margin:0,padding:0}}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#FOF8FF',boxShadow:'0px 2px 4px rgba(0,0,0,0.1)'}}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Left icons */}
 
-        {isAuthenticated && user ? (
-            <>
-            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+       <Typography variant ="h6" sx={{color:'#D3D3D3',fontWeight:600}}>
+        E 700
+      </Typography>
+
+            <Box sx={{ display: 'flex',  alignItems: 'center',gap:2 }}>
                 <IconButton component={RouterLink} to="/dashboard" sx={{ color: '#D3D3D3' }} aria-label="Home">
                     <Home />
                 </IconButton>
@@ -37,30 +49,72 @@ const Header = () => {
                 <IconButton component={RouterLink} to="/about" sx={{ color: '#D3D3D3' }} aria-label="About Us">
                     <Info />
                 </IconButton>
-            </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {/* Display username if logged in */}
-                <Typography variant="body1" sx={{ color: '#D3D3D3' }}>{user.name}({user.rank})</Typography>
-                <Tooltip title="Logout">
-                    <IconButton onClick={handleLogout} sx={{ color: '#D3D3D3' }} aria-label="Logout">
-                        <Logout />
+          {isAuthenticated && user ? (
+            <>
+                <Tooltip title="Account Settings">
+                    <IconButton onClick={handleMenuOpen} size="small" sx={{ ml:1 }}>
+                        <Avatar src = {user.avatarUrl} alt={user.name}>
+                            {user.name?.[0]}
+                        </Avatar>
                     </IconButton>
                 </Tooltip>
+
+                <Menu anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                onClick={handleMenuClose}
+                transformOrigin={{horizintal:'right',vertical:'top'}}
+                anchorOrigin={{horizintal:'right',vertical:'bottom'}}>
+                <Box sx={{px:2,py:1.5}}>
+                    <Typography variant="subtitle1" sx={{fontWeight:600}}>
+                    {user.name}
+                    </Typography>
+                     <Typography variant="body2" sx={{color:'text.secondary'}}>
+                    {user.rank}
+                    </Typography>
             </Box>
-            </>
-        ) : (
-            <Box>
-                <Tooltip title="Login">
-                    <IconButton onClick={() => navigate('/login')} sx={{ color: '#D3D3D3' }} aria-label="Login">
-                        <Logout /> {/* Change this to a Login icon if needed */}
-                    </IconButton>
+            <Divider />
+            <MenuItem>
+            <ListItemIcon><AccountCircle /></ListItemIcon>
+                Profile
+            </MenuItem>
+
+            <MenuItem>
+            <ListItemIcon><FileCopy /></ListItemIcon>
+               Integrations
+            </MenuItem>
+
+            <MenuItem>
+            <ListItemIcon><Settings /></ListItemIcon>
+               Settings
+            </MenuItem>
+            <Divider />
+
+            <MenuItem>
+            <ListItemIcon><HelpOutline /></ListItemIcon>
+                Help Center
+            </MenuItem>
+            <Divider />
+
+            <MenuItem onClick={handleLogout}>
+            <ListItemIcon><Logout /> </ListItemIcon>
+            logout
+            </MenuItem>
+            </Menu>
+          </>
+          ) : (
+            <Tooltip title ="Login">
+                <IconButton onClick={() => navigate('/login')} sx={{color:'#D3D3D3'}}>
+                <AccountCircle />
+                </IconButton>
                 </Tooltip>
+                )}
             </Box>
-        )}
-      </Toolbar>
-    </AppBar>
-  );
-};
+            </Toolbar>
+            </AppBar>
+            );
+            };
+
 
 export default Header;

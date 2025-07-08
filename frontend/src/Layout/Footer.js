@@ -44,7 +44,7 @@ import {
 
 const Footer=  () =>{
 return(
-<AppBar component = "footer" position="relative" sx={{
+<AppBar component = "footer" position="fixed" sx={{
      top:'auto',
      bottom: 0,
      backgroundColor: '#fff',
@@ -58,14 +58,14 @@ return(
 
      }}>
 
-     <Typography variant="body2" sx = {{ flex: 1, color : 'black', textAlign : {xs:'left', md : 'left'}}}>
-           © {new Date().getFullYear()} All rights reserved
- </Typography>
+ {/*    <Typography variant="body2" sx = {{ flex: 1, color : 'black', textAlign : {xs:'left', md : 'left'}}}>*/}
+ {/*          © {new Date().getFullYear()} All rights reserved*/}
+ {/*</Typography>*/}
 <Typography variant="body2" sx = {{ flex: 1, textAlign : 'center', color : 'black'}}>
-           Designed and Developed by <span style = {{fontweight:500, color : 'black'}}> Indian Navy</span>
+           Designed and Developed by <span style = {{fontweight:500, color : 'black'}}> CNAMS</span>
            </Typography>
  <Typography variant="body2" sx = {{ flex: 1, color : 'black', textAlign : {xs:'center', md : 'right'}}}>
-           v0.0.1
+               © {new Date().getFullYear()} All rights reserved
  </Typography>
 
  </Toolbar>

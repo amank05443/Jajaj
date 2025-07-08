@@ -71,12 +71,9 @@ const AppContent = () => {
     const aircraft_master_id= params.aircraft_master_id;
 
     return (
-            // <>
+            <>
                 <Router>
                     <div style={{display: 'flex', flexDirection: 'column', minHeight:'100vh'}}>
-                        {/*<div style={{minHeight:'8vh' ,marginLeft:60}}>*/}
-                        {/*    {isAuthenticated && <Header />}*/}
-                        {/*</div>*/}
                         <div style={{display: 'flex', flex:1}}>
                             <div >
                                 {isAuthenticated && aircraft_master_id && <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>}
@@ -103,22 +100,22 @@ const AppContent = () => {
                                         </PublicRoute>
                                         } />
                                         <Route element={<PrivateRoute />}>
-                                        <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
-                                        <Route path="/dashboard" element={<Dashboard />} />
-                                        {/*<Route path="/sidebar" element={<Sidebar />} />*/}
-                                        <Route path="/dashboardCards" element={<DashboardCards />} />
-                                        <Route path="/e700" element={<E700Page />} />
-                                        <Route path="/prepare" element={<Prepare />} />
-                                        <Route path="/modify" element={<Modify />} />
-                                        <Route path="/dashboard/modify" element={<Modify />} />
-                                        <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
-                                        <Route path="/flying-operations" element={<FlyingOperations />} />
-                                        <Route path="/newEntry" element={<NewEntry />} />
-                                        <Route path="/viewE700" element={<ViewE700 />} />
-                                        <Route path="/usLog" element={<USLog />} />
-                                        <Route path="/aircraftHeader" element={<AircraftHeader />} />
-                                        <Route path="/formQuals" element={<QualsForm />} />
-                                    </Route>
+                                            <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
+                                            <Route path="/dashboard" element={<Dashboard />} />
+                                            {/*<Route path="/sidebar" element={<Sidebar />} />*/}
+                                            <Route path="/dashboardCards" element={<DashboardCards />} />
+                                            <Route path="/e700" element={<E700Page />} />
+                                            <Route path="/prepare" element={<Prepare />} />
+                                            <Route path="/modify" element={<Modify />} />
+                                            <Route path="/dashboard/modify" element={<Modify />} />
+                                            <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
+                                            <Route path="/flying-operations" element={<FlyingOperations />} />
+                                            <Route path="/newEntry" element={<NewEntry />} />
+                                            <Route path="/viewE700" element={<ViewE700 />} />
+                                            <Route path="/usLog" element={<USLog />} />
+                                            <Route path="/aircraftHeader" element={<AircraftHeader />} />
+                                            <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
+                                        </Route>
                                     </Routes>
                                 </div>
                                 <div >
@@ -128,7 +125,7 @@ const AppContent = () => {
                         </div>
                     </div>
                 </Router>
-            // </>
+            </>
         );
 };
 
