@@ -32,6 +32,7 @@ class AircraftMasters(models.Model):
     expiry_of_ttl_hrs = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     empty_weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    #   * Rearrange models' order
     class Meta:
         managed = False
         db_table = 'aircraft_masters'
