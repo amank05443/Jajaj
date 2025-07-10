@@ -11,3 +11,4 @@ from .tyre_pressures import TyrePressures
 from .pols import Pols
 from .systems import Systems
 from .items import Items
+from .weight_balance import WeightBalance

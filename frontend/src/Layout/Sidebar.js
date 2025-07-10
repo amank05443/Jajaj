@@ -154,7 +154,7 @@ export default function Sidebar() {
                 </Tooltip>
                 <Collapse in={isWeightBalanceData && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/WeightAndBalanceData/BasicWeightAndMomentsForm')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><LineWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Basic Weight and Moments'}/>
                         </ListItem>

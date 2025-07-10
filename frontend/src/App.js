@@ -31,6 +31,7 @@ import PublicRoute from './Authentication/PublicRoute';
 import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
 import {AuthProvider,useAuth} from './Authentication/AuthContext';
 import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
+import BasicWeightAndMoments from './WeightAndBalanceData/BasicWeightAndMomentsForm';
 // import 'bootstrap/'
 
 // import {AuthProvider,useAuth} from './AuthContext';
@@ -104,6 +105,7 @@ const AppContent = () => {
                                             <Route path="/usLog" element={<USLog />} />
                                             <Route path="/aircraftHeader" element={<AircraftHeader />} />
                                             <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
+                                            <Route path="/WeightAndBalanceData/BasicWeightAndMomentsForm" element={<BasicWeightAndMoments />} />
                                         </Route>
                                     </Routes>
                                 </section>
