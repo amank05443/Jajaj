@@ -144,7 +144,7 @@ const ViewLeadingParticulars=() => {
             {/*<h1>------------------------------Leading Particulars----------------------------------</h1>*/}
             <div className="body_leading" style={{height: 'auto', margin: '4px'}}>
                 <div style={{padding: 12, position: 'relative', display: 'flex', height: '3vh', backgroundImage: 'linear-gradient(to right, #FFE6CC, #87CEEB,#FFD5E0 )'}}>
-                    <h2 style={{position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: '20px', margin: 0}}>Leading Particulars</h2>
+                    <h2 style={{position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: '20px', margin: 0, fontFamily:'sans-serif'}}>Leading Particulars</h2>
                     <h2 style={{marginLeft: '90%', fontWeight: 'bold', fontSize: '15px', color: 'crimson', margin: 0}}>MOD Form 701</h2>
                 </div>
 

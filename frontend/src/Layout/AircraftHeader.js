@@ -3,13 +3,14 @@ import React from 'react';
 import {Box,Typography,Toolbar,AppBar,Grid,Paper,Stack} from '@mui/material';
 
 const aircraftData = [
-{label:'Aircraft state',value:'S'},
-{label:'Aircraft Number',value:'IN 100'},
-{label:'Aircraft accepted on',value:'15 June 2024'},
-{label:'Next Major Inspection Due',value:'200Hourly'},
-{label:'Airframe Number',value:'55555'},
-{label:'Engine Number',value:'55555'},
-{label:'Airframe Hours',value:'100 hrs'},
+    // {label:'Aircraft state',value:'S'},
+    // {label:'Aircraft Number',value:'IN 100'},
+    // {label:'Aircraft accepted on',value:'15 June 2024'},
+    // {label:'Engine Number',value:'55555'},
+    {label:'Airframe Number',value:'IN 224'},
+    {label:'Airframe Hours',value:'1000:25 hrs'},
+    {label:'Current Status',value:'BFS Completed'},
+    {label:'Next Inspection Due',value:'200Hourly'},
 ]
 
 const colorPalette = [
@@ -25,8 +26,8 @@ const colorPalette = [
 function AircraftHeader() {
  return (
   <Box sx={{px:3,width:'100%',mt:2}}>
-    <Paper elevation ={4} sx={{width:'95%',maxWidth:'1050px',minHeight:'250px',margin:'0 auto',ml:'5%',p:3,display:'grid',
-        gridTemplateColumns:'repeat(3,1fr)',gap:2,backgroundColor:'#e1f5fe',borderRadius:3,}}>
+    <Paper elevation ={4} sx={{width:'95%',maxWidth:'90%',minHeight:'10%',ml:'3%', mt:'6%',p:3,display:'grid',
+        gridTemplateColumns:'repeat(2,1fr)',gap:3,backgroundColor:'#e1f5fe',borderRadius:3,}}>
         {aircraftData.map((item,index) => {const { bg,text } = colorPalette[index % colorPalette.length];
         return(
             <Paper key={index} elevation={2} sx={{p:2,borderRadius:2,bgcolor:bg,display:'flex',alignItems:'center',gap:1.5,}}>

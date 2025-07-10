@@ -1,64 +1,79 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Tooltip, Divider, Collapse } from '@mui/material';
-import {SportsSoccer, ChevronLeft, ChevronRightRounded, Edit, ExpandLess, ExpandMore, SafetyCheck, AddAlarm,ViewListTwoTone,CalendarTodayTwoTone,CompassCalibrationTwoTone ,AlarmOn, DisabledByDefault, Discount, HomeWork} from '@mui/icons-material';
+import {SportsSoccer, ChevronLeft, ChevronRightRounded, Edit, ExpandLess, ExpandMore, SafetyCheck, AddAlarm,ViewListTwoTone,CalendarTodayTwoTone,CompassCalibrationTwoTone ,AlarmOn,
+    DisabledByDefault, Discount, HomeWork, Timer3Select, BalanceTwoTone,LineWeightTwoTone, MonitorWeightTwoTone, Outbound, AvTimerSharp, CalendarMonthTwoTone} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 const  drawerWidth= 200;
 
 
 export default function Sidebar() {
     const [open, setOpen]= useState(false);
-    // const [isExpanded, setIsExpended]= useState(false);
     const navigate=useNavigate();
     const [isLimitationOpen,setIsLimitationOpen] = useState(false);
     const [isForecastOpen,setIsForecastOpen] = useState(false);
     const [isWeightBalanceData,setIsWeightBalanceData] = useState(false);
-    // const sidebarRef = useRef(null);
-    // const handleSidebar=()=>{
-    //     setIsExpended((prev) => !prev);
-    // };
+    const sidebarRef = useRef(null);
+
+    const openDrawer =()=> setOpen(true);
+    const closeDrawer =()=> setOpen(false);
     const toggleDrawer=()=>{
         setOpen((prev) => !prev);
     };
-
-    // const handleMouseEnter =()=> setOpen(true);
-    // const handleMouseLeave =()=> setOpen(false);
-    // useEffect(()=> {
-    //     const handledocumentMouseMove = (e) => {
-    //         if (sidebarRef.current && !sidebarRef.current.contains(e.target)){
-    //             setOpen(false);
-    //             setIsLimitationOpen(false);
-    //             setIsForecastOpen(false);
-    //             setIsWeightBalanceData(false);
-    //         }
-    //     };
-    //     document.addEventListener('mousemove', handledocumentMouseMove);
-    //     return () => {
-    //         document.removeEventListener('mousemove',handledocumentMouseMove);
-    //     };
-    // },[]);
     const handleNavigation = (path) =>{
         navigate(path);
     };
+    const handleLDHC=()=>{
+        setIsLimitationOpen(!isLimitationOpen);
+        setIsForecastOpen(false);
+        setIsWeightBalanceData(false);
+    }
+    const handleForecast=()=>{
+        setIsLimitationOpen(false);
+        setIsForecastOpen(!isForecastOpen);
+        setIsWeightBalanceData(false);
+    }
+    const handleWeightBalanceData=()=>{
+        setIsLimitationOpen(false);
+        setIsForecastOpen(false);
+        setIsWeightBalanceData(!isWeightBalanceData);
+    }
+
+    useEffect(()=> {
+        const handleClickOutside = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)){
+                if (open){
+                    closeDrawer();
+                }
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown',handleClickOutside);
+        };
+    },[open]);
+
     return(
         <Drawer
             variant={"permanent"}
-            className={'sidebar1'}
-            // ref={sidebarRef}
-            // onMouseEnter={handleMouseEnter}
-            // onMouseLeave={handleMouseLeave}
-            // onClick={handleSidebar}
+            ref={sidebarRef}
             sx={{width:open ? drawerWidth: 60, flexShrink:0,
             '& .MuiDrawer-paper': {
-                width: open? drawerWidth:60,  overflowX:'hidden', transition: 'transform 0.3s ease',marginTop: 'auto' ,
-                background:'linear-gradient(120deg, #0f2027 0%, #2c5364 50%, #00ffe7 100%)',
+                position:'relative', height:'100%',
+                width: open? drawerWidth:60,  overflow:'hidden', transition: 'width 0.3s ease',
+                // background:'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
+                // WebkitBackdropFilter: 'blur(20px)',
+                background:'linear-gradient(120deg, #0f2027 0%, #2c5364 50%, #00ffe7 120%)',
                 backdropFilter:'blur(20px)',
                 boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',
                 color: '#ffffff',
             },
-        }}>
+            }} onClick={()=>{
+                if (!open){
+                    openDrawer();
+                }
+            }} >
             <div style={{display:'flex', justifyContent: open ? 'flex-end': 'center', padding: 8}}>
                 <IconButton onClick={toggleDrawer} style={{color: '#fff'}}>
-                {/*<IconButton  style={{color: '#fff'}}>*/}
                     {open ? <ChevronLeft/> : <ChevronRightRounded/>}
                 </IconButton>
             </div>
@@ -79,7 +94,7 @@ export default function Sidebar() {
                 </Tooltip>
 
                 <Tooltip title={!open ? 'LDHC': ''} placement={'right'}>
-                    <ListItem button onClick={()=>setIsLimitationOpen(!isLimitationOpen)}>
+                    <ListItem button onClick={handleLDHC}>
                         <ListItemIcon sx={{color: '#fff', minWidth: 40}}><AddAlarm/></ListItemIcon>
                         {open && <ListItemText primary="LDHC"/>}
                         {open && (isLimitationOpen ? <ExpandLess/>: <ExpandMore/>)}
@@ -107,7 +122,7 @@ export default function Sidebar() {
                 </Collapse>
 
                 <Tooltip title={!open ? 'Forecast': ''} placement={'right'}>
-                    <ListItem button onClick={()=>setIsForecastOpen(!isForecastOpen)}>
+                    <ListItem button onClick={handleForecast}>
                         <ListItemIcon sx={{color: '#fff', minWidth: 40}}><CalendarTodayTwoTone/></ListItemIcon>
                         {open && <ListItemText primary="Forecast"/>}
                         {open && (isForecastOpen ? <ExpandLess/>: <ExpandMore/>)}
@@ -116,27 +131,23 @@ export default function Sidebar() {
                 <Collapse in={isForecastOpen && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
-                            <ListItemText primary={'Limitations'}/>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><AvTimerSharp/></ListItemIcon>
+                            <ListItemText primary={'Hourly'}/>
                         </ListItem>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
-                            <ListItemText primary={'Deferred Defects'}/>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><CalendarMonthTwoTone/></ListItemIcon>
+                            <ListItemText primary={'Calendar'}/>
                         </ListItem>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
-                            <ListItemText primary={'Husbandry Defects'}/>
-                        </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
-                            <ListItemText primary={'Concessions'}/>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><Outbound/></ListItemIcon>
+                            <ListItemText primary={'Out of Phase'}/>
                         </ListItem>
                     </List>
                 </Collapse>
 
                 <Tooltip title={!open ? 'Weight & Balance Data': ''} placement={'right'}>
-                    <ListItem button onClick={()=>setIsWeightBalanceData(!isWeightBalanceData)}>
-                        <ListItemIcon sx={{color: '#fff', minWidth: 40}}><SportsSoccer/></ListItemIcon>
+                    <ListItem button onClick={handleWeightBalanceData}>
+                        <ListItemIcon sx={{color: '#fff', minWidth: 40}}><BalanceTwoTone/></ListItemIcon>
                         {open && <ListItemText primary="Weight & Balance Data"/>}
                         {open && (isWeightBalanceData ? <ExpandLess/>: <ExpandMore/>)}
                     </ListItem>
@@ -144,11 +155,11 @@ export default function Sidebar() {
                 <Collapse in={isWeightBalanceData && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><LineWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Basic Weight and Moments'}/>
                         </ListItem>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/WeightAndBalanceData/VariableExpandableLoadItemsForm')}>
-                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><MonitorWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Variable / Expendable Load Items'}/>
                         </ListItem>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('./ViewCurrentOperatingData')}>

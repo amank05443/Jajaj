@@ -92,92 +92,52 @@ export default function Modify () {
 
   return (
    <div className="dashboard-container">
-      <div className="dashboard-body"
-      style={{padding:'2',paddingBottom:'1000px',overflowY:'auto',maxHeight:'calc(200vh-250px)',}}>
-   <Box p={3}>
-
-    <Tabs
-     value={tabIndex}
-     onChange={handleTabChange}
-     variant="scrollable"
-     scrollButtons="auto"
-     aria-label="E700 Tabs"
-     sx={{ borderBottom: 1,borderColor:'divider', mb:2}}
-     >
-      <Tab label ="Leading Particulars (701)" />
-      <Tab label ="Weight and Balance (702/702A)" />
-      <Tab label ="Limitations/Deferred/Husbandry/Concession" />
-      <Tab label ="Inspection Forecast (721B/721C/721D/722)" />
-      <Tab label ="Compass Data (712/OPF/S/w Log(703B)" />
-      </Tabs>
-
-      <Box sx={{maxHeight:'70vh',overflowY:'auto',pr:1,}}>
-      <Paper
-      elevation={4}
-      sx={{p:4,borderRadius:4,boxShadow:'0 4px 20px rgba(0,0,0,0.1)',backgroundColor:'linear-gradient(to bottom right,#ffffff,#f3f6f9)',minHeight:'450px'}}
-      >
-      <motion.div
-       key={tabIndex}
-       initial={{ opacity:0, y:20}}
-       animate={{ opacity: 1, y:0}}
-       transition={{ duration:0.5}}
-       >
-       {tabIndex === 0 && (
-        <>
-        <LeadingParticularTab
-         data={leadingParticulars}
-         setData={setLeadingParticulars}
-         />
-          {renderNextButton()}
-        </>
-       )}
-       {tabIndex === 1 && (
-        <>
-        <WeightAndBalanceTab
-        data={weightBalance}
-         setData={setWeightBalance}
-        />
-         {renderNextButton()}
-         </>
-       )}
-       {tabIndex === 2 && (
-        <>
-         <LimitationTab
-          data={limitations}
-         setData={setLimitations}
-          />
-         {renderNextButton()}
-         </>
-       )}
-       {tabIndex === 3 && (
-        <>
-         <Typography>Inspection Forecast Content goes here...</Typography >
-         {renderNextButton()}
-         </>
-       )}
-       {tabIndex === 4 && (
-        <>
-          <CompassDataTab
-           data={compassData}
-         setData={setCompassData}
-           />
-          <Box mt={3} display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" color="primary" onClick={handleSave}>
-           Save
-          </Button>
-          <Button variant="outlined" color="Secondary" onClick={goToDashboard}>
-           Dashboard
-          </Button>
-         </Box>
-         </>
-       )}
-       </motion.div>
-      </Paper>
-      </Box>
-     </Box>
+      <div className="dashboard-body" style={{padding:'2',paddingBottom:'40%',overflowY:'auto',maxHeight:'calc(200vh-250px)', width: '100%'}}>
+           <Box p={3}>
+               <Tabs value={tabIndex} onChange={handleTabChange} variant="scrollable" scrollButtons="auto" aria-label="E700 Tabs" sx={{ borderBottom: 1,borderColor:'divider', mb:2}}>
+                   <Tab label ="Leading Particulars (701)" style={{backgroundColor:'azure',width: '18%'}}/>
+                   <Tab label ="Weight and Balance (702/702A)" style={{backgroundColor:'aqua',width: '18%'}}/>
+                   <Tab label ="Limitations/ Deferred/ Husbandry/ Concession" style={{backgroundColor:'aquamarine',width: '20%'}}/>
+                   <Tab label ="Inspection Forecast (721B/721C/721D/722)" style={{backgroundColor:'peru',width: '20%'}}/>
+                   <Tab label ="Compass Data (712/OPF/S/w Log (703B)" style={{backgroundColor:'mediumpurple',width: '24%'}} />
+               </Tabs>
+               <Box sx={{maxHeight:'70vh',overflowY:'auto',pr:1,}}>
+                   <Paper elevation={4} sx={{p:4,borderRadius:4,boxShadow:'0 4px 20px rgba(0,0,0,0.1)',backgroundColor:'linear-gradient(to bottom right,#ffffff,#f3f6f9)',minHeight:'10%'}}>
+                       <motion.div key={tabIndex} initial={{ opacity:0, y:20}} animate={{ opacity: 1, y:0}} transition={{ duration:0.5}}>
+                           {tabIndex === 0 && (
+                               <>
+                                   <LeadingParticularTab data={leadingParticulars} setData={setLeadingParticulars}/>{renderNextButton()}
+                               </>
+                           )}
+                           {tabIndex === 1 && (
+                                <>
+                                    <WeightAndBalanceTab data={weightBalance} setData={setWeightBalance}/>{renderNextButton()}
+                                </>
+                           )}
+                           {tabIndex === 2 && (
+                                <>
+                                    <LimitationTab data={limitations} setData={setLimitations}/>{renderNextButton()}
+                                </>
+                           )}
+                           {tabIndex === 3 && (
+                                <>
+                                    <Typography>Inspection Forecast Content goes here...</Typography >{renderNextButton()}
+                                </>
+                           )}
+                           {tabIndex === 4 && (
+                                <>
+                                    <CompassDataTab data={compassData} setData={setCompassData}/>
+                                    <Box mt={3} display="flex" justifyContent="center" gap={2}>
+                                        <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+                                        <Button variant="outlined" color="Secondary" onClick={goToDashboard}>Dashboard</Button>
+                                    </Box>
+                                </>
+                           )}
+                       </motion.div>
+                   </Paper>
+               </Box>
+           </Box>
       </div>
-      <Footer />
-    </div>
-
+   </div>
   );
 }

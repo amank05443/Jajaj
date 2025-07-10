@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import './css/App.css'
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './welcome';
@@ -6,7 +7,6 @@ import {useParams} from './Utils/useParams'
 import LoginPage from './Authentication/LoginPage';
 import Dashboard from './Dashboard';
 import DashboardCards from './DashboardCards';
-// import Sidebar1 from './Sidebar1';
 import Header from './Layout/Header';
 import Footer from './Layout/Footer';
 import Sidebar from './Layout/Sidebar';
@@ -31,6 +31,7 @@ import PublicRoute from './Authentication/PublicRoute';
 import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
 import {AuthProvider,useAuth} from './Authentication/AuthContext';
 import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
+// import 'bootstrap/'
 
 // import {AuthProvider,useAuth} from './AuthContext';
 
@@ -73,36 +74,24 @@ const AppContent = () => {
     return (
             <>
                 <Router>
-                    <div style={{display: 'flex', flexDirection: 'column', minHeight:'100vh'}}>
-                        <div style={{display: 'flex', flex:1}}>
-                            <div >
-                                {isAuthenticated && aircraft_master_id && <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>}
-                            </div>
-                            <div style={{flex: 1, overflowY: 'auto',padding: 2}}>
-                                <div >
-                                    {isAuthenticated && <Header />}
-                                </div>
-                                <div >
+                    {/*<div style={{display: 'flex', flexDirection: 'column', minHeight:'100vh'}}>*/}
+                    <div className={'layout'}>
+                        <header className={'header'}>{isAuthenticated && <Header />}</header>
+                        {/*<div style={{display: 'flex', flex:1}}>*/}
+                        <div className={'main1'}>
+                            {isAuthenticated && aircraft_master_id && <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>}
+                            {/*<div style={{flex: 1, overflowY: 'auto',padding: 2}}>*/}
+                                {/*<div >*/}
+                                {/*    {isAuthenticated && <Header />}*/}
+                                {/*</div>*/}
+                                <section className={'content'} >
                                     <Routes>
-                                         <Route path="/" element={
-                                        <PublicRoute>
-                                            <UpdateE700 />
-                                        </PublicRoute>
-                                        } />
-                                        <Route path="/login" element={
-                                        <PublicRoute>
-                                            <LoginPage />
-                                        </PublicRoute>
-                                        } />
-                                        <Route path="/create-profile" element={
-                                        <PublicRoute>
-                                            <CreateProfile />
-                                        </PublicRoute>
-                                        } />
+                                        <Route path="/" element={<PublicRoute><UpdateE700 /></PublicRoute>} />
+                                        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+                                        <Route path="/create-profile" element={<PublicRoute><CreateProfile /></PublicRoute>} />
                                         <Route element={<PrivateRoute />}>
                                             <Route path="/sidebar/LeadingParticularTab" element={<LeadingParticularTab />} />
                                             <Route path="/dashboard" element={<Dashboard />} />
-                                            {/*<Route path="/sidebar" element={<Sidebar />} />*/}
                                             <Route path="/dashboardCards" element={<DashboardCards />} />
                                             <Route path="/e700" element={<E700Page />} />
                                             <Route path="/prepare" element={<Prepare />} />
@@ -117,28 +106,29 @@ const AppContent = () => {
                                             <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
                                         </Route>
                                     </Routes>
-                                </div>
-                                <div >
-                                    {isAuthenticated && <Footer/>}
-                                </div>
-                            </div>
+                                </section>
+                                {/*<div >*/}
+                                {/*    {isAuthenticated && <Footer/>}*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
                         </div>
+
                     </div>
-                </Router>
+                </Router>{isAuthenticated && <Footer/>}
             </>
         );
 };
 
 function App() {
         return (
-         <AuthProvider>
-            <ParamsProvider>
-                <E700DataProvider>
-                    <AppContent />
-                </E700DataProvider>
-            </ParamsProvider>
-        </AuthProvider>
-  );
+             <AuthProvider>
+                <ParamsProvider>
+                    <E700DataProvider>
+                        <AppContent />
+                    </E700DataProvider>
+                </ParamsProvider>
+            </AuthProvider>
+        );
 }
 
 export default App;

@@ -13,10 +13,10 @@
   background-size: cover ;
 }
 
-.body_leading {
-  /*background-image: url("../public/AD.jpeg");*/
-  background-size: cover ;
-}
+/*.body_leading {*/
+/*  !*background-image: url("../public/AD.jpeg");*!*/
+/*  background-size: cover ;*/
+/*}*/
 
 .sidebar {
   width: 200px;
