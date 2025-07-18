@@ -17,7 +17,9 @@ import 'jqwidgets-scripts/jqwidgets/jqxdropdownlist'
 import 'jqwidgets-scripts/jqwidgets/jqxlistbox'
 // import JqxGrid from 'jqwidgets-scripts/jqwidgets/jqx-all';
 // import JqxGrid from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
-import JqxGrid from 'jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid';
+
+
+
 
 //     ------------------------------  JQX Widget Style & CSS  ------------------------------------
 import 'jqwidgets-scripts/jqwidgets/styles/jqx.base.css';

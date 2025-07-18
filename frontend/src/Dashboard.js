@@ -1,8 +1,5 @@
 import React from 'react';
 import DashboardCards from './DashboardCards';
-import Sidebar from './Layout/Sidebar';
-import Header from './Layout/Header';
-
 import './css/Dashboard.css';
 import AircraftHeader from './Layout/AircraftHeader';
 
