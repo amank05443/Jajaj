@@ -10,11 +10,13 @@ from .views import (login_view, get_csrf_token, user_profile_view, logout_view, 
 dynamic_view = DynamicModelView.as_view({
     'get':'list',
     'post': 'post',
+    'delete':'delete'
 })
 detail_view = DynamicModelView.as_view({
     'get':'get',
     'put':'put',
     'patch':'put',
+    'delete':'delete'
 })
 
 

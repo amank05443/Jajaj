@@ -335,6 +335,19 @@ class DynamicModelView(ViewSet):
         serializer = serializer_class(queryset,many=True,context={'include':include})
         return Response(serializer.data)
 
+    def delete(self,request,table,pk=None):
+        model_class = self.get_model_class(table)
+        if pk:
+            try:
+                obj = model_class.objects.get(pk=pk)
+                obj.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except model_class.DoesNotExist:
+                return Response({"detail":"Not found"},status=status.HTTP_404_NOT_FOUND)
+        else:
+            model_class.objects.all().delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 #.....useParams().....
 @csrf_protect
