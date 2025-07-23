@@ -6,7 +6,6 @@ export default function useTableApi(table, options ={}) {
         query={},
         autoFetch=true,
         related=[],
-        dependencies = [],
     } = options;
 
     const [data,setData] = useState(null);
@@ -58,12 +57,12 @@ export default function useTableApi(table, options ={}) {
 
     useEffect(() => {
         if(autoFetch) {fetchData();}
-    },[fetchData,autoFetch,...dependencies]);
+    },[]);
 
     const create = useCallback(
         async (payload)=> {
             try {
-                const res = await fetch(`/api/$(table)/`,{
+                const res = await fetch(url,{
                     method : 'POST',
                     headers : {'Content-Type':'application/json'},
                     body: JSON.stringify(payload),
@@ -77,7 +76,7 @@ export default function useTableApi(table, options ={}) {
                 throw err;
             }
         },
-        [table]
+        [url]
     );
 
     const update = useCallback(
@@ -98,15 +97,52 @@ export default function useTableApi(table, options ={}) {
                 throw err;
             }
         },
-        [table]
+        [url]
+    );
+
+    const remove = useCallback(async(id) => {
+        setError(null);
+        setLoading(true);
+        try {
+        const deleteUrl = `/api/${table}/${id}/`;
+            const res = await fetch(deleteUrl,{
+                method:'DELETE',
+                credentials:'include',
+            });
+            if(!res.ok && res.status !== 204){
+                throw new Error(`Delete failed:${res.status}`);
+            }
+            setData((prev) => prev.filter((item) => item.id !== id ));
+        } catch(err) {
+            setError(err.message);
+            throw(err);
+        } finally{
+            setLoading(false);
+        }
+    },[table]);
+
+    const empty = useCallback(
+        async() => {
+            setError(null);
+            try{
+                const res = await fetch(url,{
+                    method:'DELETE',
+                    credentials:'include',
+                });
+                if(!res.ok && res.status !== 204){
+                    throw new Error(`Empty failed:${res.status}`);
+                }
+                setData([]);
+            } catch(err) {
+                setError(err.message);
+                throw err;
+            }
+        },
+        [url]
     );
 
     return {
-        data,
-        loading,
-        error,
-        refetch : fetchData,
-        create,
-        update,
+        data,loading,error,refetch : fetchData,
+        create,update,remove,empty,
     };
 }

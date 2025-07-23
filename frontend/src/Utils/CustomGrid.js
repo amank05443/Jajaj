@@ -1,119 +1,202 @@
-import {useEffect, useState} from 'react';
-import {
-    Table,TableBody,TableCell,TableContainer,TableHead,TableRow,TablePagination,TableSortLabel,Paper,TextField,Box
+import React, {useEffect,useState,useMemo} from 'react';
+import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,TextField,IconButton,TablePagination,Select,MenuItem,FormControl
+    ,InputLabel,Button
 } from '@mui/material';
-import useTableApi from './useTableApi';
+import SortIcon from '@mui/icons-material/UnfoldMore';
+import CheckIcon from '@mui/icons-material/Check';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import {styled} from '@mui/material/styles';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
-function descendingComparator(a,b,orderBy) {
-    if(b[orderBy] < a[orderBy]) return -1;
-    if(b[orderBy] > a[orderBy]) return 1;
-    return 0;
-}
-function getComparator(order,orderBy) {
-    return order === 'desc'
-        ? (a,b) => descendingComparator(a,b,orderBy) : (a,b) => -descendingComparator(a,b,orderBy);
-}
-function applySortFilter(data,comparator,filterText,filterField){
-    const filtered = filterText ? data.filter(row => {
-        const val = row[filterField];
-        return val?.toString().toLowerCase().includes(filterText.toLowerCase());
-    })
-    : data ;
-    return [...filtered].sort(comparator);
-}
+const themes = {
+    White_Grey : {
+        background:'#f9f9f9',headerBg:'#e0e0e0',rowBg:'#ffffff',rowAltBg:'f0f0f0',hoverBg:'#d3d3d3',textColor:'#000',borderColor:'#ccc',
+    },
+    Blue_Glass:{
+        background:'rgba(220,240,255,0.7)',headerBg:'rgba(180,210,240,0.8)',rowBg:'rgba(240,250,255,0.6)',
+        rowAltBg:'rgba(220,235,255,0.6)',hoverBg:'rgba(170,210,255,0.9)',textColor:'#003366',borderColor:'#aac',
+    },
+    Sunset_Mist:{
+        background:'rgba(255,245,230,0.7)',headerBg:'rgba(255,220,200,0.9)',rowBg:'rgba(255,245,230,0.6)',
+        rowAltBg:'rgba(255,230,210,0.6)',hoverBg:'rgba(255,200,170,0.8)',textColor:'#4b2e2e',borderColor:'#d4b49c',
+    },
+    Forest_Fog:{
+        background:'rgba(240,255,245,0.7)',headerBg:'rgba(210,235,215,0.85)',rowBg:'rgba(240,255,245,0.6)',
+        rowAltBg:'rgba(255,245,235,0.6)',hoverBg:'rgba(190,235,200,0.85)',textColor:'#1e3b2c',borderColor:'#aacccc',
+    },
+    Cool_Steel:{
+        background:'#f9f9f9',headerBg:'rgba(215,225,235,0.95)',rowBg:'rgba(240,245,250,0.9)',
+        rowAltBg:'rgba(225,235,240,0.9)',hoverBg:'rgba(190,210,230,0.85)',textColor:'#223344',borderColor:'#b0c4d4',
+    },
+    Electric_Lime:{
+        background:'rgba(245,255,240,0.9)',headerBg:'rgba(225,255,210,0.95)',rowBg:'rgba(245,255,240,0.85)',
+        rowAltBg:'rgba(235,250,230,0.85)',hoverBg:'rgba(200,255,180,0.9)',textColor:'#003300',borderColor:'#88cc88',
+    },
+    Nebula_Night:{
+        background:'rgba(30,30,40,0.8)',headerBg:'rgba(50,50,70,0.85)',rowBg:'rgba(40,40,60,0.7)',
+        rowAltBg:'rgba(45,45,65,0.7)',hoverBg:'rgba(70,70,100,0.85)',textColor:'#ccddee',borderColor:'#666688',
+    },
+    Dark : {
+        background:'#1e1e1e',headerBg:'#2e2e2e',rowBg:'#333',rowAltBg:'#2a2a2a',hoverBg:'#444',textColor:'#f0f0f0',borderColor:'#555',
+    },
+};
 
-export default function CustomGrid({tableName,columns,filterField}){
+const StyledTableCell = styled(TableCell) (({themeMode}) => ({
+    border:`1px solid ${themes[themeMode].borderColor}`,color:themes[themeMode].textColor,
+    textAlign:'center',verticalAlign:'middle',padding:'8px',
+}));
 
-    const {list} = useTableApi(tableName);
-    const [rows,setRows] = useState([]);
-    const [order,setOrder] = useState([]);
-    const [orderBy,setOrderBy] = useState(columns[0]?.field || 'id');
-    const [filterText,setFilterText] = useState('');
+const StyledTableRow = styled(TableRow) (({themeMode,index}) => ({
+    backgroundColor:index%2 === 0 ? themes [themeMode].rowBg : themes[themeMode].rowAltBg,
+    '&:hover':{backgroundColor:themes[themeMode].hoverBg,},
+}));
+
+const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',onSave}) => {
+
+    const [selectedTheme,setSelectedTheme] = useState(theme);
+    const [filterText,setFilterText] = useState({});
+    const [editRow,setEditRow] = useState(null);
+    const [editedData,setEditedData] = useState({});
     const [page,setPage] = useState(0);
-    const [rowsPerPage,setRowsPerPage] = useState(10);
+    const [rowsPerPage,setRowsPerPage] = useState(5);
+    const [sortConfig,setSortConfig] = useState({key:'',direction:'asc'});
 
-    useEffect(() => {
-        const fetch = async () => {
-            try {
-                const data = await list();
-                setRows(data);
-            } catch (err) {
-                console.error('Failed to load data:',err);
-            }
-        };
-        fetch();
-        console.log('list:',list);
-    },[tableName,list]);
+    const handleChangePage = (_,newPage) => setPage(newPage);
 
-    const handleSort =(field) => {
-        const isAsc = orderBy === field && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(field);
-    };
-
-    const handleChangePage = (_, newPage) => setPage(newPage);
-    const handleChangeRowsPerPage= (e) => {
-        setRowsPerPage(parseInt(e.target.value,10));
+    const handleChangeRowsPerPage = e => {
+        setRowsPerPage(+e.target.value);
         setPage(0);
     };
 
-    const sortedFilteredRows = applySortFilter(rows,getComparator(order,orderBy),filterText,filterField);
-    const paginatedRows = sortedFilteredRows.slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage);
+    const handleEdit = row => {
+        setEditRow(row.id);
+        setEditedData(row);
+    };
 
-    return (\
-        <Paper sx={{mt:3,p:2}}>
-            <Box mb={2}>
-                <TextField label={`Search by ${String(filterField)}`} value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)} fullWidth
-                />
-            </Box>
+    const handleSave = () => {
+        if(onSave) onSave(editedData);
+        setEditRow(null);
+    };
 
+    const handleFilterChange = (field,value) => {
+        setFilterText(prev => ({...prev,[field]:value}));
+    };
+
+    const handleSort = field => {
+        if(!columns.find(col => col.field===field)?.sortable) return;
+        setSortConfig(prev => prev.key === field ? {key:field, direction:prev.direction === 'asc' ? 'desc' : 'asc'}
+        : {key:field,direction:'asc'}
+        );
+    };
+
+    const filteredData = useMemo(() => {
+        return data.filter(row => columns.every(col =>
+            col.filterable ? (row[col.field] ?? 'NA').toString().toLowerCase().includes((filterText[col.field] || '').toLowerCase())
+            : true
+        ))
+        .sort((a,b) => {
+            if(!sortConfig.key) return 0;
+            const aVal = a[sortConfig.key] ?? '';
+            const bVal = b[sortConfig.key] ?? '';
+            if(aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+            if(aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    },[data,filterText,sortConfig]);
+
+    const paginatedData = useMemo(() => {
+        const start = page * rowsPerPage;
+        return filteredData.slice(start,start+rowsPerPage);
+    },[filteredData,page,rowsPerPage]);
+
+    return (
+        <Paper elevation={3} sx={{
+            border:'2px solid #ddd',overflow:'hidden',margin:4,
+            p:3,borderRadius:'11px',background:themes[selectedTheme].background,boxShadow:'0 4px 12px rgba(0,0,0,0.05)',}}>
+            <FormControl variant="outlined" size="small" style={{float:'right',marginBottom:10}}>
+                <InputLabel sx={{color:themes[selectedTheme].textColor,'&.Mui-focused':{color:themes[selectedTheme].textColor},
+                    }}
+                >
+                   Theme
+               </InputLabel>
+                <Select value={selectedTheme} onChange={e=>setSelectedTheme(e.target.value)} label="Theme" sx={{color:themes[selectedTheme].textColor,
+                   '&.MuiOutlinedInput-root':{
+                        '& fieldset':{borderColor:themes[selectedTheme].textColor},
+                        '&:hover fieldset':{borderColor:themes[selectedTheme].textColor},
+                        '&.Mui-focused fieldset':{borderColor:themes[selectedTheme].textColor},
+                   },
+                    '.MuiSvgIcon-root':{color:themes[theme].textColor},
+                }}>
+                 {Object.keys(themes).map(k => (
+                    <MenuItem key={k} value={k}>{k}</MenuItem>
+                 ))}
+                 </Select>
+            </FormControl>
+            {heading && <h2 style={{color:themes[selectedTheme].textColor,textAlign:'center'}}>{heading}</h2>}
             <TableContainer>
-                <Table size="small">
+                <Table>
                     <TableHead>
+                        <TableRow style={{background:themes[selectedTheme].headerBg}}>
+                            {columns.map(col => (
+                                <StyledTableCell key={col.field} themeMode={selectedTheme} onClick={()=>handleSort(col.field)}
+                                    style={{cursor:col.sortable ? 'pointer' : 'default' , width:col.width|| 'auto'}}
+                                >
+                                    {col.headerName}
+                                    {sortConfig.key === col.field ? (sortConfig.direction === 'asc' ?
+                                        <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />)
+                                        : ''
+                                    }
+                                </StyledTableCell>
+                            ))}
+                            {editable && <StyledTableCell themeMode={selectedTheme}>Actions</StyledTableCell>}
+                        </TableRow>
                         <TableRow>
                             {columns.map(col => (
-                                <TableCell key={col.field} sortDirection={orderBy === col.field ? order : false}>
-                                    {typeof col.headerName === 'string' && col.headerName ? (
-                                    <TableSortLabel
-                                        active={orderBy === col.field}
-                                        direction={orderBy === col.field ? order : 'asc'}
-                                        onClick={() => handleSort(col.field)}
-                                    >
-                                       {col.headerName}
-                                    </TableSortLabel>
-                                    ): (<>{col.field}</>)}
-                                </TableCell>
+                                <StyledTableCell key={col.field} themeMode={selectedTheme}>
+                                    {col.filterable && ( <TextField size="small" variant="outlined" value={filterText[col.field] || ''}
+                                        onChange={e => handleFilterChange(col.field,e.target.value)} placeholder="Search..."
+                                        sx={{width:'100%'}} InputProps={{sx:{color:themes[selectedTheme].textColor}}}/> )
+                                    }
+                                </StyledTableCell>
                             ))}
+                            {editable && <StyledTableCell themeMode={selectedTheme}></StyledTableCell>}
                         </TableRow>
                     </TableHead>
-
                     <TableBody>
-                        {paginatedRows.map((row) => (
-                            <TableRow key={row.id}>
+                        {paginatedData.map((row,i) => (
+                            <StyledTableRow key={row.id || i} index={i} themeMode={selectedTheme}>
                                 {columns.map(col => (
-                                    <TableCell key={col.field}>
-                                        {col.render ? col.render(row[col.field],row) : row[col.field]}
-                                    </TableCell>
+                                    <StyledTableCell key={col.field} themeMode={selectedTheme}>
+                                        {editRow === row.id ? (
+                                            <TextField size="small" value={editedData[col.field] ?? ''}
+                                                onChange={e => setEditedData({...editedData,[col.field]:e.target.value})}
+                                            />
+                                        ) : ( row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '') ? row[col.field] : 'NA'
+                                        }
+                                    </StyledTableCell>
                                 ))}
-                            </TableRow>
+                                {editable && (
+                                    <StyledTableCell themeMode={selectedTheme}>
+                                        {editRow === row.id ? (
+                                            <IconButton onClick={handleSave}> <SaveIcon /> </IconButton>
+                                        ) : (
+                                            <IconButton onClick={() => handleEdit(row)}> <EditIcon /> </IconButton>
+                                        )}
+                                    </StyledTableCell>
+                                )}
+                            </StyledTableRow>
                         ))}
-                        {paginatedRows.length === 0 && (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} align="center">
-                                    No records found
-                                </TableCell>
-                            </TableRow>
-                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <TablePagination component="div" page={page}
-                count={sortedFilteredRows.length} onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5,10,25,50]}
+            <TablePagination component="div" count={filteredData.length} page={page} onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} sx={{color:themes[selectedTheme].textColor}}
             />
         </Paper>
     );
-}
+};
+
+export default CustomGrid;
+
