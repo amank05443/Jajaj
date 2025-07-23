@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/aircraftSideNo/', AircraftSideNoView.as_view(), name='AircraftDetailView'),
     path('api/leadingParticularsOfAircraft/<int:id>/', views.aircraft_all_detail_view, name='AircraftAllDetailView'),
     path('api/VariableExpandableLoadItemsOfAircraft/<int:id>/', views.aircraft_all_detail_view, name='AircraftAllDetailView'),
+    path('api/BasicWeightAndMomentsOfAircraft/<int:id>/', views.aircraft_all_detail_view, name='AircraftAllDetailView'),
     path('api/ranks', create_rank, name='create_rank'),
     path('api/quals', create_qual, name='create_qual'),
     path('api/qualsData', list_quals.as_view(), name='list_qual'),
