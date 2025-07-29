@@ -95,3 +95,8 @@ class SystemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Systems
         fields = '__all__'
+
+class CustomersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Systems
+        fields = '__all__'

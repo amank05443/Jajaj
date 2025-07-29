@@ -19,6 +19,7 @@ import Modify from './Modify';
 import FlyingOperations from './FlyingOperations';
 import NewEntry from './Section-5/NewEntry';
 import ViewE700 from './ViewE700';
+import UserList from './UserList';
 import USLog from './Section-5/USLog';
 import AircraftHeader from './Layout/AircraftHeader';
 import PrepareAircraft from './FlyingOperations/PrepareAircraft';
@@ -66,6 +67,7 @@ const AppContent = () => {
                                     <Route path="/flying-operations" element={<FlyingOperations />} />
                                     <Route path="/newEntry" element={<NewEntry />} />
                                     <Route path="/viewE700" element={<ViewE700 />} />
+                                    <Route path="/userList" element={<UserList />} />
                                     <Route path="/usLog" element={<USLog />} />
                                     <Route path="/aircraftHeader" element={<AircraftHeader />} />
                                     <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />

@@ -24,7 +24,7 @@ const Header = () => {
     const handleAccountClose = () => setAccountAnchor(null);
 
     const{data,loading} = useTableApi('aircraft_masters',{id:params.aircraft_master_id,related:['aircraft_type']});
-
+    console.log(data);
     const handleLogout= () => {
         clearParams();
         logout();

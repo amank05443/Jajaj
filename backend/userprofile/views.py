@@ -128,6 +128,8 @@ def AircraftDetailsView(request,aircraft_type_id):
     except AircraftMasters.DoesNotExist:
         return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 
+
+
 # CSRF Token View: Ensures CSRF token is set
 @ensure_csrf_cookie
 def get_csrf_token(request):
