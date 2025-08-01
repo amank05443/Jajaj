@@ -1,7 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Tooltip, Divider, Collapse } from '@mui/material';
 import {SportsSoccer, ChevronLeft, ChevronRightRounded, Edit, ExpandLess, ExpandMore, SafetyCheck, AddAlarm,ViewListTwoTone,CalendarTodayTwoTone,CompassCalibrationTwoTone ,AlarmOn,
-    DisabledByDefault, Discount, HomeWork, Timer3Select, BalanceTwoTone,LineWeightTwoTone, MonitorWeightTwoTone, Outbound, AvTimerSharp, CalendarMonthTwoTone} from '@mui/icons-material';
+    DisabledByDefault, Discount, HomeWork, Timer3Select, BalanceTwoTone,LineWeightTwoTone, MonitorWeightTwoTone, Outbound, AvTimerSharp, CalendarMonthTwoTone, EngineeringIcon} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 const  drawerWidth= 200;
 
@@ -58,7 +58,7 @@ export default function Sidebar() {
             ref={sidebarRef}
             sx={{width:open ? drawerWidth: 60, flexShrink:0,
             '& .MuiDrawer-paper': {
-                position:'relative', height:'100%',
+                position:'relative', height:'100vh',
                 width: open? drawerWidth:60,  overflow:'hidden', transition: 'width 0.3s ease',
                 // background:'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
                 // WebkitBackdropFilter: 'blur(20px)',
@@ -168,6 +168,12 @@ export default function Sidebar() {
                         </ListItem>
                     </List>
                 </Collapse>
+                <Tooltip title={!open ? 'Forecast': ''} placement={'right'}>
+                    <ListItem button onClick={()=> handleNavigation('./RoutineServicingTab')}>
+                        <ListItemIcon sx={{color: '#fff', minWidth: 40}}><Discount/></ListItemIcon>
+                        {open && <ListItemText primary="Routine Servicing"/>}
+                    </ListItem>
+                </Tooltip>
                 <Tooltip title={!open ? 'Modify E700': ''} placement={'right'}>
                     <ListItem button onClick={()=>handleNavigation('./Sidebar_Components/CompassDataTab')}>
                         <ListItemIcon sx={{color: '#fff', minWidth: 40}}><CompassCalibrationTwoTone/></ListItemIcon>
