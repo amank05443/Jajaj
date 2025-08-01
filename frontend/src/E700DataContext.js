@@ -8,6 +8,7 @@ export const E700DataProvider = ({ children}) => {
   weightBalance:{},
   limitations:{},
   inspectionForecast:{},
+  RoutineServicing:{},
   compassData:{},
  });
 
