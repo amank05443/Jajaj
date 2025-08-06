@@ -1,4 +1,4 @@
-{/*import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect} from 'react';
 import {Typography,Box,Button,Grid,Container,Card,CardContent,TextField,FormGroup,FormControlLabel,Checkbox,
     Tooltip,MenuItem,Divider,Paper,IconButton,Snackbar,Alert} from "@mui/material";
 import {
@@ -158,4 +158,4 @@ const NewEntry = () => {
     );
 };
 
-export default NewEntry;*/}
+export default NewEntry;
