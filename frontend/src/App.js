@@ -17,6 +17,7 @@ import {ParamsProvider} from './Utils/useParams';//✅useParams context
 import CreateProfile from './CreateProfile';
 import Prepare from './Prepare';
 import Modify from './Modify';
+import Limitation from './Limitation';
 import FlyingOperations from './FlyingOperations';
 import NewEntry from './Section-5/NewEntry';
 import ViewE700 from './ViewE700';
@@ -70,6 +71,7 @@ const AppContent = () => {
                                     <Route path="/newEntry" element={<NewEntry />} />
                                     <Route path="/viewE700" element={<ViewE700 />} />
                                     <Route path="/userList" element={<UserList />} />
+                                    <Route path="/limitation" element={<Limitation />} />
                                     <Route path="/usLog" element={<USLog />} />
                                     <Route path="/aircraftHeader" element={<AircraftHeader />} />
                                     <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
