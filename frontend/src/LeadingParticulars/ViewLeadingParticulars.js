@@ -20,13 +20,13 @@ const ViewLeadingParticulars=() => {
 
 
     const olgGasesColumns = [
-        {field:'system.system',headerName:'System',sortable:true,filterable:true,textAlignment:'left'},
+        {field:'system.system',headerName:'System',sortable:true,filterable:true,textAlignment:'left',width:"40%"},
         {group:'Standard',children:[
-            {field:'type_of_pol',headerName:'Type',filterable:true,textAlignment:'left'},
-            {field:'description',headerName:'Store Ref',sortable:true,filterable:true},
-            {field:'nato_code',headerName:'GOST/ NATO',sortable:true,filterable:true},
+            {field:'type_of_pol',headerName:'Type',filterable:true,textAlignment:'left',width:"15%"},
+            {field:'description',headerName:'Store Ref',sortable:true,filterable:true,width:"25%"},
+            {field:'nato_code',headerName:'GOST/ NATO',sortable:true,filterable:true,width:"10%"},
         ]},
-        {field:'substitute_id',headerName:'Substitute',sortable:true,filterable:true},
+        {field:'substitute_id',headerName:'Substitute',sortable:true,filterable:true,width:"10%"},
     ];
 
 //  False: To all the details of an aircraft from aircraft master table.

@@ -25,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
+//themes pallette ::--
 const themes = {
   White_Grey: {
     background: "#f9f9f9",
@@ -100,6 +101,7 @@ const themes = {
   },
 };
 
+//for custom styling of table cells
 const StyledTableCell = styled(TableCell)(({ themeMode, pinned }) => ({
   border: `1px solid ${themes[themeMode].borderColor}`,
   color: themes[themeMode].textColor,
@@ -114,19 +116,26 @@ const StyledTableCell = styled(TableCell)(({ themeMode, pinned }) => ({
   zIndex: pinned ? 2 : 1,
 }));
 
+
+//for custom styling of table rows
 const StyledTableRow = styled(TableRow)(({ themeMode, index }) => ({
   backgroundColor:
     index % 2 === 0 ? themes[themeMode].rowBg : themes[themeMode].rowAltBg,
   "&:hover": { backgroundColor: themes[themeMode].hoverBg },
 }));
 
+
+//for getting the depth of the group
 const getMaxDepth = (node) =>
   !node.children ? 1 : 1 + Math.max(...node.children.map(getMaxDepth));
+
+ //for flattening the header with actual field
 const flattenColumns = (nodes) =>
   nodes.flatMap((node) =>
     node.children ? flattenColumns(node.children) : [node],
   );
 
+// for making nested as well as normal heading
 const buildHeaderRows = (nodes, depth = 0, maxDepth = 3) => {
   const rows = [];
   const fillRows = (cols, depth) => {
@@ -157,6 +166,8 @@ const buildHeaderRows = (nodes, depth = 0, maxDepth = 3) => {
   return rows;
 };
 
+
+//for getting the value in fields with depth i.e., dot operator fields
 const getNestedValue = (obj, path) => {
   if (!path) return "";
   try {
@@ -169,6 +180,8 @@ const getNestedValue = (obj, path) => {
   }
 };
 
+
+// the ---::: GRID FUNCTION :::---
 const CustomGrid = ({
   columns,
   rowPerPage = "5",
@@ -185,7 +198,6 @@ const CustomGrid = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowPerPage);
   const [sortConfig, setSortConfig] = useState({ field: "", direction: "asc" });
-  const [columnWidths, setColumnWidths] = useState({});
 
   const allLeafColumns = useMemo(() => flattenColumns(columns), [columns]);
   const maxDepth = useMemo(() => getMaxDepth({ children: columns }), [columns]);
@@ -256,23 +268,6 @@ const CustomGrid = ({
   }, [filteredData, page, rowsPerPage]);
   console.log("paginatedData",paginatedData);
   console.log("allLeafColumns",allLeafColumns);
-
-  const handleResize = (e, field) => {
-    const startX = e.clientX;
-    const startWidth = columnWidths[field] || 120;
-
-    const noDrag = (moveEvent) => {
-      const newWidth = Math.max(60, startWidth + moveEvent.clientX - startX);
-      setColumnWidths((prev) => ({ ...prev, [field]: newWidth }));
-    };
-
-    const stopDrag = () => {
-      window.removeEventListener("mousemove", noDrag);
-      window.removeEventListener("mouseup", stopDrag);
-    };
-    window.addEventListener("mousemove", noDrag);
-    window.addEventListener("mousemove", stopDrag);
-  };
 
   return (
     <Paper
@@ -411,7 +406,7 @@ const CustomGrid = ({
                     themeMode={selectedTheme}
                     pinned={col.pinned}
                     style={{
-                      width: columnWidths[col.field] || 120,
+                      width: col.width || 120,
                       position: col.pinned ? "sticky" : undefined,
                       left: col.pinned ? 0 : undefined,
                     }}
@@ -458,7 +453,7 @@ const CustomGrid = ({
                   <StyledTableCell
                     key={col.field}
                     themeMode={selectedTheme}
-                    style={{ width: columnWidths[col.field] || 120}} sx={{textAlign:col.textAlignment ? col.textAlignment : "center"}}
+                    style={{ width: col.width || 120}} sx={{textAlign:col.textAlignment ? col.textAlignment : "center"}}
                   >
                     {editRow === row.id ? (
                       <TextField
