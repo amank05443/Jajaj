@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import './css/App.css';
+import './css/index.css';
 import './Layout/JqWidget';  // ✅ Importing all Jq-Widgets for JQXGrid.
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './welcome';
