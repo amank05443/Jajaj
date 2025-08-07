@@ -58,7 +58,7 @@ export default function Sidebar() {
             ref={sidebarRef}
             sx={{width:open ? drawerWidth: 60, flexShrink:0,
             '& .MuiDrawer-paper': {
-                position:'relative', height:'100%',
+                position:'relative', height:'100',
                 width: open? drawerWidth:60,  overflow:'hidden', transition: 'width 0.3s ease',
                 // background:'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
                 // WebkitBackdropFilter: 'blur(20px)',
@@ -87,7 +87,7 @@ export default function Sidebar() {
                 </Tooltip>
 
                 <Tooltip title={!open ? 'Leading Particulars': ''} placement={'right'}>
-                    <ListItem button onClick={()=>handleNavigation('./ViewLeadingParticulars')}>
+                    <ListItem button onClick={()=>handleNavigation('./viewLeadingParticulars')}>
                         <ListItemIcon sx={{color: '#fff', minWidth: 40}}><ViewListTwoTone/></ListItemIcon>
                         {open && <ListItemText primary="Leading Particulars"/>}
                     </ListItem>
@@ -102,19 +102,19 @@ export default function Sidebar() {
                 </Tooltip>
                 <Collapse in={isLimitationOpen && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/limitationLog')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><DisabledByDefault/></ListItemIcon>
                             <ListItemText primary={'Limitations'}/>
                         </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/deferredDefectLog')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><AlarmOn/></ListItemIcon>
                             <ListItemText primary={'Deferred Defects'}/>
                         </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/husbandryLog')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><HomeWork/></ListItemIcon>
                             <ListItemText primary={'Husbandry Defects'}/>
                         </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/concessions')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><Discount/></ListItemIcon>
                             <ListItemText primary={'Concessions'}/>
                         </ListItem>
@@ -154,15 +154,15 @@ export default function Sidebar() {
                 </Tooltip>
                 <Collapse in={isWeightBalanceData && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/WeightAndBalanceData/BasicWeightAndMomentsForm')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/weightAndBalanceData/BasicWeightAndMomentsForm')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><LineWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Basic Weight and Moments'}/>
                         </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/WeightAndBalanceData/VariableExpandableLoadItemsForm')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/weightAndBalanceData/VariableExpandableLoadItemsForm')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><MonitorWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Variable / Expendable Load Items'}/>
                         </ListItem>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('./ViewCurrentOperatingData')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('./viewCurrentOperatingData')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><SafetyCheck/></ListItemIcon>
                             <ListItemText primary={'Current Operating Data(WEIGHT AND BALANCE DATA)'}/>
                         </ListItem>

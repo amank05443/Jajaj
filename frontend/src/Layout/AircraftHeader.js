@@ -1,130 +1,191 @@
-import React,{useState} from 'react';
-import {Accordion,AccordionSummary,IconButton,AccordionDetails,Box,Card,CardContent,Typography,Toolbar,AppBar,Grid,Paper,Stack} from '@mui/material';
-import {motion,AnimatePresence} from 'framer-motion';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {useParams} from '../Utils/useParams';
-import useTableApi from '../Utils/useTableApi';
-import {useAuth} from '../Authentication/AuthContext';
+import React, { useState } from "react";
+import {
+  Accordion,
+  AccordionSummary,
+  IconButton,
+  AccordionDetails,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Toolbar,
+  AppBar,
+  Grid,
+  Paper,
+  Stack,
+} from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useParams } from "../Utils/useParams";
+import useTableApi from "../Utils/useTableApi";
+import { useAuth } from "../Authentication/AuthContext";
 
 const slideVariants = {
-    collapsed:{width:0,opacity:0,transition:{duration:0.3}},
-    expanded:{
-        width:'100%',opacity:1,
-        transition:{duration:0.4,ease:'easeOut',staggerChildren:0.1},
-    },
-    };
-
-const itemVariants = {
-    hidden:{opacity:0,y:-10},
-    show:{opacity:1,y:0},
+  collapsed: { width: 0, opacity: 0, transition: { duration: 0.3 } },
+  expanded: {
+    width: "100%",
+    opacity: 1,
+    transition: { duration: 0.4, ease: "easeOut", staggerChildren: 0.1 },
+  },
 };
 
-const AnimatedSectionHorizontal = ({title,icon,children}) => {
-    const[expanded,setExpanded] = useState(false);
+const itemVariants = {
+  hidden: { opacity: 0, y: -10 },
+  show: { opacity: 1, y: 0 },
+};
 
-    return (
-        <Card sx={{backgroundColor:'#fff0f4',borderRadius:3,boxShadow:3,mt:2,overflow:'hidden',width:350,}}>
-            <Box onClick={() => setExpanded(!expanded)}
-                sx={{backgroundColor:'#FFD5E0',px:3,py:2,width:300,display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',cursor:'pointer'}}>
-                <Typography variant="h6" fontWeight={700} color='#4a148c' textAlign="center">
-                    {icon}<br /> {title}
-                </Typography>
+const AnimatedSectionHorizontal = ({ title, icon, children }) => {
+  const [expanded, setExpanded] = useState(false);
 
-                <motion.div animate={{rotate:expanded? 180:0,scale:expanded ? 1.2 : 1,}}
-                                transition={{duration:0.3}}>
-                    <ExpandMoreIcon sx={{color:'#4a148c'}} />
-                </motion.div>
-            </Box>
+  return (
+    <Card
+      sx={{
+        backgroundColor: "#fff0f4",
+        borderRadius: 3,
+        boxShadow: 3,
+        mt: 2,
+        overflow: "hidden",
+        width: 350,
+      }}
+    >
+      <Box
+        onClick={() => setExpanded(!expanded)}
+        sx={{
+          backgroundColor: "#FFD5E0",
+          px: 3,
+          py: 2,
+          width: 300,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+      >
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          color="#4a148c"
+          textAlign="center"
+        >
+          {icon}
+          <br /> {title}
+        </Typography>
 
-            <AnimatePresence>
-                {expanded && (
-                    <motion.div key="content" initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}}
-                                    exit={{height:0,opacity:0}} transition={{duration:0.4}}>
-                        <CardContent>
-                            <motion.div variants={slideVariants} initial="hidden" animate="show">
-                                {React.Children.map(children,(child,index) => (
-                                    <motion.div key={index} variants={itemVariants}>
-                                        {child}
-                                    </motion.div>
-                                ))}
-                            </motion.div>
-                        </CardContent>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </Card>
-    );
+        <motion.div
+          animate={{ rotate: expanded ? 180 : 0, scale: expanded ? 1.2 : 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ExpandMoreIcon sx={{ color: "#4a148c" }} />
+        </motion.div>
+      </Box>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <CardContent>
+              <motion.div
+                variants={slideVariants}
+                initial="hidden"
+                animate="show"
+              >
+                {React.Children.map(children, (child, index) => (
+                  <motion.div key={index} variants={itemVariants}>
+                    {child}
+                  </motion.div>
+                ))}
+              </motion.div>
+            </CardContent>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Card>
+  );
 };
 
 const AircraftHeader = () => {
-        const {user,isAuthenticated,logout} = useAuth();
-        const {params} = useParams();
-        const {data,loading} = useTableApi('aircraft_masters',{id:params.aircraft_master_id,related:['aircraft_type']});
-        const {data:ecu_data,loading:ecu_loading} = useTableApi('ecu_masters',{query:{aircraft_master_id:params.aircraft_master_id}});
+  const { user, isAuthenticated, logout } = useAuth();
+  const { params } = useParams();
+  const { data, loading } = useTableApi("aircraft_masters", {
+    id: params.aircraft_master_id,
+    related: ["aircraft_type"],
+  });
+  const { data: ecu_data, loading: ecu_loading } = useTableApi("ecu_masters", {
+    query: { aircraft_master_id: params.aircraft_master_id },
+  });
 
-   if(!isAuthenticated || !user ||loading ||ecu_loading) return null;
+  if (!isAuthenticated || !user || loading || ecu_loading) return null;
 
-        return (
-            <Box sx={{px:2,py:3}}>
-                <Stack direction="row" spacing={2} justifyContent="center" flexWrap ="wrap">
-                <AnimatedSectionHorizontal title="Aircraft Information">
-                    <Stack direction ="row" justifyContent="space-between">
-                        <Typography color="text.secondary">Basic Weight</Typography>
-                        <Typography fontWeight={500} color="text.primary">
-                            {data.basic_weight}
-                        </Typography>
-                    </Stack>
-                     <Stack direction ="row" justifyContent="space-between">
-                        <Typography color="text.secondary">Date of Acceptance</Typography>
-                            <Typography fontWeight={500} color="text.primary">
-                                {data.date_of_acceptance}
-                            </Typography>
-                        </Stack>
-               </AnimatedSectionHorizontal>
+  return (
+    <Box sx={{ px: 2, py: 3 }}>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        flexWrap="wrap"
+      >
+        <AnimatedSectionHorizontal title="Aircraft Information">
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary">Basic Weight</Typography>
+            <Typography fontWeight={500} color="text.primary">
+              {data.basic_weight}
+            </Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary">Date of Acceptance</Typography>
+            <Typography fontWeight={500} color="text.primary">
+              {data.date_of_acceptance}
+            </Typography>
+          </Stack>
+        </AnimatedSectionHorizontal>
 
-               <AnimatedSectionHorizontal title="Next Inspection Due on">
-                <Stack spacing ={2}>
-                    {['01','03','06'].map((month,index) => (
-                        <Stack direction ="row" justifyContent="space-between" key={index}>
-                            <Typography color="text.secondary">{month}Monthly</Typography>
-                            <Typography fontWeight={500} color="text.primary">
-                                20 Aug 25
-                            </Typography>
-                        </Stack>
+        <AnimatedSectionHorizontal title="Next Inspection Due on">
+          <Stack spacing={2}>
+            {["01", "03", "06"].map((month, index) => (
+              <Stack direction="row" justifyContent="space-between" key={index}>
+                <Typography color="text.secondary">{month}Monthly</Typography>
+                <Typography fontWeight={500} color="text.primary">
+                  20 Aug 25
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        </AnimatedSectionHorizontal>
 
-                    ))}
+        <AnimatedSectionHorizontal title="Engine Details">
+          <Stack spacing={2}>
+            {ecu_data.map((ecu, index) => (
+              <Box key={index}>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography color="text.secondary">Serial No</Typography>
+                  <Typography fontWeight={500} color="text.primary">
+                    {ecu.serial_no}
+                  </Typography>
                 </Stack>
-                </AnimatedSectionHorizontal>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography color="text.secondary">
+                    Date of Fitment
+                  </Typography>
+                  <Typography fontWeight={500} color="text.primary">
+                    {ecu.date_of_fitment}
+                  </Typography>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        </AnimatedSectionHorizontal>
+      </Stack>
+    </Box>
+  );
+};
 
-                <AnimatedSectionHorizontal title="Engine Details" >
-                    <Stack spacing={2}>
-                        {ecu_data.map((ecu,index) => (
-                            <Box key={index}>
-                              <Stack direction ="row" justifyContent="space-between">
-                                 <Typography color="text.secondary">Serial No</Typography>
-                                 <Typography fontWeight={500} color="text.primary">
-                                     {ecu.serial_no}
-                                 </Typography>
-                              </Stack>
-                              <Stack direction ="row" justifyContent="space-between">
-                                 <Typography color="text.secondary">Date of Fitment</Typography>
-                                 <Typography fontWeight={500} color="text.primary">
-                                     {ecu.date_of_fitment}
-                                 </Typography>
-                              </Stack>
-                            </Box>
-                        ))}
-                    </Stack>
-                </AnimatedSectionHorizontal>
-             </Stack>
-            </Box>
-        );
-        };
-
-        export default AircraftHeader;
-
-
-
+export default AircraftHeader;
 
 //--------------------------------------------------------------------- Commented by Aman POELA----------------------------------------------------------------------------------------------------------
 //import React from 'react';
@@ -244,11 +305,6 @@ const AircraftHeader = () => {
 //      );
 //      };
 //export default AircraftHeader;
-
-
-
-
-
 
 //-------------------------------------------------------------------------------- Before 10 jul by Lt cdr mishra sir ---------------------------------------------------------------------------------------
 //import React from 'react';

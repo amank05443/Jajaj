@@ -1,4 +1,3 @@
-{/*
 import React,{useState,useEffect} from 'react';
 import {Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Typography,
     Dialog,DialogTitle,DialogContent,CircularProgress,Tooltip} from '@mui/material';
@@ -11,33 +10,33 @@ import useTableApi from '../Utils/useTableApi';
 
 const USLog = () => {
     const navigate = useNavigate();
-    const[entries,setEntries] = useState([]);
-    const {data,loading,update,create} = useTableApi('');
-    const [openDialog,setOpenDialog] = useState(false);
-    const [selectedRowId,setSelectedRowId] = useState(null);
-    const [rowDetails,setRowDetails] = useState(null);
-    const [loadingDetails,setLoadingDetails] = useState(true);
-
-    useEffect(() => {
-        (if !loading){
-            setEntries(data);
-        };
-    },[data,loading]);
-
-    const handleClick = (row) => {
-        if(!row.cleared_at){
-            navigate('/CompletionDetails',{state:{id:row.id}});
-        } else{
-            const fullData = entries.find((r) => r.id === row.id);
-            if(fullData){
-                setRowDetails(fullData);
-                setLoadingDetails(false);
-                setOpenDialog(true);
-            }
-        }
-    };
-
-    if(gridLoading) return <p>Loading...</p>
+//    const[entries,setEntries] = useState([]);
+//    const {data,loading,update,create} = useTableApi('');
+//    const [openDialog,setOpenDialog] = useState(false);
+//    const [selectedRowId,setSelectedRowId] = useState(null);
+//    const [rowDetails,setRowDetails] = useState(null);
+//    const [loadingDetails,setLoadingDetails] = useState(true);
+//
+//    useEffect(() => {
+//        (if !loading){
+//            setEntries(data);
+//        };
+//    },[data,loading]);
+//
+//    const handleClick = (row) => {
+//        if(!row.cleared_at){
+//            navigate('/CompletionDetails',{state:{id:row.id}});
+//        } else{
+//            const fullData = entries.find((r) => r.id === row.id);
+//            if(fullData){
+//                setRowDetails(fullData);
+//                setLoadingDetails(false);
+//                setOpenDialog(true);
+//            }
+//        }
+//    };
+//
+//    if(gridLoading) return <p>Loading...</p>
 
  return (
   <div style={{padding:20}}>
@@ -47,7 +46,7 @@ const USLog = () => {
         </Typography>
     </Paper>
 
-    <Button variant="contained" color="primary" onClick={() => navigate('/newEntry')}>
+    <Button variant="contained" color="primary" onClick={() => navigate('/newEntryForUSLog')}>
       New Entry
     </Button>
 
@@ -64,7 +63,7 @@ const USLog = () => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {entries.map((row) => {
+                {/*{entries.map((row) => {
                     const isClosed = !!row.status;
                     return (
                     <TableRow key={row.id}>
@@ -81,12 +80,12 @@ const USLog = () => {
                             </Tooltip>
                         </TableCell>
                     </TableRow>
-                )})}
+                )})}*/}
             </TableBody>
         </Table>
     </TableContainer>
 
-    <Dialog open={openDialog} onClose={()=>setOpenDialog(false)} maxWidth="sm" fullWidth>
+    {/*<Dialog open={openDialog} onClose={()=>setOpenDialog(false)} maxWidth="sm" fullWidth>
         <DialogTitle>U/S Details</DialogTitle>
         <DialogContent>
             {loadingDetails ? (
@@ -102,9 +101,9 @@ const USLog = () => {
                 </>
             )}
         </DialogContent>
-    </Dialog>
+    </Dialog>*/}
   </div>
  );
 };
 
-export default USLog; */}
+export default USLog;

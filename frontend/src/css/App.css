@@ -1,27 +1,29 @@
-html, body{
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
 }
-.layout{
+.layout {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
-.main1{
+.main1 {
   display: flex;
   flex: 1;
   min-height: 0;
 }
-.header, .footer{
+.header,
+.footer {
   /*padding: 1px;*/
 }
-.sidebar1{
+.sidebar1 {
   width: 200px;
   background: #eee;
   /*padding: 2px;*/
 }
-.content{
+.content {
   flex: 1;
   background: #f9f9f9;
   /*padding: 1px;*/
@@ -33,9 +35,6 @@ html, body{
 /*  width: 200px;*/
 
 /*}*/
-
-
-
 
 /*.row{*/
 /*  display: flex;*/
