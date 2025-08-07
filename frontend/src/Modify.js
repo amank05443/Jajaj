@@ -11,6 +11,7 @@ import {motion} from 'framer-motion';
 import LimitationTab from './PrepareE700/LimitationTab';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import WeightAndBalanceTab from './PrepareE700/WeightAndBalanceTab';
+import RoutineServicingTab from './PrepareE700/RoutineServicingTab';
 import CompassDataTab from './PrepareE700/CompassDataTab';
 import InspectionTab from './PrepareE700/InspectionTab';
 import { E700DataContext } from './E700DataContext';
@@ -26,6 +27,7 @@ export default function Modify () {
  const [weightBalance,setWeightBalance] = useState({});
  const [limitations,setLimitations] = useState({});
  const [inspectionForecast,setInspectionForecast] = useState({});
+ const [RoutineServicing,setRoutineServicing] = useState({});
  const [compassData,setCompassData] = useState({});
 
  useEffect(() => {
@@ -34,6 +36,7 @@ export default function Modify () {
    setWeightBalance(formData.weightBalance || {});
    setLimitations(formData.limitations || {});
    setInspectionForecast(formData.inspectionForecast || {});
+   setRoutineServicing(formData.RoutineServicing || {});
    setCompassData(formData.compassData || {});
   }
  }, [formData]);
@@ -43,7 +46,7 @@ export default function Modify () {
  };
 
  const goToNextTab = () => {
-  if (tabIndex < 4) {
+  if (tabIndex < 5) {
    setTabIndex (tabIndex + 1);
   }
  };
@@ -95,11 +98,12 @@ export default function Modify () {
       <div className="dashboard-body" style={{padding:'2',paddingBottom:'40%',overflowY:'auto',maxHeight:'calc(200vh-250px)', width: '100%'}}>
            <Box p={3}>
                <Tabs value={tabIndex} onChange={handleTabChange} variant="scrollable" scrollButtons="auto" aria-label="E700 Tabs" sx={{ borderBottom: 1,borderColor:'divider', mb:2}}>
-                   <Tab label ="Leading Particulars (701)" style={{backgroundColor:'azure',width: '18%'}}/>
-                   <Tab label ="Weight and Balance (702/702A)" style={{backgroundColor:'aqua',width: '18%'}}/>
-                   <Tab label ="Limitations/ Deferred/ Husbandry/ Concession" style={{backgroundColor:'aquamarine',width: '20%'}}/>
-                   <Tab label ="Inspection Forecast (721B/721C/721D/722)" style={{backgroundColor:'peru',width: '20%'}}/>
-                   <Tab label ="Compass Data (712/OPF/S/w Log (703B)" style={{backgroundColor:'mediumpurple',width: '24%'}} />
+                   <Tab label ="Leading Particulars (701)" style={{backgroundColor:'azure',width: '17%'}}/>
+                   <Tab label ="Weight and Balance (702/702A)" style={{backgroundColor:'aqua',width: '16%'}}/>
+                   <Tab label ="Limitations/ Deferred/ Husbandry/ Concession" style={{backgroundColor:'aquamarine',width: '19%'}}/>
+                   <Tab label ="Inspection Forecast (721B/721C/721D/722)" style={{backgroundColor:'olive',width: '17%'}}/>
+                   <Tab label =" Routine Servicing Certificate" style={{backgroundColor:'peru',width: '15%'}}/>
+                   <Tab label ="Compass Data (712/OPF/S/w Log (703B)" style={{backgroundColor:'mediumpurple',width: '15%'}} />
                </Tabs>
                <Box sx={{maxHeight:'70vh',overflowY:'auto',pr:1,}}>
                    <Paper elevation={4} sx={{p:4,borderRadius:4,boxShadow:'0 4px 20px rgba(0,0,0,0.1)',backgroundColor:'linear-gradient(to bottom right,#ffffff,#f3f6f9)',minHeight:'10%'}}>
@@ -125,6 +129,11 @@ export default function Modify () {
                                 </>
                            )}
                            {tabIndex === 4 && (
+                                <>
+                                    <RoutineServicingTab data={RoutineServicing} setData={setRoutineServicing}/>{renderNextButton()}
+                                </>
+                           )}
+                           {tabIndex === 5 && (
                                 <>
                                     <CompassDataTab data={compassData} setData={setCompassData}/>
                                     <Box mt={3} display="flex" justifyContent="center" gap={2}>

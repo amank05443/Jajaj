@@ -33,6 +33,7 @@ import AutoLogoutHandler from './Authentication/AutoLogoutHandler';
 import {AuthProvider,useAuth} from './Authentication/AuthContext';
 import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
 import BasicWeightAndMoments from './WeightAndBalanceData/BasicWeightAndMomentsForm';
+import RoutineServicingTab from './PrepareE700/RoutineServicingTab';
 import 'react-bootstrap';
 
 
@@ -72,6 +73,7 @@ const AppContent = () => {
                                     <Route path="/aircraftHeader" element={<AircraftHeader />} />
                                     <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
                                     <Route path="/WeightAndBalanceData/BasicWeightAndMomentsForm" element={<BasicWeightAndMoments />} />
+                                    <Route path="/RoutineServicingTab" element={<RoutineServicingTab />} />
                                 </Route>
                             </Routes>
                         </section>
