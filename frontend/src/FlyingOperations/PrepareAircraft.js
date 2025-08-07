@@ -83,8 +83,9 @@ import { Radio,RadioGroup,Box,Tabs,Tab,Paper,Typography,useTheme,TextField,FormC
     <Box sx={{background:'linear-gradient(13deg,#ab47bc,#f06292)',color:'white',px:16,py:2,borderRadius:3,borderShadow:3,
         display:'inline-block',mt:2,ml:32}}>
         <Typography variant="h6" gutterBottom textAlign="center" fontWeight="bold">
-            Prepare Aircraft
+            Prepare Aircrafte
         </Typography>
+
     </Box>
 
     <Box mt={3}>
