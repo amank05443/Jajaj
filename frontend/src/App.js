@@ -45,8 +45,9 @@ import AutoLogoutHandler from "./Authentication/AutoLogoutHandler";
 import { AuthProvider, useAuth } from "./Authentication/AuthContext";
 import VariableExpandableLoadItems from "./WeightAndBalanceData/VariableExpandableLoadItemsForm";
 import BasicWeightAndMoments from "./WeightAndBalanceData/BasicWeightAndMomentsForm";
-import "react-bootstrap";
-import "./css/App.css";
+import TestQuals from './LeadingParticulars/TestQualsSaveAsDraft';
+
+
 import "./css/index.css";
 import "./Layout/JqWidget"; // ✅ Importing all Jq-Widgets for JQXGrid.
 
@@ -237,6 +238,7 @@ const AppContent = () => {
                     path="/weightAndBalanceData/BasicWeightAndMomentsForm"
                     element={<BasicWeightAndMoments />}
                   />
+                  <Route path="/testQualsForm" element={<TestQuals />} />
                 </Route>
               </Routes>
             </section>

@@ -19,7 +19,7 @@ from userprofile.models.users import Users
 from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.models.customers import Customers
-from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer,CustomersSerializer
+from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,UsersSerializer
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
@@ -82,6 +82,8 @@ def aircraft_all_detail_view(request, id ):
         data = model_to_dict(aircraft1)
         ecu_details = list(EcuMasters.objects.filter(aircraft_master_id=id).values())
         data['ecu_details'] = ecu_details
+        fuel_tanks = list(FuelTanks.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values('tank_group', 'capacity'))
+        data['fuel_tanks'] = fuel_tanks
         ac_type = AircraftTypes.objects.get(id=aircraft1.aircraft_type_id)
         data['ac_type'] = ac_type.aircraft_name
         lg_tyre_pressure = list(TyrePressures.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values())
