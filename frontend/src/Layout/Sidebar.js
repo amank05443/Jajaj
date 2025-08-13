@@ -157,6 +157,10 @@ export default function Sidebar() {
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><LineWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Basic Weight and Moments'}/>
                         </ListItem>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/WeightAndBalanceData/BasicWeightAndMoment')}>
+                            <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><LineWeightTwoTone/></ListItemIcon>
+                            <ListItemText primary={'Basic Weight and Moment'}/>
+                        </ListItem>
                         <ListItem button={{pl:4}} onClick={()=> handleNavigation('/weightAndBalanceData/VariableExpandableLoadItemsForm')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><MonitorWeightTwoTone/></ListItemIcon>
                             <ListItemText primary={'Variable / Expendable Load Items'}/>
