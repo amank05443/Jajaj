@@ -1,6 +1,6 @@
 // src/components/E700/CustomTabPanel.js
-import React from 'react';
-import { Box } from '@mui/material';
+import React from "react";
+import { Box } from "@mui/material";
 
 function CustomTabPanel({ children, value, index }) {
   return (

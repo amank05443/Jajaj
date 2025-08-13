@@ -1,274 +1,109 @@
-import React, { useState } from "react";
-import {
-  Typography,
-  MenuItem,
-  FormControl,
-  Select,
-  InputLabel,
-  Container,
-  Grid,
-  Paper,
-  Box,
-  Button,
-  Divider,
-  useTheme,
-  IconButton,
-  useMediaQuery,
-  Drawer,
-  TextField,
-} from "@mui/material";
-import { motion, AnimatePresence } from "framer-motion";
-import { DataGrid } from "@mui/x-data-grid";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useNavigate } from "react-router-dom";
+import React,{useState,useEffect} from 'react';
+import {Button,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,Typography,
+    Dialog,DialogTitle,DialogContent,CircularProgress,Tooltip} from '@mui/material';
+import {useNavigate} from 'react-router-dom';
+import Header from '../Layout/Header';
+import Footer from '../Layout/Footer';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import useTableApi from '../Utils/useTableApi';
 
-const EntryGridPage = () => {
-  const navigate = useNavigate();
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      status: "Open",
-      entryType: "Robbing",
-      snow: "SN001",
-      airframes: "AF001",
-      reason: "Routine Check",
-    },
-    {
-      id: 2,
-      status: "Closed",
-      entryType: "Compass",
-      snow: "SN002",
-      airframes: "AF002",
-      reason: "Component Replacement",
-    },
-    {
-      id: 3,
-      status: "Open",
-      entryType: "MTF",
-      snow: "SN003",
-      airframes: "AF003",
-      reason: "Scheduled Maintenance",
-    },
-  ]);
+const USLog = () => {
+    const navigate = useNavigate();
+//    const[entries,setEntries] = useState([]);
+//    const {data,loading,update,create} = useTableApi('');
+//    const [openDialog,setOpenDialog] = useState(false);
+//    const [selectedRowId,setSelectedRowId] = useState(null);
+//    const [rowDetails,setRowDetails] = useState(null);
+//    const [loadingDetails,setLoadingDetails] = useState(true);
+//
+//    useEffect(() => {
+//        (if !loading){
+//            setEntries(data);
+//        };
+//    },[data,loading]);
+//
+//    const handleClick = (row) => {
+//        if(!row.cleared_at){
+//            navigate('/CompletionDetails',{state:{id:row.id}});
+//        } else{
+//            const fullData = entries.find((r) => r.id === row.id);
+//            if(fullData){
+//                setRowDetails(fullData);
+//                setLoadingDetails(false);
+//                setOpenDialog(true);
+//            }
+//        }
+//    };
+//
+//    if(gridLoading) return <p>Loading...</p>
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-  const [entryData, setEntryData] = useState({
-    entryType: "",
-    snow: "",
-    airframes: "",
-    reason: "",
-  });
-  const [gridColor, setGridColor] = useState("#ffffff");
-  const [headerColor, setHeaderColor] = useState("#1976d2");
-
-  const handleEdit = (row) => {
-    setEditing(true);
-    setCurrentId(row.id);
-    setEntryData({
-      entryType: row.entryType,
-      snow: row.snow,
-      airframes: row.airframes,
-      reason: row.reason,
-    });
-    setDrawerOpen(true);
-  };
-  const handleNewEntry = () => {
-    navigate("/userList");
-  };
-
-  const handleChange = (field, value) => {
-    setEntryData({ ...entryData, [field]: value });
-  };
-
-  const handleSaveEntry = () => {
-    if (editing) {
-      setRows((prevRows) =>
-        prevRows.map((row) =>
-          row.id === currentId ? { ...row, ...entryData } : row,
-        ),
-      );
-    } else {
-      const newId = rows.length + 1;
-      setRows([...rows, { id: newId, ...entryData, status: "Open" }]);
-    }
-    setDrawerOpen(false);
-  };
-
-  const columns = [
-    { field: "id", headerName: "SNo", width: 90 },
-    { field: "status", headerName: "Status", width: 90 },
-    { field: "entryType", headerName: "Entry Type", width: 150 },
-    { field: "snow", headerName: "SNOW", width: 120 },
-    { field: "reason", headerName: "Reason Placing U/S", width: 230 },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 180,
-      renderCell: (params) => {
-        if (!params?.row) return null;
-
-        return params.row.status === "Closed" ? (
-          <Button variant="outlined" color="secondary" size="small">
-            View
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => handleEdit(params.row)}
-          >
-            Open/Edit
-          </Button>
-        );
-      },
-    },
-  ];
-
-  return (
-    <Box sx={{ padding: 4 }}>
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: "bold",
-            mb: 3,
-            background: "linear-gradient(90deg,#1976d2,#4caf50)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Section - 5
+ return (
+  <div style={{padding:20}}>
+    <Paper elevation={4} sx={{p:2,mt:2,mb:4,borderRadius:4,border:'4px solid #64b5f6',background:'linear-gradient(to right,#e3f2fd,#bbdefb)',}}>
+        <Typography variant="h4" align="center" gutterBottom sx={{fontWeight:'900',color:'#0d47a1',letterSpacing:3,}}>
+           Change of Serviceability Log
         </Typography>
-      </motion.div>
+    </Paper>
 
-      <Box display="flex" alignItems="center" gap={2} mb={2}>
-        <Typography variant="subtitle1">Select Grid Color:</Typography>
-        <input
-          type="color"
-          value={gridColor}
-          onChange={(e) => setGridColor(e.target.value)}
-          style={{ cursor: "pointer", width: 50, height: 30, border: "none" }}
-        />
-      </Box>
+    <Button variant="contained" color="primary" onClick={() => navigate('/newEntryForUSLog')}>
+      New Entry
+    </Button>
 
-      <Box display="flex" alignItems="center" gap={1} mb={2}>
-        <Typography variant="subtitle1">Select Header Color:</Typography>
-        <input
-          type="color"
-          value={headerColor}
-          onChange={(e) => setHeaderColor(e.target.value)}
-          style={{ cursor: "pointer", width: 50, height: 30, border: "none" }}
-        />
-      </Box>
+    <TableContainer component={Paper} style={{marginTop:20}}>
+        <Table>
+            <TableHead>
+                <TableRow sx={{ backgroundColor:'#1976d2'}}>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>Entry Opened/Closed</TableCell>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>Date Opened/Closed</TableCell>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>SNOW</TableCell>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>A/F Hrs</TableCell>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>Reason for Raising U/S</TableCell>
+                    <TableCell sx={{color:'#fff',fontWeight:'bold'}}>Action</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {/*{entries.map((row) => {
+                    const isClosed = !!row.status;
+                    return (
+                    <TableRow key={row.id}>
+                        <TableCell>{isClosed ? 'Closed':'Open'}</TableCell>
+                        <TableCell>{dayjs(isClosed ? row.closed_at:row.created_at).format('YYYY-MM-DD HH:mm')}</TableCell>
+                        <TableCell>{row.snow}</TableCell>
+                        <TableCell>{row.afHours}</TableCell>
+                        <TableCell>{row.reasonUS}</TableCell>
+                        <TableCell>
+                            <Tooltip title={isClosed ? 'View Details' : 'Clear U/S'}>
+                                <Button variant="contained" size="small" onClick={() => handleClick(row)}>
+                                    {isClosed ? 'View' : 'Continue'}
+                                </Button>
+                            </Tooltip>
+                        </TableCell>
+                    </TableRow>
+                )})}*/}
+            </TableBody>
+        </Table>
+    </TableContainer>
 
-      <Button
-        variant="contained"
-        color="success"
-        sx={{ mb: 2 }}
-        onClick={handleNewEntry}
-      >
-        New Entry
-      </Button>
-
-      <Paper elevation={4} sx={{ height: 400, width: "90vw", padding: 2 }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          rowPerPageOptions={[5]}
-          disableSelectionOnClick
-          sx={{
-            "& .MuiDataGrid-cell": { backgroundColor: gridColor },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: `${headerColor} ! important`,
-              color: "#576477",
-              fontWeight: "bold",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold",
-              color: "#576477",
-            },
-          }}
-        />
-      </Paper>
-
-      <Drawer
-        anchor="right"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <Box sx={{ width: 350, p: 3 }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="h6">
-              {editing ? " Edit Entry" : "Add New Entry"}
-            </Typography>
-            <IconButton onClick={() => setDrawerOpen(false)}>
-              <ClearIcon />
-            </IconButton>
-          </Box>
-
-          <TextField
-            label="Entry Type"
-            variant="outline"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={entryData.entryType}
-            onChange={(e) => handleChange("entryType", e.target.value)}
-          />
-          <TextField
-            label="SNOW"
-            variant="outline"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={entryData.snow}
-            onChange={(e) => handleChange("snow", e.target.value)}
-          />
-          <TextField
-            label="Airframes"
-            variant="outline"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={entryData.airframes}
-            onChange={(e) => handleChange("airframes", e.target.value)}
-          />
-          <TextField
-            label="Reason for Placing U/S"
-            variant="outline"
-            fullWidth
-            sx={{ mb: 2 }}
-            value={entryData.reason}
-            onChange={(e) => handleChange("reason", e.target.value)}
-          />
-
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={handleSaveEntry}
-            >
-              {editing ? "Update Entry" : "Save Entry"}
-            </Button>
-          </motion.div>
-        </Box>
-      </Drawer>
-    </Box>
-  );
+    {/*<Dialog open={openDialog} onClose={()=>setOpenDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>U/S Details</DialogTitle>
+        <DialogContent>
+            {loadingDetails ? (
+                <div style={{textAlign:'center',padding:'2rem'}}>
+                    <CircularProgress/>
+                    <Typography variant="body2" sx={{mt:2}}>Loading...</Typography>
+                </div>
+            ) : rowDetails?.error ?(
+                <Typography color="error">{rowDetails.error}</Typography>
+            ) : (
+                <>
+                    <Typography><strong>ID:</strong>{rowDetails.id}</Typography>
+                </>
+            )}
+        </DialogContent>
+    </Dialog>*/}
+  </div>
+ );
 };
 
-export default EntryGridPage;
-
-
+export default USLog;
