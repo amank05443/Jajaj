@@ -37,7 +37,6 @@
     "react-router-dom": "^7.4.0",
     "react-scripts": "^5.0.1",
     "recharts": "^3.1.0",
-    "tailwindcss": "^4.1.11",
     "typeface-roboto": "^1.1.13",
     "web-vitals": "^2.1.4",
     "yup": "^1.6.1"
@@ -46,7 +45,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,html,css,json,md}'"
   },
   "eslintConfig": {
     "extends": [
@@ -65,5 +65,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.3"
   }
 }

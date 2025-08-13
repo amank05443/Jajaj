@@ -100,7 +100,7 @@ const Header = () => {
                     initial={{opacity:0,y:-10}}
                     animate={{opacity:1,y:0}}
                     transition={{duration:0.6,ease:'easeOut'}}>
-                    <Box sx={{display:'flex',alignItems:'right',backgroundColor:'#198',padding:'10px 16px',gap:2}}>
+                    <Box sx={{display:'flex',alignItems:'right',backgroundColor:'#198',padding:'2px 16px',gap:2}}>
                         <Plane color='white' size={32} />
                         <Box>
                             <Typography variant="h6" fontWeight={600} color="white">{data.aircraft_type.aircraft_name}</Typography>

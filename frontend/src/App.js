@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import './css/App.css';
+import './css/index.css';
 import './Layout/JqWidget';  // ✅ Importing all Jq-Widgets for JQXGrid.
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UpdateE700 from './welcome';
@@ -25,6 +26,7 @@ import PrepareAircraft from './FlyingOperations/PrepareAircraft';
 import PilotAcceptance from './FlyingOperations/PilotAcceptance';
 import PostFlying from './FlyingOperations/PostFlying';
 import ViewLeadingParticulars from './LeadingParticulars/ViewLeadingParticulars';
+import ViewLeadingParticular1 from './LeadingParticulars/ViewLeadingParticular';
 import LeadingParticularTab from './PrepareE700/LeadingParticularTab';
 import PrivateRoute from './Authentication/PrivateRoute';
 import PublicRoute from './Authentication/PublicRoute';
@@ -33,6 +35,7 @@ import {AuthProvider,useAuth} from './Authentication/AuthContext';
 import VariableExpandableLoadItems from './WeightAndBalanceData/VariableExpandableLoadItemsForm';
 import BasicWeightAndMoments from './WeightAndBalanceData/BasicWeightAndMomentsForm';
 import RoutineServicingTab from './PrepareE700/RoutineServicingTab';
+import TestQuals from './LeadingParticulars/TestQualsSaveAsDraft';
 import 'react-bootstrap';
 
 
@@ -63,7 +66,7 @@ const AppContent = () => {
                                     <Route path="/prepare" element={<Prepare />} />
                                     <Route path="/modify" element={<Modify />} />
                                     <Route path="/dashboard/modify" element={<Modify />} />
-                                    <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticulars />} />
+                                    <Route path="/ViewLeadingParticulars" element={<ViewLeadingParticular1 />} />
                                     <Route path="/flying-operations" element={<FlyingOperations />} />
                                     <Route path="/newEntry" element={<NewEntry />} />
                                     <Route path="/viewE700" element={<ViewE700 />} />
@@ -72,6 +75,7 @@ const AppContent = () => {
                                     <Route path="/WeightAndBalanceData/VariableExpandableLoadItemsForm" element={<VariableExpandableLoadItems />} />
                                     <Route path="/WeightAndBalanceData/BasicWeightAndMomentsForm" element={<BasicWeightAndMoments />} />
                                     <Route path="/RoutineServicingTab" element={<RoutineServicingTab />} />
+                                    <Route path="/testQualsForm" element={<TestQuals />} />
                                 </Route>
                             </Routes>
                         </section>

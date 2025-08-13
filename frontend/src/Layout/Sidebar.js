@@ -58,7 +58,6 @@ export default function Sidebar() {
             ref={sidebarRef}
             sx={{width:open ? drawerWidth: 60, flexShrink:0,
             '& .MuiDrawer-paper': {
-                position:'relative', height:'100vh',
                 width: open? drawerWidth:60,  overflow:'hidden', transition: 'width 0.3s ease',
                 // background:'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))',
                 // WebkitBackdropFilter: 'blur(20px)',
@@ -130,7 +129,7 @@ export default function Sidebar() {
                 </Tooltip>
                 <Collapse in={isForecastOpen && open} timeout={'auto'} unmountOnExit>
                     <List component={'div'} disablePadding>
-                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/')}>
+                        <ListItem button={{pl:4}} onClick={()=> handleNavigation('/testQualsForm')}>
                             <ListItemIcon sx={{color: '#fff', minWidth: 40, marginLeft: '10px'}}><AvTimerSharp/></ListItemIcon>
                             <ListItemText primary={'Hourly'}/>
                         </ListItem>

@@ -24,11 +24,12 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
              <div className={'fuelGrid'}>
                   <JqxGrid
                      width={'100%'}
+//                      height={'230'}
+                     autoheight={true}
                      source={source}
                      columns={columns}
-                     pageable={true}
+                     pageable={false}
                      sortable={true}
-                     height={'230'}
                      altrows={true}
                  />
                  <style jsx global>{`
@@ -91,11 +92,11 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
              ],
          };
          const columns = [
-             {text: 'System', datafield: 'system_name', align: 'center', width: '40%', editable: true},
-             {text: 'Type', datafield: 'type_of_pol', columngroup: 'main', align: 'center', cellsalign: 'center', width: '10%'},
-             {text: 'Store Ref', datafield: 'description', columngroup: 'main', align: 'center', cellsalign: 'center', width: '12%'},
-             {text: 'GOST / NATO', datafield: 'nato_code', columngroup: 'main', align: 'center', cellsalign: 'center', width: '18%'},
-             {text: 'Alternate/ Substitute', datafield: 'substitute_id', align: 'center', cellsalign: 'center', width: '20%'}
+             {text: 'System', datafield: 'system_name', align: 'center', width: '31%', editable: true},
+             {text: 'Type', datafield: 'type_of_pol', columngroup: 'main', align: 'center', cellsalign: 'center', width: '11%'},
+             {text: 'Store Ref', datafield: 'description', columngroup: 'main', align: 'center', cellsalign: 'center', width: '14%'},
+             {text: 'GOST / NATO', datafield: 'nato_code', columngroup: 'main', align: 'center', cellsalign: 'center', width: '20%'},
+             {text: 'Alternate/ Substitute', datafield: 'substitute_id', align: 'center', cellsalign: 'center', width: '23%'}
          ];
          const columngroups =[
              {text:'Standard', align: 'center', name: 'main'},
@@ -104,12 +105,14 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
              <div className="oilGrid">
                  <JqxGrid
                      width={'100%'}
+                     autoheight={true}
                      source={source}
                      columns={columns}
                      columngroups={columngroups}
                      pageable={true}
                      sortable={true}
-                     height={'230'}
+                     pageSize={10}
+//                      height={'230'}
                      altrows={true}
                  />
                  <style jsx global>{`
