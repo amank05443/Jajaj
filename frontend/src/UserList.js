@@ -363,7 +363,7 @@
 //
 //export default CUL;
 
-
+//
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
@@ -405,7 +405,7 @@ const USLogForm = () => {
   );
 
   const entryTypes = ['MTF', 'CTF', 'G/R', 'AFS', 'BSF', 'Routine', 'PP', 'Snap QA','Compass','Weight and Balance Data','Ground Run','BFS','AFS','Taxi'];
-  const checkBoxes = ['Limitation', 'Deferred', 'Husbandry', 'Concession', 'None'];
+  const checkBoxes = ['Limitation', 'Deferred', 'Husbandry', 'Concession'];
 
   return (
     <div className="min-h-screen flex justify-center items-start bg-pink-100 p-6">
