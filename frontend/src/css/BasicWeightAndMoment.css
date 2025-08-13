@@ -1,0 +1,55 @@
+.unit-selector {
+margin-bottom: 10px;
+}
+
+.page {
+maxWidth: 1100px;
+margin: auto;
+padding: 20px;
+}
+.action {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+        .dialog-row {
+        display: grid;
+        grid-template-columns: repeat(13, 1fr);
+        gap: 10px;
+        margin-bottom: 10px;
+
+    }
+        .dialog-box {
+        background-color: #fff;
+        padding: 20px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 8px;
+
+    }
+        .dialog overlay: {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .custom-table th,
+    .custom-table td {
+     border: 1px solid #ccc;
+     padding: 8px;
+     text-align: center;
+     }
+    .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    }
+
+
+
+
+
+
+

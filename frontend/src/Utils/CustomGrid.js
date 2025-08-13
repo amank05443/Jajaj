@@ -1,6 +1,6 @@
 import React, {useEffect,useState,useMemo} from 'react';
 import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper,TextField,IconButton,TablePagination,Select,MenuItem,FormControl
-    ,InputLabel,Button
+    ,InputLabel,Button,Box,
 } from '@mui/material';
 import SortIcon from '@mui/icons-material/UnfoldMore';
 import CheckIcon from '@mui/icons-material/Check';
@@ -43,9 +43,15 @@ const themes = {
     },
 };
 
-const StyledTableCell = styled(TableCell) (({themeMode}) => ({
-    border:`1px solid ${themes[themeMode].borderColor}`,color:themes[themeMode].textColor,
+const StyledTableCell = styled(TableCell) (({themeMode,pinned}) => ({
+    border:`2px solid ${themes[themeMode].borderColor}`,color:themes[themeMode].textColor,
     textAlign:'center',verticalAlign:'middle',padding:'8px',
+    fontFamily:'"Segoe UI","Roboto","Open Sans",sans-serif',
+    transition:'background-color 300ms ease,color 300ms ease,border-color 300ms ease',
+    background:pinned ? themes[themeMode].headerBg : 'inherit',
+    position: pinned ? 'sticky' : 'static',
+    left : pinned ? 0 : undefined,
+    zIndex : pinned ? 2 : 1,
 }));
 
 const StyledTableRow = styled(TableRow) (({themeMode,index}) => ({
@@ -53,6 +59,29 @@ const StyledTableRow = styled(TableRow) (({themeMode,index}) => ({
     '&:hover':{backgroundColor:themes[themeMode].hoverBg,},
 }));
 
+const getMaxDepth = (node) => !node.children ? 1 : 1 + Math.max(...node.children.map(getMaxDepth));
+const flattenColumns = (nodes) => nodes.flatMap((node) => node.children ? flattenColumns(node.children) : [node]);
+
+const buildHeaderRows = (nodes,depth=0,maxDepth=3) => {
+    const rows = [];
+//    const maxDepth = getMaxDepth({children:nodes});
+    const fillRows = (cols,depth) => {
+        if(!rows[depth]) rows[depth] =[];
+        cols.forEach(col => {
+            if(col.children){
+                const colSpan = flattenColumns([col]).length;
+                rows[depth].push({label:col.group,colSpan,rowSpan:1});
+                fillRows(col.children,depth+1);
+            } else {
+                rows[depth].push({
+                    label:col.headerName,colSpan:1,rowSpan:maxDepth-depth
+                });
+            }
+        });
+    };
+    fillRows(nodes,0);
+    return rows;
+};
 const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',onSave}) => {
 
     const [selectedTheme,setSelectedTheme] = useState(theme);
@@ -62,6 +91,11 @@ const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',o
     const [page,setPage] = useState(0);
     const [rowsPerPage,setRowsPerPage] = useState(5);
     const [sortConfig,setSortConfig] = useState({key:'',direction:'asc'});
+    const [columnWidths,setColumnWidths] = useState({});
+
+    const allLeafColumns = useMemo(() => flattenColumns(columns),[columns]);
+    const maxDepth = useMemo(() => getMaxDepth({children:columns}),[columns]);
+    const headerRows = useMemo(() => buildHeaderRows(columns,0,maxDepth),[columns,maxDepth]);
 
     const handleChangePage = (_,newPage) => setPage(newPage);
 
@@ -92,7 +126,7 @@ const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',o
     };
 
     const filteredData = useMemo(() => {
-        return data.filter(row => columns.every(col =>
+        return data.filter(row => allLeafColumns.every(col =>
             col.filterable ? (row[col.field] ?? 'NA').toString().toLowerCase().includes((filterText[col.field] || '').toLowerCase())
             : true
         ))
@@ -104,18 +138,38 @@ const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',o
             if(aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
             return 0;
         });
-    },[data,filterText,sortConfig]);
+    },[data,filterText,sortConfig,allLeafColumns]);
 
     const paginatedData = useMemo(() => {
         const start = page * rowsPerPage;
         return filteredData.slice(start,start+rowsPerPage);
     },[filteredData,page,rowsPerPage]);
 
+    const handleResize = (e,field) => {
+        const startX = e.clientX;
+        const startWidth = columnWidths[field] || 120;
+
+        const noDrag = moveEvent => {
+            const newWidth = Math.max(60,startWidth + moveEvent.clientX - startX);
+            setColumnWidths(prev => ({...prev,[field]:newWidth}));
+        };
+
+        const stopDrag = () => {
+            window.removeEventListener('mousemove',noDrag);
+            window.removeEventListener('mouseup',stopDrag);
+        };
+        window.addEventListener('mousemove',noDrag);
+        window.addEventListener('mousemove',stopDrag);
+    }
+
     return (
         <Paper elevation={3} sx={{
             border:'2px solid #ddd',overflow:'hidden',margin:4,
-            p:3,borderRadius:'11px',background:themes[selectedTheme].background,boxShadow:'0 4px 12px rgba(0,0,0,0.05)',}}>
-            <FormControl variant="outlined" size="small" style={{float:'right',marginBottom:10}}>
+            p:2,borderRadius:'11px',background:themes[selectedTheme].background,boxShadow:'0 4px 10 rgba(0,0,0,0.1)',
+            transition:'background-color 800ms ease,color 800ms ease,border-color 800ms ease',
+            fontFamily:'"Segoe UI","Roboto","Open Sans",sans-serif',}}
+        >
+            <FormControl variant="outlined" size="small" style={{float:'right',marginBottom:15}}>
                 <InputLabel sx={{color:themes[selectedTheme].textColor,'&.Mui-focused':{color:themes[selectedTheme].textColor},
                     }}
                 >
@@ -130,51 +184,72 @@ const CustomGrid = ({columns,theme='White_Grey',data,editable=false,heading='',o
                     '.MuiSvgIcon-root':{color:themes[theme].textColor},
                 }}>
                  {Object.keys(themes).map(k => (
-                    <MenuItem key={k} value={k}>{k}</MenuItem>
+                    <MenuItem key={k} value={k}>
+                        <span style={{display:'inline-block',width:12,height:12,borderRadius:'50%',marginRight:8,
+                            backgroundColor:themes[k].headerBg,border:'1px solid #888'}}
+                        />
+                        {k}
+                    </MenuItem>
                  ))}
                  </Select>
             </FormControl>
-            {heading && <h2 style={{color:themes[selectedTheme].textColor,textAlign:'center'}}>{heading}</h2>}
+            {heading &&
+                <h2 style={{color:themes[selectedTheme].textColor,textAlign:'center',fontSize:'1.4rem',fontWeight:600,marginBottom:15,
+                    fontFamily:'"Segoe UI","Roboto","Open Sans",sans-serif',}}
+                >
+                    {heading}
+                </h2>
+            }
             <TableContainer>
                 <Table>
                     <TableHead>
-                        <TableRow style={{background:themes[selectedTheme].headerBg}}>
-                            {columns.map(col => (
-                                <StyledTableCell key={col.field} themeMode={selectedTheme} onClick={()=>handleSort(col.field)}
-                                    style={{cursor:col.sortable ? 'pointer' : 'default' , width:col.width|| 'auto'}}
-                                >
-                                    {col.headerName}
-                                    {sortConfig.key === col.field ? (sortConfig.direction === 'asc' ?
-                                        <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />)
-                                        : ''
-                                    }
-                                </StyledTableCell>
-                            ))}
-                            {editable && <StyledTableCell themeMode={selectedTheme}>Actions</StyledTableCell>}
-                        </TableRow>
+                        {headerRows.map((row,rowIndex) => (
+                            <TableRow key={rowIndex} style={{background:themes[selectedTheme].headerBg}}>
+                                {row.map((cell,i) => (
+                                    <StyledTableCell key={i} colSpan={cell.colSpan} rowSpan={cell.rowSpan} themeMode={selectedTheme} onClick={()=>handleSort(cell.field)}
+                                        style={{cursor:cell.sortable ? 'pointer' : 'default' , width:cell.width|| 'auto',fontSize:'1rem',fontWeight:600,
+                                        textTransform:'uppercase',letterSpacing:'0.5px'}}
+                                 >
+                                        {cell.label}
+                                        {sortConfig.key === cell.field ? (sortConfig.direction === 'asc' ?
+                                            <ArrowUpwardIcon fontSize="small" /> : <ArrowDownwardIcon fontSize="small" />)
+                                            : ''
+                                        }
+                                    </StyledTableCell>
+                                ))}
+                                {editable && rowIndex===0 && (<StyledTableCell themeMode={selectedTheme} rowSpan={maxDepth}>Actions</StyledTableCell>)}
+                            </TableRow>
+                        ))}
+                    </TableHead>
+                    {allLeafColumns.some(col => col.filterable) && (
+                    <TableHead>
                         <TableRow>
-                            {columns.map(col => (
-                                <StyledTableCell key={col.field} themeMode={selectedTheme}>
+                            {allLeafColumns.map(col => (
+                                <StyledTableCell key={col.field} themeMode={selectedTheme} pinned={col.pinned}
+                                    style={{width:columnWidths[col.field] || 120,position:col.pinned ? 'sticky' : undefined,left:col.pinned ? 0 : undefined}}
+                                >
                                     {col.filterable && ( <TextField size="small" variant="outlined" value={filterText[col.field] || ''}
                                         onChange={e => handleFilterChange(col.field,e.target.value)} placeholder="Search..."
-                                        sx={{width:'100%'}} InputProps={{sx:{color:themes[selectedTheme].textColor}}}/> )
+                                        sx={{width:'100%',fontSize:'0.85rem',input:{fontFamily:'"Segoe UI","Roboto","Open Sans",sans-serif',fontSize:'0.85rem'},}}
+                                        InputProps={{sx:{color:themes[selectedTheme].textColor}}}/> )
                                     }
                                 </StyledTableCell>
                             ))}
                             {editable && <StyledTableCell themeMode={selectedTheme}></StyledTableCell>}
                         </TableRow>
                     </TableHead>
+                    )}
                     <TableBody>
                         {paginatedData.map((row,i) => (
                             <StyledTableRow key={row.id || i} index={i} themeMode={selectedTheme}>
-                                {columns.map(col => (
-                                    <StyledTableCell key={col.field} themeMode={selectedTheme}>
+                                {allLeafColumns.map(col => (
+                                    <StyledTableCell key={col.field} themeMode={selectedTheme} style={{width:columnWidths[col.field] || 120 }}>
                                         {editRow === row.id ? (
                                             <TextField size="small" value={editedData[col.field] ?? ''}
                                                 onChange={e => setEditedData({...editedData,[col.field]:e.target.value})}
                                             />
-                                        ) : ( row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '') ? row[col.field] : 'NA'
-                                        }
+                                        ) : ( (row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '') ? row[col.field] : 'NA'
+                                        )}
                                     </StyledTableCell>
                                 ))}
                                 {editable && (

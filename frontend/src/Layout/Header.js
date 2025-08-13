@@ -24,7 +24,7 @@ const Header = () => {
     const handleAccountClose = () => setAccountAnchor(null);
 
     const{data,loading} = useTableApi('aircraft_masters',{id:params.aircraft_master_id,related:['aircraft_type']});
-
+    console.log(data);
     const handleLogout= () => {
         clearParams();
         logout();
@@ -44,7 +44,7 @@ const Header = () => {
             sx={{backgroundImage:'linear-gradient(170deg, #0f2027 0%, #2c5364 40%, #00ffe7 180%)',
                 backdropFilter:'blur(20px)',
                 boxShadow: '0 8px 32px 0 rgba(0,0,0,0.37)',zindex:9999}}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between',ml:'4%' }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between',ml:'4%' }}>
           {/* Left icons */}
 
             <Box sx={{ display: 'flex',  alignItems: 'center',gap:2 ,position:'relative'}}>

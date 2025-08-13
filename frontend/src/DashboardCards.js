@@ -32,6 +32,7 @@ const cards = [
     color: 'orange',
     link: '/viewE700',
   },
+
 ];
 
 function DashboardCards() {

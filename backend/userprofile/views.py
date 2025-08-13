@@ -18,7 +18,8 @@ from userprofile.models.quals import Quals
 from userprofile.models.users import Users
 from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
-from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer
+from userprofile.models.customers import Customers
+from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,FuelTanksSerializer,UsersSerializer,CustomersSerializer
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
@@ -35,6 +36,7 @@ from .models.users import Users
 from .models.aircraft_masters import AircraftMasters
 from .models.aircraft_roles import AircraftRoles
 from .models.aircraft_types import AircraftTypes
+from .models.customers import Customers
 from .models.quals import Quals
 from .models.ranks import Ranks
 from .models.fuel_tanks import FuelTanks
@@ -44,7 +46,7 @@ from .models.pols import Pols
 from .models.systems import Systems
 
 #------------------------------------------------- Import All Serializers  Here -------------------------------------------
-from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
+from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
                           FuelTanksSerializer, EcuMastersSerializer, TyrePressuresSerializer)
 
 @api_view(['POST'])
@@ -127,6 +129,12 @@ def AircraftDetailsView(request,aircraft_type_id):
         return JsonResponse(data,safe=False)
     except AircraftMasters.DoesNotExist:
         return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def get_customers(request):
+    customers = Customers.objects.all()
+    serializer = CustomersSerializer(customers,many=True)
+    return Response(serializer.data)
 
 # CSRF Token View: Ensures CSRF token is set
 @ensure_csrf_cookie

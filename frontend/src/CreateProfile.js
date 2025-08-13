@@ -169,6 +169,16 @@ const CreateProfilePage = () => {
                     >
                       Back to Login
                     </Button>
+                     <Button
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff'
+                      }}
+                      onClick={() => navigate('/login')}
+                    >
+                      Back to Login
+                    </Button>
                   </motion.div>
                 </Grid>
               </Grid>

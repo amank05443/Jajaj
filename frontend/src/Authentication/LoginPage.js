@@ -154,13 +154,13 @@ const LoginPage = () => {
                     </Grid>
                     <Grid item>
                       <motion.div whileHover={{ scale: 1.05 }}>
-                      { /* <Button
+                       <Button
                           variant="contained"
                           sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
                           onClick={() => navigate('/create-profile')}
                         >
                           Create Profile
-                        </Button> */}
+                        </Button>
                       </motion.div>
                     </Grid>
                   </Grid>
