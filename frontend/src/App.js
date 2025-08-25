@@ -3,26 +3,26 @@ import "./css/App.css";
 import "./css/index.css";
 import "./Layout/JqWidget"; // ✅ Importing all Jq-Widgets for JQXGrid.
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UpdateE700 from "./welcome";
-import { useParams } from "./Utils/useParams";
+import UpdateE700 from "./Layout/welcome";
+import { useParams } from "./Utils/CustomHooks/useParams";
 import LoginPage from "./Authentication/LoginPage";
-import Dashboard from "./Dashboard";
-import DashboardCards from "./DashboardCards";
+import Dashboard from "./Layout/Dashboard";
+import DashboardCards from "./Layout/DashboardCards";
 import Header from "./Layout/Header";
 import Footer from "./Layout/Footer";
 import Sidebar from "./Layout/Sidebar";
-import E700Page from "./E700Page"; // ✅ Import the new E-700 page
-import { E700DataProvider } from "./E700DataContext"; // ✅ Import the new E-700 page
-import { ParamsProvider } from "./Utils/useParams"; //✅useParams context
+import E700Page from "./Layout/E700Page"; // ✅ Import the new E-700 page
+import { E700DataProvider } from "./PrepareE700/E700DataContext"; // ✅ Import the new E-700 page
+import { ParamsProvider } from "./Utils/CustomHooks/useParams"; //✅useParams context
 import { AlertProvider } from "./Utils/Alerts/AlertContext";
 import { ConfirmProvider } from "./Utils/Alerts/ConfirmContext";
 //import FloatingWindow from "./Utils/FloatingWindow";
-import CreateProfile from "./CreateProfile";
-import Prepare from "./Prepare";
-import Modify from "./Modify";
-import FlyingOperations from "./FlyingOperations";
+import CreateProfile from "./PrepareE700/CreateProfile";
+import Prepare from "./PrepareE700/Prepare";
+import Modify from "./PrepareE700/Modify";
+import FlyingOperations from "./Section-4/FlyingOperations";
 import NewEntryForUSLog from "./Section-5/NewEntryForUSLog";
-import ViewE700 from "./ViewE700";
+import ViewE700 from "./E700_Report/ViewE700";
 import USLog from "./Section-5/USLog";
 import OFPLog from "./Section-2/OFPLog";
 import DemoSaveForm from "./Section-2/DemoSaveForm";
@@ -35,22 +35,22 @@ import NewEntryForDeferredDefectLog from "./Section-3/NewEntryForDeferredDefectL
 import HusbandryLog from "./Section-3/HusbandryLog";
 import NewEntryForHusbandryLog from "./Section-3/NewEntryForHusbandryLog";
 import AircraftHeader from "./Layout/AircraftHeader";
-import PrepareAircraft from "./FlyingOperations/PrepareAircraft";
-import PilotAcceptance from "./FlyingOperations/PilotAcceptance";
-import PostFlying from "./FlyingOperations/PostFlying";
-import ViewLeadingParticulars from "./LeadingParticulars/ViewLeadingParticulars";
-import ViewLeadingParticular1 from "./LeadingParticulars/ViewLeadingParticular";
+import PrepareAircraft from "./Section-4/PrepareAircraft";
+import PilotAcceptance from "./Section-4/PilotAcceptance";
+import PostFlying from "./Section-4/PostFlying";
+import ViewLeadingParticulars from "./Section-1/ViewLeadingParticulars";
+import ViewLeadingParticular1 from "./Section-1/ViewLeadingParticular";
 import LeadingParticularTab from "./PrepareE700/LeadingParticularTab";
 import RoutineServicingTab from "./PrepareE700/RoutineServicingTab";
 import PrivateRoute from "./Authentication/PrivateRoute";
 import PublicRoute from "./Authentication/PublicRoute";
 import AutoLogoutHandler from "./Authentication/AutoLogoutHandler";
 import { AuthProvider, useAuth } from "./Authentication/AuthContext";
-import VariableExpandableLoadItems from "./WeightAndBalanceData/VariableExpandableLoadItemsForm";
-import BasicWeightAndMoments from "./WeightAndBalanceData/BasicWeightAndMomentsForm";
-import TestQuals from "./LeadingParticulars/TestQualsSaveAsDraft";
-import UserList from "./UserList";
-import BasicWeightAndMoment from "./WeightAndBalanceData/BasicWeightAndMoment";
+import VariableExpandableLoadItems from "./Section-8/VariableExpandableLoadItemsForm";
+import BasicWeightAndMoments from "./Section-8/BasicWeightAndMomentsForm";
+import TestQuals from "./Section-1/TestQualsSaveAsDraft";
+import UserList from "./Section-5/UserList";
+import BasicWeightAndMoment from "./Section-8/BasicWeightAndMoment";
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();

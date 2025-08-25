@@ -1,14 +1,21 @@
-# models.py
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+#  python3 manage.py inspectdb quals > userprofile/models/quals.py
 from django.db import models
 
+
 class Quals(models.Model):
-    objects         = None
-    abbreviation    = models.CharField(null=True, max_length=30)
-    qual            = models.CharField(null=True, max_length=50)
-    user_type        = models.CharField(null=True, max_length=20)
+    id = models.BigIntegerField(primary_key=True)
+    abbreviation = models.CharField(max_length=30, blank=True, null=True)
+    qual_name = models.CharField(max_length=50, blank=True, null=True)
+    user_type = models.CharField(max_length=20, blank=True, null=True)
+    qual_code = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'quals'
-
-    # def __str__(self):
-    #     return f"{self.abbreviation} {self.qual} {self.user_type}"

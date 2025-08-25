@@ -12,3 +12,15 @@ from .pols import Pols
 from .systems import Systems
 from .items import Items
 from .weight_balance import WeightBalance
+from .lim_defr_def_logs import LimDefrDefLogs
+from .how_found_defects import HowFoundDefects
+from .user_quals import UserQuals
+from .item_serial_trails import ItemSerialTrails
+from .defect_types import DefectTypes
+from .aircraft_stations import AircraftStations
+from .change_of_serviceability_log_lines import ChangeOfServiceabilityLogLines
+from .change_of_serviceability_logs import ChangeOfServiceabilityLogs
+from .current_operating_data_wb import CurrentOperatingDataWb
+from .entry_types import EntryTypes
+from .item_serials import ItemSerials
+from .table_of_equipment_wb import TableOfEquipmentWb

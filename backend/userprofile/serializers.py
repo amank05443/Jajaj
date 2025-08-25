@@ -4,7 +4,7 @@ from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, Aircraf
 
 
 
-#--for dynamic views and urls
+#--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
 def get_dynamic_serializer(model_class):
     class DynamicSerializer(serializers.ModelSerializer):
         class Meta:

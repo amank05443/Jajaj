@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react';
-import CustomGrid from'../Utils/CustomGrid';
-import useTableApi from'../Utils/useTableApi';
+import CustomGrid from'../Utils/CustomComponents/CustomGrid';
+import useTableApi from'../Utils/CustomHooks/useTableApi';
 export default function RoutineServicingTab() {
  const {data:gridData,loading:gridLoading,update:gridUpdate,create:gridCreate} = useTableApi('aircraft_masters');
        const columns = [

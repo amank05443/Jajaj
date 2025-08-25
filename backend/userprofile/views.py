@@ -264,7 +264,7 @@ def register_view(request):
         return JsonResponse({'success':False,'message':'Server error'},status=500)
 
 
-    # DYNAMIC VIEWS.....@Abhishek_singh #13jun25
+    # DYNAMIC VIEWS..for useTableApi...@Abhishek_singh #13jun25
 class DynamicModelView(ViewSet):
     def get_model_class(self,table ):
         try:
@@ -331,7 +331,6 @@ class DynamicModelView(ViewSet):
 
     def list(self,request,table):
         Model = self.get_model_class(table)
-        print(Model)
         queryset = Model.objects.all()
 
         #filter using query params
@@ -359,7 +358,7 @@ class DynamicModelView(ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-#.....useParams().....
+#.....get&set method for useParams().....:-Abhishek Singh
 @csrf_protect
 @require_GET
 def get_params(request):

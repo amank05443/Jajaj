@@ -1,3 +1,6 @@
+//Purpose:- Alert window for handling success,error,info & warning
+//added by :- Abhishek Singh,LAM
+
 import React, { useEffect } from "react";
 import {
   Dialog,
@@ -68,7 +71,7 @@ const CustomAlert = ({
   message,
   data = null,
   onClose,
-  autoHideDuration = 3000,
+  autoHideDuration = 2000,
 }) => {
   const style = alertStyles[type] || alertStyles.info;
 

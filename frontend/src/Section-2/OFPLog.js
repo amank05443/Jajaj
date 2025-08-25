@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
-import useTableApi from '../Utils/useTableApi';
-import CustomGrid from '../Utils/CustomGrid';
+import useTableApi from '../Utils/CustomHooks/useTableApi';
+import CustomGrid from '../Utils/CustomComponents/CustomGrid';
 
 const OFPLog = () => {
 

@@ -6,7 +6,7 @@ import {
 } from '@mui/icons-material';
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CompletionDetails from "./CompletionDetails";
-import useTableApi from '../Utils/useTableApi';
+import useTableApi from '../Utils/CustomHooks/useTableApi';
 import {useNavigate} from 'react-router-dom';
 
 const dropdownStyle = {
@@ -63,7 +63,7 @@ const NewEntryForUSLog = () => {
     if (showNext) return<CompletionDetails show={true} />
     return (
         <>
-            <Box sx={{height:"100vh",backgroundImage:'url("/background.jpg")',backgroundSize:"cover",backgroundRepeat:"no-repeat",backgroundPosition:"center"}}>
+            <Box sx={{height:"100vh",backgroundImage:'url("/images/background.jpg")',backgroundSize:"cover",backgroundRepeat:"no-repeat",backgroundPosition:"center"}}>
                 <Box sx={{p:1.5}}>
                     <Typography variant="h3" fontFamily="Roboto" align="center" gutterBottom fontWeight={600} color='#f50057' letterSpacing={4}
                     sx={{background:"linear-gradient(45deg,#FE6B8B,#FF8E53)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",

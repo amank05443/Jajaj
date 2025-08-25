@@ -1,8 +1,8 @@
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import {useParams} from '../Utils/useParams';
-import useTableApi from '../Utils/useTableApi';
+import {useParams} from '../Utils/CustomHooks/useParams';
+import useTableApi from '../Utils/CustomHooks/useTableApi';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {AppBar, Toolbar, Box, Typography, IconButton, Tooltip,Avatar,Menu,MenuItem,Divider,ListItemIcon,Paper} from '@mui/material';
 import { Home, Menu as MenuIcon, ContactMail, Info, Logout ,Settings,AccountCircle,HelpOutline,FileCopy} from '@mui/icons-material';
@@ -24,7 +24,6 @@ const Header = () => {
     const handleAccountClose = () => setAccountAnchor(null);
 
     const{data,loading} = useTableApi('aircraft_masters',{id:params.aircraft_master_id,related:['aircraft_type']});
-    console.log(data);
     const handleLogout= () => {
         clearParams();
         logout();

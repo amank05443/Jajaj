@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
 
+import backend.logging_config
+from .logging_config import LOGGING,RequestContextMiddleware,SQLDebugMiddleware
+
 
 import requests
 import psycopg2
@@ -46,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'backend.logging_config.RequestContextMiddleware', #added by Abhishek Singh,LAM for debug logging
 ]
 
 # URLS & WSGI
@@ -131,7 +135,13 @@ SESSION_COOKIE_AGE = 9000 #inactivity based log out set session expiry time
 SESSION_SAVE_EVERY_REQUEST = True # Reset timer for each request
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+#added by Abhishek Singh,LAM for debugging and logging for logging_config.py---21Aug25
+if DEBUG:
+    MIDDLEWARE.insert(2,"backend.logging_config.SQLDebugMiddleware")
 
+
+LOGGING = LOGGING
+#-----------------------------------end--------------------------------------
 
 
 
