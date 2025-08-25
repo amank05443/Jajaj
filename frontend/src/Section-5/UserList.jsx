@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import useTableApi from'./Utils/useTableApi';
-import {useParams} from './Utils/useParams';
+import useTableApi from'../Utils/CustomHooks/useTableApi';
+import {useParams} from '../Utils/CustomHooks/useParams';
 import {
   Accordion,
   AccordionSummary,
@@ -42,6 +42,9 @@ const USLogForm = () => {
   const {data:entryType,loading1} = useTableApi('entry_types');
   const{data:aircraftMaster,loading2} = useTableApi('aircraft_masters',{id:params.aircraft_master_id});
   const [open, setOpen] = useState(false);
+  console.log("howFound:",howFound);
+  console.log("entryType:",entryType);
+  console.log("aircraftMaster:",aircraftMaster);
 
 
   if(!loading2){console.log("aircraftMaster:",aircraftMaster)};

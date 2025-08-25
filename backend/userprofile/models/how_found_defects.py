@@ -2,7 +2,7 @@ from django.db import models
 
 class HowFoundDefects(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    occation = models.CharField(max_length=50, blank=True, null=True)
+    occasion = models.CharField(max_length=50, blank=True, null=True)
     user_type = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
