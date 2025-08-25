@@ -46,11 +46,11 @@ import PrivateRoute from "./Authentication/PrivateRoute";
 import PublicRoute from "./Authentication/PublicRoute";
 import AutoLogoutHandler from "./Authentication/AutoLogoutHandler";
 import { AuthProvider, useAuth } from "./Authentication/AuthContext";
-import VariableExpandableLoadItems from "./Section-8/VariableExpandableLoadItemsForm";
-import BasicWeightAndMoments from "./Section-8/BasicWeightAndMomentsForm";
+import VariableExpandableLoadItems from "./Section-9/VariableExpandableLoadItemsForm";
+import BasicWeightAndMoments from "./Section-9/BasicWeightAndMomentsForm";
 import TestQuals from "./Section-1/TestQualsSaveAsDraft";
 import UserList from "./Section-5/UserList";
-import BasicWeightAndMoment from "./Section-8/BasicWeightAndMoment";
+import BasicWeightAndMoment from "./Section-9/BasicWeightAndMoment";
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();

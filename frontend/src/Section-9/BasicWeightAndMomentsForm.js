@@ -29,7 +29,7 @@ const BasicWeightAndMoments = () => {
       headerName: "DATE SNOW",
       sortable: true,
       filterable: true,
-      width: 50,
+      width: 100,
     },
     {
       field: "aircraft_mark",
