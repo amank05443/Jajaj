@@ -32,6 +32,9 @@ INSTALLED_APPS = [
 
     # Your apps
     'userprofile',
+    'authentication',
+    'profiles',
+    'reports',
 ]
 
 # MIDDLEWARE

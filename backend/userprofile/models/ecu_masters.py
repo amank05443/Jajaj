@@ -11,7 +11,7 @@ from django.db import models
 class EcuMasters(models.Model):
     id = models.BigIntegerField(primary_key=True)
     aircraft_type_id = models.BigIntegerField(blank=True, null=True)
-    aircraft_master_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     type = models.CharField(blank=True, null=True)
     mark = models.CharField(blank=True, null=True)
     serial_no = models.CharField(blank=True, null=True)

@@ -12,3 +12,5 @@ from .pols import Pols
 from .systems import Systems
 from .items import Items
 from .weight_balance import WeightBalance
+from .how_found_defects import HowFoundDefects
+from .change_of_serviceability_logs import ChangeOfServiceabilityLogs

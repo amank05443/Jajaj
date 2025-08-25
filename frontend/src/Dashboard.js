@@ -8,7 +8,7 @@ function Dashboard() {
     <div className="dashboard-container">
       <div className="dashboard-body" >
         <main className="dashboard-main">
-            <AircraftHeader/>
+           <AircraftHeader/>
             <DashboardCards />
         </main>
       </div>

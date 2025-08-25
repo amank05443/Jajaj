@@ -88,3 +88,57 @@ export const ParamsProvider = ({ children }) => {
   );
 };
 export const useParams = () => useContext(ParamsContext);
+
+//
+//import { useDispatch, useSelector } from 'react-redux';
+//import {
+//  fetchParams,
+//  syncParams,
+//  setParam,
+//  setMultipleParams,
+//  clearParams,
+//} from './store/aircraftSlice';
+//
+//export const useParams = () => {
+//  const dispatch = useDispatch();
+//  const { params, loading, error } = useSelector((state) => state.params);
+//
+//  const updateParam = async (key, value) => {
+//    const updated = { ...params, [key]: value };
+//    dispatch(setParam({ key, value }));
+//    try {
+//      await dispatch(syncParams(updated)).unwrap();
+//    } catch (err) {
+//      console.error("Error syncing param:", err);
+//    }
+//  };
+//
+//  const updateMultipleParams = async (newParams) => {
+//    const updated = { ...params, ...newParams };
+//    dispatch(setMultipleParams(newParams));
+//    try {
+//      await dispatch(syncParams(updated)).unwrap();
+//    } catch (err) {
+//      console.error("Error syncing multiple params:", err);
+//    }
+//  };
+//
+//  const clearAllParams = async () => {
+//    dispatch(clearParams());
+//    try {
+//      await dispatch(syncParams({})).unwrap();
+//    } catch (err) {
+//      console.error("Error clearing params:", err);
+//    }
+//  };
+//
+//  return {
+//    params,
+//    loading,
+//    error,
+//    fetchParams: () => dispatch(fetchParams()),
+//    setParam: updateParam,
+//    setMultipleParams: updateMultipleParams,
+//    clearParams: clearAllParams,
+//  };
+//};

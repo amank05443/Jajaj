@@ -1,0 +1,21 @@
+
+from django.db import models
+
+class ChangeOfServiceabilityLogs(models.Model):
+    id = models.AutoField(primary_key=True)
+    aircraft_master_id = models.BigIntegerField()
+    airframe_hrs = models.CharField()
+    how_found_id = models.CharField(blank=True, null=True)
+    by_whom = models.BigIntegerField(blank=True, null=True)
+    defect_code_id = models.CharField(blank=True, null=True)
+    reason_for_placing_unserviceable = models.CharField(blank=True, null=True)
+    work_carried_out = models.CharField(blank=True, null=True)
+    authenticated_by_id = models.BigIntegerField(blank=True, null=True)
+    man_hrs = models.CharField(blank=True, null=True)
+    system_time_date = models.DateTimeField(blank=True, null=True)
+    user_time_date = models.CharField(blank=True, null=True)
+    snow = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'change_of_serviceability_logs'

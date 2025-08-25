@@ -1,0 +1,226 @@
+React Redux Integration:-
+✅ Goal:
+
+Store and manage params only in Redux state
+
+Fetch and set params via API calls
+
+Support:
+
+fetchParams() from backend on load
+
+setParam(key, value)
+
+setMultipleParams({...})
+
+clearParams()
+
+Handle loading and error states
+
+🧱 1. paramsSlice.js
+
+// store/paramsSlice.js
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from '../axiosSetup';
+
+const initialState = {
+  params: {},
+  loading: false,
+  error: null,
+};
+
+// Async thunks
+export const fetchParams = createAsyncThunk('params/fetch', async (_, thunkAPI) => {
+  try {
+    const res = await axios.get('/api/params/get/');
+    return res?.data?.params || {};
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data || err.message);
+  }
+});
+
+export const syncParams = createAsyncThunk('params/sync', async (params, thunkAPI) => {
+  try {
+    await axios.post('/api/params/set/', params);
+    return params;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data || err.message);
+  }
+});
+
+const paramsSlice = createSlice({
+  name: 'params',
+  initialState,
+  reducers: {
+    setParam(state, action) {
+      const { key, value } = action.payload;
+      state.params[key] = value;
+    },
+    setMultipleParams(state, action) {
+      state.params = { ...state.params, ...action.payload };
+    },
+    clearParams(state) {
+      state.params = {};
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchParams.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchParams.fulfilled, (state, action) => {
+        state.params = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchParams.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(syncParams.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+  },
+});
+
+export const { setParam, setMultipleParams, clearParams } = paramsSlice.actions;
+export default paramsSlice.reducer;
+
+⚙️ 2. store/index.js
+// store/index.js
+import { configureStore } from '@reduxjs/toolkit';
+import paramsReducer from './paramsSlice';
+
+export const store = configureStore({
+  reducer: {
+    params: paramsReducer,
+  },
+});
+
+🧪 3. hooks/useParams.js// hooks/useParams.js
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchParams,
+  syncParams,
+  setParam,
+  setMultipleParams,
+  clearParams,
+} from '../store/paramsSlice';
+
+export const useParams = () => {
+  const dispatch = useDispatch();
+  const { params, loading, error } = useSelector((state) => state.params);
+
+  const updateParam = async (key, value) => {
+    const updated = { ...params, [key]: value };
+    dispatch(setParam({ key, value }));
+    try {
+      await dispatch(syncParams(updated)).unwrap();
+    } catch (err) {
+      console.error("Error syncing param:", err);
+    }
+  };
+
+  const updateMultipleParams = async (newParams) => {
+    const updated = { ...params, ...newParams };
+    dispatch(setMultipleParams(newParams));
+    try {
+      await dispatch(syncParams(updated)).unwrap();
+    } catch (err) {
+      console.error("Error syncing multiple params:", err);
+    }
+  };
+
+  const clearAllParams = async () => {
+    dispatch(clearParams());
+    try {
+      await dispatch(syncParams({})).unwrap();
+    } catch (err) {
+      console.error("Error clearing params:", err);
+    }
+  };
+
+  return {
+    params,
+    loading,
+    error,
+    fetchParams: () => dispatch(fetchParams()),
+    setParam: updateParam,
+    setMultipleParams: updateMultipleParams,
+    clearParams: clearAllParams,
+  };
+};
+
+
+In index.js (or _app.js in Next.js):
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { store } from './store';
+import App from './App';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+5. Usage in a component
+
+// components/Dashboard.js
+import React, { useEffect } from 'react';
+import { useParams } from '../hooks/useParams';
+
+const Dashboard = () => {
+  const { params, loading, error, fetchParams, setParam, clearParams } = useParams();
+
+  useEffect(() => {
+    fetchParams(); // fetch on mount
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.toString()}</p>;
+
+  return (
+    <div>
+      <h2>Params</h2>
+      <pre>{JSON.stringify(params, null, 2)}</pre>
+      <button onClick={() => setParam('theme', 'dark')}>Set Theme = dark</button>
+      <button onClick={clearParams}>Clear</button>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+Final Folder Structure (Overview)
+
+src/
+│
+├── store/
+│   ├── index.js
+│   └── paramsSlice.js
+│
+├── hooks/
+│   └── useParams.js
+│
+├── components/
+│   └── Dashboard.js
+│
+├── axiosSetup.js
+└── App.js
+
+✅ That's it!
+
+You now have:
+
+A Redux-managed global param store
+
+Secure (no sessionStorage/localStorage)
+
+Fully synced with your Django backend
+
+Loading & error handled
+
+Let me know if you’d like this in a ZIP or GitHub repo format!

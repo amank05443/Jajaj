@@ -10,65 +10,35 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status,generics
 from rest_framework.generics import ListAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
 from userprofile.models.ranks import Ranks
 from userprofile.models.quals import Quals
+from userprofile.models.entry_types import EntryTypes
 from userprofile.models.users import Users
 from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.models.customers import Customers
-from userprofile.serializers import  RanksSerializer,QualsSerializer,AircraftMastersSerializer,UsersSerializer
+from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
+from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
+                                      get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer,)
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
 from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import get_dynamic_serializer
 from rest_framework.viewsets import ViewSet
 
-#---for useParams()---
+
 
 
 #------------------------------------------------- Import All Models Here -------------------------------------------
-from .models.users import Users
-from .models.aircraft_masters import AircraftMasters
-from .models.aircraft_roles import AircraftRoles
-from .models.aircraft_types import AircraftTypes
-from .models.customers import Customers
-from .models.quals import Quals
-from .models.ranks import Ranks
-from .models.fuel_tanks import FuelTanks
-from .models.ecu_masters import EcuMasters
-from .models.tyre_pressures import TyrePressures
-from .models.pols import Pols
-from .models.systems import Systems
 
-#------------------------------------------------- Import All Serializers  Here -------------------------------------------
-from .serializers import (UsersSerializer, RanksSerializer,QualsSerializer, AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer, AircraftRolesSerializer,
-                          FuelTanksSerializer, EcuMastersSerializer, TyrePressuresSerializer)
+from .models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
+                                      EcuMasters,TyrePressures,Pols,Systems)
 
-@api_view(['POST'])
-def create_rank(request):
-    serializer = RanksSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-def create_qual(request):
-    serializer = QualsSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class Quals_view(ListAPIView):
-    # queryset = AircraftMasters.objects.all()
-    queryset = Quals.objects.all()
-    serializer_class = QualsSerializer
 
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
 class AircraftSideNoView(ListAPIView):
@@ -105,9 +75,7 @@ def aircraft_all_detail_view(request, id ):
     except AircraftMasters.DoesNotExist:
         return JsonResponse({"error": "<UNK>"})
 
-class list_quals(ListAPIView):
-    queryset = Quals.objects.exclude(abbreviation__isnull=True)
-    serializer_class = QualsSerializer
+
 
 @login_required
 class AircraftDetailView(APIView):
@@ -138,130 +106,7 @@ def get_customers(request):
     serializer = CustomersSerializer(customers,many=True)
     return Response(serializer.data)
 
-# CSRF Token View: Ensures CSRF token is set
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    return JsonResponse({'success': True, 'message': 'CSRF cookie set'})
 
-# Login View: Handles user authentication
-@require_POST
-def login_view(request):
-    try:
-        # Parse the incoming JSON request body
-        data = json.loads(request.body)
-        pno = data.get('pno')
-        password = data.get('login_pwd')
-
-        # Check if PNO and password are provided
-        if not pno or not password:
-            return JsonResponse({'success': False, 'message': 'PNO and password are required.'}, status=400)
-
-        # Attempt to find the user by PNO
-        user = Users.objects.filter(pno=pno).first()
-
-        if not user or not check_password(password, user.login_pwd):
-            return JsonResponse({'success': False, 'message': 'Invalid credentials'}, status=401)
-
-        # Set the user in the session after successful login
-        request.session['user_id'] = user.id  # This stores the user_id in the session
-        request.session.save()
-
-        rank =Ranks.objects.filter(id=user.rank_id).first()
-        rank_abbr = rank.abbreviation if rank else 'UNKNOWN'
-
-        # Successful login
-        return JsonResponse({'success': True, 'message': 'Login successful',
-                             'user' : {
-                                 'id':user.id,
-                                 'name':user.user_name,
-                                 'pno':user.pno,
-                                 'rank':rank_abbr,
-                                 'session_id': request.session.session_key
-                             },
-                             })
-
-    except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON format'}, status=400)
-    except KeyError as e:
-        return JsonResponse({'success': False, 'message': f'Missing key: {str(e)}'}, status=400)
-    except Exception as e:
-        print('[ERROR]', e)
-        return JsonResponse({'success': False, 'message': 'Server error'}, status=500)
-
-# User Profile View: Fetch the logged-in user's data
-@require_GET
-def user_profile_view(request):
-    # Get the user_id from the session
-    user_id = request.session.get('user_id')
-
-    if not user_id:
-        return JsonResponse({'success': False, 'message': 'Not logged in'}, status=401)
-
-    # Fetch the user from the database
-    try:
-        user = Users.objects.get(id=user_id)
-        rank = Ranks.objects.filter(id=user.rank_id).first()
-        rank_abbr = rank.abbreviation if rank else 'Unknown'
-        # Return the user data (name, rank, pno)
-        return JsonResponse({
-            'success': True,
-            'message':'Login successful',
-            'user': {
-                'id':user.id,
-                'name': user.user_name,
-                'rank': rank_abbr,
-                'pno': user.pno,
-                'session_id':request.session.session_key
-            },
-
-        })
-    except Users.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'User not found'}, status=404)
-
-#
-@require_POST
-
-def logout_view(request):
-    try:
-        # Clear the session
-        request.session.flush()  # This clears all session data, including the user_id
-
-        return JsonResponse({'success': True, 'message': 'Logout successful'})
-    except Exception as e:
-        print('[ERROR in logout]',e)
-        return JsonResponse({'success':False,'message':'Logout failed'},status=500)
-
-
-@csrf_protect
-@require_POST
-def register_view(request):
-    try:
-        data = json.loads(request.body)
-        user_name = data.get('user_name')
-        rank_id = data.get('rank_id')
-        pno = data.get('pno')
-        login_pwd = data.get('login_pwd')
-
-        if not all([user_name, rank_id, pno, login_pwd]):
-            return JsonResponse({'success': False, 'message': 'All fields are required'}, status=400)
-
-        if Users.objects.filter(pno=pno).exists():
-            return JsonResponse({'success': False, 'message': 'PNO already exists'}, status=409)
-
-        hashed_password = make_password(login_pwd)
-
-        Users.objects.create(user_name=user_name, rank_id=rank_id, pno=pno, login_pwd=hashed_password)
-
-        return JsonResponse({'success': True, 'message': 'Profile created successfully'}, status=201)
-
-    except Exception as e:
-        print('[REGISTER ERROR]', e)
-        return JsonResponse({'success': False, 'message': 'Server error'}, status=500)
-
-        import traceback
-        print('[REGISTER ERROR]',e)
-        traceback.print_exc()
-        return JsonResponse({'success':False,'message':'Server error'},status=500)
 
 
     # DYNAMIC VIEWS.....@Abhishek_singh #13jun25
@@ -377,3 +222,13 @@ def set_params(request):
         return JsonResponse({'status':'saved', 'params': data})
     except Exception as e:
         return JsonResponse({'error':str(e)}, status=400)
+
+class Quals_view(ListAPIView):
+    # queryset = AircraftMasters.objects.all()
+    queryset = Quals.objects.all()
+    serializer_class = QualsSerializer
+
+
+class ChangeOfServiceabilityLogsCreateView(generics.CreateAPIView):
+    queryset = ChangeOfServiceabilityLogs.objects.all()
+    serializer_class = ChangeOfServiceabilityLogsSerializer
