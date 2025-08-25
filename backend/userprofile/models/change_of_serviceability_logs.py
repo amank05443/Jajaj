@@ -1,9 +1,8 @@
-
 from django.db import models
 
 class ChangeOfServiceabilityLogs(models.Model):
     id = models.AutoField(primary_key=True)
-    aircraft_master_id = models.BigIntegerField()
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     airframe_hrs = models.CharField()
     how_found_id = models.CharField(blank=True, null=True)
     by_whom = models.BigIntegerField(blank=True, null=True)
@@ -15,6 +14,10 @@ class ChangeOfServiceabilityLogs(models.Model):
     system_time_date = models.DateTimeField(blank=True, null=True)
     user_time_date = models.CharField(blank=True, null=True)
     snow = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    system_completion_date = models.DateTimeField(blank=True, null=True)
+    user_completion_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(blank=True, null=True)
+    supervisor_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

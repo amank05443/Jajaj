@@ -1,7 +1,7 @@
 from django.db import models
 
 class ItemSerialTrails(models.Model):
-    id = models.BigIntegerField()
+    id = models.BigIntegerField(primary_key=True)
     part_number = models.CharField(max_length=100, blank=True, null=True)
     item_id_old = models.BigIntegerField(blank=True, null=True)
     item_serial_no = models.CharField(max_length=50, blank=True, null=True)

@@ -1,3 +1,6 @@
+//Purpose:- Alert window for handling confirmation alert
+//added by :- Abhishek Singh,LAM
+
 import React,{createContext,useContext,useState} from 'react';
 import {Dialog,DialogTitle,DialogContent,DialogActions,Button,Typography,Box,Slide} from '@mui/material';
 

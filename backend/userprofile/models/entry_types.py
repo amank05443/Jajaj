@@ -10,7 +10,7 @@ from django.db import models
 
 class EntryTypes(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    occasion = models.CharField(max_length=50, blank=True, null=True)
+    occation = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         managed = False

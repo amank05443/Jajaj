@@ -10,7 +10,7 @@ from django.db import models
 
 class AircraftRoles(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    aircraft_type_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
     role = models.CharField(blank=True, null=True)
 
     class Meta:

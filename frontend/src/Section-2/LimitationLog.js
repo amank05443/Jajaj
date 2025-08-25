@@ -55,7 +55,7 @@ const LimitationLog = () => {
       style={{
         padding: 20,
         height: "100vh",
-        backgroundImage: 'url("/3409297.jpg")',
+        backgroundImage: 'url("/images/3409297.jpg")',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",

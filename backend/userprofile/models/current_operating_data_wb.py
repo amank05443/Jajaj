@@ -1,9 +1,8 @@
-
 from django.db import models
 
 class CurrentOperatingDataWb(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    aircraft_master_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     basic_weight = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     basic_long_moment = models.CharField(blank=True, null=True)
     basic_lat_vert_moment = models.CharField(blank=True, null=True)
@@ -25,4 +24,3 @@ class CurrentOperatingDataWb(models.Model):
     class Meta:
         managed = False
         db_table = 'current_operating_data_wb'
-

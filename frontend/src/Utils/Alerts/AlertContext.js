@@ -1,3 +1,6 @@
+//Purpose :- React context for handling alerts
+// added by :- Abhishek Singh,LAM
+
 import React,{createContext,useContext,useState} from 'react';
 import CustomAlert from './CustomAlert';
 

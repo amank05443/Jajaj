@@ -1,73 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import {
-  TextField, Button, Container, Box, Typography,
-  Grid, Alert, AppBar, Toolbar, CssBaseline, Paper
-} from '@mui/material';
-import { motion } from 'framer-motion';
-import {useAuth} from './AuthContext';
+  TextField,
+  Button,
+  Container,
+  Box,
+  Typography,
+  Grid,
+  Alert,
+  AppBar,
+  Toolbar,
+  CssBaseline,
+  Paper,
+} from "@mui/material";
+import { motion } from "framer-motion";
+import { useAuth } from "./AuthContext";
 
 const LoginPage = () => {
-  const [pno, setPno] = useState('');
-  const [login_pwd, setLogin_pwd] = useState('');
-  const [error, setError] = useState('');
+  const [pno, setPno] = useState("");
+  const [login_pwd, setLogin_pwd] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const{isAuthenticated,setIsAuthenticated,setUser,user} = useAuth();
+  const { isAuthenticated, setIsAuthenticated, setUser, user } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
-        navigate('/e700',{replace:true});
+      navigate("/e700", { replace: true });
     }
-  },[setIsAuthenticated,navigate]);
+  }, [setIsAuthenticated, navigate]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/csrf/', { withCredentials: true })
-      .then(() => console.log('CSRF token loaded'))
-      .catch(err => console.error('CSRF error', err));
+    axios
+      .get("http://localhost:8000/csrf/", { withCredentials: true })
+      .then(() => console.log("CSRF token loaded"))
+      .catch((err) => console.error("CSRF error", err));
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!pno || !login_pwd) {
-      setError('Both fields are required');
+      setError("Both fields are required");
       return;
     }
 
     try {
-      const csrfToken = Cookies.get('csrftoken');
+      const csrfToken = Cookies.get("csrftoken");
       const response = await axios.post(
-        'http://localhost:8000/login/',
-        { pno, login_pwd},
+        "http://localhost:8000/login/",
+        { pno, login_pwd },
         {
           headers: {
-            'X-CSRFToken': csrfToken,
-            'Content-Type': 'application/json',
-
+            "X-CSRFToken": csrfToken,
+            "Content-Type": "application/json",
           },
           withCredentials: true,
-        }
+        },
       );
 
       if (response.data.success) {
         setUser(response.data.user);
         setIsAuthenticated(true);
-        navigate('/e700',{replace:true});
+        navigate("/e700", { replace: true });
       } else {
-        setError('Invalid credentials');
+        setError("Invalid credentials");
         setIsAuthenticated(false);
         setUser(null);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 
   const handlePullData = async () => {
-
     const res = await fetch("http://localhost:8085/pull-schema-and-data", {
       method: "POST",
     });
@@ -79,41 +87,57 @@ const LoginPage = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        backgroundColor: '#e3f2fd',
-        minHeight: '100vh',
-        backgroundImage: 'url("/ross-parmly-rf6ywHVkrlY-unsplash.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: 2
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: "#e3f2fd",
+        minHeight: "100vh",
+        backgroundImage: 'url("/images/ross-parmly-rf6ywHVkrlY-unsplash.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
       }}
     >
       <CssBaseline />
 
       {/* Top App Bar */}
-      <AppBar position="fixed" sx={{ background: '#1565c0' }}>
+      <AppBar position="fixed" sx={{ background: "#1565c0" }}>
         <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 'bold' }}>e-700</Typography>
+          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+            e-700
+          </Typography>
           <Typography variant="subtitle1">CNAMS</Typography>
         </Toolbar>
       </AppBar>
 
-
       <Container maxWidth="sm" sx={{ pt: 12, pb: 6 }}>
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-
-          <Paper elevation={4} sx={{ p: 4, borderRadius: 3, backgroundColor: '#fff' }}>
-            <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 600, color: '#1565c0' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Paper
+            elevation={4}
+            sx={{ p: 4, borderRadius: 3, backgroundColor: "#fff" }}
+          >
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              sx={{ fontWeight: 600, color: "#1565c0" }}
+            >
               Login
             </Typography>
 
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
 
             <form onSubmit={handleLogin}>
               <Grid container spacing={3} justifyContent="center">
@@ -146,7 +170,12 @@ const LoginPage = () => {
                         <Button
                           type="submit"
                           variant="contained"
-                          sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
+                          sx={{
+                            fontWeight: "bold",
+                            backgroundColor: "#1565c0",
+                            color: "#fff",
+                            minWidth: 140,
+                          }}
                         >
                           Login
                         </Button>
@@ -154,10 +183,15 @@ const LoginPage = () => {
                     </Grid>
                     <Grid item>
                       <motion.div whileHover={{ scale: 1.05 }}>
-                       <Button
+                        <Button
                           variant="contained"
-                          sx={{ fontWeight: 'bold', backgroundColor: '#1565c0', color: '#fff', minWidth: 140 }}
-                          onClick={() => navigate('/create-profile')}
+                          sx={{
+                            fontWeight: "bold",
+                            backgroundColor: "#1565c0",
+                            color: "#fff",
+                            minWidth: 140,
+                          }}
+                          onClick={() => navigate("/create-profile")}
                         >
                           Create Profile
                         </Button>
@@ -172,10 +206,8 @@ const LoginPage = () => {
       </Container>
 
       {/* Footer */}
-
     </Box>
   );
 };
 
 export default LoginPage;
-

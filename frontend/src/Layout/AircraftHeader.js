@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useParams } from "../Utils/useParams";
-import useTableApi from "../Utils/useTableApi";
+import { useParams } from "../Utils/CustomHooks/useParams";
+import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAuth } from "../Authentication/AuthContext";
 
 const slideVariants = {

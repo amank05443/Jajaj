@@ -2,8 +2,8 @@ from django.db import models
 
 class UserQuals(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    user_id = models.BigIntegerField(blank=True, null=True)
-    qual_id = models.BigIntegerField(blank=True, null=True)
+    user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
+    qual = models.ForeignKey('Quals', models.DO_NOTHING, blank=True, null=True)
     date_awarded = models.DateField(blank=True, null=True)
     updated_by_id = models.BigIntegerField(blank=True, null=True)
     date_updated = models.DateField(blank=True, null=True)

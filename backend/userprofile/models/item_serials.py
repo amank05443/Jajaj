@@ -8,9 +8,9 @@ class ItemSerials(models.Model):
     in_use = models.CharField(max_length=2, blank=True, null=True)
     check_item_serial_no = models.CharField(max_length=50, blank=True, null=True)
     item_serial_id_old = models.BigIntegerField(blank=True, null=True)
-    store_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
-    aircraft_master = models.ForeignKey(AircraftMasters, models.DO_NOTHING, blank=True, null=True)
-    customer = models.ForeignKey(Customers, models.DO_NOTHING, blank=True, null=True)
+    store_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
+    customer = models.ForeignKey('Customers', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

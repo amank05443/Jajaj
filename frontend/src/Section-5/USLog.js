@@ -6,7 +6,7 @@ import Header from '../Layout/Header';
 import Footer from '../Layout/Footer';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import useTableApi from '../Utils/useTableApi';
+import useTableApi from '../Utils/CustomHooks/useTableApi';
 
 const USLog = () => {
     const navigate = useNavigate();
