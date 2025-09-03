@@ -34,7 +34,7 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
                  />
                  <style jsx global>{`
                      .fuelGrid .jqx-grid-column-header {
-                         background-image: url("/N.jpeg");
+                         background-image: url("./images/N.jpeg");
                          background-repeat: repeat;
                          background-size: cover;
                          background-position: center;
@@ -102,14 +102,14 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
                      source={source}
                      columns={columns}
                      columngroups={columngroups}
-                     pageable={true}
+                     pageable={false}
                      sortable={true}
                      pageSize={10}
                      altrows={true}
                  />
                  <style jsx global>{`
                      .oilGrid .jqx-grid-column-header {
-                         background-image: url("/N.jpeg");
+                         background-image: url("./images/N.jpeg");
                          background-repeat: repeat;
                          background-size: cover;
                          background-position: center;

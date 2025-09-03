@@ -39,7 +39,6 @@ import PrepareAircraft from "./Section-4/PrepareAircraft";
 import PilotAcceptance from "./Section-4/PilotAcceptance";
 import PostFlying from "./Section-4/PostFlying";
 import ViewLeadingParticulars from "./Section-1/ViewLeadingParticulars";
-import ViewLeadingParticular1 from "./Section-1/ViewLeadingParticular";
 import LeadingParticularTab from "./PrepareE700/LeadingParticularTab";
 import RoutineServicingTab from "./PrepareE700/RoutineServicingTab";
 import PrivateRoute from "./Authentication/PrivateRoute";
@@ -108,7 +107,7 @@ const AppContent = () => {
                   <Route path="/dashboard/modify" element={<Modify />} />
                   <Route
                     path="/viewLeadingParticulars"
-                    element={<ViewLeadingParticular1 />}
+                    element={<ViewLeadingParticulars />}
                   />
                   <Route
                     path="/flying-operations"
