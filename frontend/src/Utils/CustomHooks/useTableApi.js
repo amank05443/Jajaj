@@ -2,7 +2,6 @@
 //speciality :- No need to explicitly engage into cumbersome api calls on the frontend
 //Syntax for all use cases is as follows:-
 
-
 //added by :- Abhishek Singh,LAM
 
 import { useState, useEffect, useCallback, useMemo } from "react";

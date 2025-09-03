@@ -16,7 +16,7 @@ def get_dynamic_serializer(model_class):
             include = self.context.get('include') or []
             if isinstance(include,str):
                 include = [f.strip() for f in include.split(',')]
-            if isinstance(include,list) and len(include)==1 and isinstance(include[0],str) and ',' in include[0] and '.' in include[0]:
+            elif isinstance(include,list) and len(include)==1 and isinstance(include[0],str) and ',' in include[0] :
                 include = [i.strip() for i in include[0].split(',')]
 
             for field_name in include:
