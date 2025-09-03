@@ -7,17 +7,16 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-
 class WeightBalance(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     snow = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
-    weighing_change_mod = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    weighing_change_mod = models.CharField()
     weight_increased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     weight_decreased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     long_increased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    long_decresed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    lat_vert_increase = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    long_decreased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    lat_vert_increased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     lat_vert_decreased = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     corrected_weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     corrected_cg_long = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

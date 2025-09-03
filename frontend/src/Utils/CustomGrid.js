@@ -116,7 +116,6 @@ const StyledTableCell = styled(TableCell)(({ themeMode, pinned }) => ({
   zIndex: pinned ? 2 : 1,
 }));
 
-
 //for custom styling of table rows
 const StyledTableRow = styled(TableRow)(({ themeMode, index }) => ({
   backgroundColor:
@@ -124,12 +123,11 @@ const StyledTableRow = styled(TableRow)(({ themeMode, index }) => ({
   "&:hover": { backgroundColor: themes[themeMode].hoverBg },
 }));
 
-
 //for getting the depth of the group
 const getMaxDepth = (node) =>
   !node.children ? 1 : 1 + Math.max(...node.children.map(getMaxDepth));
 
- //for flattening the header with actual field
+//for flattening the header with actual field
 const flattenColumns = (nodes) =>
   nodes.flatMap((node) =>
     node.children ? flattenColumns(node.children) : [node],
@@ -166,7 +164,6 @@ const buildHeaderRows = (nodes, depth = 0, maxDepth = 3) => {
   return rows;
 };
 
-
 //for getting the value in fields with depth i.e., dot operator fields
 const getNestedValue = (obj, path) => {
   if (!path) return "";
@@ -179,7 +176,6 @@ const getNestedValue = (obj, path) => {
     return "";
   }
 };
-
 
 // the ---::: GRID FUNCTION :::---
 const CustomGrid = ({
@@ -239,11 +235,14 @@ const CustomGrid = ({
   };
 
   const filteredData = useMemo(() => {
-    return data
+    const rows = Array.isArray(data) ? data : data?.result || [];
+    return rows
       .filter((row) =>
         allLeafColumns.every((col) => {
           if (!col.filterable) return true;
-          const value = getNestedValue(row, col.field).toString().toLowerCase();
+          const value = (getNestedValue(row, col.field) ?? "")
+            .toString()
+            .toLowerCase();
           const filter = (filterText[col.field] ?? "").toString().toLowerCase();
           return (value ?? "").toString().toLowerCase().includes(filter);
         }),
@@ -266,8 +265,8 @@ const CustomGrid = ({
     const start = page * rowsPerPage;
     return filteredData.slice(start, start + rowsPerPage);
   }, [filteredData, page, rowsPerPage]);
-  console.log("paginatedData",paginatedData);
-  console.log("allLeafColumns",allLeafColumns);
+  console.log("paginatedData", paginatedData);
+  console.log("allLeafColumns", allLeafColumns);
 
   return (
     <Paper
@@ -359,7 +358,7 @@ const CustomGrid = ({
                 {row.map((cell, i) => (
                   <StyledTableCell
                     key={i}
-                    sx={{textAlign:'center'}}
+                    sx={{ textAlign: "center" }}
                     colSpan={cell.colSpan}
                     rowSpan={cell.rowSpan}
                     themeMode={selectedTheme}
@@ -453,7 +452,12 @@ const CustomGrid = ({
                   <StyledTableCell
                     key={col.field}
                     themeMode={selectedTheme}
-                    style={{ width: col.width || 120}} sx={{textAlign:col.textAlignment ? col.textAlignment : "center"}}
+                    style={{ width: col.width || 120 }}
+                    sx={{
+                      textAlign: col.textAlignment
+                        ? col.textAlignment
+                        : "center",
+                    }}
                   >
                     {editRow === row.id ? (
                       <TextField

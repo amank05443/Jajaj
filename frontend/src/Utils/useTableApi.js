@@ -64,7 +64,7 @@ export default function useTableApi(table, options = {}) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-        if (!res.ok) throw new Error(`Create failed:${res.status}`);
+        if (!res.ok) throw new Error(`create failed:${res.status}`);
         const result = await res.json();
         setData(result);
         return result;
