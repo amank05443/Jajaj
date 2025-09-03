@@ -1,14 +1,17 @@
 import React, {useState,useEffect} from 'react';
 import {Grid, TextField, Typography, Paper,Box,Link} from '@mui/material';
 import axios from 'axios';
+import useValidation from "../Utils/useValidation";
 
 export default function LeadingParticularTab() {
- const [data, setData] = useState({types : '', marks : '', SNs   : '', aircraft : '', date      : ''});
+ const [data, setData] = useState({ marks : '', SNs   : '', aircraft : '', date      : ''});
+ const {formData: typeData, errors: typeErrors, handleChange: handleTypeChange, validate:validateType}= useValidation({types:''},{types:{ capsOnly: true, messages: {capsOnly:'Please  use uppercase only'}}});
 
  useEffect(() => {
  axios.get('http://localhost:8000/api/aircraft/764/')
     .then((res) => {
     const aircraft=res.data;
+
     setData({
         types:aircraft.date_of_manufacture||'',
         marks:aircraft.aircraft_mark||'',
@@ -37,7 +40,8 @@ export default function LeadingParticularTab() {
        <Paper elevation={6} sx={{width:'290px',height:'400px',padding:2,marginTop:"20px"}} >
            <Typography variant="h6"  gutterBottom style={{marginLeft:'100px'}}><u>Aircraft</u></Typography>
            <Grid container spacing={2} style={{marginLeft:'20px',marginBottom:'15px'}}>
-             <TextField  fullwidth label="Type" name="types" value={data.types} onChange={handleChange} variant="outlined" />
+             <TextField  fullwidth label="Type" name="types" value={typeData.types} onChange={handleTypeChange} variant="outlined" />
+             {typeErrors.types && <span className="text-red-500">{typeErrors.types}</span>}
            </Grid>
            <Grid container spacing={2} style={{marginLeft:'20px',marginBottom:'15px'}}>
              <TextField  fullwidth  label="Mark"  name="marks" value={data.marks}  onChange={handleChange}  variant="outlined"  />

@@ -33,13 +33,6 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
                      altrows={true}
                  />
                  <style jsx global>{`
-                     .fuelGrid {
-                         background-image: url("/B.jpeg");
-                         background-repeat: repeat;
-                         background-size: cover;
-                         background-position: center;
-                         padding: 3px;
-                     }
                      .fuelGrid .jqx-grid-column-header {
                          background-image: url("/N.jpeg");
                          background-repeat: repeat;
@@ -112,22 +105,16 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
                      pageable={true}
                      sortable={true}
                      pageSize={10}
-//                      height={'230'}
                      altrows={true}
                  />
                  <style jsx global>{`
-                     .oilGrid {
-                         background-image: url("/download.jpeg");
-                         background-repeat: repeat;
-                         background-size: cover;
-                         background-position: center;
-                         padding: 3px;
-                     }
                      .oilGrid .jqx-grid-column-header {
-                         background-image: url("/U.jpeg");
+                         background-image: url("/N.jpeg");
                          background-repeat: repeat;
                          background-size: cover;
                          background-position: center;
+//                       background: #660210;
+//                       background: rgba(50,40,78,0.2)
                      }
                      .oilGrid .jqx-grid {
                          background: transparent !important;
@@ -163,7 +150,7 @@ import JqxGrid from "jqwidgets-scripts/jqwidgets-react-tsx/jqxgrid";  // ✅ Imp
                          border-top: 1px solid #ddd;
                      }
                  `}
-                 </style>
+                  </style>
              </div>
          );
      }
