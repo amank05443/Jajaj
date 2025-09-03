@@ -4,7 +4,7 @@ import {Paper, Box, Button, Typography, AppBar, Toolbar} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 
 
-const UpdateE700 = () => {
+const Welcome = () => {
      const navigate = useNavigate();
 
      return (
@@ -43,4 +43,4 @@ const UpdateE700 = () => {
      );
 };
 
-export default UpdateE700;
+export default Welcome;

@@ -188,7 +188,7 @@ const getNestedValue = (obj, path) => {
 // the ---::: GRID FUNCTION :::---
 const CustomGrid = ({
   columns,
-  rowPerPage = "5",
+  rowPerPage = 5,
   theme = "White_Grey",
   data,
   editable = false,
@@ -210,10 +210,17 @@ const CustomGrid = ({
     [columns, maxDepth],
   );
 
-  const handleChangePage = (_, newPage) => setPage(newPage);
+  const handleChangePage = (event, newPage) => {
+    const maxPage = Math.max(
+      0,
+      Math.ceil(filteredData.length / rowsPerPage) - 1,
+    );
+    setPage(Math.min(newPage, maxPage));
+  };
 
   const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(+e.target.value);
+    const newSize = parseInt(e.target.value, 10);
+    setRowsPerPage(newSize);
     setPage(0);
   };
 
@@ -268,10 +275,9 @@ const CustomGrid = ({
 
   const paginatedData = useMemo(() => {
     const start = page * rowsPerPage;
-    return filteredData.slice(start, start + rowsPerPage);
+    const end = start + rowsPerPage;
+    return filteredData.slice(start, end);
   }, [filteredData, page, rowsPerPage]);
-  console.log("paginatedData", paginatedData);
-  console.log("allLeafColumns", allLeafColumns);
 
   return (
     <Paper
@@ -507,6 +513,7 @@ const CustomGrid = ({
       <TablePagination
         component="div"
         count={filteredData.length}
+        rowsPerPageOptions={[5,10,20,50,100]}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
