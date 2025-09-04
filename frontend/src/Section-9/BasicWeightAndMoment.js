@@ -1,4 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "../Utils/useParams";
+import useTableApi from "../Utils/useTableApi";
+import { useAlert } from "../Utils/Alerts/AlertContext";
+import { Grid, TextField, Typography, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 const BASE_WEIGHT_KG = 13_000;
 function SignToggle({ name, value, onChange }) {
   return (
@@ -6,6 +13,7 @@ function SignToggle({ name, value, onChange }) {
       {["+", "-"].map((s, i) => (
         <button
           key={s}
+          font="semibold"
           type="button"
           onClick={() => onChange({ target: { name, value: s } })}
           className={`px-3 py-1 text-sm semibold leading-none focus:outline-none ${
@@ -30,17 +38,58 @@ function NumberField({
   error,
   width = "w-32",
 }) {
+  const regex = /^\d{0,10}(\.\d{0,2})? $/;
+  const [errorMsg, setErrorMsg] = useState("");
+  useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(""), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
+  const handleInput = (e) => {
+    let newValue = e.target.value;
+    if (/[^0-9.]/.test(newValue)) {
+      setErrorMsg("Only numbers [0^9] & decimal");
+    } else {
+      setErrorMsg("");
+    }
+    newValue = newValue.replace(/[^0-9.]/g, "");
+    const dotCount = (newValue.match(/\./g) || []).length;
+    if (dotCount > 1) {
+      const firstDotIndex = newValue.indexOf(".");
+      newValue =
+        newValue.slice(0, firstDotIndex + 1) +
+        newValue.slice(firstDotIndex + 1).replace(/\./g, "");
+    }
+    const parts = newValue.split(".");
+    if (parts.length > 2) {
+      newValue = parts[0] + "." + parts[1];
+    }
+    if (parts[0].length > 10) {
+      setErrorMsg("Max 10 digits allowed");
+      parts[0] = parts[0].slice(0, 10);
+    }
+    if (parts[1] && parts[1].length > 2) {
+      setErrorMsg("Max 2 digits allowed after decimal");
+      parts[1] = parts[1].slice(0, 2);
+    }
+    newValue = parts.join(".");
+    e.target.value = newValue;
+    onChange(e);
+  };
+
   return (
-    <div className="relative">
+    <div className={`relative $ {width}`}>
       <input
-        type="number"
+        type="text"
+        inputMode="decimal"
         name={name}
         value={value}
-        onChange={onChange}
+        onInput={handleInput}
         placeholder={placeholder}
         className={`${width} pr-10 px-3 py-2 rounded-lg rounded-x1
         border text-sm shadow-sm focus:ring-2 focus:outline-none ${
-          error
+          errorMsg || error
             ? "border-red-400 ring-red-200"
             : "border-gray-300 ring-indigo-200 focus:border-indigo-400"
         }`}
@@ -54,35 +103,39 @@ function NumberField({
           {unit}
         </span>
       )}
+      {errorMsg && <p className="mt-1 text-xs text-red-500">{errorMsg}</p>}
     </div>
   );
 }
-
+const clearFormData = {
+  description: "",
+  weightSign: "",
+  weightValue: "",
+  longSign: "",
+  longValue: "",
+  latVertSign: "",
+  latVertValue: "",
+  correctedWeight: "",
+  correctedCGLongPos: "",
+  correctedCGLongMoment: "",
+  correctedCGLateralPos: "",
+  correctedLateralMoment: "",
+};
 export default function BasicWeightAndMoment() {
-  const [formData, setFormData] = useState({
-    dateSnow: "2025-11-08",
-    description: "",
-    weightSign: "",
-    weightValue: "",
-    longSign: "",
-    longValue: "",
-    latVertSign: "",
-    latVertValue: "",
-    correctedWeight: "",
-    correctedCGLongPos: "",
-    correctedLongMoment: "",
-    correctedCGLateralPos: "",
-    correctedLateralMoment: "",
-    authCode: "",
-  });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(clearFormData);
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data, loading, create } = useTableApi("weight_balance");
+  const { showAlert } = useAlert();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((p) => ({ ...p, [name]: value }));
     setErrors((p) => ({ ...p, [name]: "" }));
+    console.log("formData: ", formData);
   };
 
   const requiredKeys = [
@@ -95,10 +148,9 @@ export default function BasicWeightAndMoment() {
     "latVertValue",
     "correctedWeight",
     "correctedCGLongPos",
-    "correctedLongMoment",
+    "correctedCGLongMoment",
     "correctedCGLateralPos",
     "correctedLateralMoment",
-    "authCode",
   ];
   const validate = () => {
     const n = {};
@@ -109,17 +161,58 @@ export default function BasicWeightAndMoment() {
     return n;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const v = validate();
+
     if (Object.keys(v).length) {
       setErrors(v);
       return;
     }
-    setIsSubmitting(true);
-    setTimeout(() => {
+
+    const payload = {
+      aircraft_master_id: 1, //replace with actual selected aircraft ID
+      weighing_change_mod: formData.description,
+      weight_increased:
+        formData.weightSign === "+" ? formData.weightValue : null,
+      weight_decreased:
+        formData.weightSign === "-" ? formData.weightValue : null,
+      long_increased: formData.longSign === "+" ? formData.longValue : null,
+      long_decreased: formData.longSign === "-" ? formData.longValue : null,
+      lat_vert_increased:
+        formData.latVertSign === "+" ? formData.latVertValue : null,
+      lat_vert_decreased:
+        formData.latVertSign === "-" ? formData.longValue : null,
+      corrected_weight: formData.correctedWeight,
+      corrected_cg_long: formData.correctedCGLongPos,
+      corrected_moment_long: formData.correctedCGLongMoment,
+      corrected_cg_lat: formData.correctedCGLateralPos,
+      corrected_moment_lat: formData.correctedLateralMoment,
+      date_authenticated: new Date().toISOString().split("T")[0],
+    };
+    console.log("formData2: ", formData);
+
+    try {
+      setIsSubmitting(true);
+      console.log("payload: ", payload);
+      create(payload);
+      showAlert({
+        type: "success",
+        title: "New Entry added to Section-9",
+        message: "Data saved successfully.",
+      });
+      //      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      showAlert({
+        type: "error",
+        title: "ERROR !",
+        message: "ERROR...",
+        data: err,
+      });
+    } finally {
       setIsSubmitting(false);
-      alert("Form submitted successfully !");
-    }, 600);
+    }
+    setFormData(clearFormData);
   };
 
   const inputClass = (name) =>
@@ -130,32 +223,21 @@ export default function BasicWeightAndMoment() {
     }`;
 
   return (
-    <div className="min-h-screen bg-white p-6">
-      <div className="mx-auto w-full max-w-[1200px] rounded-3x1 bg-white shadow-2x1 ring-1 ring-black/5">
-        <header className="flex items-end justify-between gap-4 border-b border-b border-gray-100 p-5">
-          <h1 className="text-xl font-semibold tracking-tight text-gray-900">
+    <div className="min-h-screen  rounded-lg bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 sm:p-6 overflow-y-hidden">
+      <div className="mx-auto rounded-lg   overflow-y-auto rounded-3x1  bg-white shadow-x1 ring-1 ring-gray-100  ">
+        <header className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 border-b border-gray-100 p-5 overflow-x-hidden">
+          <h1 className="flex-1 text-center text-[1rem] md:text-[1.8rem] font-extrabold tracking-wide bg-gray-700 bg-clip-text text-transparent ">
             BASIC WEIGHT AND MOMENT
           </h1>
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-500">
-              Date SNOW
-            </label>
-            <input
-              type="date"
-              name="dateSnow"
-              value={formData.dateSnow}
-              readOnly
-              className="rounded-x1 border bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-gray-200 bg-gray-100 px-3 py-2 text-gray-700 shadow-inner"
-            />
-          </div>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           <main className="md:col-span-8 p-6 space-y-6">
             <section className="space-y-2">
-              <label className="text-lg font-semibold font-medium uppercase tracking-wide text-gray-500">
+              <label className="text-lg font-semibold font-medium uppercase tracking-wide text-gray-800">
                 Weighing / Change /Modification
               </label>
+
               <textarea
                 rows={2}
                 name="description"
@@ -173,9 +255,9 @@ export default function BasicWeightAndMoment() {
               )}
             </section>
 
-            <section className="rounded-2xl border bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-gray-100 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border border-indigo-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-indigo-400">
                   DETAILS OF CHANGE
                 </h2>
               </div>
@@ -184,6 +266,7 @@ export default function BasicWeightAndMoment() {
                   <div className="w-28 shrink-0 text-md font-medium text-gray-500">
                     Weight
                   </div>
+
                   <SignToggle
                     name="weightSign"
                     value={formData.weightSign}
@@ -194,7 +277,7 @@ export default function BasicWeightAndMoment() {
                     value={formData.weightValue}
                     onChange={handleChange}
                     placeholder="0"
-                    unit="kg"
+                    unit="Kg"
                     error={errors.weightValue}
                   />
                   {errors.weightSign && (
@@ -216,7 +299,7 @@ export default function BasicWeightAndMoment() {
                     value={formData.longValue}
                     onChange={handleChange}
                     placeholder="0"
-                    unit="kg"
+                    unit="Nm"
                     error={errors.longValue}
                   />
                   {errors.longSign && (
@@ -238,7 +321,7 @@ export default function BasicWeightAndMoment() {
                     value={formData.latVertValue}
                     onChange={handleChange}
                     placeholder="0"
-                    unit="kg"
+                    unit="Nm"
                     error={errors.latVertValue}
                   />
                   {errors.latVertSign && (
@@ -248,23 +331,25 @@ export default function BasicWeightAndMoment() {
               </div>
             </section>
 
-            <section className="rounded-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border border-gray-100 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl rounded-lg border border-green-100 bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 p-6">
               <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-green-500">
                   CORRECTED BASIC DATA
                 </h2>
               </div>
-              <div className="grid grid-cols-4 gap-4 sm:grid-cols-4">
+
+              <div className="grid grid-cols-5 gap-4 sm:grid-cols-5">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-md font-medium text-gray-500">
                     Weight
                   </div>
+                  <br />
                   <NumberField
                     name="correctedWeight"
                     value={formData.correctedWeight}
                     onChange={handleChange}
                     placeholder="0"
-                    unit="kg"
+                    unit="Kg"
                     error={errors.correctedWeight}
                     width="w-32"
                   />
@@ -272,14 +357,14 @@ export default function BasicWeightAndMoment() {
 
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-md font-medium text-gray-500">
-                    CG Position (Long)
+                    CG Position(Lng)
                   </div>
                   <NumberField
                     name="correctedCGLongPos"
                     value={formData.correctedCGLongPos}
                     onChange={handleChange}
                     placeholder="0"
-                    unit="mm"
+                    unit="Nm"
                     error={errors.correctedCGLongPos}
                     width="w-32"
                   />
@@ -300,7 +385,7 @@ export default function BasicWeightAndMoment() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="text-md font-medium text-gray-500">
-                    CG Position (Lateral % MAC){" "}
+                    CG Position (Lat){" "}
                   </div>
                   <NumberField
                     name="correctedCGLateralPos"
@@ -328,23 +413,21 @@ export default function BasicWeightAndMoment() {
                   />
                 </div>
               </div>
+              <br />
             </section>
           </main>
-          <aside className="md:col-span-4 p-6">
-            <div className="sticky top-6 space-y-4">
-              <div className="rounded-2x1 rounded-lg border border-gray-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 shadow-sm">
-                <h2 className="text-xl font-semibold text-gray-900">
+          <aside className="md:col-span-4 sm:p-6">
+            <div className="sticky top-4 space-y-4">
+              <div className="rounded-2x1 rounded-lg border border border-indigo-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 ">
+                <h2 className="text-xl font-semibold text-gray-500">
                   Review & Submit
                 </h2>
+
                 <br />
                 <h2 className="text-lg font text-gray-700">
                   Details of Change
                 </h2>
-                <div className="mt-3 space-y-3 text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Date SNOW</span>
-                    <span>{formData.dateSnow}</span>
-                  </div>
+                <div className="mt-3 space-y-3 text-md text-gray-600">
                   <div className="flex justify-between">
                     <span>Weight</span>
                     <span>
@@ -392,35 +475,26 @@ export default function BasicWeightAndMoment() {
                   </div>
                 </div>
               </div>
-              <div className="rounded-2x1 rounded-lg border border-gray-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 shadow-sm">
-                <div className="mb-2 text-sm font-semibold text-gray-900">
-                  Auth Code
-                </div>
-                <input
-                  type="number"
-                  name="authCode"
-                  value={formData.authCode}
-                  onChange={handleChange}
-                  placeholder="Enter Code"
-                  className={`w-full rounded-lg rounded-x1 border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 ${
-                    errors.authCode
-                      ? "border-red-400 ring-red-200"
-                      : "border-gray-300 ring-indigo-200 focus:border-indigo-400"
-                  }`}
-                />
-                {errors.authCode && (
-                  <p className="mt-1 text-xs text-red-500">{errors.authCode}</p>
-                )}
+              <div
+                className=" p-2 flex flex-row justify-center gap-4 rounded-2x1 rounded-lg border border-gray-100
+              bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-1 gap-4 shadow-sm"
+              >
                 <button
                   onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className={`mt-4 w-full rounded-lg rounded-2x1 px-5 py-2  text-sm  font-semibold text-black shadow-1g  transition-all ${
+                  className={`mt-4 w-1/2  ${
                     isSubmitting
-                      ? "bg-gray-400"
-                      : "bg-gradient-to-r from -purple-500 to-indigo-600 text-black font-semibold px-6 py-2 rounded-lg hover:from-purple-400 hover:to-indigo-400 active: from-purple-400 active:to-indigo-500 transition-all duration-300"
+                      ? ""
+                      : "bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
                   }`}
                 >
                   {isSubmitting ? "Submitting..." : " Submit"}
+                </button>
+
+                <button
+                  onClick={() => navigate("./ViewHistory")}
+                  className="mt-4 w-1/2 rounded-x1 bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
+                >
+                  History
                 </button>
               </div>
             </div>

@@ -50,6 +50,7 @@ import BasicWeightAndMoments from "./Section-9/BasicWeightAndMomentsForm";
 import TestQuals from "./Section-1/TestQualsSaveAsDraft";
 import UserList from "./Section-5/UserList";
 import BasicWeightAndMoment from "./Section-9/BasicWeightAndMoment";
+import ViewHistory from "./WeightAndBalanceData/BasicWeightAndMomentsForm";
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
@@ -156,6 +157,10 @@ const AppContent = () => {
                   <Route
                     path="/WeightAndBalanceData/BasicWeightAndMoment"
                     element={<BasicWeightAndMoment />}
+                  />
+                  <Route
+                    path="/WeightAndBalanceData/BasicWeightAndMoment/ViewHistory"
+                    element={<ViewHistory />}
                   />
                   <Route
                     path="/RoutineServicingTab"

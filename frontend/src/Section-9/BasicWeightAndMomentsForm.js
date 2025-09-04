@@ -23,16 +23,17 @@ import {
 } from "@mui/material";
 
 const BasicWeightAndMoments = () => {
+  const [wbData, setWbData] = useState({});
   const columns = [
     {
-      field: "side_no",
+      field: "snow",
       headerName: "DATE SNOW",
       sortable: true,
       filterable: true,
       width: 100,
     },
     {
-      field: "aircraft_mark",
+      field: "weighing_change_mod",
       headerName: "WEIGHING, CHANGE OR MODIFICATION",
       sortable: true,
       filterable: true,
@@ -40,13 +41,13 @@ const BasicWeightAndMoments = () => {
     {
       group: "DETAILS OF CHANGE",
       children: [
-        { field: "max_auw", headerName: "Weight(Kg)" },
+        { field: "weight", headerName: "Weight(Kg)" },
 
         {
           group: "Moment",
           children: [
-            { field: "max_auw", headerName: "Long" },
-            { field: "max_auw", headerName: "Lat/Vert" },
+            { field: "long", headerName: "Long" },
+            { field: "lat", headerName: "Lat/Vert" },
           ],
         },
       ],
@@ -55,29 +56,53 @@ const BasicWeightAndMoments = () => {
     {
       group: "CORRECTED BASIC DATA",
       children: [
-        { field: "max_auw", headerName: "Weight(Kg)" },
+        { field: "corrected_weight", headerName: "Weight(Kg)" },
 
         {
           group: "LONGITUDINAL",
           children: [
-            { field: "max_auw", headerName: "CG POSITION" },
-            { field: "max_auw", headerName: "MOMENT" },
+            { field: "corrected_cg_long", headerName: "CG POSITION" },
+            { field: "corrected_moment_long", headerName: "MOMENT" },
           ],
         },
         {
           group: "LATERAL % MAC ABOUT X ORIGIN",
           children: [
-            { field: "max_auw", headerName: "CG POSITION" },
-            { field: "max_auw", headerName: "MOMENT" },
+            { field: "corrected_cg_lat", headerName: "CG POSITION" },
+            { field: "corrected_moment_lat", headerName: "MOMENT" },
           ],
         },
       ],
     },
 
-    { field: "max_fuel_capacity", headerName: "AUTH CODE" },
   ];
 
-  const { data, loading } = useTableApi("aircraft_masters");
+  const { data, loading } = useTableApi("weight_balance");
+  useEffect(() => {
+    if (!loading && !!data) {
+      setWbData(
+        data.map((item) => ({
+          ...item,
+          weight: item.weight_increased
+            ? `+${item.weight_increased}`
+            : item.weight_decreased
+              ? `-${item.weight_decreased}`
+              : "",
+          long: item.long_increased
+            ? `+${item.long_increased}`
+            : item.long_decreased
+              ? `-${item.long_decreased}`
+              : "",
+          lat: item.lat_vert_increased
+            ? `+${item.lat_vert_increased}`
+            : item.lat_vert_decreased
+              ? `-${item.lat_vert_decreased}`
+              : "",
+        })),
+      );
+     console.log("wbData:",wbData);
+    }
+  }, [data, loading]);
   if (loading) {
     <p>Loading...</p>;
   }
@@ -102,10 +127,10 @@ const BasicWeightAndMoments = () => {
       >
         <u>WEIGHT AND BALANCE DATA-BASIC WEIGHT AND MOMENT</u>
       </Typography>
-      {data && (
+      {wbData && (
         <div>
           <CustomGrid
-            data={data}
+            data={wbData}
             theme="Forest_Fog"
             columns={columns}
             heading=""

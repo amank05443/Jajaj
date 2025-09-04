@@ -243,11 +243,14 @@ const CustomGrid = ({
   };
 
   const filteredData = useMemo(() => {
-    return data
+    const rows = Array.isArray(data) ? data : data?.result || [];
+    return rows
       .filter((row) =>
         allLeafColumns.every((col) => {
           if (!col.filterable) return true;
-          const value = getNestedValue(row, col.field).toString().toLowerCase();
+          const value = (getNestedValue(row, col.field) ?? "")
+            .toString()
+            .toLowerCase();
           const filter = (filterText[col.field] ?? "").toString().toLowerCase();
           return (value ?? "").toString().toLowerCase().includes(filter);
         }),
