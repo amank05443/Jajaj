@@ -27,9 +27,6 @@ const TestQuals = lazy(() => import("../Section-1/TestQualsSaveAsDraft"));
 const ViewLeadingParticulars = lazy(
   () => import("../Section-1/ViewLeadingParticulars"),
 );
-const ViewLeadingParticular1 = lazy(
-  () => import("../Section-1/ViewLeadingParticular"),
-);
 
 const OFPLog = lazy(() => import("../Section-2/OFPLog"));
 const DemoSaveForm = lazy(() => import("../Section-2/DemoSaveForm"));
@@ -90,7 +87,7 @@ export const privateRoutes = [
   { path: "/userList", element: <UserList /> },
   { path: "/flying-operations", element: <FlyingOperations /> },
 
-  { path: "/viewLeadingParticulars", element: <ViewLeadingParticular1 /> },
+  { path: "/viewLeadingParticulars", element: <ViewLeadingParticulars /> },
 
   { path: "/OFPLog", element: <OFPLog /> },
   { path: "/demoSaveForm", element: <DemoSaveForm /> },
