@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "../Utils/useParams";
-import useTableApi from "../Utils/useTableApi";
+import { useParams } from "../Utils/CustomHooks/useParams";
+import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
 import { Grid, TextField, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
