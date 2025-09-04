@@ -23,22 +23,28 @@ import dayjs from "dayjs";
 import { styled } from "@mui/material/styles";
 
 const StyledTableCell = styled(TableCell)(() => ({
-  color: "#fff",
-  //    border:`1px solid ${themes[themeMode].borderColor}`,color:themes[themeMode].textColor,
-  textAlign: "center",
-  verticalAlign: "middle",
-  padding: "8px",
-  fontFamily: '"Segoe UI","Roboto","Open Sans",sans-serif',
-  //    transition:'background-color 300ms ease,color 300ms ease,border-color 300ms ease',
-  //    background:pinned ? themes[themeMode].headerBg : 'inherit',
-  //    position: pinned ? 'sticky' : 'static',
-  //    left : pinned ? 0 : undefined,
-  //    zIndex : pinned ? 2 : 1,
+  background:
+    "linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4))",
+  backdropFilter: "blur(6px) saturate(110%)",
+  WebkitBackdropFilter: "blur(6px) saturate(110%)",
+  borderBottom: "1px solid rgba(15,23,42,0.05)",
+  transition: "background .22s ease",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  color: "#0f172a",
+  "&:hover": {
+    background:
+      "linear-gradient(90deg,rgba(99,102,241,0.07),rgba(255,255,255,0.55))",
+  },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  //    backgroundColor:index%2 === 0 ? themes [themeMode].rowBg : themes[themeMode].rowAltBg,
-  "&:hover": { backgroundColor: "rgba(190,210,230,0.35)" },
+  cursor: "pointer",
+  transition: "transform .22s ease, box-shadow .22s ease, background .22s ease",
+  "&:hover": {
+    transform: "translateY(-3px)",
+    boxShadow: "0 8px 24px rgba(15,23,42,0.08)",
+  },
 }));
 
 const LimitationLog = () => {
@@ -55,7 +61,7 @@ const LimitationLog = () => {
       style={{
         padding: 20,
         height: "100vh",
-        backgroundImage: 'url("/images/3409297.jpg")',
+        backgroundImage: 'url("/images/background.jpg")',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
