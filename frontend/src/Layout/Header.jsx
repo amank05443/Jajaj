@@ -62,14 +62,8 @@ export default function Header({
   };
   const handleNotifClose = () => setNotifAnchor(null);
 
-  const handleUserClick = (event) => {
-    setUserAnchor(event.currentTarget);
-  };
-  const handleUserClose = () => setUserAnchor(null);
-
   const handleLogout = () => {
     logout();
-    handleUserClose();
   };
 
   return (
@@ -112,38 +106,11 @@ export default function Header({
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex-grow max-w-md hidden md:block">
-          <TextField
-            placeholder="Search..."
-            size="small"
-            fullWidth
-            variant="outlined"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                background: "rgba(255,255,255,0.1)",
-                color: "white",
-                "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                "&:hover fieldset": { borderColor: "cyan" },
-              },
-              input: { color: "white" },
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon size={18} className="text-cyan-300" />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-
         {/* Notifications */}
         <div className="flex items-center gap-2">
           <IconButton
             color="inherit"
-            onClick="handleNotifClick"
+            onClick={handleNotifClick}
             aria-label="notifications"
             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
           >
@@ -174,38 +141,33 @@ export default function Header({
             <Info size={20} />
           </IconButton>
 
-          <Fab
-            size="small"
-            color="primary"
-            aria-label="user-info"
-            onClick={handleUserClick}
-            sx={{
-              ml: 1,
-              boxShadow: 3,
-              "&:hover": { backgroundColor: "primary.dark" },
-            }}
-          >
-            <User size={18} />
-          </Fab>
+          {/* Search Bar */}
+          <div className="flex-grow max-w-md hidden md:block">
+            <TextField
+              placeholder="Search..."
+              size="small"
+              fullWidth
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  background: "rgba(255,255,255,0.1)",
+                  color: "white",
+                  "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
+                  "&:hover fieldset": { borderColor: "cyan" },
+                },
+                input: { color: "white" },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon size={18} className="text-cyan-300" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
 
-          <Menu
-            anchorE1={userAnchor}
-            open={Boolean(userAnchor)}
-            onClose={handleUserClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "bottom", horizontal: "right" }}
-            PaperProps={{ sx: { mt: 1.2, minWidth: 180 } }}
-          >
-            <MenuItem>
-              <User size={18} className="mr-2" /> Profile
-            </MenuItem>
-            <MenuItem>
-              <Settings size={18} className="mr-2" /> Settings
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              <LogOut size={18} className="mr-2" /> LogOut
-            </MenuItem>
-          </Menu>
           {/* <div className="">
           {!loading && data && data.aircraft_type && (
             <motion.div

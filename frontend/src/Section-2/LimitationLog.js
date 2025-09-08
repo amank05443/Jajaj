@@ -84,11 +84,6 @@ const LimitationLog = () => {
           }}
         >
           Limitation Log
-          <sub
-            style={{ fontSize: "0.85rem", color: "#fff", fontWeight: "1000" }}
-          >
-            (MOD Form 703)
-          </sub>
         </Typography>
       </Box>
       <Button
