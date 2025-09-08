@@ -20,10 +20,29 @@ import {
   MenuItem,
   DialogTitle,
   Autocomplete,
+  Card,
+  CardContent,
 } from "@mui/material";
-
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 const BasicWeightAndMoments = () => {
   const [wbData, setWbData] = useState({});
+  const [showGraph, setShowGraph] = useState(false);
   const columns = [
     {
       field: "snow",
@@ -42,7 +61,6 @@ const BasicWeightAndMoments = () => {
       group: "DETAILS OF CHANGE",
       children: [
         { field: "weight", headerName: "Weight(Kg)" },
-
         {
           group: "Moment",
           children: [
@@ -52,12 +70,10 @@ const BasicWeightAndMoments = () => {
         },
       ],
     },
-
     {
       group: "CORRECTED BASIC DATA",
       children: [
         { field: "corrected_weight", headerName: "Weight(Kg)" },
-
         {
           group: "LONGITUDINAL",
           children: [
@@ -74,66 +90,47 @@ const BasicWeightAndMoments = () => {
         },
       ],
     },
-
   ];
-
   const { data, loading } = useTableApi("weight_balance");
   useEffect(() => {
     if (!loading && !!data) {
       setWbData(
-        data.map((item) => ({
-          ...item,
-          weight: item.weight_increased
-            ? `+${item.weight_increased}`
-            : item.weight_decreased
-              ? `-${item.weight_decreased}`
-              : "",
-          long: item.long_increased
-            ? `+${item.long_increased}`
-            : item.long_decreased
-              ? `-${item.long_decreased}`
-              : "",
-          lat: item.lat_vert_increased
-            ? `+${item.lat_vert_increased}`
-            : item.lat_vert_decreased
-              ? `-${item.lat_vert_decreased}`
-              : "",
-        })),
+        data
+          .slice()
+          .reverse()
+          .map((item) => ({
+            ...item,
+            weight: item.weight_increased
+              ? `+${item.weight_increased}`
+              : item.weight_decreased
+                ? `-${item.weight_decreased}`
+                : "",
+            long: item.long_increased
+              ? `+${item.long_increased}`
+              : item.long_decreased
+                ? `-${item.long_decreased}`
+                : "",
+            lat: item.lat_vert_increased
+              ? `+${item.lat_vert_increased}`
+              : item.lat_vert_decreased
+                ? `-${item.lat_vert_decreased}`
+                : "",
+          })),
       );
-     console.log("wbData:",wbData);
+      console.log("wbData:", wbData);
     }
   }, [data, loading]);
   if (loading) {
     <p>Loading...</p>;
   }
   return (
-    <div style={{ padding: 15 }}>
-      <Typography
-        sx={{
-          bgColor: "#e8f2fd",
-          color: "#0d47a1",
-          fontWeight: "bold",
-          textAlign: "right",
-          margin: "relative",
-        }}
-      >
-        <u>MOD Form 702A</u>
-      </Typography>
-      <Typography
-        variant="h6"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: "100", color: "green", letterSpacing: 1 }}
-      >
-        <u>WEIGHT AND BALANCE DATA-BASIC WEIGHT AND MOMENT</u>
-      </Typography>
+    <div>
       {wbData && (
         <div>
           <CustomGrid
             data={wbData}
-            theme="Forest_Fog"
             columns={columns}
-            heading=""
+            heading="BASIC WEIGHT AND MOMENT (702A)"
           />
         </div>
       )}

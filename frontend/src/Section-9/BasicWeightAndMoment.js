@@ -5,6 +5,7 @@ import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
 import { Grid, TextField, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import BasicWeightAndMomentsForm from "../Section-9/BasicWeightAndMomentsForm";
 
 const BASE_WEIGHT_KG = 13_000;
 function SignToggle({ name, value, onChange }) {
@@ -122,6 +123,7 @@ const clearFormData = {
   correctedLateralMoment: "",
 };
 export default function BasicWeightAndMoment() {
+  const [showHistory, setShowHistory] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(clearFormData);
 
@@ -255,7 +257,8 @@ export default function BasicWeightAndMoment() {
               )}
             </section>
 
-            <section className="rounded-2xl border border border-indigo-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
+            <section className="rounded-2xl border border border-indigo-100
+            bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-indigo-400">
                   DETAILS OF CHANGE
@@ -331,7 +334,10 @@ export default function BasicWeightAndMoment() {
               </div>
             </section>
 
-            <section className="rounded-2xl rounded-lg border border-green-100 bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 p-6">
+            <section
+              className="rounded-2xl rounded-lg border border-green-100
+            bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 p-6"
+            >
               <div className="space-y-1">
                 <h2 className="text-lg font-semibold text-green-500">
                   CORRECTED BASIC DATA
@@ -479,7 +485,7 @@ export default function BasicWeightAndMoment() {
                 className=" p-2 flex flex-row justify-center gap-4 rounded-2x1 rounded-lg border border-gray-100
               bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-1 gap-4 shadow-sm"
               >
-                <button
+                 <button
                   onClick={handleSubmit}
                   className={`mt-4 w-1/2  ${
                     isSubmitting
@@ -491,7 +497,7 @@ export default function BasicWeightAndMoment() {
                 </button>
 
                 <button
-                  onClick={() => navigate("./ViewHistory")}
+                  onClick={() => navigate("/basicWeightAndMomentsForm")}
                   className="mt-4 w-1/2 rounded-x1 bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
                 >
                   History
