@@ -50,6 +50,10 @@ const USLog = () => {
       New Entry
     </Button>
 
+    <Button variant="contained" color="secondary" onClick={() => navigate('/newEntryForUSLog')}>
+      New Entry AB
+    </Button>
+
     <TableContainer component={Paper} style={{marginTop:20}}>
         <Table>
             <TableHead>

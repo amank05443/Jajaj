@@ -4,7 +4,7 @@ import { useParams } from "../Utils/CustomHooks/useParams";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
 import { Button } from "@mui/material";
-import useValidation from "../Utils/useValidation";
+import useValidation from "../Utils/CustomHooks/useValidation";
 
 const TestQuals = () => {
   const { showAlert } = useAlert();
@@ -18,7 +18,6 @@ const TestQuals = () => {
       {
           abbreviation: { capsOnly: true, maxLength: 5, messages: { capsOnly: "CAPS ONLY", maxLength: "MAX 03 CHARACTERS ALLOWED" }},
           qual_name: { capsOnly: true, maxLength: 3 },
-      //         user_type: { capsOnly: true, maxLength: 3 },
           user_type: { dateNotBeforeToday: true },
     },
   );

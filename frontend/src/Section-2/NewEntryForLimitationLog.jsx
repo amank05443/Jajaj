@@ -59,7 +59,7 @@ const schema = yup.object({
   deferred_until: yup.string().required("Deferred Until is required"),
 });
 
-export default function NewEntryForLimitationLog({ onSave }) {
+export default function NewEntryForLimitationLog() {
   const { showAlert } = useAlert();
   const { params } = useParams();
   const { data: systems, loading: systemsLoading } = useTableApi("systems", {
