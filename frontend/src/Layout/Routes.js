@@ -77,6 +77,14 @@ const BasicWeightAndMoment = lazy(
   () => import("../Section-9/BasicWeightAndMoment"),
 );
 
+//--SECTION-> 10--//
+const CompassLog = lazy(
+  () => import("../Section-10/CompassLog"),
+);
+const CompassLogView = lazy(
+  () => import("../Section-10/CompassLogView"),
+);
+
 //-------------------------------------------------------------------------ROUTES-----------------------------------------------------------------------------------//
 
 //--------------PUBLIC ROUTES------------(Accessible even without Login)//
@@ -141,4 +149,14 @@ export const privateRoutes = [
   },
   { path: "/basicWeightAndMoment", element: <BasicWeightAndMoment /> },
   { path: "/testQualsForm", element: <TestQuals /> },
+
+  //--SECTION-> 10--//
+  {
+    path: "/compassLog",
+    element: <CompassLog />,
+  },
+  {
+    path: "/compassLogView",
+    element: <CompassLogView />,
+  },
 ];

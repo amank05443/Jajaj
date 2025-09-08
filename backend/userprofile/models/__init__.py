@@ -24,3 +24,4 @@ from .current_operating_data_wb import CurrentOperatingDataWb
 from .entry_types import EntryTypes
 from .item_serials import ItemSerials
 from .table_of_equipment_wb import TableOfEquipmentWb
+from .compass_calibration_logs import CompassCalibrationLogs

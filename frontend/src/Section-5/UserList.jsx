@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
+import dayjs from "dayjs";
 import {
   Accordion,
   AccordionSummary,
@@ -41,7 +42,7 @@ const USLogForm = () => {
         airframeHrs: "",
         aircraft_master_id: "",
         reason_for_placing_unserviceable: "",
-        system_time_date: "",
+        system_time_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         entryType: { required: true },
@@ -142,10 +143,6 @@ const USLogForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
-    alert("Submitted successfully!");
-  };
   //   const FloatingLabel = ({ label }, { label: string }) => (
   const FloatingLabel = ({ label }) => (
     <div className="absolute left-0 -top-4 text-sm text-gray-600 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-indigo-500">
@@ -159,7 +156,7 @@ const USLogForm = () => {
   }
 
   return (
-    <div className="items-start bg-indigo-300 p-1">
+    <div className="items-start bg-blue-200 p-1">
       {/*<h1>------------------------------------------------------Headings ------------------------------------------------------------------</h1>*/}
       <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-1">
         <h2
@@ -170,7 +167,7 @@ const USLogForm = () => {
             transform: "translateX(-50%)",
             fontSize: "35px",
             margin: 4,
-            fontFamily:"Algerian"
+            fontFamily: "Algerian",
           }}
         >
           CHANGE OF SERVICEABILITY LOG
@@ -178,11 +175,13 @@ const USLogForm = () => {
       </div>
       {/*<h1>-------------------------------------------------------Forms & Body ---------------------------------------------------</h1>*/}
       <form onSubmit={handleSubmit} className=" p-1 space-y-4 ">
-        <div className="border border-green-100 bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 rounded-lg shadow-inner p-4">
+        <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
           {/*<h1>-------------------------------------------------------row 1 ---------------------------------------------------</h1>*/}
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 font-medium">Entry Type</label>
+              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                Entry Type
+              </label>
               <select
                 name="entryType"
                 value={formData.entryType}
@@ -205,7 +204,9 @@ const USLogForm = () => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">How Found</label>
+              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                How Found
+              </label>
               <select
                 name="howFound"
                 value={formData.howFound}
@@ -228,7 +229,9 @@ const USLogForm = () => {
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">Date & Time</label>
+              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                Date & Time
+              </label>
               <input
                 type="datetime-local"
                 //                 type="date"
@@ -246,7 +249,9 @@ const USLogForm = () => {
 
             {aircraftMaster && (
               <div>
-                <label className="block mb-1 font-medium">Airframe Hours</label>
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Airframe Hours
+                </label>
                 <input
                   type="text"
                   name="airframe_hrs"
@@ -259,10 +264,10 @@ const USLogForm = () => {
           </div>
           {/* SECTION 2: REASON & CONDITIONS */}
           {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
-          <div className="grid grid-cols-2 gap-2 mt-8">
+          <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2 mt-8">
             {/* Reason */}
             <div className="border-2 border-black-600 rounded-lg p-4">
-              <label className="block mb-1 font-medium">
+              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
                 Reason for placing aircraft unserviceable
               </label>
               <textarea
@@ -284,8 +289,8 @@ const USLogForm = () => {
             {/* Checkboxes for LDHC*/}
             <div className="grid grid-cols-2 gap-2">
               <div className="border-2 border-black-600 rounded-lg p-4">
-                <label className="block mb-1 font-medium">
-                 Select LDHC
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Select LDHC
                 </label>
                 {checkBoxesLDHC.map((box) => (
                   <label key={box} className="flex items-center space-x-2">
@@ -298,17 +303,17 @@ const USLogForm = () => {
                   </label>
                 ))}
               </div>
-              {/* Checkboxes for Checks*/}
+              {/* Checkboxes for Additional Checks*/}
               <div className="border-2 border-black-600 rounded-lg p-4">
-                <label className="block mb-1 font-medium">
-                  Select Checks
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Select Additional Checks
                 </label>
                 {checkBoxesChecks.map((box) => (
                   <label key={box} className="flex items-center space-x-2">
                     <input
                       type="checkbox"
                       {...register(`check_${box}`)}
-                      className="accent-pink-600"
+                      className="accent-green-600"
                     />
                     <span className="text-gray-800">{box}</span>
                   </label>

@@ -10,6 +10,8 @@ import {
   ChevronDown,
   ChevronRight,
   Zap,
+  Compass,
+  NavigationIcon,
 } from "lucide-react";
 
 import {
@@ -29,6 +31,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import {
+  CompassCalibration,
   SportsSoccer,
   ChevronLeft,
   ChevronRightRounded,
@@ -138,8 +141,19 @@ const sidebarLinks = [
   },
   {
     label: "Compass Log",
-    icon: <CompassCalibrationTwoTone size={20} />,
-    to: "",
+    icon: <Compass size={20} />,
+    children: [
+      {
+        label: "Compass Log Form",
+        icon: <CompassCalibration size={20} />,
+        to: "/compassLog",
+      },
+      {
+        label: "Compass Log View",
+        icon: <NavigationIcon size={20} />,
+        to: "/compassLogView",
+      },
+    ],
   },
 ];
 
