@@ -13,7 +13,7 @@ const useValidation = (initialValues = {}, rules = {}) => {
     else if (fieldRules.numbersOnly && !/^[0-9]*$/.test(value)) err = customMessages.numbersOnly || " Numbers only";
     else if (fieldRules.capsOnly && !/^[A-Z]*$/.test(value)) err = customMessages.capsOnly || " Uppercase letters only";
     else if (fieldRules.lettersOnly && !/^[A-Za-z]*$/.test(value)) err = customMessages.lettersOnly || " Letters only";
-    else if (fieldRules.alphaNumeric && !/^[A-Za-z0-9]*$/.test(value)) err = customMessages.alphaNumeric || " Letters and Numbers only";
+    else if (fieldRules.alphaNumeric && !/^[A-Za-z0-9 ]*$/.test(value)) err = customMessages.alphaNumeric || " Letters and Numbers only";
     else if (fieldRules.noSpecial && !/^[A-Za-z0-9]*$/.test(value)) err = customMessages.noSpecial || " No Special Characters";
     else if (fieldRules.decimal && !/^\d+(\.\d+)?$/.test(value)) err = customMessages.decimal || " Must be a valid number (decimals allowed)";
     else if (fieldRules.phone && !/^[0-9]{10}$/.test(value)) err = customMessages.phone || " Phone must be 10 digits";
@@ -39,6 +39,16 @@ const useValidation = (initialValues = {}, rules = {}) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (inputDate < today) err = customMessages.dateNotBeforeToday || "Date must not be before to Date.";
+    }
+    else if (fieldRules.dateTimeNotAfterNow && value) {
+      const inputDateTime = new Date(value);
+      const now = new Date();
+      if (inputDateTime > now) err = customMessages.dateTimeNotAfterNow || "Date and time must not be in the future.";
+    }
+    else if (fieldRules.dateTimeNotBeforeNow && value) {
+      const inputDateTime = new Date(value);
+      const now = new Date();
+      if (inputDateTime < now) err = customMessages.dateTimeNotBeforeNow || "Date and time can not before to Date.";
     }
     return err;
   };
