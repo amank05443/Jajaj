@@ -16,7 +16,8 @@ const useValidation = (initialValues = {}, rules = {}) => {
     else if (fieldRules.alphaNumeric && !/^[A-Za-z0-9 ]*$/.test(value)) err = customMessages.alphaNumeric || " Letters and Numbers only";
     else if (fieldRules.noSpecial && !/^[A-Za-z0-9]*$/.test(value)) err = customMessages.noSpecial || " No Special Characters";
     else if (fieldRules.decimal && !/^\d+(\.\d+)?$/.test(value)) err = customMessages.decimal || " Must be a valid number (decimals allowed)";
-    else if (fieldRules.phone && !/^[0-9]{10}$/.test(value)) err = customMessages.phone || " Phone must be 10 digits";
+
+//    else if (fieldRules.passkey && !/^[0-9]{6}$/.test(value)) err = customMessages.phone || " Passkey must be 06 digits";
     else if (fieldRules.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) err = customMessages.email || " Invalid email format";
     else if (fieldRules.password && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value))
         err = customMessages.password || " Password must be 8+ chars, include upper, lower, number & special char";
@@ -27,6 +28,16 @@ const useValidation = (initialValues = {}, rules = {}) => {
       const num = Number(value);
       const {min, max} = fieldRules.range;
       if (num < min || num > max ) err = customMessages.range || `Value must be between ${min} and ${max}`;
+    }
+    else if (fieldRules.phone) {
+        if(!value) err= "Phone is required";
+        else if (!/^[0-9]*$/.test(value)) err= "Only digits allowed"
+        else if (value.length > 10) err= "Phone must be 10 digits"
+    }
+    else if (fieldRules.passkey) {
+        if(!value) err= "Passkey is required";
+        else if (!/^[0-9]*$/.test(value)) err= "Only digits allowed"
+        else if (value.length > 6) err= "Passkey must be 06 digits"
     }
     else if (fieldRules.dateNotAfterToday && value) {
       const inputDate = new Date(value);

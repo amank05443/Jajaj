@@ -11,7 +11,7 @@ import {motion} from 'framer-motion';
 import LimitationTab from './LimitationTab';
 import LeadingParticularTab from './LeadingParticularTab';
 import WeightAndBalanceTab from './WeightAndBalanceTab';
-import RoutineServicingTab from './RoutineServicingTab';
+import RoutineServicingTab from '../Section-7/RoutineServicingTab';
 import CompassDataTab from './CompassDataTab';
 import InspectionTab from './InspectionTab';
 import { E700DataContext } from './E700DataContext';

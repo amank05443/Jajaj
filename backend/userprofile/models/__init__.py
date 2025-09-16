@@ -25,3 +25,4 @@ from .entry_types import EntryTypes
 from .item_serials import ItemSerials
 from .table_of_equipment_wb import TableOfEquipmentWb
 from .compass_calibration_logs import CompassCalibrationLogs
+from .trades import Trades
