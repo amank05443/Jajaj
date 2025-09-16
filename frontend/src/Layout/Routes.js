@@ -20,9 +20,7 @@ const Modify = lazy(() => import("../PrepareE700/Modify"));
 const LeadingParticularTab = lazy(
   () => import("../PrepareE700/LeadingParticularTab"),
 );
-const RoutineServicingTab = lazy(
-  () => import("../PrepareE700/RoutineServicingTab"),
-);
+
 
 //--REPORT E700--//
 const ViewE700 = lazy(() => import("../E700_Report/ViewE700"));
@@ -66,6 +64,10 @@ const NewEntryForUSLog = lazy(() => import("../Section-5/NewEntryForUSLog"));
 const USLog = lazy(() => import("../Section-5/USLog"));
 const UserList = lazy(() => import("../Section-5/UserList"));
 
+//--SECTION->7--//
+const RoutineServicingTab = lazy(
+  () => import("../Section-7/RoutineServicingTab"),
+);
 //--SECTION->9--//
 const VariableExpandableLoadItems = lazy(
   () => import("../Section-9/VariableExpandableLoadItems"),
