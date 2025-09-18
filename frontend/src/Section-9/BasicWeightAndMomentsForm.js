@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   IconButton,
@@ -20,10 +21,32 @@ import {
   MenuItem,
   DialogTitle,
   Autocomplete,
+  Card,
+  CardContent,
 } from "@mui/material";
-
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 const BasicWeightAndMoments = () => {
   const [wbData, setWbData] = useState({});
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(-1);
+  };
   const columns = [
     {
       field: "snow",
@@ -42,7 +65,6 @@ const BasicWeightAndMoments = () => {
       group: "DETAILS OF CHANGE",
       children: [
         { field: "weight", headerName: "Weight(Kg)" },
-
         {
           group: "Moment",
           children: [
@@ -52,12 +74,10 @@ const BasicWeightAndMoments = () => {
         },
       ],
     },
-
     {
       group: "CORRECTED BASIC DATA",
       children: [
         { field: "corrected_weight", headerName: "Weight(Kg)" },
-
         {
           group: "LONGITUDINAL",
           children: [
@@ -74,69 +94,74 @@ const BasicWeightAndMoments = () => {
         },
       ],
     },
-
   ];
-
   const { data, loading } = useTableApi("weight_balance");
   useEffect(() => {
     if (!loading && !!data) {
       setWbData(
-        data.map((item) => ({
-          ...item,
-          weight: item.weight_increased
-            ? `+${item.weight_increased}`
-            : item.weight_decreased
-              ? `-${item.weight_decreased}`
-              : "",
-          long: item.long_increased
-            ? `+${item.long_increased}`
-            : item.long_decreased
-              ? `-${item.long_decreased}`
-              : "",
-          lat: item.lat_vert_increased
-            ? `+${item.lat_vert_increased}`
-            : item.lat_vert_decreased
-              ? `-${item.lat_vert_decreased}`
-              : "",
-        })),
+        data
+          .slice()
+          .reverse()
+          .map((item) => ({
+            ...item,
+            weight: item.weight_increased
+              ? `+${item.weight_increased}`
+              : item.weight_decreased
+                ? `-${item.weight_decreased}`
+                : "",
+            long: item.long_increased
+              ? `+${item.long_increased}`
+              : item.long_decreased
+                ? `-${item.long_decreased}`
+                : "",
+            lat: item.lat_vert_increased
+              ? `+${item.lat_vert_increased}`
+              : item.lat_vert_decreased
+                ? `-${item.lat_vert_decreased}`
+                : "",
+          })),
       );
-     console.log("wbData:",wbData);
+      console.log("wbData:", wbData);
     }
   }, [data, loading]);
   if (loading) {
     <p>Loading...</p>;
   }
   return (
-    <div style={{ padding: 15 }}>
-      <Typography
-        sx={{
-          bgColor: "#e8f2fd",
-          color: "#0d47a1",
-          fontWeight: "bold",
-          textAlign: "right",
-          margin: "relative",
-        }}
-      >
-        <u>MOD Form 702A</u>
-      </Typography>
-      <Typography
-        variant="h6"
-        align="center"
-        gutterBottom
-        sx={{ fontWeight: "100", color: "green", letterSpacing: 1 }}
-      >
-        <u>WEIGHT AND BALANCE DATA-BASIC WEIGHT AND MOMENT</u>
-      </Typography>
+    <div className="bg-gray-100 min-h-screen p-6 ">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
+        <h2
+          className=" absolute text-md font-bold"
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: "35px",
+            margin: 0,
+            fontFamily: "algerian",
+          }}
+        >
+          BASIC WEIGHT AND MOMENT
+        </h2>
+      </div>
+
       {wbData && (
-        <div>
-          <CustomGrid
-            data={wbData}
-            theme="Forest_Fog"
-            columns={columns}
-            heading=""
-          />
-        </div>
+        <CustomGrid
+          data={wbData}
+          columns={columns}
+          heading=""
+          theme="Forest_Fog"
+        />
       )}
+      <div className="mb-4 ml-2">
+        <button
+          onClick={handleBack}
+          className="mt-1 w-32 rounded-x1 bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] text-gray
+        font-semibold text-lg px-2 py-2 rounded-lg  "
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

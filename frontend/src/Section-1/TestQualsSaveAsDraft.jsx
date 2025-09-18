@@ -1,24 +1,41 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import AllUsers from "../Authentication/AuthenticationOne";
+import TradeSupAto from "../Authentication/AuthenticationTwo";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
-import { Button } from "@mui/material";
+import { Button, Box, Modal } from "@mui/material";
 import useValidation from "../Utils/CustomHooks/useValidation";
-
 const TestQuals = () => {
   const { showAlert } = useAlert();
   const { params } = useParams();
+  const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
   const { data, refetch, create, update, loading } = useTableApi("quals"); // Fetching data from database;
-  const {formData, errors, handleChange, validateAll, setFormData, setErrors, validateField, } = useValidation(
-      { abbreviation: "", qual_name: "", user_type: "" },
-      {
-          abbreviation: { capsOnly: true, maxLength: 5, messages: { capsOnly: "CAPS ONLY", maxLength: "MAX 03 CHARACTERS ALLOWED" }},
-          qual_name: { capsOnly: true, maxLength: 3 },
-          user_type: { dateNotBeforeToday: true },
+  const {
+    formData,
+    errors,
+    handleChange,
+    validateAll,
+    setFormData,
+    setErrors,
+    validateField,
+  } = useValidation(
+    { abbreviation: "", qual_name: "", user_type: "" },
+    {
+      abbreviation: {
+        capsOnly: true,
+        maxLength: 5,
+        messages: {
+          capsOnly: "CAPS ONLY",
+          maxLength: "MAX 03 CHARACTERS ALLOWED",
+        },
+      },
+      qual_name: { capsOnly: true, maxLength: 3 },
+      user_type: { dateNotBeforeToday: true },
     },
   );
   useEffect(() => {
@@ -115,12 +132,12 @@ const TestQuals = () => {
           New Entry
         </Button>
       </div>
-
+      <AllUsers />
       {showForm && (
         <div>
           <form
             onSubmit={handleSubmit}
-            className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4"
+            className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4 "
           >
             <h2>Quals Form</h2>
             <div>
@@ -166,13 +183,14 @@ const TestQuals = () => {
             <button type="button" onClick={resetForm}>
               Reset
             </button>
-            {/*             {error && <p className="text-orange-500"> {error} </p>} */}
+
+            {error && <p className="text-orange-500"> {error} </p>}
           </form>
         </div>
       )}
 
       {!loading && data && (
-        <table className="border 2px solid max-w-md mx-auto mt-4">
+        <table className="border 2px solid max-w-md mx-auto mt-10">
           <thead>
             <tr>
               <td> ID </td>

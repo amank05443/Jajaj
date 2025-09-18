@@ -5,6 +5,7 @@ import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
 import { Grid, TextField, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import BasicWeightAndMomentsForm from "../Section-9/BasicWeightAndMomentsForm";
 
 const BASE_WEIGHT_KG = 13_000;
 function SignToggle({ name, value, onChange }) {
@@ -122,6 +123,7 @@ const clearFormData = {
   correctedLateralMoment: "",
 };
 export default function BasicWeightAndMoment() {
+  const [showHistory, setShowHistory] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(clearFormData);
 
@@ -223,15 +225,27 @@ export default function BasicWeightAndMoment() {
     }`;
 
   return (
-    <div className="min-h-screen  rounded-lg bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 sm:p-6 overflow-y-hidden">
-      <div className="mx-auto rounded-lg   overflow-y-auto rounded-3x1  bg-white shadow-x1 ring-1 ring-gray-100  ">
-        <header className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 border-b border-gray-100 p-5 overflow-x-hidden">
-          <h1 className="flex-1 text-center text-[1rem] md:text-[1.8rem] font-extrabold tracking-wide bg-gray-700 bg-clip-text text-transparent ">
+    <div>
+      <div className="bg-gray-100 min-h-screen items-center justify-center">
+         <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
+          <h2
+            className=" absolute text-md font-bold"
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: "35px",
+              margin: 0,
+              fontFamily: "algerian",
+            }}
+          >
             BASIC WEIGHT AND MOMENT
-          </h1>
-        </header>
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-1 rounded-lg
+        bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20
+        rounded-xl shadow-2xl boarder boarder-grey-100 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
           <main className="md:col-span-8 p-6 space-y-6">
             <section className="space-y-2">
               <label className="text-lg font-semibold font-medium uppercase tracking-wide text-gray-800">
@@ -239,7 +253,7 @@ export default function BasicWeightAndMoment() {
               </label>
 
               <textarea
-                rows={2}
+                rows={3}
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
@@ -255,7 +269,10 @@ export default function BasicWeightAndMoment() {
               )}
             </section>
 
-            <section className="rounded-2xl border border border-indigo-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
+            <section
+              className="rounded-2xl border border border-indigo-100
+            bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6"
+            >
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-indigo-400">
                   DETAILS OF CHANGE
@@ -331,7 +348,10 @@ export default function BasicWeightAndMoment() {
               </div>
             </section>
 
-            <section className="rounded-2xl rounded-lg border border-green-100 bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 p-6">
+            <section
+              className="rounded-2xl rounded-lg border border-green-100
+            bg-gradient-to-br from-yellow-50 via-green-50 to-blue-50 p-6"
+            >
               <div className="space-y-1">
                 <h2 className="text-lg font-semibold text-green-500">
                   CORRECTED BASIC DATA
@@ -418,12 +438,14 @@ export default function BasicWeightAndMoment() {
           </main>
           <aside className="md:col-span-4 sm:p-6">
             <div className="sticky top-4 space-y-4">
-              <div className="rounded-2x1 rounded-lg border border border-indigo-100 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 ">
+              <div className="rounded-2x1 rounded-lg border border border-indigo-100
+              bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 ">
                 <h2 className="text-xl font-semibold text-gray-500">
                   Review & Submit
                 </h2>
+                <br/>
 
-                <br />
+
                 <h2 className="text-lg font text-gray-700">
                   Details of Change
                 </h2>
@@ -476,7 +498,7 @@ export default function BasicWeightAndMoment() {
                 </div>
               </div>
               <div
-                className=" p-2 flex flex-row justify-center gap-4 rounded-2x1 rounded-lg border border-gray-100
+                className=" p-3 flex flex-row justify-center rounded-2x1 rounded-lg border border-gray-100
               bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-1 gap-4 shadow-sm"
               >
                 <button
@@ -491,7 +513,7 @@ export default function BasicWeightAndMoment() {
                 </button>
 
                 <button
-                  onClick={() => navigate("./ViewHistory")}
+                  onClick={() => navigate("/basicWeightAndMomentsForm")}
                   className="mt-4 w-1/2 rounded-x1 bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
                 >
                   History

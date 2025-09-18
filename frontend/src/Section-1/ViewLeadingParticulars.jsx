@@ -1,36 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Grid,
-  Modal,
-  TextField,
-  Typography,
-  Paper,
-  Box,
-  Link,
-  Button,
-} from "@mui/material";
-import {
-  FaPlane,
-  FaTools,
-  FaAtlas,
-  FaClock,
-  FaFileAlt,
-  FaChartBar,
-  FaGlobeAsia,
-  FaCalendar,
-  FaWeight,
-  FaCalculator,
-  FaCogs,
-} from "react-icons/fa";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
   const [showFuelGrid, setShowFuelGrid] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
-  //   const [open, setOpen] = useState(false);
-  const [modalData, setModalData] = useState(null);
   const [showTyreGrid, setShowTyreGrid] = useState(false);
   const [showEngineGrid, setShowEngineGrid] = useState(false);
   const [showAircraftClock, setShowAircraftClock] = useState(false);
@@ -95,86 +70,88 @@ const ViewLeadingParticulars = () => {
   }, [selectedAircraft, params, loading]);
   return (
     <div>
-      <div className="bg-gray-200 min-h-screen items-center justify-center">
+      <div className="bg-gray-100 min-h-screen items-center justify-center">
         {/*<h1>------------------------------Headings ----------------------------------</h1>*/}
-        <div className="rounded-md bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/80 to-[#FFD5E0] h-12 p-1 m-1 ml-2 mr-2">
+        <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
           <h2
-            className=" absolute font-serif text-md font-bold"
+            className=" absolute text-md font-bold"
             style={{
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              fontSize: "25px",
+              fontSize: "35px",
               margin: 0,
-              fontFamily: "sans-serif",
+              fontFamily: "algerian",
             }}
           >
             LEADING PARTICULARS
           </h2>
-          <h2
-            style={{
-              marginLeft: "90%",
-              fontWeight: "bold",
-              fontSize: "15px",
-              color: "crimson",
-              margin: 0,
-            }}
-          >
-            MOD Form 701
-          </h2>
+          {/*           <h2 */}
+          {/*             style={{ */}
+          {/*               marginLeft: "90%", */}
+          {/*               fontWeight: "bold", */}
+          {/*               fontSize: "15px", */}
+          {/*               color: "crimson", */}
+          {/*               margin: 0, */}
+          {/*             }} */}
+          {/*           > */}
+          {/*             MOD Form 701 */}
+          {/*           </h2> */}
         </div>
         {/*<h1>------------------------------------------Body---------------------------------------------</h1>*/}
-        <div
-          class="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3
-            transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
-        >
+        <div class="bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
+          {/*            class="bg-gradient-to-r from-purple-200 via-indigo-200 to-[#EEBBD5]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"> */}
           {aircraftDetails && (
             <>
               {/*<h1>----------Row 1--------------------Leading Particulars----------------------------------</h1>*/}
-              <div className="border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
-                <div className="grid grid-cols-3 gap-6 ">
-                  <div>
-                    🚀 &nbsp;Aircraft Type &nbsp;&nbsp;:{" "}
-                    <b class="text-green-700">
-                      {aircraftDetails.ac_type || "NA"}
-                    </b>
-                  </div>
-                  <div>
-                    ✈️ &nbsp;Airframe Serial No :{" "}
-                    <b class="text-green-700">
-                      {aircraftDetails.side_no || "NA"}
-                    </b>
-                  </div>
-                  <div>
-                    ⏱️ Airframe Hours
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "}
-                    <b class="text-green-700">
-                      {aircraftDetails.side_no || "NA"}
-                    </b>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-6 ">
-                  <div>
-                    🛫 Aircraft Mark &nbsp;&nbsp;:{" "}
-                    <b class="text-green-700">
-                      {aircraftDetails.aircraft_mark || "NA"}
-                    </b>
-                  </div>
+              {/*               <div className="border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm"> */}
+              {/*                 <div className="grid grid-cols-3 gap-6 "> */}
+              {/*                   <div> */}
+              {/*                     🚀 &nbsp;Aircraft Type &nbsp;&nbsp;:{" "} */}
+              {/*                     <b class="text-green-700"> */}
+              {/*                       {aircraftDetails.ac_type || "NA"} */}
+              {/*                     </b> */}
+              {/*                   </div> */}
+              {/*                   <div> */}
+              {/*                     ✈️ &nbsp;Airframe Serial No :{" "} */}
+              {/*                     <b class="text-green-700"> */}
+              {/*                       {aircraftDetails.side_no || "NA"} */}
+              {/*                     </b> */}
+              {/*                   </div> */}
+              {/*                   <div> */}
+              {/*                     ⏱️ Airframe Hours */}
+              {/*                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "} */}
+              {/*                     <b class="text-green-700"> */}
+              {/*                       {aircraftDetails.side_no || "NA"} */}
+              {/*                     </b> */}
+              {/*                   </div> */}
+              {/*                 </div> */}
+              {/*                 <div className="grid grid-cols-3 gap-6 "> */}
+              {/*                   <div> */}
+              {/*                     🛫 Aircraft Mark &nbsp;&nbsp;:{" "} */}
+              {/*                     <b class="text-green-700"> */}
+              {/*                       {aircraftDetails.aircraft_mark || "NA"} */}
+              {/*                     </b> */}
+              {/*                   </div> */}
 
-                  <div>
-                    🛸 Aircraft Primary / Secondary Role :{" "}
-                    <b class="text-green-700">
-                      {aircraftDetails.roles || "NA"}
-                    </b>
-                  </div>
-                </div>
-              </div>
+              {/*                   <div> */}
+              {/*                     🛸 Aircraft Primary / Secondary Role :{" "} */}
+              {/*                     <b class="text-green-700"> */}
+              {/*                       {aircraftDetails.roles || "NA"} */}
+              {/*                     </b> */}
+              {/*                   </div> */}
+              {/*                 </div> */}
+              {/*               </div> */}
 
               {/*<h1>----------Row 2--------------------Basic Information----------------------------------</h1>*/}
               <div className="border-2 border-black-400 rounded-lg p-1 backdrop-blur-sm mt-2">
-                <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-pink-300 rounded-md">
+                <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                   📑 Basic Information
                 </div>
+                {/*                 <div> */}
+                {/*                   🛸 Aircraft Primary / Secondary Role :{" "} */}
+                {/*                   <b class="text-green-700">{aircraftDetails.roles || "NA"}</b> */}
+                {/*                 </div> */}
                 <div className="grid grid-cols-3 gap-6 p-2">
                   <table>
                     <tbody>
@@ -263,6 +240,13 @@ const ViewLeadingParticulars = () => {
 
                   <table>
                     <tbody>
+                      <tr>
+                        <td>🛸 Aircraft Primary / Secondary Role</td>
+                        <td>:</td>
+                        <td class="text-green-700 font-bold">
+                          {aircraftDetails.roles || "NA"}
+                        </td>
+                      </tr>
                       <tr>
                         <td>🛫 Max AUW</td>
                         <td>:</td>
@@ -399,7 +383,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleEngineGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 p-2 font-bold userSelect-none"
+                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       ⚙️ Engine / E.C.U. Details
                     </div>
@@ -408,7 +392,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 mt-2 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleTyreGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 p-2 font-bold userSelect-none"
+                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       🛞 Landing Gear & Tyre Pressure
                     </div>
@@ -460,7 +444,7 @@ const ViewLeadingParticulars = () => {
                       className="m-1"
                       style={{ marginTop: "1px", border: "1px solid" }}
                     >
-                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-400 rounded-md">
+                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                         🩸 OLGs & Gases
                       </div>
                       <OilAndGasesGrid olg_gases={aircraftDetails.olg_gases} />
@@ -475,11 +459,11 @@ const ViewLeadingParticulars = () => {
                         padding: "2px",
                       }}
                     >
-                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-400 rounded-md">
+                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                         ⚙️ Engine / E.C.U. Details
                       </div>
                       <table className="table- auto border border-gray-400 w-full">
-                        <thead className="bg-[#2F284E]/20">
+                        <thead className="bg-[#2F284E]/40">
                           <tr>
                             <th className="border border-gray-400 px-2 py-1">
                               Description
@@ -531,11 +515,11 @@ const ViewLeadingParticulars = () => {
                         padding: "2px",
                       }}
                     >
-                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-400 rounded-md">
+                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                         🛞 Landing Gear & Tyre Pressure
                       </div>
                       <table className="table- auto border border-gray-400 w-full">
-                        <thead className="bg-[#2F284E]/20">
+                        <thead className="bg-[#2F284E]/40">
                           <tr>
                             <th className="border border-gray-400 px-4 py-2">
                               A/C Condition
@@ -577,11 +561,11 @@ const ViewLeadingParticulars = () => {
                         padding: "2px",
                       }}
                     >
-                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-400 rounded-md">
+                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                         ⏰ Aircraft Clock Details
                       </div>
                       <table className="table- auto border border-gray-400 w-full">
-                        <thead className="bg-[#2F284E]/20">
+                        <thead className="bg-[#2F284E]/40">
                           <tr>
                             <th className="border border-gray-400 px-4 py-2">
                               Position
@@ -643,7 +627,7 @@ const ViewLeadingParticulars = () => {
 
                   {showFuelGrid && (
                     <div style={{ marginTop: "1px", border: "1px solid" }}>
-                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-400 rounded-mdbg-pink-300">
+                      <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                         ⛽ Fuels
                       </div>
                       <div className="m-1">
@@ -653,7 +637,7 @@ const ViewLeadingParticulars = () => {
                       </div>
                       <div className="m-1">
                         <table className="table- auto border border-gray-400 w-full ">
-                          <thead className="bg-[#2F284E]/20">
+                          <thead className="bg-[#2F284E]/40">
                             <tr>
                               <th
                                 colSpan={6}
@@ -719,12 +703,12 @@ const ViewLeadingParticulars = () => {
           )}
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
-        <div
-          class="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 mt-4
-                            transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
-        >
-          🛠️ Other System Details :-
-        </div>
+        {/*         <div */}
+        {/*           class="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 mt-4 */}
+        {/*                             transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm" */}
+        {/*         > */}
+        {/*           🛠️ Other System Details :- */}
+        {/*         </div> */}
       </div>
     </div>
   );
