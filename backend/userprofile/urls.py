@@ -1,8 +1,9 @@
 from userprofile import views
 from django.test import TestCase
 from django.urls import path
-from userprofile.views import (  get_customers,DynamicModelView,AircraftDetailView,AircraftSideNoView,Quals_view,
-                                 aircraft_all_detail_view, AircraftTypeDetailsView,AircraftDetailsView,ChangeOfServiceabilityLogsCreateView)
+from userprofile.views import (  get_customers,DynamicModelView,AircraftDetailView,AircraftSideNoView,Quals_view,aircraft_all_detail_view,
+                                  AircraftTypeDetailsView,AircraftDetailsView,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData
+                                 )
 from . import views
 
 
@@ -31,6 +32,10 @@ urlpatterns = [
     path('api/aircraft-type-details', AircraftTypeDetailsView.as_view(), name='aircraft-type-details'),
     path('api/aircraft-details/<int:aircraft_type_id>', views.AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
+
+    path('api/usLogDropDowns/',usLogDropDowns),
+    path('api/limLogData/',limLogData),
+
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
 
     #Dynamic views & urls

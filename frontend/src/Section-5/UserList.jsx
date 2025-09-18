@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
+import AllUsers from "../Authentication/AuthenticationOne";
+import NewEntryForLimitationLog from "../Section-2/NewEntryForLimitationLog";
 import dayjs from "dayjs";
 import {
   Accordion,
@@ -27,12 +29,40 @@ import {
 } from "@mui/material";
 
 const USLogForm = () => {
-  //   const [form, setForm] = useState({
-  //     aircraft_master_id: "",
-  //     airframe_hrs: "",
-  //     reason_for_placing_unserviceable: "",
-  //     system_time_date: "",
-  //   });
+  //::-- States and variables used in the page
+  const [loading, setLoading] = useState(true);
+  const { params, loading: paramsLoading } = useParams();
+  const [howFoundOptions, setHowFoundOptions] = useState([]);
+  const [entryTypeOptions, setEntryTypeOptions] = useState([]);
+  const [aircraftMaster, setAircraftMaster] = useState(null);
+
+  const [limLogData, setLimLogData] = useState({});
+
+  //::--checkboxes states and its management
+  const checkBoxesLDHC = [
+    { key: "lim", label: "Limitation" },
+    { key: "def", label: "Deferred" },
+    { key: "hus", label: "Husbandry" },
+  ];
+  const checkBoxesChecks = [
+    { key: "indCheck", label: "Independent Check" },
+    { key: "lartCheck", label: "Loose Articles Check" },
+  ];
+
+  const [activeCheckboxes, setActiveCheckboxes] = useState({
+    lim: false,
+    def: false,
+    hus: false,
+    indCheck: false,
+    lartCheck: false,
+  });
+
+  const toggleCheckboxes = (box) =>
+    setActiveCheckboxes((prev) => ({ ...prev, [box]: !prev[box] }));
+
+  console.log("activeCheckboxes:", activeCheckboxes);
+
+  //::-- the FORM State
   const { formData, errors, handleChange, validateAll, setFormData } =
     useValidation(
       {
@@ -40,7 +70,7 @@ const USLogForm = () => {
         howFound: "",
         dateAndTime: "",
         airframeHrs: "",
-        aircraft_master_id: "",
+        aircraft_master_id: params ? params.aircraft_master_id : "",
         reason_for_placing_unserviceable: "",
         system_time_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       },
@@ -55,40 +85,47 @@ const USLogForm = () => {
       },
     );
   const { register, watch } = useForm();
-  const { params, loading3 } = useParams();
-  const { data: howFound, loading } = useTableApi("how_found_defects");
-  const { data: entryType, loading1 } = useTableApi("entry_types");
-  //   const { data: aircraftMaster, loading2 } = useTableApi("aircraft_masters", {
-  //     id: params.aircraft_master_id,
-  //   });
+
+  //::--Fetching base data from tables
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await axios.get("/api/usLogDropDowns/", {
+          params: {
+            aircraft_master_id: params?.aircraft_master_id,
+            aircraft_type_id: params?.aircraft_type_id,
+          },
+        });
+        console.log(data);
+        console.log(data.data.aircraftMasters);
+        setHowFoundOptions(data.data.howFoundDefects);
+        setEntryTypeOptions(data.data.entryTypes);
+        setAircraftMaster(data.data.aircraftMasters);
+        setFormData((prev) => ({
+          ...prev,
+          ["airframeHrs"]: data.data.aircraftMasters.airframe_hrs,
+        }));
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const handleDataFromAllUsers = (data) => {
+  const { authenticated, user_id } = data;
+   setFormData((prev) => ({
+      ...prev ,
+    authenticated: authenticated,
+    user_id: user_id,
+  }));
+};
 
   const [user, setUser] = useState({ name: "", rank: "" });
-  const [afHours, setAfHours] = useState("");
   const authCode = watch("authCode");
   const [open, setOpen] = useState(false);
-
-  const [aircraftMaster, setAircraftMaster] = useState(null);
-  useEffect(() => {
-    if (!loading3) {
-      const aircraft_master_id = params.aircraft_master_id;
-      if (aircraft_master_id) {
-        axios
-          .get(`/api/leadingParticularsOfAircraft/${aircraft_master_id}`)
-          .then((response) => {
-            setAircraftMaster(response.data);
-          })
-          .catch((error) => {
-            console.error("Error aircraft Marks:", error);
-          });
-      }
-    }
-  }, [params, loading3]);
-
-  useEffect(() => {
-    if (aircraftMaster) {
-      setFormData((prev) => ({ airframeHrs: aircraftMaster.airframe_hrs }));
-    }
-  }, [aircraftMaster, setFormData]);
 
   useEffect(() => {
     if (authCode === "1234") {
@@ -98,20 +135,11 @@ const USLogForm = () => {
     }
   }, [authCode]);
 
-  //   useEffect(() => {
-  //     const nowLocal = new Date()
-  //       .toLocaleString("sv-SE")
-  //       .replace("", "T")
-  //       .slice(0, 16);
-  //     setValue("timestamp", nowLocal);
-  //   }, [setValue, howFound, entryType, loading, loading2]);
-
-  //      const handleChange = (e) => {
-  //        setFormData({
-  //            ...formData,
-  //            [e.target.name]:e.target.value
-  //        });
-  //     };
+  //   console.log("howFound:", howFoundOptions);
+  //   console.log("entryType:", entryTypeOptions);
+  if (!loading) console.log("aircraftMaster:", aircraftMaster.airframe_hrs);
+  console.log("formData:", formData);
+  console.log("limLogData:", limLogData);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,9 +177,8 @@ const USLogForm = () => {
       {label}
     </div>
   );
-  const checkBoxesLDHC = ["Limitation", "Deferred", "Husbandry"];
-  const checkBoxesChecks = ["Independent Check", "Loose Articles Check"];
-  if (loading && loading1) {
+
+  if (loading) {
     <p>Loading...</p>;
   }
 
@@ -189,12 +216,11 @@ const USLogForm = () => {
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
               >
                 <option value="">Select Entry Type</option>
-                {!loading &&
-                  entryType?.map((entry_types) => (
-                    <option key={entry_types.id} value={entry_types.occasion}>
-                      {entry_types.occasion}
-                    </option>
-                  ))}
+                {entryTypeOptions.map((entry_type) => (
+                  <option key={entry_type.id} value={entry_type.id}>
+                    {entry_type.occasion}
+                  </option>
+                ))}
               </select>
               {errors.entryType && (
                 <p className="text-red-500">
@@ -214,12 +240,11 @@ const USLogForm = () => {
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
               >
                 <option value="">Select How Found</option>
-                {!loading1 &&
-                  howFound?.map((how_found) => (
-                    <option key={how_found.id} value={how_found.occasion}>
-                      {how_found.occasion}
-                    </option>
-                  ))}
+                {howFoundOptions.map((how_found) => (
+                  <option key={how_found.id} value={how_found.id}>
+                    {how_found.occasion}
+                  </option>
+                ))}
               </select>
               {errors.howFound && (
                 <p className="text-red-500">
@@ -247,20 +272,18 @@ const USLogForm = () => {
               )}
             </div>
 
-            {aircraftMaster && (
-              <div>
-                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                  Airframe Hours
-                </label>
-                <input
-                  type="text"
-                  name="airframe_hrs"
-                  value={formData.airframeHrs || "40"}
-                  className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                  readOnly
-                ></input>
-              </div>
-            )}
+            <div>
+              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                Airframe Hours
+              </label>
+              <input
+                type="text"
+                name="airframe_hrs"
+                value={formData.airframeHrs}
+                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                readOnly
+              ></input>
+            </div>
           </div>
           {/* SECTION 2: REASON & CONDITIONS */}
           {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
@@ -287,42 +310,59 @@ const USLogForm = () => {
             </div>
 
             {/* Checkboxes for LDHC*/}
+
             <div className="grid grid-cols-2 gap-2">
-              <div className="border-2 border-black-600 rounded-lg p-4">
-                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                  Select LDHC
-                </label>
-                {checkBoxesLDHC.map((box) => (
-                  <label key={box} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      {...register(`check_${box}`)}
-                      className="accent-pink-600"
-                    />
-                    <span className="text-gray-800">{box}</span>
+              {formData.entryType == 2025110 && (
+                <div className="border-2 border-black-600 rounded-lg p-4">
+                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                    Select LDHC
                   </label>
-                ))}
-              </div>
+                  {checkBoxesLDHC.map((box) => (
+                    <label
+                      key={box.key}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={activeCheckboxes[box.key]}
+                        onChange={() => toggleCheckboxes(box.key)}
+                        className="accent-pink-600"
+                      />
+                      <span className="text-gray-800">{box.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
               {/* Checkboxes for Additional Checks*/}
-              <div className="border-2 border-black-600 rounded-lg p-4">
-                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                  Select Additional Checks
-                </label>
-                {checkBoxesChecks.map((box) => (
-                  <label key={box} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      {...register(`check_${box}`)}
-                      className="accent-green-600"
-                    />
-                    <span className="text-gray-800">{box}</span>
+              {formData.entryType != 2025110 && (
+                <div className="border-2 border-black-600 rounded-lg p-4">
+                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                    Select Additional Checks
                   </label>
-                ))}
-              </div>
+                  {checkBoxesChecks.map((box) => (
+                    <label
+                      key={box.key}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={activeCheckboxes[box.key]}
+                        onChange={() => toggleCheckboxes(box.key)}
+                      />
+                      <span className="text-gray-800">{box.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
-
+        {activeCheckboxes.lim && (
+          <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
+            <NewEntryForLimitationLog onDataChange={setLimLogData} />
+          </div>
+        )}
+        <AllUsers onSubmit={handleDataFromAllUsers} />
         <div
           className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer"
           onClick={() => setOpen(true)}

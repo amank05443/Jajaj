@@ -14,16 +14,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
-from userprofile.models.ranks import Ranks
-from userprofile.models.quals import Quals
-from userprofile.models.entry_types import EntryTypes
-from userprofile.models.users import Users
-from userprofile.models.aircraft_masters import AircraftMasters
-from userprofile.models.fuel_tanks import FuelTanks
-from userprofile.models.customers import Customers
-from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
-from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
-                                      get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer,)
+from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer,
+                                        HowFoundDefectsSerializer,EntryTypesSerializer,ItemsSerializer,SystemsSerializer,AircraftRolesSerializer)
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
@@ -36,8 +28,8 @@ from rest_framework.viewsets import ViewSet
 
 #------------------------------------------------- Import All Models Here -------------------------------------------
 
-from .models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
-                                      EcuMasters,TyrePressures,Pols,Systems)
+from .models import (AircraftMasters, AircraftRoles, AircraftTypes, Customers, FuelTanks, ChangeOfServiceabilityLogs,
+                     EcuMasters, TyrePressures, Pols, Systems, HowFoundDefects, Items,EntryTypes,Ranks,Quals,Users,)
 
 
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
@@ -106,6 +98,36 @@ def get_customers(request):
     serializer = CustomersSerializer(customers,many=True)
     return Response(serializer.data)
 
+def usLogDropDowns(request):
+    data = {
+        "aircraftMasters": AircraftMasters.objects.filter(id=request.GET["aircraft_master_id"]).values().first(),
+        "howFoundDefects": list(HowFoundDefects.objects.values("id","occasion")),
+        "entryTypes": list(EntryTypes.objects.values("id","occasion")),
+    }
+    print(data)
+    return JsonResponse(data,safe=False)
+
+# def limLogData(request):
+#     data = {
+#         "systemsData": list(Systems.objects.filter(aircraft_type_id=request.GET["aircraft_type_id"])),
+#         "acRoleData": list(AircraftRoles.objects.filter(aircraft_type_id=request.GET["aircraft_type_id"])),
+#         "itemsData": list(Items.objects.filter(store_type_id=request.GET["aircraft_type_id"])),
+#     }
+#     print(data)
+#     return JsonResponse(data,safe=False)
+
+@api_view(['GET'])
+def limLogData(request):
+    aircraft_type_id = request.GET["aircraft_type_id"]
+    systems_qs = Systems.objects.filter(aircraft_type=aircraft_type_id)
+    acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
+    items_qs = Items.objects.filter(store_type=aircraft_type_id)
+
+    return Response ({
+        "systemsData" : SystemsSerializer(systems_qs,many=True).data,
+        "acRoleData" : AircraftRolesSerializer(acRole_qs,many=True).data,
+        "itemsData" : ItemsSerializer(items_qs,many=True).data,
+    })
 
 
 

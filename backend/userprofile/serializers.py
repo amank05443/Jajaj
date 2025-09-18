@@ -1,7 +1,7 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
-
+from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
+    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items
 
 
 #--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
@@ -96,6 +96,11 @@ class SystemsSerializer(serializers.ModelSerializer):
         model = Systems
         fields = '__all__'
 
+class ItemsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Items
+        fields = '__all__'
+
 class CustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customers
@@ -105,3 +110,13 @@ class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChangeOfServiceabilityLogs
         fields = ['reason_for_placing_unserviceable']
+
+class HowFoundDefectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HowFoundDefects
+        fields = '__all__'
+
+class EntryTypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntryTypes
+        fields = '__all__'
