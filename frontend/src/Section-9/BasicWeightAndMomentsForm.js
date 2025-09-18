@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   IconButton,
@@ -42,7 +43,10 @@ import {
 } from "recharts";
 const BasicWeightAndMoments = () => {
   const [wbData, setWbData] = useState({});
-  const [showGraph, setShowGraph] = useState(false);
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(-1);
+  };
   const columns = [
     {
       field: "snow",
@@ -124,16 +128,40 @@ const BasicWeightAndMoments = () => {
     <p>Loading...</p>;
   }
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen p-6 ">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
+        <h2
+          className=" absolute text-md font-bold"
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: "35px",
+            margin: 0,
+            fontFamily: "algerian",
+          }}
+        >
+          BASIC WEIGHT AND MOMENT
+        </h2>
+      </div>
+
       {wbData && (
-        <div>
-          <CustomGrid
-            data={wbData}
-            columns={columns}
-            heading="BASIC WEIGHT AND MOMENT (702A)"
-          />
-        </div>
+        <CustomGrid
+          data={wbData}
+          columns={columns}
+          heading=""
+          theme="Forest_Fog"
+        />
       )}
+      <div className="mb-4 ml-2">
+        <button
+          onClick={handleBack}
+          className="mt-1 w-32 rounded-x1 bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] text-gray
+        font-semibold text-lg px-2 py-2 rounded-lg  "
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

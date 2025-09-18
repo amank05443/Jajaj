@@ -132,45 +132,6 @@ const TestQuals = () => {
           New Entry
         </Button>
       </div>
-      {/*       <div */}
-      {/*         className="absolute bg-gradient-to-br from-green-300 to-blue-500 rounded shadow-x1 flex items-center justify-center cursor-pointer" */}
-      {/*         onClick={() => setOpen(true)} */}
-      {/*       > */}
-      {/*         <span className="text-gray-800 font-semibold text-lg"> */}
-      {/*           Authorize and Forward */}
-      {/*         </span> */}
-      {/*       </div> */}
-      {/*       <Modal open={open} onClose={() => setOpen(false)}> */}
-      {/*         <Box */}
-      {/*           className="bg-white rounded-2x1 shadow-2x1 p-6 flex flex-col items-center gap-4" */}
-      {/*           sx={{ */}
-      {/*             position: "absolute", */}
-      {/*             top: "50%", */}
-      {/*             left: "50%", */}
-      {/*             transform: "translate(-50%,-50%)", */}
-      {/*             width: 400, */}
-      {/*             //             height: 400, */}
-      {/*           }} */}
-      {/*         > */}
-      {/*           <div variant="h6" className="text-gray-800 font-bold mb-2"> */}
-      {/*             Authorization */}
-      {/*           </div> */}
-      {/*           {open && ( */}
-      {/*             <div className="fixed inset-0 flex items-centeer justify-center bg-black/50"> */}
-      {/*               <div className="bg-white p-6 rounded-2xl w-[600px] relative shadow-lg"> */}
-      {/*                 <button */}
-      {/*                   onClick={() => setOpen(false)} */}
-      {/*                   className="absolute top-2 right-2 text-red-600" */}
-      {/*                 > */}
-      {/*                   X */}
-      {/*                 </button> */}
-      {/*                 <AllUsers /> */}
-      {/*               </div> */}
-      {/*             </div> */}
-      {/*           )} */}
-      {/*         </Box> */}
-      {/*       </Modal> */}
-
       <AllUsers />
       {showForm && (
         <div>

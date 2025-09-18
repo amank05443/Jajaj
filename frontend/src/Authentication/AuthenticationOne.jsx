@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import useTableApi from "../Utils/CustomHooks/useTableApi";
-import { useAlert } from "../Utils/Alerts/AlertContext";
-import Select2 from "../Utils/CustomComponents/Select2";
-import { TextField, Grid } from "@mui/material";
 import useValidation from "../Utils/CustomHooks/useValidation";
 export default function AllUsers({ onSubmit }) {
   const [open, setOpen] = useState(false);
@@ -110,7 +106,7 @@ export default function AllUsers({ onSubmit }) {
                 >
                   ❌
                 </button>
-                <h2 className="font-bold flex items-center justify-center bg-blue-200 h-12 rounded-lg ">
+                <h2 className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl font-family: 'Algerian'">
                   Users authentication
                 </h2>
               </div>
@@ -158,7 +154,7 @@ export default function AllUsers({ onSubmit }) {
                   </div>
                   <button
                     onClick={handleSubmit}
-                    className="px-2 float-right font-bold border border-gray-400 rounded bg-green-200"
+                    className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
                     Submit
                   </button>

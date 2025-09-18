@@ -1,35 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Grid,
-  Modal,
-  TextField,
-  Typography,
-  Paper,
-  Box,
-  Link,
-  Button,
-} from "@mui/material";
-import {
-  FaPlane,
-  FaTools,
-  FaAtlas,
-  FaClock,
-  FaFileAlt,
-  FaChartBar,
-  FaGlobeAsia,
-  FaCalendar,
-  FaWeight,
-  FaCalculator,
-  FaCogs,
-} from "react-icons/fa";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
   const [showFuelGrid, setShowFuelGrid] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
-  const [modalData, setModalData] = useState(null);
   const [showTyreGrid, setShowTyreGrid] = useState(false);
   const [showEngineGrid, setShowEngineGrid] = useState(false);
   const [showAircraftClock, setShowAircraftClock] = useState(false);
