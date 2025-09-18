@@ -4,7 +4,7 @@ class ChangeOfServiceabilityLogs(models.Model):
     id = models.AutoField(primary_key=True)
     aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     airframe_hrs = models.CharField()
-    how_found_id = models.CharField(blank=True, null=True)
+    how_found_id = models.ForeignKey('HowFoundDefects', models.DO_NOTHING, blank=True, null=True)
     by_whom = models.BigIntegerField(blank=True, null=True)
     defect_code_id = models.CharField(blank=True, null=True)
     reason_for_placing_unserviceable = models.CharField(blank=True, null=True)

@@ -29,8 +29,7 @@ urlpatterns = [
     path('api/aircraft-details/<int:aircraft_type_id>', AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
 
-    path('api/usLogDropDowns/',usLogDropDowns),
-    path('api/limLogData/',limLogData),
+
 
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
 
@@ -39,6 +38,8 @@ urlpatterns = [
     path('api/leadingParticularsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
 
     #---------------------------------------------- Section 5  ---------------------------------------------------------#
+    path('api/usLogDropDowns/', usLogDropDowns),
+    path('api/limLogData/', limLogData),
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 
 
