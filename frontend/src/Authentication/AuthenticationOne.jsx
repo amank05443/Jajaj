@@ -6,13 +6,9 @@ import { useAlert } from "../Utils/Alerts/AlertContext";
 import Select2 from "../Utils/CustomComponents/Select2";
 import { TextField, Grid } from "@mui/material";
 import useValidation from "../Utils/CustomHooks/useValidation";
-export default function AllUsers() {
-  const { showAlert } = useAlert();
+export default function AllUsers({ onSubmit }) {
   const [open, setOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState(null);
   const [data, setData] = useState(null);
-  const [authUser, setAuthUser] = useState(null);
-  const [error, setError] = useState(null);
   const {
     formData,
     errors,
@@ -24,9 +20,16 @@ export default function AllUsers() {
     { byWhom: "", passkey: "" },
     {
       byWhom: { required: true },
-      passkey: { passkey: true },
+      passkey: { required: true, passkey: true },
     },
   );
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [open]);
   useEffect(() => {
     if (open) {
       axios
@@ -41,38 +44,12 @@ export default function AllUsers() {
         });
     }
   }, [open]);
-
-  //   useEffect(() => {
-  //     if (formData.passkey.length === 6) {
-  //       fetch("/api/checkPasskey/", {
-  //         method: "POST",
-  //         headers: { "content-Type": "application/json" },
-  //         body: JSON.stringify({ formData.passkey }),
-  //       })
-  //         .then((res) => {
-  //           if (!res.ok) throw new Error("Invalid Passkey");
-  //           return res.json();
-  //         })
-  //         .then((data) => {
-  //           setAuthUser(data.user);
-  //           setError("");
-  //         })
-  //         .catch((err) => {
-  //           setAuthUser(null);
-  //           setError("Invalid Passkey");
-  //         });
-  //     } else {
-  //       setAuthUser(null);
-  //       setError("");
-  //     }
-  //   }, [formData.passkey]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll) return;
     try {
       const csrfToken = Cookies.get("csrftoken");
-      const res = await fetch("/api/auth/checkPasskey/", {
+      const res = await fetch("/api/checkPasskey/", {
         method: "POST",
         headers: {
           "X-CSRFToken": csrfToken,
@@ -84,11 +61,21 @@ export default function AllUsers() {
           passkey: formData.passkey,
         }),
       });
-      if (!res.ok) throw new Error("Invalid Passkey");
-      //     if (res.Fail) throw new Error("Invalid Passkey ak");
+      if (!res.ok) throw new Error("Invalid Passkey0");
       const data = await res.json();
       setErrors((prev) => ({ ...prev, passkey: "" }));
       console.log("Authenticated :", data.user);
+      const authData = {
+        authenticated: "Yes",
+        user_id: data.user.id,
+        user_name: data.user.name,
+      };
+      if (onSubmit) {
+        onSubmit(authData);
+      }
+      setOpen(false);
+      setErrors("");
+      setFormData({ byWhom: "", passkey: "" });
     } catch (err) {
       setErrors((prev) => ({
         ...prev,
@@ -108,8 +95,9 @@ export default function AllUsers() {
           Authenticate
         </button>
         {open && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/60">
-            <div className="bg-white p-2 rounded-md w-[600px] relative border-2 border-indigo-300 shadow-lg">
+          <div className="fixed inset-0 z-50 flex items-center justify-center ">
+            <div className="absolute inset-0 bg-black/60 "></div>
+            <div className="relative bg-white p-2 rounded-md w-[600px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
@@ -158,7 +146,7 @@ export default function AllUsers() {
                         name="passkey"
                         value={formData.passkey}
                         onChange={handleChange}
-                        placeholder="***6***"
+                        placeholder="******"
                         className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       />
                       {errors.passkey && (

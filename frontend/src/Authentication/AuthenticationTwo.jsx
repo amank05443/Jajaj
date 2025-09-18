@@ -7,24 +7,33 @@ import useValidation from "../Utils/CustomHooks/useValidation";
 export default function TradeSupAto() {
   const [open, setOpen] = useState(false);
   const [trades, setTrades] = useState(null);
-  const [selectedTrades, setSelectedTrades] = useState("");
   const [quals, setQuals] = useState(null);
-  const [data1, setData1] = useState(null);
-  const { formData, errors,setErrors, handleChange, validateAll, setFormData } =
-    useValidation(
-      { trade: "", qualification: "", byWhom: "", passkey: "" },
-      {
-        trade: { required: true },
-        qualification: { required: true },
-        byWhom: { required: true },
-        passkey: { passkey: true },
-      },
-    );
-  const { data, refetch, loading } = useTableApi("user_quals", {
-    related: ["user"],
-  });
+  const [data, setData] = useState(null);
+  const {
+    formData,
+    errors,
+    setErrors,
+    handleChange,
+    validateAll,
+    setFormData,
+  } = useValidation(
+    { trade: "", qualification: "", byWhom: "", passkey: "", status: "" },
+    {
+      trade: { required: true },
+      qualification: { required: true },
+      byWhom: { required: true },
+      passkey: { passkey: true },
+    },
+  );
   useEffect(() => {
     if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [open]);
+  useEffect(() => {
+    if (formData.qualification) {
       axios
         .get("/api/userAuthenticationTrade/")
         .then((response) => {
@@ -36,15 +45,16 @@ export default function TradeSupAto() {
           console.error("Bluunder in trades:", error);
         });
     }
-  }, [open]);
+  }, [formData.qualification]);
   useEffect(() => {
     console.log("selectedTrades");
-    console.log(selectedTrades);
-    if (selectedTrades) {
+    console.log(formData.trade);
+    console.log(formData.qualification);
+    if (formData.trade) {
       axios
-        .get(`/api/userDetailsForAuthentication/${selectedTrades}`)
+        .get(`/api/userDetailsForAuthentication/${formData.trade}`)
         .then((response) => {
-          setData1(response.data);
+          setData(response.data);
           console.log("User data found :");
           console.log(response.data);
         })
@@ -52,7 +62,7 @@ export default function TradeSupAto() {
           console.error("Bluunder:", error);
         });
     }
-  }, [selectedTrades]);
+  }, [formData.trade]);
 
   return (
     <>
@@ -64,14 +74,15 @@ export default function TradeSupAto() {
           Authenticate 2
         </button>
         {open && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-            <div className="bg-white p-2 rounded-md w-[700px] relative border-2 border-indigo-300 shadow-lg">
+          <div className="fixed inset-0 z-50 flex items-center justify-center ">
+            <div className="absolute inset-0 bg-black/60 "></div>
+            <div className="relative bg-white p-2 rounded-md w-[900px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
                   onClick={() => {
                     setFormData({ byWhom: "", passkey: "" });
-                    setErrors('');
+                    setErrors("");
                     setOpen(false);
                   }}
                   className="absolute top-3 right-3 border border-gray-400 rounded bg-red-200"
@@ -85,50 +96,46 @@ export default function TradeSupAto() {
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
                 <form className=" p-1 space-y-4 ">
-                  <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        Select Trade
-                      </label>
-                      <select
-                        name="trade"
-                        value={formData.trade}
-                        onChange={(e) => {
-                          setSelectedTrades(e.target.value);
-                          handleChange(e);
-                        }}
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                      >
-                        <option value="">Select Trade</option>
-                        {trades &&
-                          trades?.map((T) => (
-                            <option key={T.id} value={T.id}>
-                              {T.trade}
-                            </option>
-                          ))}
-                      </select>
+                  <div className="grid md:grid-cols-3 sm:grid-cols-1 gap-2">
+                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2">
+                      <div>
+                        <label className="inline-block px-2 py-1 rounded-md text-blue-900 font-semibold hover:bg-blue-300 transition">
+                          Qualification
+                        </label>
+                        <select
+                          name="qualification"
+                          value={formData.qualification}
+                          onChange={handleChange}
+                          className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        >
+                          <option value="">Select Quals</option>
+                          <option value="TDS">Tradesman</option>
+                          <option value="SUP">Supervisor</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="inline-block px-2 py-1 rounded-md text-blue-900 font-semibold hover:bg-blue-300 transition">
+                          Select Trade
+                        </label>
+                        <select
+                          name="trade"
+                          value={formData.trade}
+                          onChange={handleChange}
+                          className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        >
+                          <option value="">Select Trade</option>
+                          {trades &&
+                            trades?.map((T) => (
+                              <option key={T.id} value={T.id}>
+                                {T.trade}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
                     </div>
+
                     <div>
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        Qualification
-                      </label>
-                      <select
-                        name="qualification"
-                        value={formData.qualification}
-                        onChange={handleChange}
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                      >
-                        <option value="">Select Quals</option>
-                        {quals &&
-                          quals?.map((Q) => (
-                            <option key={Q.qual_id} value={Q.qual_name}>
-                              {Q.qual_name}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 font-semibold hover:bg-blue-300 transition">
                         By Whom
                       </label>
                       <select
@@ -138,45 +145,51 @@ export default function TradeSupAto() {
                         className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       >
                         <option value="">Select Name</option>
-                        {data1 &&
-                          data1?.map((d) => (
+                        {data &&
+                          data?.map((d) => (
                             <option key={d.id} value={d.id}>
                               {d.abbreviation}, {d.user_name} ({d.pno})
                             </option>
                           ))}
                       </select>
                     </div>
-                    <div>
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        Passkey
-                      </label>
-                      <input
-                        type="text"
-                        name="passkey"
-                        value={formData.passkey}
-                        onChange={handleChange}
-                        placeholder="***6***"
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                      />
-                      {errors.passkey && (
-                        <p className="text-red-500">
-                          {errors.passkey.message || errors.passkey}
-                        </p>
-                      )}
+                    <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2">
+                      <div>
+                        <label className="inline-block px-2 py-1 rounded-md text-blue-900 font-semibold hover:bg-blue-300 transition">
+                          Passkey
+                        </label>
+                        <input
+                          type="text"
+                          name="passkey"
+                          value={formData.passkey}
+                          onChange={handleChange}
+                          placeholder="***6***"
+                          className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        />
+                        {errors.passkey && (
+                          <p className="text-red-500">
+                            {errors.passkey.message || errors.passkey}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="inline-block px-2 py-1 rounded-md text-blue-900 font-semibold hover:bg-blue-300 transition">
+                          Status
+                        </label>
+                        <input
+                          type="text"
+                          name="status"
+                          value={"Pending"}
+                          placeholder="status"
+                          className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        />
+                        {errors.passkey && (
+                          <p className="text-red-500">
+                            {errors.passkey.message || errors.passkey}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    {/*                 <input */}
-                    {/*                 type="datetime-local" */}
-                    {/*                 //                 type="date" */}
-                    {/*                 name="dateAndTime" */}
-                    {/*                 value={formData.dateAndTime} */}
-                    {/*                 onChange={handleChange} */}
-                    {/*                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500" */}
-                    {/*               /> */}
-                    {/*               {errors.dateAndTime && ( */}
-                    {/*                 <p className="text-red-500"> */}
-                    {/*                   {errors.dateAndTime.message || errors.dateAndTime} */}
-                    {/*                 </p> */}
-                    {/*               )} */}
                     {/*                 <div> */}
                     {/*                         <Select2 */}
                     {/*                           items={} */}

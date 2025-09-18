@@ -123,15 +123,15 @@ const TestQuals = () => {
 
   return (
     <>
-      {/*       <div> */}
-      {/*         <Button */}
-      {/*           onClick={handleClickNewEntry} */}
-      {/*           className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4" */}
-      {/*         > */}
-      {/*           {" "} */}
-      {/*           New Entry */}
-      {/*         </Button> */}
-      {/*       </div> */}
+      <div>
+        <Button
+          onClick={handleClickNewEntry}
+          className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4"
+        >
+          {" "}
+          New Entry
+        </Button>
+      </div>
       {/*       <div */}
       {/*         className="absolute bg-gradient-to-br from-green-300 to-blue-500 rounded shadow-x1 flex items-center justify-center cursor-pointer" */}
       {/*         onClick={() => setOpen(true)} */}
@@ -172,64 +172,64 @@ const TestQuals = () => {
       {/*       </Modal> */}
 
       <AllUsers />
-      {/*       {!showForm && ( */}
-      {/*         <div> */}
-      {/*           <form */}
-      {/*             onSubmit={handleSubmit} */}
-      {/*             className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4 " */}
-      {/*           > */}
-      {/*             <h2>Quals Form</h2> */}
-      {/*             <div> */}
-      {/*               <input */}
-      {/*                 type="text" */}
-      {/*                 name="abbreviation" */}
-      {/*                 placeholder="Enter Abbreviation -- Alphabets only--" */}
-      {/*                 value={formData.abbreviation} */}
-      {/*                 onChange={handleChange} */}
-      {/*                 required */}
-      {/*               /> */}
-      {/*               {errors.abbreviation && ( */}
-      {/*                 <span className="text-red-500">{errors.abbreviation}</span> */}
-      {/*               )} */}
-      {/*             </div> */}
-      {/*             <div> */}
-      {/*               <input */}
-      {/*                 type="text" */}
-      {/*                 name="qual_name" */}
-      {/*                 placeholder="Enter Qualification" */}
-      {/*                 value={formData.qual_name} */}
-      {/*                 onChange={handleChange} */}
-      {/*                 required */}
-      {/*               /> */}
-      {/*               {errors.qual_name && ( */}
-      {/*                 <span className="text-red-500"> {errors.qual_name} </span> */}
-      {/*               )} */}
-      {/*             </div> */}
-      {/*             <div> */}
-      {/*               <input */}
-      {/*                 type="date" */}
-      {/*                 name="user_type" */}
-      {/*                 placeholder="Enter User Type" */}
-      {/*                 value={formData.user_type} */}
-      {/*                 onChange={handleChange} */}
-      {/*                 required */}
-      {/*               /> */}
-      {/*               {errors.user_type && ( */}
-      {/*                 <span className="text-red-500"> {errors.user_type}</span> */}
-      {/*               )} */}
-      {/*             </div> */}
-      {/*             <button type="submit"> Save</button> */}
-      {/*             <button type="button" onClick={resetForm}> */}
-      {/*               Reset */}
-      {/*             </button> */}
-      {/*              */}
-      {/*             {error && <p className="text-orange-500"> {error} </p>} */}
-      {/*           </form> */}
-      {/*         </div> */}
-      {/*       )} */}
+      {showForm && (
+        <div>
+          <form
+            onSubmit={handleSubmit}
+            className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg flex flex-col gap-4 "
+          >
+            <h2>Quals Form</h2>
+            <div>
+              <input
+                type="text"
+                name="abbreviation"
+                placeholder="Enter Abbreviation -- Alphabets only--"
+                value={formData.abbreviation}
+                onChange={handleChange}
+                required
+              />
+              {errors.abbreviation && (
+                <span className="text-red-500">{errors.abbreviation}</span>
+              )}
+            </div>
+            <div>
+              <input
+                type="text"
+                name="qual_name"
+                placeholder="Enter Qualification"
+                value={formData.qual_name}
+                onChange={handleChange}
+                required
+              />
+              {errors.qual_name && (
+                <span className="text-red-500"> {errors.qual_name} </span>
+              )}
+            </div>
+            <div>
+              <input
+                type="date"
+                name="user_type"
+                placeholder="Enter User Type"
+                value={formData.user_type}
+                onChange={handleChange}
+                required
+              />
+              {errors.user_type && (
+                <span className="text-red-500"> {errors.user_type}</span>
+              )}
+            </div>
+            <button type="submit"> Save</button>
+            <button type="button" onClick={resetForm}>
+              Reset
+            </button>
+
+            {error && <p className="text-orange-500"> {error} </p>}
+          </form>
+        </div>
+      )}
 
       {!loading && data && (
-        <table className="border 2px solid max-w-md mx-auto mt-80">
+        <table className="border 2px solid max-w-md mx-auto mt-10">
           <thead>
             <tr>
               <td> ID </td>

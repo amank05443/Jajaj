@@ -1,15 +1,15 @@
 import { useState } from "react";
 const useValidation = (initialValues = {}, rules = {}) => {
   const [formData, setFormData] = useState(initialValues);
-//  const [prevFormData, setPrevFormData] = useState(initialValues);
-  const [validValues, setValidValues] = useState(initialValues);
+  const [prevFormData, setPrevFormData] = useState(initialValues);
+//  const [validValues, setValidValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
 
   const validateField = (name, value) => {
     const fieldRules = rules[name] || {};
     const customMessages = fieldRules.messages || {};
     let err = "";
-    if (!value && fieldRules.required) err = customMessages.required || " This field is required";
+    if (!value && fieldRules.required) {return customMessages.required || " This field is required";}
     else if (fieldRules.numbersOnly && !/^[0-9]*$/.test(value)) err = customMessages.numbersOnly || " Numbers only";
     else if (fieldRules.capsOnly && !/^[A-Z]*$/.test(value)) err = customMessages.capsOnly || " Uppercase letters only";
     else if (fieldRules.lettersOnly && !/^[A-Za-z]*$/.test(value)) err = customMessages.lettersOnly || " Letters only";
@@ -35,8 +35,8 @@ const useValidation = (initialValues = {}, rules = {}) => {
         else if (value.length > 10) err= "Phone must be 10 digits"
     }
     else if (fieldRules.passkey) {
-        if(!value) err= "Passkey is required";
-        else if (!/^[0-9]*$/.test(value)) err= "Only digits allowed"
+//        if(!value) err= "Passkey is required";
+        if (!/^[0-9]*$/.test(value)) err= "Only digits allowed"
         else if (value.length > 6) err= "Passkey must be 06 digits"
     }
     else if (fieldRules.dateNotAfterToday && value) {
@@ -83,13 +83,13 @@ const useValidation = (initialValues = {}, rules = {}) => {
     //        const newFormData ={ ...formData, [name]: value};
     const error = validateField(name, value);
 
-    if (error) {
-      //            setFormData(prevFormData);
+    if (error && error  !== " This field is required") {
+      setFormData(prevFormData);
       setErrors((prev) => ({ ...prev, [name]: error }));
     } else {
       const newFormData = { ...formData, [name]: value };
       setFormData(newFormData);
-      setValidValues(newFormData);
+      setPrevFormData(newFormData);
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
