@@ -89,7 +89,7 @@ export default function TradeSupAto() {
                 >
                   ❌
                 </button>
-                <h2 className="font-bold flex items-center justify-center bg-blue-200 h-12 rounded-lg ">
+                <h2 className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-12 rounded-lg text-xl font-family: 'Algerian'">
                   Users authentication
                 </h2>
               </div>
