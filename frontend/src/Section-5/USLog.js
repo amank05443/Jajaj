@@ -46,7 +46,7 @@ const USLog = () => {
         </Typography>
     </Paper>
 
-    <Button variant="contained" color="primary" onClick={() => navigate('/userlist')}>
+    <Button variant="contained" color="primary" onClick={() => navigate('/uSLogForm')}>
       New Entry
     </Button>
 

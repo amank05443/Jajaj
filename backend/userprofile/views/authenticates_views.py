@@ -20,7 +20,7 @@ def check_passkey_authentication(request):
     pin= data.get('passkey')
     try:
         user= Users.objects.get(id=id, pin=pin)
-        return JsonResponse({"status": "OK", "user": {"id": user.id, "name": user.user_name}})
+        return JsonResponse({"status": "OK", "user": {"id": user.id, "name": user.user_name+", "+user.rank.abbreviation,}})
     except ObjectDoesNotExist:
         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
 

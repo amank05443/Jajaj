@@ -3,7 +3,8 @@ from rest_framework import serializers
 # from .models import  Users, Quals, Trades ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
-    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals
+    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes, Items, Trades, \
+    UserQuals, LimDefrDefLogs
 
 
 #--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
@@ -121,7 +122,7 @@ class CustomersSerializer(serializers.ModelSerializer):
 class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChangeOfServiceabilityLogs
-        fields = ['reason_for_placing_unserviceable']
+        fields = '__all__'
 
 class HowFoundDefectsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -131,4 +132,9 @@ class HowFoundDefectsSerializer(serializers.ModelSerializer):
 class EntryTypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = EntryTypes
+        fields = '__all__'
+
+class LimDefrDefLogsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LimDefrDefLogs
         fields = '__all__'

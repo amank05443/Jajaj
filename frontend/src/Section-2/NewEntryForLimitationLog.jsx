@@ -67,7 +67,6 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
   const [systems, setSystemsOptions] = useState([]);
   const [roles, setRolesOptions] = useState([]);
   const [items, setItemsOptions] = useState([]);
-  const { create } = useTableApi("lim_defr_def_logs");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,8 +108,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
       setError(name, { type: "manual", message: error.message });
     }
   };
-  //Watch all fields for live validations
-  //   const formValues = watch();
+
   const { dirtyFields } = formState;
 
   useEffect(() => {
@@ -125,15 +123,6 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
     return () => subscription.unsubscribe();
   }, [watch, dirtyFields, onDataChange]);
 
-  /*   useEffect(() => {
-    Object.entries(formValues).forEach(([name, value]) => {
-      if (dirtyFields[name]) {
-        validateField(name, value);
-      } else {
-        clearErrors(name);
-      }
-    });
-  }, [formValues, dirtyFields]); */
 
   return (
     <FormProvider {...methods}>
