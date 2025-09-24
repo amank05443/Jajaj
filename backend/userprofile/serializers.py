@@ -1,6 +1,6 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
+from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs,Customers, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,HowFoundDefects,ChangeOfServiceabilityLogLines
 
 
 
@@ -101,7 +101,31 @@ class CustomersSerializer(serializers.ModelSerializer):
         model = Customers
         fields = '__all__'
 
-class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
+
+class HowFoundDefectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HowFoundDefects
+        fields = '__all__'
+
+class ChangeOfServiceabilityLogLinesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChangeOfServiceabilityLogs
-        fields = ['reason_for_placing_unserviceable']
+        fields = '__all__'
+
+class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
+    snow=serializers.DecimalField(max_digits=10, decimal_places=0,allow_null=True)
+    status_label = serializers.SerializerMethodField(method_name='get_status_label')
+    how_found_defect=HowFoundDefectsSerializer(read_only=True)
+    change_of_serviceability_lines=ChangeOfServiceabilityLogLinesSerializer(source="change_of_serviceability_log_lines", read_only=True,many=True)
+    class Meta:
+        model = ChangeOfServiceabilityLogs
+        fields =  '__all__'
+
+    def get_status_label(self,obj):
+        # if obj.status is None:
+        #     return None
+        if obj.status =="3":
+            return "CLOSED"
+        return "OPEN"
+        # return obj.status
+

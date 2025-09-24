@@ -31,8 +31,8 @@ urlpatterns = [
     path('api/aircraft-type-details', AircraftTypeDetailsView.as_view(), name='aircraft-type-details'),
     path('api/aircraft-details/<int:aircraft_type_id>', views.AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
-    path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
-
+    path('api/serviceability-log/<int:id>/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
+    # path('api/serviceability-log/<int:id>/',views.change_of_serviceability_logs_grid_view,name='serviceability-log'),
     #Dynamic views & urls
     path('api/<str:table>/',dynamic_view),
     path('api/<str:table>/<int:pk>/', detail_view),

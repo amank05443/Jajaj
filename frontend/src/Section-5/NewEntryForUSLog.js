@@ -7,7 +7,7 @@ import {
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CompletionDetails from "./CompletionDetails";
 import useTableApi from '../Utils/CustomHooks/useTableApi';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
 
 const dropdownStyle = {
     backgroundColor: 'white',
@@ -22,6 +22,7 @@ const sectionHeader = (icon,text) => (
 );
 
 const NewEntryForUSLog = () => {
+
     const [successSnackbar,setSuccessSnackbar] = useState(false);
     const navigate = useNavigate();
     const [showNext, setShowNext] = useState(false);
@@ -30,6 +31,9 @@ const NewEntryForUSLog = () => {
         time_date:'',af_hours:'',how_found:'',snow:'',reason_us:'',
         discovered_by:'',auth_code:'',classification:'',
     });
+    const location= useLocation();
+    const data1 = location.state;
+    console.log(data1);
 
     const handleCheckboxChange = (value) => {
         setFormData((prev) => ({

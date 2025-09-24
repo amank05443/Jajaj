@@ -16,7 +16,7 @@ const cards = [
     description: 'Track maintenance issues and defects',
     icon: <FaTools />,
     color: 'red',
-    link: '/usLog',
+    link: '/usLog2',
   },
   {
     title: 'Miscellaneous Entries',

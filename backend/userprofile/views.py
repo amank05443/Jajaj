@@ -23,7 +23,7 @@ from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.models.customers import Customers
 from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
 from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
-                                      get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer,)
+                                      get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,CustomersSerializer,AircraftMastersSerializer, AircraftTypesSerializer,HowFoundDefectsSerializer)
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
@@ -227,7 +227,19 @@ class Quals_view(ListAPIView):
     queryset = Quals.objects.all()
     serializer_class = QualsSerializer
 
-
-class ChangeOfServiceabilityLogsCreateView(generics.CreateAPIView):
-    queryset = ChangeOfServiceabilityLogs.objects.all()
+#
+class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
     serializer_class = ChangeOfServiceabilityLogsSerializer
+    def get_queryset(self):
+        aircraft_master_id = self.kwargs.get('id')
+        return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))
+
+# def ChangeOfServiceabilityLogsCreateView(request, id):
+#     try:
+#         # aircraft1= AircraftMasters.objects.get(id=id)
+#         # data = model_to_dict(aircraft1)
+#         data=ChangeOfServiceabilityLogs.filter(aircraft_master_id=id)
+#         print(data)
+#         return JsonResponse(data)
+#     except AircraftMasters.DoesNotExist:
+#         return JsonResponse({"error": "<UNK>"})
