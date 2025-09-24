@@ -223,39 +223,50 @@ const CompassLogView = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 space-y-8">
-      <h1 className="text-2xl text-purple-600 font-bold mb-4 text-center">
-        COMPASS CALIBRATION LOG
-      </h1>
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-1">
+        <h2
+          className="absolute text-md font-bold"
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: "35px",
+            margin: 4,
+            fontFamily: "Algerian",
+          }}
+        >
+          COMPASS CALIBRATION LOG
+        </h2>
+      </div>
       <div
-        className="bg-gradient-to-r  rounded-xl shadow-2xl boarder boarder-grey-100 p-4 ml-2 mr-3
-            transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
+        className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] "
       >
         {data && (
           <div className="border-4 border-black-400 rounded-lg p-4 backdrop-blur-sm">
             <table className="w-full border-collapse text-sm">
               <tbody>
-                <tr className="bg-green-200 text-gray-900 font-bold">
+                <tr className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] ">
                   <td className="border border-gray-400 p-2 w-1/4">
-                    Compass Swing Date : &nbsp;&nbsp;
+                    <strong>Compass Swing Date</strong> : &nbsp;&nbsp;
                     <b class="text-green-700">{data.compass_swing_date || "NA"}</b>
                   </td>
                   <td className="border border-gray-400 p-2 w-1/4">
-                    Due Date : &nbsp;&nbsp;
+                    <strong>Due Date</strong> : &nbsp;&nbsp;
                     <b class="text-green-700">{data.due_date || "NA"}</b>
                   </td>
                   <td className="border border-gray-400 p-2 w-1/4">
-                    AP Reference : &nbsp;&nbsp;
+                    <strong>AP Reference</strong> : &nbsp;&nbsp;
                     <b class="text-green-700">{data.ap_reference || "NA"}</b>
                   </td>
                 </tr>
-                <tr className="bg-green-200 text-gray-900 font-bold">
-                  <td className="border border-gray-400 p-2 w-1/4">Place : &nbsp;&nbsp;
+                <tr className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] ">
+                  <td className="border border-gray-400 p-2 w-1/4"><strong>Place</strong> : &nbsp;&nbsp;
                     <b class="text-green-700">{data.place || "NA"}</b></td>
                   <td className="border border-gray-400 p-2 w-1/4">
-                    Ref SNOW : &nbsp;&nbsp;
+                    <strong>Ref SNOW</strong> : &nbsp;&nbsp;
                     <b class="text-green-700">{data.ref_snow || "NA"}</b>
                   </td>
-                  <td className="border border-gray-400 p-2 w-1/4">Method : &nbsp;&nbsp;
+                  <td className="border border-gray-400 p-2 w-1/4"><strong>Method </strong>: &nbsp;&nbsp;
                     <b class="text-green-700">{data.method || "NA"}</b></td>
                 </tr>
               </tbody>
