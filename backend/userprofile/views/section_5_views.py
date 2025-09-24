@@ -40,3 +40,9 @@ def limLogData(request):
         "acRoleData" : AircraftRolesSerializer(acRole_qs,many=True).data,
         "itemsData" : ItemsSerializer(items_qs,many=True).data,
     })
+
+class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
+    serializer_class = ChangeOfServiceabilityLogsSerializer
+    def get_queryset(self):
+        aircraft_master_id = self.kwargs.get('id')
+        return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))

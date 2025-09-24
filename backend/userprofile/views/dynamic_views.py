@@ -14,14 +14,6 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 import json
 from django.views.decorators.csrf import csrf_protect
-from userprofile.models.ranks import Ranks
-from userprofile.models.quals import Quals
-from userprofile.models.entry_types import EntryTypes
-from userprofile.models.users import Users
-from userprofile.models.aircraft_masters import AircraftMasters
-from userprofile.models.fuel_tanks import FuelTanks
-from userprofile.models.customers import Customers
-from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
 from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
                                       get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,CustomersSerializer,AircraftMastersSerializer, AircraftTypesSerializer,HowFoundDefectsSerializer)
 from django.contrib.auth.decorators import login_required
@@ -36,8 +28,8 @@ from rest_framework.viewsets import ViewSet
 
 #------------------------------------------------- Import All Models Here -------------------------------------------
 
-from .models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
-                                      EcuMasters,TyrePressures,Pols,Systems)
+from userprofile.models import (Ranks,Quals,EntryTypes,AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
+                     Users,EcuMasters,TyrePressures,Pols,Systems)
 
 
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
