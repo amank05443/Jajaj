@@ -7,7 +7,6 @@ import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
 import AllUsers from "../Authentication/AuthenticationOne";
 import NewEntryForLimitationLog from "../Section-2/NewEntryForLimitationLog";
-import dayjs from "dayjs";
 import {
   Accordion,
   AccordionSummary,
@@ -35,7 +34,7 @@ const USLogForm = () => {
   const [howFoundOptions, setHowFoundOptions] = useState([]);
   const [entryTypeOptions, setEntryTypeOptions] = useState([]);
   const [aircraftMaster, setAircraftMaster] = useState(null);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [limLogData, setLimLogData] = useState({});
 
   //::--checkboxes states and its management
@@ -48,7 +47,6 @@ const USLogForm = () => {
     { key: "indCheck", label: "Independent Check" },
     { key: "lartCheck", label: "Loose Articles Check" },
   ];
-
   const [activeCheckboxes, setActiveCheckboxes] = useState({
     lim: false,
     def: false,
@@ -72,7 +70,6 @@ const USLogForm = () => {
         airframeHrs: "",
         aircraft_master_id: params ? params.aircraft_master_id : "",
         reason_for_placing_unserviceable: "",
-        system_time_date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       },
       {
         entryType: { required: true },
@@ -81,10 +78,8 @@ const USLogForm = () => {
         airframeHrs: { required: true },
         aircraft_master_id: { required: true },
         reason_for_placing_unserviceable: { alphaNumeric: true },
-        system_time_date: { required: true },
       },
     );
-  const { register, watch } = useForm();
 
   //::--Fetching base data from tables
   useEffect(() => {
@@ -97,8 +92,6 @@ const USLogForm = () => {
             aircraft_type_id: params?.aircraft_type_id,
           },
         });
-        console.log(data);
-        console.log(data.data.aircraftMasters);
         setHowFoundOptions(data.data.howFoundDefects);
         setEntryTypeOptions(data.data.entryTypes);
         setAircraftMaster(data.data.aircraftMasters);
@@ -114,45 +107,29 @@ const USLogForm = () => {
     fetchData();
   }, []);
 
+  //for handling authentication data
   const handleDataFromAllUsers = (data) => {
-  const { authenticated, user_id } = data;
-   setFormData((prev) => ({
-      ...prev ,
-    authenticated: authenticated,
-    user_id: user_id,
-  }));
-};
+    const { authenticated, user_id, user_name } = data;
+    setFormData((prev) => ({
+      ...prev,
+      authenticated: authenticated,
+      user_id: user_id,
+      user_name: user_name,
+    }));
+    setIsAuthenticated(true);
+  };
 
-  const [user, setUser] = useState({ name: "", rank: "" });
-  const authCode = watch("authCode");
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (authCode === "1234") {
-      setUser({ name: "🤪JASPER PANDA", rank: "LEMA(R)" });
-    } else {
-      setUser({ name: "", rank: "" });
-    }
-  }, [authCode]);
-
-  //   console.log("howFound:", howFoundOptions);
-  //   console.log("entryType:", entryTypeOptions);
-  if (!loading) console.log("aircraftMaster:", aircraftMaster.airframe_hrs);
-  console.log("formData:", formData);
-  console.log("limLogData:", limLogData);
-
+  //for submitting the form data
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      aircraft_master_id: formData.aircraft_master_id,
-      airframe_hrs: formData.airframeHrs,
-      reason_for_placing_unserviceable:
-        formData.reason_for_placing_unserviceable,
-      system_time_date: formData.system_time_date,
+      formData: formData,
+      limLogData: limLogData,
+      activeCheckboxes: activeCheckboxes,
     };
     if (validateAll()) {
       try {
-        const res = await fetch("/api/serviceability-log/", {
+        const res = await fetch("/api/saveUsLogData/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -170,13 +147,6 @@ const USLogForm = () => {
       console.log("Blundeeeeer");
     }
   };
-
-  //   const FloatingLabel = ({ label }, { label: string }) => (
-  const FloatingLabel = ({ label }) => (
-    <div className="absolute left-0 -top-4 text-sm text-gray-600 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-indigo-500">
-      {label}
-    </div>
-  );
 
   if (loading) {
     <p>Loading...</p>;
@@ -213,6 +183,7 @@ const USLogForm = () => {
                 name="entryType"
                 value={formData.entryType}
                 onChange={handleChange}
+                disabled={isAuthenticated}
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
               >
                 <option value="">Select Entry Type</option>
@@ -237,6 +208,7 @@ const USLogForm = () => {
                 name="howFound"
                 value={formData.howFound}
                 onChange={handleChange}
+                disabled={isAuthenticated}
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
               >
                 <option value="">Select How Found</option>
@@ -263,6 +235,7 @@ const USLogForm = () => {
                 name="dateAndTime"
                 value={formData.dateAndTime}
                 onChange={handleChange}
+                disabled={isAuthenticated}
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
               />
               {errors.dateAndTime && (
@@ -280,6 +253,7 @@ const USLogForm = () => {
                 type="text"
                 name="airframe_hrs"
                 value={formData.airframeHrs}
+                disabled
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                 readOnly
               ></input>
@@ -297,6 +271,7 @@ const USLogForm = () => {
                 name="reason_for_placing_unserviceable"
                 value={formData.reason_for_placing_unserviceable || ""}
                 onChange={handleChange}
+                disabled={isAuthenticated}
                 rows={4}
                 placeholder="Enter reason for placing aircraft unserviceable"
                 className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
@@ -326,6 +301,7 @@ const USLogForm = () => {
                         type="checkbox"
                         checked={activeCheckboxes[box.key]}
                         onChange={() => toggleCheckboxes(box.key)}
+                        disabled={isAuthenticated}
                         className="accent-pink-600"
                       />
                       <span className="text-gray-800">{box.label}</span>
@@ -348,6 +324,7 @@ const USLogForm = () => {
                         type="checkbox"
                         checked={activeCheckboxes[box.key]}
                         onChange={() => toggleCheckboxes(box.key)}
+                        disabled={isAuthenticated}
                       />
                       <span className="text-gray-800">{box.label}</span>
                     </label>
@@ -362,57 +339,25 @@ const USLogForm = () => {
             <NewEntryForLimitationLog onDataChange={setLimLogData} />
           </div>
         )}
-        <AllUsers onSubmit={handleDataFromAllUsers} />
-        <div
-          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer"
-          onClick={() => setOpen(true)}
-        >
-          <span className="text-gray-800 font-semibold text-lg">
-            Authorize and Forward
-          </span>
-        </div>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <Box
-            className="bg-white rounded-2x1 shadow-2x1 p-6 flex flex-col items-center gap-4"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%,-50%)",
-              width: 400,
-            }}
-          >
-            <Typography variant="h6" className="text-gray-800 font-bold mb-2">
-              Authorization
-            </Typography>
-            <TextField
-              {...register("authCode")}
-              label="Authorization Code"
-              variant="outlined"
-              fullWidth
-            />
-            {user?.name && (
-              <Typography className="text-green-600">
-                {" "}
-                Authorized By {user.name} {user.rank}
-              </Typography>
-            )}
-            <Button
-              onClick={handleSubmit}
-              type="submit"
-              variant="contained"
-              fullWidth
-              className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-bold shadow-lg hover:opacity-90"
-            >
-              Forward to Clear Defect
-            </Button>
-            <Button onClick={() => setOpen(false)} color="inherit">
-              {" "}
-              Close
-            </Button>
-          </Box>
-        </Modal>
       </form>
+      <Stack direction="row" spacing={2} mt={2}>
+        {!isAuthenticated ? (
+          <AllUsers auth={handleDataFromAllUsers} />
+        ) : (
+          <Typography variant="body1" color="success.main" fontWeight="bold">
+            Authenticated by {formData.user_name}
+          </Typography>
+        )}
+        <Button
+          onClick={handleSubmit}
+          type="submit"
+          variant="contained"
+          disabled={!isAuthenticated}
+          className="primary"
+        >
+          Submit
+        </Button>
+      </Stack>
     </div>
   );
 };

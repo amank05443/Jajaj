@@ -62,8 +62,9 @@ const FlyingOperations = lazy(() => import("../Section-4/FlyingOperations"));
 //--SECTION->5--//
 const NewEntryForUSLog = lazy(() => import("../Section-5/NewEntryForUSLog"));
 const USLog = lazy(() => import("../Section-5/USLog"));
+const USLogForm = lazy(() => import("../Section-5/USLogForm"));
+const ClearUsLog = lazy(() => import("../Section-5/ClearUsLog"));
 const USLog2 = lazy(() => import("../Section-5/USLog2"));
-const UserList = lazy(() => import("../Section-5/UserList"));
 
 //--SECTION->7--//
 const RoutineServicingTab = lazy(
@@ -135,7 +136,8 @@ export const privateRoutes = [
 
   //--SECTION-> 5--//
   { path: "/newEntryForUSLog", element: <NewEntryForUSLog /> },
-  { path: "/userList", element: <UserList /> },
+  { path: "/uSLogForm", element: <USLogForm /> },
+  { path: "/clearUsLog", element: <ClearUsLog /> },
   { path: "/usLog", element: <USLog /> },
    { path: "/usLog2", element: <USLog2 /> },
 

@@ -7,7 +7,7 @@ import { Grid, TextField, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BasicWeightAndMomentsForm from "../Section-9/BasicWeightAndMomentsForm";
 
-const BASE_WEIGHT_KG = 13_000;
+const BASE_WEIGHT_KG = 13000;
 function SignToggle({ name, value, onChange }) {
   return (
     <div className="inline-flex rounded-lg border border-gray-300 overflow-hidden shadow-sm">
@@ -122,7 +122,7 @@ const clearFormData = {
   correctedCGLateralPos: "",
   correctedLateralMoment: "",
 };
-export default function BasicWeightAndMoment() {
+export default function BasicWeightAndMoment({ wbData }) {
   const [showHistory, setShowHistory] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState(clearFormData);
@@ -132,13 +132,6 @@ export default function BasicWeightAndMoment() {
 
   const { data, loading, create } = useTableApi("weight_balance");
   const { showAlert } = useAlert();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
-    setErrors((p) => ({ ...p, [name]: "" }));
-    console.log("formData: ", formData);
-  };
 
   const requiredKeys = [
     "description",
@@ -163,7 +156,20 @@ export default function BasicWeightAndMoment() {
     return n;
   };
 
-  const handleSubmit = async () => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((p) => {
+      const newFormData = { ...p, [name]: value };
+
+      const v = validate(newFormData);
+      setErrors(v);
+
+      wbData(newFormData);
+      return newFormData;
+    });
+  };
+
+  /*   const handleSubmit = async () => {
     const v = validate();
 
     if (Object.keys(v).length) {
@@ -215,7 +221,7 @@ export default function BasicWeightAndMoment() {
       setIsSubmitting(false);
     }
     setFormData(clearFormData);
-  };
+  }; */
 
   const inputClass = (name) =>
     `w-full p-3 rounded-2x1 border text-1g shadow-sm transition-all duration-300 focus:ring-4 ${
@@ -226,27 +232,26 @@ export default function BasicWeightAndMoment() {
 
   return (
     <div>
-      <div className="bg-gray-100 min-h-screen items-center justify-center">
-         <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
+      <div className="bg-gray-100 items-center justify-center">
+        <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-11 p-1 m-1">
           <h2
-            className=" absolute text-md font-bold"
+            className="font-bold"
             style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              fontSize: "35px",
-              margin: 0,
+              textAlign: "center",
+              fontSize: "25px",
               fontFamily: "algerian",
             }}
           >
-            BASIC WEIGHT AND MOMENT
+            CHANGE IN BASIC WEIGHT AND MOMENT FORM
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-1 rounded-lg
+        <div
+          className="grid grid-cols-1 md:grid-cols-8 mt-1 rounded-lg
         bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20
-        rounded-xl shadow-2xl boarder boarder-grey-100 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
-          <main className="md:col-span-8 p-6 space-y-6">
+        rounded-xl shadow-2xl boarder boarder-grey-100 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
+        >
+          <main className="md:col-span-8 p-6 space-y-3">
             <section className="space-y-2">
               <label className="text-lg font-semibold font-medium uppercase tracking-wide text-gray-800">
                 Weighing / Change /Modification
@@ -436,91 +441,92 @@ export default function BasicWeightAndMoment() {
               <br />
             </section>
           </main>
-          <aside className="md:col-span-4 sm:p-6">
-            <div className="sticky top-4 space-y-4">
-              <div className="rounded-2x1 rounded-lg border border border-indigo-100
-              bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 ">
-                <h2 className="text-xl font-semibold text-gray-500">
-                  Review & Submit
-                </h2>
-                <br/>
+          {/*           <aside className="md:col-span-4 sm:p-6"> */}
+          {/*             <div className="sticky top-4 space-y-4"> */}
+          {/*               <div */}
+          {/*                 className="rounded-2x1 rounded-lg border border border-indigo-100 */}
+          {/*               bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 " */}
+          {/*               > */}
+          {/*                 <h2 className="text-xl font-semibold text-gray-500"> */}
+          {/*                   Review & Submit */}
+          {/*                 </h2> */}
+          {/*                 <br /> */}
 
+          {/*                 <h2 className="text-lg font text-gray-700"> */}
+          {/*                   Details of Change */}
+          {/*                 </h2> */}
+          {/*                 <div className="mt-3 space-y-3 text-md text-gray-600"> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Weight</span> */}
+          {/*                     <span> */}
+          {/*                       {formData.weightSign || ""} */}
+          {/*                       {formData.weightValue || 0} */}
+          {/*                     </span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Long Moment</span> */}
+          {/*                     <span> */}
+          {/*                       {formData.longSign || ""} */}
+          {/*                       {formData.longValue || 0} */}
+          {/*                     </span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Lat/Vert</span> */}
+          {/*                     <span> */}
+          {/*                       {formData.latVertSign || ""} */}
+          {/*                       {formData.latVertValue || 0} */}
+          {/*                     </span> */}
+          {/*                   </div> */}
 
-                <h2 className="text-lg font text-gray-700">
-                  Details of Change
-                </h2>
-                <div className="mt-3 space-y-3 text-md text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Weight</span>
-                    <span>
-                      {formData.weightSign || ""}
-                      {formData.weightValue || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Long Moment</span>
-                    <span>
-                      {formData.longSign || ""}
-                      {formData.longValue || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Lat/Vert</span>
-                    <span>
-                      {formData.latVertSign || ""}
-                      {formData.latVertValue || 0}
-                    </span>
-                  </div>
+          {/*                   <h2 className="text-lg font text-gray-700"> */}
+          {/*                     Corrected Basic Data */}
+          {/*                   </h2> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Weight</span> */}
+          {/*                     <span>{formData.correctedWeight || 0}</span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>CG Position(Long)</span> */}
+          {/*                     <span>{formData.correctedCGLongPos || 0}</span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Moment(Long)</span> */}
+          {/*                     <span>{formData.correctedCGLongMoment || 0}</span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>CG Position (Lateral % MAC)</span> */}
+          {/*                     <span>{formData.correctedCGLateralPos || 0}</span> */}
+          {/*                   </div> */}
+          {/*                   <div className="flex justify-between"> */}
+          {/*                     <span>Moment (Lateral)</span> */}
+          {/*                     <span>{formData.correctedLateralMoment || 0}</span> */}
+          {/*                   </div> */}
+          {/*                 </div> */}
+          {/*               </div> */}
+          {/*               <div */}
+          {/*                 className=" p-3 flex flex-row justify-center rounded-2x1 rounded-lg border border-gray-100 */}
+          {/*               bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-1 gap-4 shadow-sm" */}
+          {/*               > */}
+          {/*                 <button */}
+          {/*                   onClick={handleSubmit} */}
+          {/*                   className={`mt-4 w-1/2  ${ */}
+          {/*                     isSubmitting */}
+          {/*                       ? "" */}
+          {/*                       : "bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500" */}
+          {/*                   }`} */}
+          {/*                 > */}
+          {/*                   {isSubmitting ? "Submitting..." : " Submit"} */}
+          {/*                 </button> */}
 
-                  <h2 className="text-lg font text-gray-700">
-                    Corrected Basic Data
-                  </h2>
-                  <div className="flex justify-between">
-                    <span>Weight</span>
-                    <span>{formData.correctedWeight || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CG Position(Long)</span>
-                    <span>{formData.correctedCGLongPos || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Moment(Long)</span>
-                    <span>{formData.correctedCGLongMoment || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>CG Position (Lateral % MAC)</span>
-                    <span>{formData.correctedCGLateralPos || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Moment (Lateral)</span>
-                    <span>{formData.correctedLateralMoment || 0}</span>
-                  </div>
-                </div>
-              </div>
-              <div
-                className=" p-3 flex flex-row justify-center rounded-2x1 rounded-lg border border-gray-100
-              bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-1 gap-4 shadow-sm"
-              >
-                <button
-                  onClick={handleSubmit}
-                  className={`mt-4 w-1/2  ${
-                    isSubmitting
-                      ? ""
-                      : "bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
-                  }`}
-                >
-                  {isSubmitting ? "Submitting..." : " Submit"}
-                </button>
-
-                <button
-                  onClick={() => navigate("/basicWeightAndMomentsForm")}
-                  className="mt-4 w-1/2 rounded-x1 bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500"
-                >
-                  History
-                </button>
-              </div>
-            </div>
-          </aside>
+          {/*                 <button */}
+          {/*                   onClick={() => navigate("/basicWeightAndMomentsForm")} */}
+          {/*                   className="mt-4 w-1/2 rounded-x1 bg-gradient-to-r from -purple-500 to-indigo-400 text-gray font-semibold px-6 py-3 rounded-lg  active: from-purple-400 active:to-indigo-500" */}
+          {/*                 > */}
+          {/*                   History */}
+          {/*                 </button> */}
+          {/*               </div> */}
+          {/*             </div> */}
+          {/*           </aside> */}
         </div>
       </div>
     </div>

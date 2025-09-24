@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import useValidation from "../Utils/CustomHooks/useValidation";
-export default function AllUsers({ onSubmit }) {
+export default function AllUsers({ auth }) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
   const {
@@ -66,8 +66,8 @@ export default function AllUsers({ onSubmit }) {
         user_id: data.user.id,
         user_name: data.user.name,
       };
-      if (onSubmit) {
-        onSubmit(authData);
+      if (auth) {
+        auth(authData);
       }
       setOpen(false);
       setErrors("");
@@ -138,7 +138,7 @@ export default function AllUsers({ onSubmit }) {
                         Passkey
                       </label>
                       <input
-                        type="text"
+                        type="password"
                         name="passkey"
                         value={formData.passkey}
                         onChange={handleChange}
@@ -156,7 +156,7 @@ export default function AllUsers({ onSubmit }) {
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
-                    Submit
+                    Authenticate
                   </button>
                 </form>
               </div>

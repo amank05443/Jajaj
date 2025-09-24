@@ -23,6 +23,8 @@ class AircraftMasters(models.Model):
     max_speed = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     expiry_of_ttl_hrs = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     empty_weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_airframe_hrs = models.BigIntegerField(blank=True, null=True)
+    last_snow_no = models.BigIntegerField(blank=True, null=True)
     airframe_hrs = models.CharField()
 
     #   * Rearrange models' order

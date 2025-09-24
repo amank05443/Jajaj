@@ -6,14 +6,12 @@ import { useAlert } from "../Utils/Alerts/AlertContext";
 import axios from "axios";
 import useValidation from "../Utils/CustomHooks/useValidation";
 
-const CompassLog = () => {
+const CompassLog = ({ compassData }) => {
   const { create, error } = useTableApi("compass_calibration_logs");
   const { showAlert } = useAlert();
   const rules = {
-    occasion: {capsOnly: true, maxLength: 5},
-
+    occasion: { capsOnly: true, maxLength: 5 },
     date: { dateNotBeforeToday: true },
-
   };
   const { validateField } = useValidation({}, rules);
 
@@ -44,7 +42,6 @@ const CompassLog = () => {
     coeff_c: "",
   });
 
-
   const { data, loading } = useTableApi("compass_calibration_logs");
   if (loading) {
     <p>Loading...</p>;
@@ -55,17 +52,9 @@ const CompassLog = () => {
       ...prev,
       [name]: value,
     }));
+    compassData(form);
   };
-  //   const handleBoxChange = (section, field, value) => {
-  //     if (typeof form[section] === "object" && !Array.isArray(form[section])) {
-  //       setForm({ ...form, [section]: { ...form[section], [field]: value } });
-  //       console.log("XXX");
-  //     } else {
-  //       setForm({ ...form, [field]: value });
-  //       console.log("YYY");
-  //     }
-  //   };
-  const handleSubmit = () => {
+  /*   const handleSubmit = () => {
     create(form);
     if (!error) {
       showAlert({
@@ -74,9 +63,9 @@ const CompassLog = () => {
         message: "Compass Calibration Data saved successfully.",
         data: { "Compass Type": form.compass_type },
       });
-            setTimeout(() => {
-              window.location.reload();
-            }, 2500);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
     } else {
       showAlert({
         type: "error",
@@ -84,21 +73,30 @@ const CompassLog = () => {
         message: "Failed to save Compass Calibration Data.",
         data: error,
       });
-            setTimeout(() => {
-              window.location.reload();
-            }, 2500);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
     }
-  };
+  }; */
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 space-y-8">
-      <h3 className="text-2xl text-purple-600 font-bold mb-4 text-center">
-        COMPASS CALIBRATION LOG
-      </h3>
-      <div
-        className="bg-gradient-to-r  rounded-xl shadow-2xl boarder boarder-grey-100 p-4 ml-2 mr-3
-            transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
+    <div className="bg-gray-100 p-2 space-y-3">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-11 p-1 m-1">
+        <h2
+          className="font-bold"
+          style={{
+            textAlign: "center",
+            fontSize: "25px",
+            fontFamily: "algerian",
+          }}
         >
+          COMPASS CALIBRATION LOG
+        </h2>
+      </div>
+      <div
+        className="bg-gradient-to-r  rounded-xl shadow-2xl border border-grey-100 p-4 ml-2 mr-3
+            transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"
+      >
         {data && (
           <div className="border-4 border-black-400 rounded-lg p-4 backdrop-blur-sm">
             <table className="w-full border-collapse text-sm">
@@ -106,7 +104,9 @@ const CompassLog = () => {
                 <tr className="bg-blue-300 text-gray-900 font-bold">
                   <td className="border border-gray-400 p-2 w-1/4 text-yellow">
                     <strong>Compass Swing Date :</strong> &nbsp;&nbsp;
-                    <b class="text-orange-600"><span>{data.compass_swing_date || "NA"}</span></b>
+                    <b class="text-orange-600">
+                      <span>{data.compass_swing_date || "NA"}</span>
+                    </b>
                   </td>
                   <td className="border border-gray-400 p-2 w-1/4">
                     Due Date : &nbsp;&nbsp;
@@ -118,125 +118,25 @@ const CompassLog = () => {
                   </td>
                 </tr>
                 <tr className="bg-blue-300 text-gray-900 font-bold">
-                  <td className="border border-gray-400 p-2 w-1/4">Place : &nbsp;&nbsp;
-                    <b class="text-green-700">{data.place || "NA"}</b></td>
+                  <td className="border border-gray-400 p-2 w-1/4">
+                    Place : &nbsp;&nbsp;
+                    <b class="text-green-700">{data.place || "NA"}</b>
+                  </td>
                   <td className="border border-gray-400 p-2 w-1/4">
                     Ref SNOW : &nbsp;&nbsp;
                     <b class="text-green-700">{data.ref_snow || "NA"}</b>
                   </td>
-                  <td className="border border-gray-400 p-2 w-1/4">Method : &nbsp;&nbsp;
-                    <b class="text-green-700">{data.method || "NA"}</b></td>
+                  <td className="border border-gray-400 p-2 w-1/4">
+                    Method : &nbsp;&nbsp;
+                    <b class="text-green-700">{data.method || "NA"}</b>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         )}
-    </div>
-{/*       <div className="bg-white p-4 rounded-lg shadow-md"> */}
-{/*           {data && ( */}
-{/*         <table className="w-full border border-gray-300"> */}
-{/*           <thead> */}
-{/*             <tr className="bg-green-200 text-center"> */}
-{/*               <th className="p-2 border">Compass Swing Date</th> */}
-{/*               <th className="p-2 border">Due Date</th> */}
-{/*               <th className="p-2 border">SNOW</th> */}
-{/*               <th className="p-2 border">View Details</th> */}
-{/*             </tr> */}
-{/*           </thead> */}
-{/*           <tbody> */}
-{/*             {records.map((record, index) => ( */}
-{/*               <tr key={index} className="border-t"> */}
-{/*                 <td className="p-2 border"> */}
-{/*                   <input */}
-{/*                     type="date" */}
-{/*                     value={data.ref_snow} */}
-{/*                     className="border rounded px-2 py-1 w-full" */}
-{/*                   /> */}
-
-{/*                 </td> */}
-{/*                 <td className="p-2 border"> */}
-{/*                   <input */}
-{/*                     type="text" */}
-{/*                     value={record.occasion} */}
-{/*                     onChange={(e) => */}
-{/*                       handleChange(index, e.target.value, "occasion") */}
-{/*                     } */}
-{/*                     className="border rounded px-2 py-1 w-full" */}
-{/*                   /> */}
-{/*                   {errors[index].occasion && ( */}
-{/*                     <span className="text-red-500"> */}
-{/*                       {errors[index].occasion} */}
-{/*                     </span> */}
-{/*                   )} */}
-{/*                 </td> */}
-{/*                 <td className="p-2 border"> */}
-{/*                   <input */}
-{/*                     type="text" */}
-{/*                     value={data.ref_snow} */}
-{/*                     onChange={(e) => */}
-{/*                       handleChange(index, e.target.value, "snow") */}
-{/*                     } */}
-{/*                     className="border rounded px-2 py-1 w-full" */}
-{/*                   /> */}
-{/*                    */}
-{/*                 </td> */}
-{/*                 <td className="p-2 border text-center"> */}
-{/*                   <button */}
-{/*                     onClick={() => */}
-{/*                       setOpenIndex(openIndex === index ? null : index) */}
-{/*                     } */}
-{/*                     className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-600" */}
-{/*                   > */}
-{/*                     {openIndex === index ? "hide" : "view"} */}
-{/*                   </button> */}
-{/*                 </td> */}
-{/*               </tr> */}
-{/*             ))} */}
-{/*           </tbody> */}
-{/*         </table> */}
-{/*         )} */}
-{/*         {openIndex !== null && ( */}
-{/*           <div className="mt-4 bg-gray-50 p-4 rounded-lg border"> */}
-{/*             <div className="grid grid-cols-3 gap-4"> */}
-{/*               <div> */}
-{/*                 <label className="block text-sm">AP Reference:</label> */}
-{/*                 <input */}
-{/*                   type="text" */}
-{/*                   value={records[openIndex].details.reference} */}
-{/*                   onChange={(e) => */}
-{/*                     handleDetailsChange(openIndex, "reference", e.target.value) */}
-{/*                   } */}
-{/*                   className="border rounded px-2 py-1 w-full" */}
-{/*                 /> */}
-{/*               </div> */}
-{/*               <div> */}
-{/*                 <label className="block text-sm">PLACE:</label> */}
-{/*                 <input */}
-{/*                   type="text" */}
-{/*                   value={records[openIndex].details.place} */}
-{/*                   onChange={(e) => */}
-{/*                     handleDetailsChange(openIndex, "place", e.target.value) */}
-{/*                   } */}
-{/*                   className="border rounded px-2 py-1 w-full" */}
-{/*                 /> */}
-{/*               </div> */}
-{/*               <div> */}
-{/*                 <label className="block text-sm">METHOD:</label> */}
-{/*                 <input */}
-{/*                   type="text" */}
-{/*                   value={records[openIndex].details.method} */}
-{/*                   onChange={(e) => */}
-{/*                     handleDetailsChange(openIndex, "method", e.target.value) */}
-{/*                   } */}
-{/*                   className="border rounded px-2 py-1 w-full" */}
-{/*                 /> */}
-{/*               </div> */}
-{/*             </div> */}
-{/*           </div> */}
-
-{/*         )} */}
-{/*       </div> */}
-      <div className="grid grid-cols-3 gap-6">
+      </div>
+      <div className="grid grid-cols-3 gap-4">
         <table className="table-auto border-collapse border-gray-400 w-full text-center shadow-lg">
           <thead>
             <tr className="bg-orange-500 text-white">
@@ -319,8 +219,8 @@ const CompassLog = () => {
                   className="w-14 border p-1"
                 />
                 {errors.actual_north && (
-                    <span className="text-red-500">{errors.actual_north}</span>
-                  )}
+                  <span className="text-red-500">{errors.actual_north}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -493,21 +393,6 @@ const CompassLog = () => {
             </tr>
           </tbody>
         </table>
-        <div className="flex justify-center gap-6">
-          <button
-            onClick={handleSubmit}
-            className="rounded-x1 bg-orange-500 px-6 py-3 text-white font-semibold shadow-md hover:bg-orange-600"
-          >
-            Submit&Preview
-          </button>
-
-          <button
-            onClick={() => navigate("/CompassLogView")}
-            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-          >
-            View History
-          </button>
-        </div>
       </div>
     </div>
   );

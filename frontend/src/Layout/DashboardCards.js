@@ -23,7 +23,7 @@ const cards = [
     description: 'Software info, clocks, special logs',
     icon: <FaClock />,
     color: 'purple',
-    link: '/misc-entries',
+    link: '/clearUsLog',
   },
   {
     title: 'View/Download E700',
