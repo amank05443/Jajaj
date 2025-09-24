@@ -295,7 +295,7 @@ export default function USLog() {
 
   };
     const handleAction=(data)=>{
-        navigate("/newEntryForUSLog",{state:data});
+        navigate("/clearUsLog",{state:data});
         console.log(data);
         };
 
@@ -328,7 +328,7 @@ export default function USLog() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => navigate("/newEntryForUSLog")}
+          onClick={() => navigate("/uSLogForm")}
         >
           New Entry
         </Button>

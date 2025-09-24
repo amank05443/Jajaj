@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {useNavigate,useLocation} from 'react-router-dom';
 import * as yup from "yup";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { motion } from "framer-motion";
@@ -31,6 +32,10 @@ const ClearUsLog = ({ defect }) => {
   const [formError, setFormError] = useState(null);
   const [wbData, setWbData] = useState({});
   const [compassData, setCompassData] = useState({});
+
+      const location= useLocation();
+    const data1 = location.state;
+    console.log(data1);
 
   const methods = useForm({
     defaultValues: {
