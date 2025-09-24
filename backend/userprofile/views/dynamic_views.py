@@ -1,7 +1,7 @@
 from django.http import JsonResponse
-import json
 from django.shortcuts import render
-from django.views.decorators.csrf import ensure_csrf_cookie,csrf_exempt
+from django.forms.models import model_to_dict
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
@@ -12,7 +12,18 @@ from rest_framework import status,generics
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
+import json
 from django.views.decorators.csrf import csrf_protect
+from userprofile.models.ranks import Ranks
+from userprofile.models.quals import Quals
+from userprofile.models.entry_types import EntryTypes
+from userprofile.models.users import Users
+from userprofile.models.aircraft_masters import AircraftMasters
+from userprofile.models.fuel_tanks import FuelTanks
+from userprofile.models.customers import Customers
+from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
+from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
+                                      get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,CustomersSerializer,AircraftMastersSerializer, AircraftTypesSerializer,HowFoundDefectsSerializer)
 from django.contrib.auth.decorators import login_required
 
 #---Added by Abhishek Singh on 13jun25 for Dynamic views and urls
@@ -20,29 +31,74 @@ from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ViewSet
 
-from ..serializers import  (get_dynamic_serializer, CustomersSerializer)
 
 
-from ..models import ( Customers, EcuMasters, FuelTanks, AircraftTypes, TyrePressures, AircraftRoles, Pols, Systems)
 
-#-------------------get&set method for useParams()----------------:-Abhishek Singh------------------------------#
-@csrf_protect
-@require_GET
-def get_params(request):
-    params = request.session.get('params',{})
-    return JsonResponse({'params': params})
+#------------------------------------------------- Import All Models Here -------------------------------------------
 
-@csrf_protect
-@require_POST
-def set_params(request):
+from .models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
+                                      EcuMasters,TyrePressures,Pols,Systems)
+
+
+# --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
+class AircraftSideNoView(ListAPIView):
+    # side_no= data.get('side_no')
+    queryset = AircraftMasters.objects.all()
+    serializer_class = AircraftMastersSerializer
+
+def aircraft_all_detail_view(request, id ):
     try:
-        data = json.loads(request.body)
-        params = request.session.get('params',{})
-        params.update(data)
-        request.session['params'] = params
-        return JsonResponse({'status':'saved', 'params': data})
-    except Exception as e:
-        return JsonResponse({'error':str(e)}, status=400)
+        aircraft1= AircraftMasters.objects.get(id=id)
+        data = model_to_dict(aircraft1)
+        ecu_details = list(EcuMasters.objects.filter(aircraft_master_id=id).values())
+        data['ecu_details'] = ecu_details
+        fuel_tanks = list(FuelTanks.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values('tank_group', 'capacity'))
+        data['fuel_tanks'] = fuel_tanks
+        ac_type = AircraftTypes.objects.get(id=aircraft1.aircraft_type_id)
+        data['ac_type'] = ac_type.aircraft_name
+        lg_tyre_pressure = list(TyrePressures.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values())
+        data['lg_tyre_pressure'] = lg_tyre_pressure
+        ac_roles_qs = AircraftRoles.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id)
+        ac_roles = ', '.join(r.role for r in ac_roles_qs)
+        data['roles'] = ac_roles
+
+        olg_gases= list(Pols.objects.filter(aircraft_type_id=aircraft1.aircraft_type_id).values('id','system', 'type_of_pol', 'description', 'substitute_id', 'nato_code'))
+        system_ids_o = [item['system'] for item in olg_gases]
+        system_lookup = {s.id: s.system for s in Systems.objects.filter(id__in=system_ids_o)}
+        for item in olg_gases:
+            item['system_name'] = system_lookup.get(item['system'], '')
+        olg_gases_fuel=[item for item in olg_gases if item['type_of_pol'] == 'F']
+        olg_gases_oil = [item for item in olg_gases if item['type_of_pol'] != 'F']
+        data['olg_gases_fuel'] = olg_gases_fuel
+        data['olg_gases'] = olg_gases_oil
+        return JsonResponse(data)
+    except AircraftMasters.DoesNotExist:
+        return JsonResponse({"error": "<UNK>"})
+
+
+
+@login_required
+class AircraftDetailView(APIView):
+    def get(self,request,side_no,format=None):
+        try:
+            aircraft = AircraftMasters.objects.get(side_no=side_no)
+            serializer = AircraftMastersSerializer(aircraft)
+            return Response(serializer.data)
+        except AircraftMasters.DoesNotExist:
+            return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
+
+
+class AircraftTypeDetailsView(ListAPIView):
+    queryset = AircraftTypes.objects.all()
+    serializer_class = AircraftTypesSerializer
+
+
+def AircraftDetailsView(request,aircraft_type_id):
+    try:
+        data = list(AircraftMasters.objects.filter(aircraft_type_id=aircraft_type_id).values())
+        return JsonResponse(data,safe=False)
+    except AircraftMasters.DoesNotExist:
+        return Response({"error":"Aircraft not found"},status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def get_customers(request):
@@ -50,7 +106,10 @@ def get_customers(request):
     serializer = CustomersSerializer(customers,many=True)
     return Response(serializer.data)
 
-# --------------------------DYNAMIC VIEWS..for useTableApi------------------------------@Abhishek_singh #13jun25
+
+
+
+    # DYNAMIC VIEWS..for useTableApi...@Abhishek_singh #13jun25
 class DynamicModelView(ViewSet):
     def get_model_class(self,table ):
         try:
@@ -142,3 +201,45 @@ class DynamicModelView(ViewSet):
         else:
             model_class.objects.all().delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+#.....get&set method for useParams().....:-Abhishek Singh
+@csrf_protect
+@require_GET
+def get_params(request):
+    params = request.session.get('params',{})
+    return JsonResponse({'params': params})
+
+@csrf_protect
+@require_POST
+def set_params(request):
+    try:
+        data = json.loads(request.body)
+        params = request.session.get('params',{})
+        params.update(data)
+        request.session['params'] = params
+        return JsonResponse({'status':'saved', 'params': data})
+    except Exception as e:
+        return JsonResponse({'error':str(e)}, status=400)
+
+class Quals_view(ListAPIView):
+    # queryset = AircraftMasters.objects.all()
+    queryset = Quals.objects.all()
+    serializer_class = QualsSerializer
+
+#
+class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
+    serializer_class = ChangeOfServiceabilityLogsSerializer
+    def get_queryset(self):
+        aircraft_master_id = self.kwargs.get('id')
+        return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))
+
+# def ChangeOfServiceabilityLogsCreateView(request, id):
+#     try:
+#         # aircraft1= AircraftMasters.objects.get(id=id)
+#         # data = model_to_dict(aircraft1)
+#         data=ChangeOfServiceabilityLogs.filter(aircraft_master_id=id)
+#         print(data)
+#         return JsonResponse(data)
+#     except AircraftMasters.DoesNotExist:
+#         return JsonResponse({"error": "<UNK>"})

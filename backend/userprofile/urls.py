@@ -40,7 +40,7 @@ urlpatterns = [
     #---------------------------------------------- Section 5  ---------------------------------------------------------#
     path('api/usLogDropDowns/', usLogDropDowns),
     path('api/limLogData/', limLogData),
-    path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
+    path('api/serviceability-log/<int:id>/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 
 
     #-------------------------------------------- Section 9 & 10 -------------------------------------------------------#
