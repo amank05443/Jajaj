@@ -9,7 +9,7 @@ from django.db import models
 
 
 class CompassCalibrationLogs(models.Model):
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     ap_reference = models.CharField(blank=True, null=True)
     aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     compass_swing_date = models.DateField(blank=True, null=True)

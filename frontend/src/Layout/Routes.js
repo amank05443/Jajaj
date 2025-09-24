@@ -84,6 +84,9 @@ const CompassLog = lazy(
 const CompassLogView = lazy(
   () => import("../Section-10/CompassLogView"),
 );
+const ALOTechMemos = lazy(
+  () => import("../Utils/ATOTECHMEMO'S/ALOTechMemos"),
+);
 
 //-------------------------------------------------------------------------ROUTES-----------------------------------------------------------------------------------//
 
@@ -158,5 +161,9 @@ export const privateRoutes = [
   {
     path: "/compassLogView",
     element: <CompassLogView />,
+  },
+{
+    path: "/aloTechMemos",
+    element: <ALOTechMemos />,
   },
 ];

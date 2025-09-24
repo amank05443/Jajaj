@@ -155,6 +155,22 @@ const sidebarLinks = [
       },
     ],
   },
+  {
+    label: "Technical Instructions",
+    icon: <SafetyCheck size={20} />,
+    children: [
+      {
+        label: "ALOTechMemos",
+        icon: <CompassCalibration size={20} />,
+        to: "/aloTechMemos",
+      },
+      {
+        label: "AEOTechMemo's",
+        icon: <NavigationIcon size={20} />,
+        to: "/aeoTechMemos",
+      },
+    ],
+  },
 ];
 
 function SidebarItem({ item, open, expandedItems, toggleExpand }) {
