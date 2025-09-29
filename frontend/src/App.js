@@ -51,6 +51,8 @@ import BasicWeightAndMoments from "./Section-9/BasicWeightAndMomentsForm";
 import TestQuals from "./Section-1/TestQualsSaveAsDraft";
 import UserList from "./Section-5/UserList";
 import BasicWeightAndMoment from "./Section-9/BasicWeightAndMoment";
+import WeasyPrint from './WeasyPrint';
+
 
 const AppContent = () => {
   const { isAuthenticated } = useAuth();
@@ -141,6 +143,7 @@ const AppContent = () => {
                     path="/newEntryForHusbandryLog"
                     element={<NewEntryForHusbandryLog />}
                   />
+                  <Route path="/weasyPrint" element={<WeasyPrint />} />
                   <Route
                     path="/newEntryForConcessions"
                     element={<NewEntryForConcessions />}

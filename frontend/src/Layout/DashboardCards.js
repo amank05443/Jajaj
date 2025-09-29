@@ -25,12 +25,20 @@ const cards = [
     color: 'purple',
     link: '/misc-entries',
   },
-  {
+//  {
+//    title: 'View/Download E700',
+//    description: 'Form 701, Form 703, Form 703 A',
+//    icon: <FaEye />,
+//    color: 'orange',
+//    link: '/viewE700',
+//  },
+
+   {
     title: 'View/Download E700',
     description: 'Form 701, Form 703, Form 703 A',
     icon: <FaEye />,
     color: 'orange',
-    link: '/viewE700',
+    link: '/weasyPrint',
   },
 
 ];
