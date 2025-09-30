@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
     DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,
-    user_authentication_for_trade,user_details_for_authentication_two,user_details_for_authentication,user_qualification_for_authentication,
+    user_authentication_for_trade,user_details_for_authentication_two,
     Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
 )
 
