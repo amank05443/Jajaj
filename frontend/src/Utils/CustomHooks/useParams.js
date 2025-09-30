@@ -49,22 +49,39 @@ export const ParamsProvider = ({ children }) => {
   const setParam = async (key, value) => {
     const updated = { ...params, [key]: value };
     setParamsState(updated);
+
+    try{
+      sessionStorage.setItem('params',JSON.stringify(updated));
+      return updated;
+    } catch (err) {
+    console.error("sessionStorage write failed", err);
+    }
     try {
-      await syncWithSession(updated);
+    await syncWithSession(updated);
+    return updated;
     } catch (e) {
       console.error("Failed to sync param:", e);
       setError(e);
+      throw e;
     }
   };
 
-  const setMultipleParams = async (newParams) => {
+  const setMultipleParams =  async (newParams) => {
     const updated = { ...params, ...newParams };
     setParamsState(updated);
     try {
+    sessionStorage.setItem('params',JSON.stringify(updated));
+    } catch (err) {
+      console.error("sessionStorage write failed", err);
+    }
+
+    try {
       await syncWithSession(updated);
+      return updated;
     } catch (e) {
-      console.error("Failed to sync multiple params:", e);
+      console.error("Failed to sync multi param:", e);
       setError(e);
+      throw e;
     }
   };
 

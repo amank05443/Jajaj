@@ -1,5 +1,11 @@
+from gc import is_finalized
+from http.cookiejar import MISSING_FILENAME_TEXT
+from importlib.metadata import pass_none
+from pydoc import stripid
+
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.contrib.auth.hashers import check_password
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST, require_GET
@@ -21,8 +27,9 @@ from userprofile.models.users import Users
 from userprofile.models.aircraft_masters import AircraftMasters
 from userprofile.models.fuel_tanks import FuelTanks
 from userprofile.models.customers import Customers
+from userprofile.models.security_questions import SecurityQuestions
 from userprofile.models.change_of_serviceability_logs import ChangeOfServiceabilityLogs
-from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
+from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,SecurityQuestionsSerializer,
                                       get_dynamic_serializer, ChangeOfServiceabilityLogsSerializer,AircraftMastersSerializer,CustomersSerializer, AircraftTypesSerializer,)
 from django.contrib.auth.decorators import login_required
 
@@ -37,7 +44,7 @@ from rest_framework.viewsets import ViewSet
 #------------------------------------------------- Import All Models Here -------------------------------------------
 
 from .models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
-                                      EcuMasters,TyrePressures,Pols,Systems)
+                                     EcuMasters,TyrePressures,Pols,Systems)
 
 
 # --------------------------- To fetch Data for Leading Particulars ---------------------------------------------
@@ -221,6 +228,117 @@ def set_params(request):
         return JsonResponse({'status':'saved', 'params': data})
     except Exception as e:
         return JsonResponse({'error':str(e)}, status=400)
+
+def get_user_details(request, pno):
+    try:
+        user = Users.objects.get(pno=pno)
+        rank = Ranks.objects.get(id=user.rank_id)
+        return JsonResponse({"success": True, "user_name": user.user_name, "rank": rank.abbreviation})
+    except Users.DoesNotExist:
+        return JsonResponse({'error':'User not found'}, status=404)
+    except Ranks.DoesNotExist:
+        return JsonResponse({'error':'Ranks not found'}, status=404)
+
+@api_view(['GET'])
+def get_security_questions(request):
+    """ Return all security questions as a list"""
+    questions = list(SecurityQuestions.objects.all().values( "sec_questions"))
+    if not questions:
+        return JsonResponse({'error':'No security questions found'}, status=404)
+    return JsonResponse({'questions': questions}, safe=False)
+
+def validate_password(request):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid request'}, status=400)
+    try:
+        data = json.loads(request.body)
+    except Exception as e:
+        print("validate_password:failed to parse JSON:",e)
+        return JsonResponse({'error':'Bad Json'}, status=400)
+    print ("validate_password payload:",data)
+    pno= data.get("pno")
+    incoming = data.get("password") if data.get("password") is not None else data.get("login_pwd")
+
+    print("pno",pno,"password present?:",bool(incoming))
+
+    print("incoming password repr:",repr(incoming))
+
+    if not pno or incoming is None:
+        print("missing pno or incoming password in payload")
+        return JsonResponse({"valid":False})
+
+    try:
+        user = Users.objects.get(pno=pno)
+        print("found user:",user)
+        stored_hashed_pwd = user.login_pwd
+
+        print("stored_hashed_pwd preview",(stored_hashed_pwd[:60] + "...") if stored_hashed_pwd else None)
+
+        incoming_clean = incoming.strip() if isinstance(incoming,str) else incoming
+        print ("incoming_clean repr:",repr(incoming_clean))
+
+        ok = False
+
+        try :
+            ok = check_password(incoming_clean,stored_hashed_pwd )
+        except Exception as e:
+            print("check_password threw exception:",e)
+        print ("check_password result:",ok)
+
+        return JsonResponse({"valid":bool(ok)})
+    except Users.DoesNotExist:
+        print("user does not exist for pno:",pno)
+        return JsonResponse({"valid":False})
+
+def validate_security_answer(request):
+    if request.method != "POST":
+        return JsonResponse({"error":"Invalid request"}, status=400)
+    try:
+        data = json.loads(request.body)
+    except Exception:
+        return JsonResponse({"error":"Invalid Json"}, status=400)
+    pno = data.get("pno")
+    id  = data.get("security_question_id")
+    ans = data.get("security_question_ans")
+    if not pno or not id or not ans:
+        return JsonResponse({"valid":False, "error": "Missing fields"}, status=400)
+    try:
+        user = Users.objects.get(pno=pno)
+    except Users.DoesNotExist:
+        return JsonResponse({"valid":False, "error": "User not found"}, status=404)
+    if (
+        str(user.security_question_id) == str(id)
+        and user.security_question_ans.strip().lower() == ans.strip().lower()
+    ):
+        return JsonResponse({"valid":True})
+    else:
+        return JsonResponse({"valid":False, "error": "Incorrect answer"})
+
+
+
+@csrf_protect
+def reset_passcode(request):
+    if request.method != 'POST':
+        return JsonResponse({'error':'Invalid request'}, status=400)
+    try:
+        data = json.loads(request.body)
+    except Exception as e:
+        return JsonResponse({'error':'Bad Json'}, status=400)
+    pno = data.get("pno")
+    new_pass = data.get("new_passcode")
+    confirm = data.get("confirm_passcode")
+
+    if not pno or not new_pass or  new_pass != confirm:
+        return JsonResponse({"success":False,"error":"Invalid Input"})
+    try:
+        user = Users.objects.get(pno=pno)
+    except Users.DoesNotExist:
+        return JsonResponse({"success":False,"error":"User not found"})
+
+    user.pin = make_password(new_pass)
+    user.save()
+    return JsonResponse({"success":True})
+
 
 class Quals_view(ListAPIView):
     # queryset = AircraftMasters.objects.all()

@@ -1,6 +1,6 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-from .models import  Users, Quals,Ranks, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
+from .models import  Users, Quals,Ranks, AircraftMasters,SecurityQuestions, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 
 
@@ -105,3 +105,8 @@ class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChangeOfServiceabilityLogs
         fields = ['reason_for_placing_unserviceable']
+
+class SecurityQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityQuestions
+        fields = ['all']

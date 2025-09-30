@@ -4,6 +4,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { useAuth } from "../Authentication/AuthContext";
+import TopBar from "../Layout/TopBar";
 
 export default function AppLayout() {
   const { isAuthenticated } = useAuth();

@@ -21,7 +21,10 @@ detail_view = DynamicModelView.as_view({
 
 
 urlpatterns = [
-
+    path("api/get_security_questions/", views.get_security_questions, name="get_security_questions"),
+    path("api/validate_password/", views.validate_password, name="validate_password"),
+    path("api/reset_passcode/", views.reset_passcode, name="reset_passcode"),
+    path("api/validate_security_answer/", views.validate_security_answer, name="validate_password"),
     path('api/qualsData', Quals_view.as_view(), name='AircraftDetailView'),
     path('api/aircraftSideNo/', AircraftSideNoView.as_view(), name='AircraftDetailView'),
     path('api/leadingParticularsOfAircraft/<int:id>/', views.aircraft_all_detail_view, name='AircraftAllDetailView'),
@@ -40,5 +43,8 @@ urlpatterns = [
     # --useParams()---
     path('api/params/get/', views.get_params),
     path('api/params/set/', views.set_params),
+    path("api/get_user_details/<str:pno>/", views.get_user_details, name="get_user_details"),
+
+
 ]
 
