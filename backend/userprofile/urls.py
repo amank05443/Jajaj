@@ -29,7 +29,7 @@ urlpatterns = [
     path('api/aircraft-details/<int:aircraft_type_id>', AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
 
-    #------------------------------------------------ Security questions ------------------------------------------------------#
+    # ------------------------------------------------ Security questions ------------------------------------------------------#
 
     path("api/get_security_questions/", views.get_security_questions, name="get_security_questions"),
     path("api/validate_password/", views.validate_password, name="validate_password"),
@@ -68,8 +68,8 @@ urlpatterns = [
     path('api/checkPasskey/', check_passkey_authentication, name='checkPasskeyForAuthentication'),
     path('api/userAuthenticationTrade/', user_authentication_for_trade, name='viewUserAuthenticationForTrade'),
     path('api/userQualification/', user_qualification_for_authentication, name='viewUserQualificationForAuthentication'),
-    path('api/userDetailsForAuthentication/<int:id>/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
-
+    path('api/userDetailsForAuthentication/<int:id>/', user_details_for_authentication,
+         name='viewUserDetailsForAuthentication'),
 
     #--------------------------------------------- Dynamic views & urls  -----------------------------------------------#
     path('api/<str:table>/',dynamic_view),

@@ -61,7 +61,7 @@ const PostFlying = lazy(() => import("../Section-4/PostFlying"));
 const FlyingOperations = lazy(() => import("../Section-4/FlyingOperations"));
 
 //--SECTION->5--//
-const NewEntryForUSLog = lazy(() => import("../Section-5/NewEntryForUSLog"));
+//const NewEntryForUSLog = lazy(() => import("../Section-5/NewEntryForUSLog"));
 const USLog = lazy(() => import("../Section-5/USLog"));
 const USLogForm = lazy(() => import("../Section-5/USLogForm"));
 const ClearUsLog = lazy(() => import("../Section-5/ClearUsLog"));
