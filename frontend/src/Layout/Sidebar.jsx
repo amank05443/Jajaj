@@ -391,6 +391,12 @@ export default function Sidebar({ open, toggleSidebar }) {
               </ListItemIcon>
               Profile
             </MenuItem>
+            <MenuItem onClick={() => navigate("/PasswordReset")}>
+              <ListItemIcon>
+                <Edit />
+              </ListItemIcon>
+                T-PIN Reset
+            </MenuItem>
             <MenuItem>
               <ListItemIcon>
                 <FileCopy />

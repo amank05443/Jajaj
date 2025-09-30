@@ -29,7 +29,12 @@ urlpatterns = [
     path('api/aircraft-details/<int:aircraft_type_id>', AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
 
+    #------------------------------------------------ Security questions ------------------------------------------------------#
 
+    path("api/get_security_questions/", views.get_security_questions, name="get_security_questions"),
+    path("api/validate_password/", views.validate_password, name="validate_password"),
+    path("api/reset_passcode/", views.reset_passcode, name="reset_passcode"),
+    path("api/validate_security_answer/", views.validate_security_answer, name="validate_password"),
 
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
 
@@ -74,7 +79,7 @@ urlpatterns = [
     #-------------------------------------------------- useParams()  ---------------------------------------------------#
     path('api/params/get/', get_params),
     path('api/params/set/', set_params),
-
+    path("api/get_user_details/<str:pno>/", views.get_user_details, name="get_user_details"),
 
 
 

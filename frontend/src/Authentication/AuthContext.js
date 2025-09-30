@@ -5,23 +5,34 @@ const AuthContext = createContext();
 export const AuthProvider = ({children}) => {
     const [isAuthenticated,setIsAuthenticated] = useState(null);
     const[user,setUser] = useState(null);
+    const[authChecked,setAuthChecked] = useState(false);
+    const[authError,setAuthError] = useState(null);
     const checkAuth = useCallback(async () => {
         try {
             const res =  await axios.get('http://localhost:8000/user-profile/',{
                 withCredentials:true,
             });
-            if (res.data.success) {
+            if (res?.data?.success) {
                 setIsAuthenticated(true);
-                setUser(res.data.user);
+                setUser(res.data.user || null);
             } else {
                 setIsAuthenticated(false);
                 setUser(null);
             }
-        } catch {
+        } catch(err)  {
+        console.error('checkAuth error:',err);
           setIsAuthenticated(false);
           setUser(null);
+          setAuthError(err);
+        } finally {
+        setAuthChecked(true);
+        console.log('checkAuth finished -> isAuthenticated:',isAuthenticated);
         }
     },[]);
+
+    useEffect(() => {
+        checkAuth();
+    },[checkAuth]);
 
     const logout = async () => {
         try {
@@ -70,7 +81,7 @@ export const AuthProvider = ({children}) => {
         };
     },[checkAuth]);
     return (
-        <AuthContext.Provider value={{isAuthenticated,setIsAuthenticated,user,setUser,updateUser,logout,checkAuth}}>
+        <AuthContext.Provider value={{isAuthenticated,setIsAuthenticated,user,setUser,updateUser,logout,checkAuth,authChecked,authError}}>
         {children}
         </AuthContext.Provider>
     );

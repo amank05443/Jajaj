@@ -28,15 +28,12 @@ const slideVariants = {
     transition: { duration: 0.4, ease: "easeOut", staggerChildren: 0.1 },
   },
 };
-
 const itemVariants = {
   hidden: { opacity: 0, y: -10 },
   show: { opacity: 1, y: 0 },
 };
-
 const AnimatedSectionHorizontal = ({ title, icon, children }) => {
   const [expanded, setExpanded] = useState(false);
-
   return (
     <Card
       sx={{
@@ -68,18 +65,16 @@ const AnimatedSectionHorizontal = ({ title, icon, children }) => {
           color="#4a148c"
           textAlign="center"
         >
-          {icon}
-          <br /> {title}
+          {icon} <br /> {title}{" "}
         </Typography>
-
         <motion.div
           animate={{ rotate: expanded ? 180 : 0, scale: expanded ? 1.2 : 1 }}
           transition={{ duration: 0.3 }}
         >
+          {" "}
           <ExpandMoreIcon sx={{ color: "#4a148c" }} />
-        </motion.div>
+        </motion.div>{" "}
       </Box>
-
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -108,7 +103,6 @@ const AnimatedSectionHorizontal = ({ title, icon, children }) => {
     </Card>
   );
 };
-
 const AircraftHeader = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { params } = useParams();
@@ -119,9 +113,7 @@ const AircraftHeader = () => {
   const { data: ecu_data, loading: ecu_loading } = useTableApi("ecu_masters", {
     query: { aircraft_master_id: params.aircraft_master_id },
   });
-
   if (!isAuthenticated || !user || loading || ecu_loading) return null;
-
   return (
     <Box sx={{ px: 2, py: 3 }}>
       <Stack
@@ -136,15 +128,14 @@ const AircraftHeader = () => {
             <Typography fontWeight={500} color="text.primary">
               {data.basic_weight}
             </Typography>
-          </Stack>
+          </Stack>{" "}
           <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">Date of Acceptance</Typography>
+            <Typography color="text.secondary">Date of Acceptance</Typography>{" "}
             <Typography fontWeight={500} color="text.primary">
               {data.date_of_acceptance}
             </Typography>
           </Stack>
         </AnimatedSectionHorizontal>
-
         <AnimatedSectionHorizontal title="Next Inspection Due on">
           <Stack spacing={2}>
             {["01", "03", "06"].map((month, index) => (
@@ -157,7 +148,6 @@ const AircraftHeader = () => {
             ))}
           </Stack>
         </AnimatedSectionHorizontal>
-
         <AnimatedSectionHorizontal title="Engine Details">
           <Stack spacing={2}>
             {ecu_data.map((ecu, index) => (
@@ -184,7 +174,6 @@ const AircraftHeader = () => {
     </Box>
   );
 };
-
 export default AircraftHeader;
 
 //--------------------------------------------------------------------- Commented by Aman POELA----------------------------------------------------------------------------------------------------------

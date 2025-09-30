@@ -3,7 +3,7 @@ from rest_framework import serializers
 # from .models import  Users, Quals, Trades ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
-    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs
+    FuelTanks, EcuMasters,SecurityQuestions, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs
 
 
 #--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
@@ -42,11 +42,6 @@ def get_dynamic_serializer(model_class):
                     data[field_name] = f'Error: {str(e)}'
             return data
     return DynamicSerializer
-
-class RanksSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ranks
-        fields = '__all__'
 
 class RanksSerializer(serializers.ModelSerializer):
     class Meta:
@@ -171,3 +166,8 @@ class LimDefrDefLogsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LimDefrDefHusLogs
         fields = '__all__'
+
+class SecurityQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityQuestions
+        fields = ['all']

@@ -64,15 +64,6 @@ const CreateProfilePage = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundImage: 'url("/ross-parmly-rf6ywHVkrlY-unsplash.jpg")',}}>
       <CssBaseline />
 
-      {/* Header */}
-      <AppBar position="static" sx={{ background: 'linear-gradient(to right, #1976d2, #42a5f5)' }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            e-700
-          </Typography>
-          <Typography variant="subtitle1">Department: CNAMS</Typography>
-        </Toolbar>
-      </AppBar>
 
       {/* Main Content */}
       <Container maxWidth="sm" sx={{ flexGrow: 1 }}>
@@ -142,6 +133,7 @@ const CreateProfilePage = () => {
                   />
                 </Grid>
 
+
                 <Grid item xs={6}>
                   <motion.div whileHover={{ scale: 1.05 }}>
                     <Button
@@ -187,18 +179,7 @@ const CreateProfilePage = () => {
         </motion.div>
       </Container>
 
-      {/* Sticky Footer */}
-      <AppBar
-        position="static"
-        component="footer"
-        sx={{ backgroundColor: '#1976d2', mt: 'auto', py: 1 }}
-      >
-        <Toolbar sx={{ justifyContent: 'center' }}>
-          <Typography variant="body2" color="inherit">
-            © {new Date().getFullYear()} Department: CNAMS
-          </Typography>
-        </Toolbar>
-      </AppBar>
+
     </Box>
   );
 };

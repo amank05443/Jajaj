@@ -1,24 +1,56 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { useParams } from "../Utils/CustomHooks/useParams";
+import { useParams as useParamsHook } from "../Utils/CustomHooks/useParams";
+
+function InlineLoader() {
+    return (
+        <div >
+            <div style = {{textAlign:"center"}}>
+                <div />
+                <div style={{fontSize:146,color:"#222"}}>Loading.</div>
+
+                    <style>{`
+                    @keyframes spin{
+                        0% {transform:rotate(0deg);}
+                        100% {transform:rotate(360deg);}
+                        }
+                    `}</style>
+                </div>
+        </div>
+
+        );
+    }
 
 export function PublicRoute({ children }) {
-  const { isAuthenticated } = useAuth();
-  const { params } = useParams();
+  const { isAuthenticated,authChecked } = useAuth();
+  const { params,initialized:paramsInitialized } = useParamsHook();
 
-  return !isAuthenticated ? (
-    children
-  ) : params.aircraft_master_id ? (
-    <Navigate to="/dashboard" replace />
-  ) : (
-    <Navigate to="/e700" replace />
-  );
-}
+    if(!authChecked){
+        return<InlineLoader />
+        }
+
+    if(!isAuthenticated) {
+        return children;
+        }
+
+    if(!paramsInitialized) {
+        return <InlineLoader />
+        }
+
+    if (params?.aircraft_master_id) {
+        return  <Navigate to="/dashboard" replace />
+ }
+    return <Navigate to="/e700" replace />
+
+        }
 
 export function PrivateRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated,authChecked } = useAuth();
   const location = useLocation();
 
+ if(!authChecked){
+     return <InlineLoader/>
+     }
   return isAuthenticated ? (
     children
   ) : (

@@ -12,6 +12,7 @@ const AircraftHeader = lazy(() => import("./AircraftHeader"));
 const AutoLogoutHandler = lazy(
   () => import("../Authentication/AutoLogoutHandler"),
 );
+const PasswordReset = lazy(() => import("../Authentication/PasswordReset"));
 
 //--PREPARE E700--//
 const CreateProfile = lazy(() => import("../PrepareE700/CreateProfile"));
@@ -60,6 +61,7 @@ const PostFlying = lazy(() => import("../Section-4/PostFlying"));
 const FlyingOperations = lazy(() => import("../Section-4/FlyingOperations"));
 
 //--SECTION->5--//
+const NewEntryForUSLog = lazy(() => import("../Section-5/NewEntryForUSLog"));
 const USLog = lazy(() => import("../Section-5/USLog"));
 const USLogForm = lazy(() => import("../Section-5/USLogForm"));
 const ClearUsLog = lazy(() => import("../Section-5/ClearUsLog"));
@@ -97,6 +99,7 @@ export const publicRoutes = [
   { path: "/", element: <Welcome /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/create-profile", element: <CreateProfile /> },
+  { path: "/PasswordReset", element: <PasswordReset /> },
 ];
 
 //-----------------PRIVATE ROUTES----------(Accessible only for Successfully Logged in)//
@@ -106,6 +109,7 @@ export const privateRoutes = [
   { path: "/dashboardCards", element: <DashboardCards /> },
   { path: "/e700", element: <E700Page /> },
   { path: "/aircraftHeader", element: <AircraftHeader /> },
+  { path: "/PasswordReset", element: <PasswordReset /> },
 
   //--REPORT E700--//
   { path: "/viewE700", element: <ViewE700 /> },
