@@ -2,16 +2,10 @@ from userprofile import views
 from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
-    DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,user_authentication_for_trade,user_details_for_authentication_two,
-    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData
+    DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,
+    user_authentication_for_trade,user_details_for_authentication_two,user_details_for_authentication,user_qualification_for_authentication,
+    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
 )
-from userprofile.views import (
-    DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
-    user_details_for_authentication, user_details_for_authentication_one,user_authentication_for_trade,user_qualification_for_authentication,Quals_view,
-    ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
-)
-
-
 
     #---------------------------------------------- For Dynamic View ---------------------------------------------------#
 dynamic_view = DynamicModelView.as_view({
@@ -34,7 +28,18 @@ urlpatterns = [
     path('api/aircraft-details/<int:aircraft_type_id>', AircraftDetailsView, name='aircraft-details'),
     path('api/customers/',get_customers,name='get_customers'),
 
-    # ------------------------------------------------ Security questions ------------------------------------------------------#
+    # --------------------------------------------- e-sign Authentication  ----------------------------------------------#
+    path('api/userDetailsForAuthenticationAllUsers/<int:id>/', user_details_for_authentication_one,
+         name='viewUserDetailsForAuthentication'),
+    path('api/checkPasskey/', check_passkey_authentication, name='checkPasskeyForAuthentication'),
+    path('api/userAuthenticationTrade/', user_authentication_for_trade, name='viewUserAuthenticationForTrade'),
+    path('api/userAllDetailsForAuthenticationTwo/', views.user_details_for_authentication_two,
+         name='viewUserDetailsForAuthenticationTwo'),
+    # path('api/userQualification/', user_qualification_for_authentication, name='viewUserQualificationForAuthentication'),
+    # path('api/userDetailsForAuthenticationTwo/<int:id>/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
+
+
+    # ------------------------------------------- Security questions ---------------------------------------------------#
 
     path("api/get_security_questions/", views.get_security_questions, name="get_security_questions"),
     path("api/validate_password/", views.validate_password, name="validate_password"),
@@ -67,14 +72,6 @@ urlpatterns = [
     #-------------------------------------------- Section 9 & 10 -------------------------------------------------------#
     path('api/BasicWeightAndMomentsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
 
-
-    #--------------------------------------------- e-sign Authentication  ----------------------------------------------#
-    path('api/userDetailsForAuthenticationAllUsers/<int:id>/', user_details_for_authentication_one, name='viewUserDetailsForAuthentication'),
-    path('api/checkPasskey/', check_passkey_authentication, name='checkPasskeyForAuthentication'),
-    path('api/userAuthenticationTrade/', user_authentication_for_trade, name='viewUserAuthenticationForTrade'),
-    path('api/userAllDetailsForAuthenticationTwo/', views.user_details_for_authentication_two, name='viewUserDetailsForAuthenticationTwo'),
-    # path('api/userQualification/', user_qualification_for_authentication, name='viewUserQualificationForAuthentication'),
-    # path('api/userDetailsForAuthenticationTwo/<int:id>/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
 
 
     #--------------------------------------------- Dynamic views & urls  -----------------------------------------------#
