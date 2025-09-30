@@ -3,7 +3,7 @@ from rest_framework import serializers
 # from .models import  Users, Quals, Trades ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
-    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefLogs
+    FuelTanks, EcuMasters, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs
 
 
 #--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
@@ -43,14 +43,20 @@ def get_dynamic_serializer(model_class):
             return data
     return DynamicSerializer
 
-class UsersSerializer(serializers.ModelSerializer):
+class RanksSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Users
+        model = Ranks
         fields = '__all__'
 
 class RanksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ranks
+        fields = '__all__'
+
+class UsersSerializer(serializers.ModelSerializer):
+    rank=RanksSerializer(read_only=True)
+    class Meta:
+        model = Users
         fields = '__all__'
 
 class QualsSerializer(serializers.ModelSerializer):
@@ -130,14 +136,15 @@ class ChangeOfServiceabilityLogLinesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
-    snow=serializers.DecimalField(max_digits=10, decimal_places=0,allow_null=True)
+    snow=serializers.DecimalField(max_digits=10, decimal_places=2,allow_null=True)
     status_label = serializers.SerializerMethodField(method_name='get_status_label')
     how_found_defect=HowFoundDefectsSerializer(read_only=True)
+    by_whom = UsersSerializer(read_only=True)
     change_of_serviceability_lines=ChangeOfServiceabilityLogLinesSerializer(source="change_of_serviceability_log_lines", read_only=True,many=True)
     class Meta:
         model = ChangeOfServiceabilityLogs
         fields = '__all__'
-        fields =  '__all__'
+
 
     def get_status_label(self,obj):
         # if obj.status is None:
@@ -158,6 +165,9 @@ class EntryTypesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LimDefrDefLogsSerializer(serializers.ModelSerializer):
+    change_of_serviceability_log=ChangeOfServiceabilityLogsSerializer(read_only=True)
+    item = ItemsSerializer(read_only=True)
+    main_system = SystemsSerializer(read_only=True)
     class Meta:
-        model = LimDefrDefLogs
+        model = LimDefrDefHusLogs
         fields = '__all__'

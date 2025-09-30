@@ -6,11 +6,14 @@ from datetime import datetime
 from rest_framework.decorators import api_view
 from ..serializers import  (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer, ItemsSerializer,LimDefrDefLogsSerializer)
 from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items,Users,
-                      ChangeOfServiceabilityLogs, LimDefrDefLogs)
+                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs)
 
-class ChangeOfServiceabilityLogsCreateView(generics.CreateAPIView):
-    queryset = ChangeOfServiceabilityLogs.objects.all()
+class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
     serializer_class = ChangeOfServiceabilityLogsSerializer
+    def get_queryset(self):
+        aircraft_master_id = self.kwargs.get('id')
+        return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect","by_whom").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))
+
 
 
 def usLogDropDowns(request):
@@ -25,12 +28,12 @@ def usLogDropDowns(request):
 def limLogData(request):
     aircraft_type_id = request.GET["aircraft_type_id"]
     systems_qs = Systems.objects.filter(aircraft_type=aircraft_type_id)
-    acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
+    # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
     items_qs = Items.objects.filter(store_type=aircraft_type_id)
 
     return Response ({
         "systemsData" : SystemsSerializer(systems_qs,many=True).data,
-        "acRoleData" : AircraftRolesSerializer(acRole_qs,many=True).data,
+        # "acRoleData" : AircraftRolesSerializer(acRole_qs,many=True).data,
         "itemsData" : ItemsSerializer(items_qs,many=True).data,
     })
 
@@ -156,8 +159,22 @@ def saveUsLogData(request):
             "error": str(e),
         },status=status.HTTP_400_BAD_REQUEST)
 
-class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
-    serializer_class = ChangeOfServiceabilityLogsSerializer
-    def get_queryset(self):
-        aircraft_master_id = self.kwargs.get('id')
-        return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))
+
+@api_view(['POST'])
+@transaction.atomic
+def clearUsLog(request):
+    try:
+        data = request.data  # fetching of data coming from frontend
+        formData = data["formData"]
+        gridData = data["gridData"]
+
+        return Response({
+            "success": True,
+            "result": return_res,
+            "message": "Entry successfully SAVED.",
+        })
+    except Exception as e:
+        return Response({
+            "success": False,
+            "error": str(e),
+        }, status=status.HTTP_400_BAD_REQUEST)

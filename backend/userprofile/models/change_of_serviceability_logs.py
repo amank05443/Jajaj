@@ -4,7 +4,7 @@ class ChangeOfServiceabilityLogs(models.Model):
     id = models.BigAutoField(primary_key=True)
     aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     airframe_hrs = models.CharField()
-    by_whom = models.CharField(blank=True, null=True)
+    by_whom = models.ForeignKey('Users', models.DO_NOTHING, db_column='by_whom', blank=True, null=True)
     reason_for_placing_unserviceable = models.CharField(blank=True, null=True)
     work_carried_out = models.CharField(blank=True, null=True)
     authenticated_by_id = models.BigIntegerField(blank=True, null=True)

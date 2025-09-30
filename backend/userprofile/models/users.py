@@ -19,7 +19,7 @@ class Users(models.Model):
     login_pwd = models.CharField(blank=True, null=True)
     pwd_date_updated = models.DateField(blank=True, null=True)
     pwd_valid_upto = models.DateField(blank=True, null=True)
-    pin = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    pin = models.CharField(blank=True, null=True)
     pin_date_updated = models.DateField(blank=True, null=True)
     pin_valid_upto = models.DateField(blank=True, null=True)
     fsi_yn = models.CharField(blank=True, null=True)

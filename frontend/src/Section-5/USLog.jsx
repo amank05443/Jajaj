@@ -246,11 +246,13 @@ export default function USLog() {
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const { params, loading } = useParams();
+  const [dataLoading,setDataLoading]=useState(false);
 
   useEffect(() => {
     const aircraft_master_id = params.aircraft_master_id;
     setSelectedAircraft(aircraft_master_id);
     console.log(selectedAircraft);
+    setDataLoading(true);
     if (selectedAircraft) {
       axios
         .get(`http://localhost:8000/api/serviceability-log/${selectedAircraft}`)
@@ -260,7 +262,9 @@ export default function USLog() {
         })
         .catch((err) => {
           console.error("Error fetching:", err);
-        });
+        })
+        .finally(()=>{
+            setDataLoading(false);})
     }
   }, [loading, params, selectedAircraft]);
 
@@ -280,7 +284,9 @@ export default function USLog() {
   const handlePrev = () => {
     if (!selectedRow) return;
     const rowIndex = rows.findIndex((r) => r.snow === selectedRow.snow);
-    if(rowIndex==0){alert("THIS IS THE FIRST SNOW")};
+    if (rowIndex == 0) {
+      alert("THIS IS THE FIRST SNOW");
+    }
     if (rowIndex <= 0) return;
     setSelectedRow(rows[rowIndex - 1]);
     console.log(selectedRow);
@@ -289,16 +295,16 @@ export default function USLog() {
   const handleNext = () => {
     if (!selectedRow) return;
     const rowIndex = rows.findIndex((r) => r.snow === selectedRow.snow);
-    if(rowIndex==rows.length - 1){alert("THIS IS THE LAST SNOW")};
+    if (rowIndex == rows.length - 1) {
+      alert("THIS IS THE LAST SNOW");
+    }
     if (rowIndex >= rows.length - 1) return;
     setSelectedRow(rows[rowIndex + 1]);
-
   };
-    const handleAction=(data)=>{
-        navigate("/clearUsLog",{state:data});
-        console.log(data);
-        };
-
+  const handleAction = (data) => {
+    navigate("/clearUsLog", { state: data });
+    console.log(data);
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen items-center justify-center">
@@ -366,6 +372,7 @@ export default function USLog() {
         <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
           <div style={{ height: 420, width: "100%" }}>
             <DataGrid
+            loading={dataLoading}
               rows={filteredRows}
               columns={[
                 {

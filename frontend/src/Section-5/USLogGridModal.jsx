@@ -22,7 +22,12 @@ function formatDateTime(isoString) {
   return { date, time };
 }
 
-export default function GridModal({ data, onClose,prevSelectedRow,nextSelectedRow }) {
+export default function GridModal({
+  data,
+  onClose,
+  prevSelectedRow,
+  nextSelectedRow,
+}) {
   const { date, time } = formatDateTime(data?.user_time_date);
   return (
     //     <div
@@ -96,7 +101,7 @@ export default function GridModal({ data, onClose,prevSelectedRow,nextSelectedRo
       className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center p-4 z-50"
     >
       <div
-        className=" bg-gray-900 text-white rounded-xl w-auto max-w-4xl p-4 sm:p-6 border border-white flex flex-col
+        className=" bg-gray-600 text-white rounded-xl w-auto max-w-4xl p-4 sm:p-6 border border-white flex flex-col
          gap-4 max-h-[90vh] overflow-x-auto "
         onClick={(e) => e.stopPropagation()}
       >
@@ -151,7 +156,7 @@ export default function GridModal({ data, onClose,prevSelectedRow,nextSelectedRo
             </>
           )}
         </div>
- <button
+        <button
           className="self-end bg-red-500 px-6 py-2 rounded hover:bg-red-700"
           onClick={prevSelectedRow}
         >
@@ -163,7 +168,6 @@ export default function GridModal({ data, onClose,prevSelectedRow,nextSelectedRo
         >
           next...
         </button>
-
       </div>
     </div>
   );

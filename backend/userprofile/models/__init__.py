@@ -12,7 +12,7 @@ from .pols import Pols
 from .systems import Systems
 from .items import Items
 from .weight_balance import WeightBalance
-from .lim_defr_def_logs import LimDefrDefLogs
+from .lim_defr_def_hus_logs import LimDefrDefHusLogs
 from .how_found_defects import HowFoundDefects
 from .user_quals import UserQuals
 from .item_serial_trails import ItemSerialTrails

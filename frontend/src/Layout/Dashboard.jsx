@@ -18,7 +18,7 @@ function Dashboard() {
     <div className="dashboard-container">
       <div className="dashboard-body">
         <video
-          src="/images/migVideo.mp4"
+          /* src="/images/migVideo.mp4" */
           type="video/mp4"
           ref={videoRef}
           autoPlay

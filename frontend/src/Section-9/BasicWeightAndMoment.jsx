@@ -164,7 +164,14 @@ export default function BasicWeightAndMoment({ wbData }) {
       const v = validate(newFormData);
       setErrors(v);
 
-      wbData(newFormData);
+      const wbFormData = {
+        formData: newFormData,
+        errors: errors,
+      };
+
+      if (wbData) {
+        wbData(wbFormData);
+      }
       return newFormData;
     });
   };
