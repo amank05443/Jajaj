@@ -49,10 +49,12 @@ class RanksSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UsersSerializer(serializers.ModelSerializer):
-    rank=RanksSerializer(read_only=True)
+    rank = RanksSerializer(read_only=True)
     class Meta:
         model = Users
         fields = '__all__'
+
+
 
 class QualsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,6 +67,7 @@ class TradesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserQualsSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
     class Meta:
         model = UserQuals
         fields = '__all__'
@@ -134,8 +137,9 @@ class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
     snow=serializers.DecimalField(max_digits=10, decimal_places=2,allow_null=True)
     status_label = serializers.SerializerMethodField(method_name='get_status_label')
     how_found_defect=HowFoundDefectsSerializer(read_only=True)
-    by_whom = UsersSerializer(read_only=True)
     change_of_serviceability_lines=ChangeOfServiceabilityLogLinesSerializer(source="change_of_serviceability_log_lines", read_only=True,many=True)
+    # by_whom_users = serializers.SerializerMethodField( method_name='get_by_whom_users')
+    by_whom = UserQualsSerializer(read_only=True)
     class Meta:
         model = ChangeOfServiceabilityLogs
         fields = '__all__'
@@ -148,6 +152,16 @@ class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
             return "CLOSED"
         return "OPEN"
         # return obj.status
+    # def get_by_whom_users(self,obj):
+    #     if not obj.by_whom:
+    #         return None
+    #     try:
+    #         user = Users.objects.get(id=obj.by_whom)
+    #         return UsersSerializer(user).data
+    #     except Users.DoesNotExist:
+    #         return None
+
+
 
 class HowFoundDefectsSerializer(serializers.ModelSerializer):
     class Meta:

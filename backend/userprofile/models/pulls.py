@@ -2,8 +2,8 @@ from django.db import models
 
 class Pulls(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    aircraft_master = models.ForeignKey("AircraftMasters", models.DO_NOTHING, blank=True, null=True)
-    customer = models.ForeignKey("Customers", models.DO_NOTHING, blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
+    customer = models.ForeignKey('Customers', models.DO_NOTHING, blank=True, null=True)
     ip_address = models.CharField(max_length=20, blank=True, null=True)
     pulled_by = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     date_pulled = models.DateField(blank=True, null=True)

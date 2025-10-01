@@ -94,7 +94,7 @@ const ALOTechMemos = lazy(
 
 //-------------------------------------------------------------------------ROUTES-----------------------------------------------------------------------------------//
 
-//--------------PUBLIC ROUTES------------(Accessible even without Login)//
+//--------------PUBLIC ROUTES------------(Accessible event without Login)//
 export const publicRoutes = [
   { path: "/", element: <Welcome /> },
   { path: "/login", element: <LoginPage /> },

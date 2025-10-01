@@ -178,3 +178,8 @@ def clearUsLog(request):
             "success": False,
             "error": str(e),
         }, status=status.HTTP_400_BAD_REQUEST)
+# class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
+#     serializer_class = ChangeOfServiceabilityLogsSerializer
+#     def get_queryset(self):
+#         aircraft_master_id = self.kwargs.get('id')
+#         return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect","by_whom__user").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))

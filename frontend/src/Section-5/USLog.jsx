@@ -1,230 +1,7 @@
-//new code
-//
-//import React, { useState, useEffect } from "react";
-//import {
-//  Button,
-//  Table,
-//  TableBody,
-//  TableCell,
-//  TableContainer,
-//  TableHead,
-//  TableRow,
-//  Paper,
-//  Typography,
-//  Dialog,
-//  DialogTitle,
-//  DialogContent,
-//  CircularProgress,
-//  Tooltip,
-//  Box,
-//} from "@mui/material";
-//import { useNavigate } from "react-router-dom";
-////import useTableApi from '.../Utils/useTableApi';
-//import axios from "axios";
-//import dayjs from "dayjs";
-//import { styled } from "@mui/material/styles";
-//
-//const StyledTableCell = styled(TableCell)(() => ({
-//  background:
-//    "linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4))",
-//  backdropFilter: "blur(6px) saturate(110%)",
-//  WebkitBackdropFilter: "blur(6px) saturate(110%)",
-//  borderBottom: "1px solid rgba(15,23,42,0.05)",
-//  transition: "background .22s ease",
-//  fontSize: "0.9rem",
-//  fontWeight: 500,
-//  color: "#0f172a",
-//  "&:hover": {
-//    background:
-//      "linear-gradient(90deg,rgba(99,102,241,0.07),rgba(255,255,255,0.55))",
-//  },
-//}));
-//
-//const StyledTableRow = styled(TableRow)(() => ({
-//  cursor: "pointer",
-//  transition: "transform .22s ease, box-shadow .22s ease, background .22s ease",
-//  "&:hover": {
-//    transform: "translateY(-3px)",
-//    boxShadow: "0 8px 24px rgba(15,23,42,0.08)",
-//  },
-//}));
-//
-//const USLog = () => {
-//  const navigate = useNavigate();
-////  const [entries, setEntries] = useState([]);
-//  //    const {data,loading,update,create} = useTableApi('');
-////  const [openDialog, setOpenDialog] = useState(false);
-////  const [selectedRowId, setSelectedRowId] = useState(null);
-//  const [rowDetails, setRowDetails] = useState(null);
-////  const [loadingDetails, setLoadingDetails] = useState(true);
-//useEffect(()=>{
-//                axios.get('http://localhost:8000/api/serviceability-log/')
-//                .then((res)=>{
-//                console.log("Fetched data:",res.data);
-//                setRowDetails(res.data);
-//                })
-//                .catch((err)=>{
-//                  console.error("Error fetching:",err);
-//                  });
-//                  },[]);
-//
-//  return (
-//    <div
-//      style={{
-//        padding: 20,
-//        height: "100vh",
-//        //        backgroundImage: 'url("/images/background.jpg")',
-//        backgroundColor: "#bfdbfe",
-//        backgroundSize: "cover",
-//        backgroundRepeat: "no-repeat",
-//        backgroundPosition: "center",
-//      }}
-//    >
-//      <Box sx={{ p: 1.5 }}>
-//        <Typography
-//          variant="h3"
-//          fontFamily="Algerian"
-//          align="center"
-//          gutterBottom
-//          fontWeight={600}
-//          color="#f50057"
-//          letterSpacing={3}
-//          sx={{
-//            background: "linear-gradient(45deg,#FE6B8B,#FF8E53)",
-//            WebkitBackgroundClip: "text",
-//            WebkitTextFillColor: "transparent",
-//            textShadow: "2px 2px 4px rgba(0,0,0,0.4)",
-//          }}
-//        >
-//          Change of Serviceability Log
-//        </Typography>
-//      </Box>
-//
-//      <Box
-//        sx={{
-//          display: "flex",
-//          justifyContent: "space-between",
-//          width: "100%",
-//          padding: "16px",
-//        }}
-//      >
-//        <Button
-//          variant="contained"
-//          color="primary"
-//          onClick={() => navigate("/newEntryForUSLog")}
-//        >
-//          New Entry
-//        </Button>
-//        <Box
-//          sx={{
-//            display: "flex",
-//            gap: 2,
-//          }}
-//        >
-//          <Button
-//            variant="contained"
-//            sx={{
-//              backgroundColor: "primary",
-//              color: "white",
-//            }}
-//            onClick={() => navigate("/newEntryForUSLog")}
-//          >
-//            All Entry
-//          </Button>
-//
-//          <Button
-//            variant="contained"
-//            sx={{
-//              backgroundColor: "red",
-//              color: "white",
-//            }}
-//            onClick={() => navigate("/newEntryForUSLog")}
-//          >
-//            Open Entry
-//          </Button>
-//        </Box>
-//      </Box>
-//
-//      <TableContainer
-//        component={Paper}
-//        style={{
-//          marginTop: 20,
-//          p: 4,
-//          borderRadius: 3,
-//          backgroundColor: "rgba(255,255,255,0.1)",
-//          backdropFilter: "blur(10px)",
-//          WebkitBackdropFilter: "blur(10px)",
-//          border: "1px solid rgba(255,255,255,0.3)",
-//          boxShadow: "0 8px 32px 0 rgba(31,38,135,0.37)",
-//          width: "100%",
-//          mt: 5,
-//        }}
-//      >
-//        <Table>
-//          <TableHead>
-//            <TableRow sx={{ backgroundColor: "#1976d2" }}>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "10%" }}>
-//                SNOW
-//              </StyledTableCell>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "30%" }}>
-//                How Found
-//              </StyledTableCell>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "30%" }}>
-//                Reason
-//              </StyledTableCell>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "10%" }}>
-//                Status
-//              </StyledTableCell>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "10%" }}>
-//                Details
-//              </StyledTableCell>
-//              <StyledTableCell sx={{ fontWeight: "bold", width: "10%" }}>
-//                Action
-//              </StyledTableCell>
-//            </TableRow>
-//          </TableHead>
-//          {/*<TableBody>
-//                        {entries.map((row) => {const isClosed = !!row.status; return (
-//                            <TableRow key={row.id}>
-//                                <TableCell>{isClosed ? 'Closed':'Open'}</TableCell>
-//                                <TableCell>{dayjs(isClosed ? row.closed_at:row.created_at).format('YYYY-MM-DD HH:mm')}</TableCell>
-//                                <TableCell>{row.snow}</TableCell>
-//                                <TableCell>{row.afHours}</TableCell>
-//                                <TableCell>{row.reasonUS}</TableCell>
-//                                <TableCell>
-//                                    <Tooltip title={isClosed ? 'View Details' : 'Clear U/S'}>
-//                                        <Button variant="contained" size="small" onClick={() => handleClick(row)}>
-//                                            {isClosed ? 'View' : 'Continue'}
-//                                        </Button>
-//                                    </Tooltip>
-//                                </TableCell>
-//                            </TableRow>
-//                        )})}
-//                    </TableBody>*/}
-//          <TableBody>
-//            <StyledTableRow>
-//              <StyledTableCell>{}</StyledTableCell>
-//              <StyledTableCell>2022-10-12 15:17</StyledTableCell>
-//              <StyledTableCell>AE</StyledTableCell>
-//              <StyledTableCell>1227</StyledTableCell>
-//              <StyledTableCell>Open</StyledTableCell>
-//              <StyledTableCell>
-//                <Tooltip title="Clear U/S">
-//                  <Button variant="contained" size="small">
-//                    Continue
-//                  </Button>
-//                </Tooltip>
-//              </StyledTableCell>
-//            </StyledTableRow>
-//          </TableBody>
-//        </Table>
-//      </TableContainer>
-//    </div>
-//  );
-//};
-//export default USLog;
+// <---This  is used to display the Grid View of Change of Serviceability Log  (section-5)---> //
+// <---Developed by Ghulam Shirree, LAM on 29 Sep 2025 ---> //
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -232,12 +9,26 @@ import {
   Button,
   Box,
   Modal,
+  Badge,
 } from "@mui/material";
+import {
+  PlusSquare,
+  List,
+  FolderOpen,
+  FileDigit,
+  Search,
+  AlertTriangle,
+  CircleCheckBig,
+  Eye,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import GridModal from "./USLogGridModal";
+import USLogGridModal from "./USLogGridModal";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { useAlert } from "../Utils/Alerts/AlertContext";
+
 export default function USLog() {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -246,7 +37,10 @@ export default function USLog() {
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const { params, loading } = useParams();
-  const [dataLoading,setDataLoading]=useState(false);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [allEntryHidden, SetAllEntryHidden] = useState(false);
+  const [openHidden, SetOpenHidden] = useState(true);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     const aircraft_master_id = params.aircraft_master_id;
@@ -263,40 +57,57 @@ export default function USLog() {
         .catch((err) => {
           console.error("Error fetching:", err);
         })
-        .finally(()=>{
-            setDataLoading(false);})
+        .finally(() => {
+          setDataLoading(false);
+        });
     }
   }, [loading, params, selectedAircraft]);
 
+  //  <---Data is filtering here to show as per requirements of ALL ENTRY and OPEN ENTRY buttons--->
   const filteredRows =
     filter === "all" ? rows : rows.filter((row) => row.status_label === "OPEN");
 
+  // <---All open entries are filtering here to get the total counts --->
+  const openEntries = useMemo(() => {
+    return rows?.filter((r) => r.status_label === "OPEN");
+  }, [rows]);
+
+  //  <---Function to Open the Modal--->
   const handleOpenModel = (data) => {
     setModalOpen(true);
     setSelectedRow(data);
   };
-
+  // <---Function to Close the Modal--->
   const handleCloseModel = () => {
     setModalOpen(false);
     setSelectedRow(null);
   };
-
+  // <---Function to show Previous SNOW data to the Modal--->
   const handlePrev = () => {
     if (!selectedRow) return;
     const rowIndex = rows.findIndex((r) => r.snow === selectedRow.snow);
     if (rowIndex == 0) {
-      alert("THIS IS THE FIRST SNOW");
+      //       alert("THIS IS THE FIRST SNOW");
+      showAlert({
+        type: "INFO",
+        message: "THIS IS THE FIRST SNOW",
+      });
     }
     if (rowIndex <= 0) return;
     setSelectedRow(rows[rowIndex - 1]);
     console.log(selectedRow);
   };
 
+  // <---Function to show Previous SNOW data to the Modal--->
   const handleNext = () => {
     if (!selectedRow) return;
     const rowIndex = rows.findIndex((r) => r.snow === selectedRow.snow);
     if (rowIndex == rows.length - 1) {
-      alert("THIS IS THE LAST SNOW");
+      //       alert("THIS IS THE LAST SNOW");
+      showAlert({
+        type: "INFO",
+        message: "THIS IS THE LAST SNOW",
+      });
     }
     if (rowIndex >= rows.length - 1) return;
     setSelectedRow(rows[rowIndex + 1]);
@@ -308,7 +119,7 @@ export default function USLog() {
 
   return (
     <div className="bg-gray-100 min-h-screen items-center justify-center">
-      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md ">
         <h2
           className=" absolute text-md font-bold"
           style={{
@@ -323,6 +134,7 @@ export default function USLog() {
           Change of Serviceability Log
         </h2>
       </div>
+      {/*       <---Button for New Entry---> */}
       <Box
         sx={{
           display: "flex",
@@ -331,48 +143,79 @@ export default function USLog() {
           padding: "16px",
         }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/uSLogForm")}
+        <motion.div
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 300 }}
         >
-          New Entry
-        </Button>
+          <button
+            className="flex items-center gap-2 font-bold bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            onClick={() => navigate("/newEntryForUSLog")}
+          >
+            <PlusSquare className="w-5 h-5" strokeWidth={3} />
+            New Entry
+          </button>
+        </motion.div>
         <Box
           sx={{
             display: "flex",
             gap: 2,
           }}
         >
-          <Button
-            variant="contained"
-            //            sx={{
-            //              backgroundColor: "primary",
-            //              color: "white",
-            //            }}
-            onClick={() => setFilter("all")}
+          {/*          <---Button for All Entry Types where all entry(open & close) is handled---> */}
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            All Entry
-          </Button>
-
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "red",
-              color: "white",
-            }}
-            onClick={() => setFilter("openOnly")}
+            <button
+              className="flex items-center gap-2 font-bold bg-blue-500 text-white px-4 py-2 shadow-md rounded-lg hover:bg-blue-700 transition"
+              onClick={() => setFilter("all")}
+            >
+              <List className="w-5 h-5" strokeWidth={3} />
+              All Entry
+            </button>
+          </motion.div>
+          {/*  <---Button for Open Entry Types where only OPEN entry is handled---> */}
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            Open Entry
-          </Button>
+            <Badge
+              badgeContent={openEntries.length}
+              sx={{
+                "& .MuiBadge-badge": {
+                  height: "28px",
+                  borderRadius: "50%",
+                  minWidth: "28px",
+                  fontSize: "1rem",
+                  color: "white",
+                  backgroundColor: "#ef4444",
+                  boxShadow: "0 0 10px 3px #ffffff",
+                  //                 animation:"glow 1.5s ease-in-out infinite alternate",
+                },
+                //           "@keyframes glow":{
+                //               from:{
+                //                    boxShadow:"0 0 5px 2px #ffffff",},
+                //                      to:{
+                //                    boxShadow:"0 0 15px 5px #ffffff",},}
+              }}
+            >
+              <button
+                className="flex items-center gap-2 font-bold bg-red-500 text-white px-4 py-2 shadow-md rounded-lg hover:bg-red-700 transition"
+                onClick={() => setFilter("openOnly")}
+              >
+                <FolderOpen className="w-5 h-5" strokeWidth={3} />
+                Open Entry
+              </button>
+            </Badge>
+          </motion.div>
         </Box>
       </Box>
-
+      {/* <---Starting of the Grid---> */}
       <Card className="shadow-lg rounded-xl">
         <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
           <div style={{ height: 420, width: "100%" }}>
             <DataGrid
-            loading={dataLoading}
+              loading={dataLoading}
               rows={filteredRows}
               columns={[
                 {
@@ -430,81 +273,80 @@ export default function USLog() {
                 },
                 {
                   field: "Details",
-                  headerName: "DETAILS",
+                  headerName: "VIEWS/ACTION",
                   flex: 1,
                   headerAlign: "center",
                   align: "center",
                   disableColumnMenu: true,
                   sortable: false,
                   renderCell: (rowData) => (
-                    //                  rowData.row.status_label === "open" ?
-                    <div
-                    //                       style={{
-                    //                         display: "flex",
-                    //                         justifyContent: "center",
-                    //                         alignItems: "center",
-                    //                         height: "100%",
-                    //                       }}
-                    >
-                      <Button
-                        variant="contained"
-                        size="small"
-                        color="info"
-                        onClick={() => handleOpenModel(rowData.row)}
+                    <div>
+                      <motion.div
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 300 }}
                       >
-                        View
-                      </Button>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "#3b82f6",
+                            color: "white",
+                            fontWeight: "bold",
+                          }}
+                          size="small"
+                          onClick={() => handleOpenModel(rowData.row)}
+                        >
+                          View
+                        </Button>
+                      </motion.div>
                     </div>
                   ),
                 },
 
-                {
-                  field: "Action",
-                  headerName: "ACTION",
-                  flex: 1,
-                  headerAlign: "center",
-                  align: "center",
-                  disableColumnMenu: true,
-                  sortable: false,
-                  renderCell: (rowData) =>
-                    rowData.row.status_label === "OPEN" ? (
-                      <div
-                      //                         style={{
-                      //                           display: "flex",
-                      //                           justifyContent: "center",
-                      //                           alignItems: "center",
-                      //                           height: "100%",
-                      //                         }}
-                      >
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="info"
-                          onClick={() => handleAction(rowData.row)}
-                        >
-                          Close Here
-                        </Button>{" "}
-                      </div>
-                    ) : (
-                      <span
-                        style={{
-                          color: "green",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        N/A
-                      </span>
-                    ),
-                },
+                //                 {
+                //                   field: "Action",
+                //                   headerName: "ACTION",
+                //                   flex: 1,
+                //                   headerAlign: "center",
+                //                   align: "center",
+                //                   disableColumnMenu: true,
+                //                   sortable: false,
+                //                   renderCell: (rowData) =>
+                //                     rowData.row.status_label === "OPEN" ? (
+                //                       <div
+                //                       //                         style={{
+                //                       //                           display: "flex",
+                //                       //                           justifyContent: "center",
+                //                       //                           alignItems: "center",
+                //                       //                           height: "100%",
+                //                       //                         }}
+                //                       >
+                //                         <Button
+                //                           variant="contained"
+                //                           size="small"
+                //                           color="info"
+                //                           onClick={() => handleAction(rowData.row)}
+                //                         >
+                //                           Close Here
+                //                         </Button>{" "}
+                //                       </div>
+                //                     ) : (
+                //                       <span
+                //                         style={{
+                //                           color: "green",
+                //                           display: "flex",
+                //                           justifyContent: "center",
+                //                           alignItems: "center",
+                //                           height: "100%",
+                //                         }}
+                //                       >
+                //                         N/A
+                //                       </span>
+                //                     ),
+                //                 },
               ]}
               pageSize={5}
               rowsPerPageOptions={[5, 10]}
               disableColumnSelector
-              //               disableColumnMenu
-
               sx={{
                 border: 0,
                 backgroundColor: "#F9FAFB ",
@@ -515,6 +357,10 @@ export default function USLog() {
                   fontSize: "1.2 rem",
                   border: "1px solid #708238",
                 },
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: "bold",
+                },
+
                 "& .MuiDataGrid-cell": {
                   //  backgroundColor: "cream",
                   fontSize: "1 rem ",
@@ -544,44 +390,11 @@ export default function USLog() {
           </div>
         </CardContent>
       </Card>
-      {/*         <Modal open={modalOpen} onClose={handleCloseModel}> */}
-      {/*                        <Box */}
-      {/*                       sx={{ */}
-      {/*                           position: "absolute", */}
-      {/*                           top: "50%", */}
-      {/*                           left: "50%", */}
-      {/*                           transform:"translate(-50%,-50%)", */}
-      {/*                           width:400, */}
-      {/*                           backgroundColor:"background.paper", */}
-      {/*                            borderRadius:2, */}
-      {/*                            p:4, */}
-      {/*                            boxShadow:24, */}
-      {/*                        }} */}
-      {/*                          > */}
-      {/*                         <Typography */}
-      {/*                             variant="h6" */}
-      {/*                            mb={2}> */}
-      {/*                         Details Info */}
-      {/*                         </Typography> */}
+      {/*       <---The End of the Grid---> */}
 
-      {/*                         { selectedRow ? ( */}
-      {/*                             <div> */}
-      {/*                                 <Typography> SNOW: {selectedRow.snow} </Typography> */}
-      {/*                                 <Typography> 453563 </Typography> */}
-      {/*                                 <Typography> SNOW </Typography> */}
-      {/*                                 <Typography> SNOW </Typography> */}
-      {/*                                 <Typography> SNOW </Typography> */}
-      {/*                                 </div> */}
-      {/*                                 ) : ( */}
-      {/*                                     <Typography> NO DATA </Typography> */}
-      {/*                                     ) */}
-
-      {/*                         } */}
-      {/*                         </Box> */}
-      {/*                        </Modal> */}
-
+      {/* <---Attachment of the Grid Modal---> */}
       {modalOpen && (
-        <GridModal
+        <USLogGridModal
           data={selectedRow}
           onClose={handleCloseModel}
           prevSelectedRow={handlePrev}
