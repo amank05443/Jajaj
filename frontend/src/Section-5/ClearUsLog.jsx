@@ -132,7 +132,7 @@ const ClearUsLog = ({ defect }) => {
             fontFamily: "Algerian",
           }}
         >
-          CLEAR ~SERVICEABILITY~ LOG
+          CLEAR SERVICEABILITY LOG
         </h2>
       </div>
       {/*      Info Bar */}

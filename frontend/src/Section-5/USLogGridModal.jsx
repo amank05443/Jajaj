@@ -44,7 +44,7 @@ export default function USLogGridModal({
 
   //  <---Function for the Button to Forward Users to the Right side of Section-5--->
   const handleAction = (data) => {
-    navigate("/newEntryForUSLog", { state: data });
+    navigate("/ClearUsLog", { state: data });
     console.log(data);
   };
 

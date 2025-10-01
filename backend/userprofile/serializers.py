@@ -134,7 +134,7 @@ class ChangeOfServiceabilityLogLinesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
-    snow=serializers.DecimalField(max_digits=10, decimal_places=2,allow_null=True)
+    snow=serializers.DecimalField(max_digits=10, decimal_places=0,allow_null=True)
     status_label = serializers.SerializerMethodField(method_name='get_status_label')
     how_found_defect=HowFoundDefectsSerializer(read_only=True)
     change_of_serviceability_lines=ChangeOfServiceabilityLogLinesSerializer(source="change_of_serviceability_log_lines", read_only=True,many=True)
