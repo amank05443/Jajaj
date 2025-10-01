@@ -73,7 +73,7 @@ const E700Page = () => {
       console.log(status);
       return;
     }
-    setMultipleParams({
+       await setMultipleParams({
       aircraft_type_id: selectedAircraftType,
       aircraft_master_id: selectedAircraftDetail,
     });
@@ -141,23 +141,24 @@ const E700Page = () => {
           <Grid item sm={6}>
             <Box align="center">
               <FormControl fullWidth margin="normal">
-                <Typography
-                  id="aircraft-type-label"
-                  sx={{ color: "red" }}
-                  fontWeight="bold"
-                  mb={1}
-                >
-                  Aircraft Type
-                </Typography>
+
                 <Select
                   labelId="aircraft-type-label"
                   id="aircraft-type-select"
+
                   value={selectedAircraftType}
                   label="Aircraft Type"
+                   displayEmpty
                   sx={{ backgroundColor: "white" }}
+                  inputProps={{'aria-label':'Select Aircraft Type'}}
+
                   onChange={handleChange}
                 >
-                  <option value="">--Select Aircraft--</option>
+                <MenuItem value="">
+                    <em>Select Aircraft Type </em>
+                </MenuItem>
+
+
                   {aircraftTypes.map((aircraftType) => (
                     <MenuItem key={aircraftType.id} value={aircraftType.id}>
                       {aircraftType.aircraft_name}
@@ -170,21 +171,20 @@ const E700Page = () => {
           <Grid item sm={6}>
             <Box align="center">
               <FormControl fullWidth size="medium">
-                <Typography
-                  id="aircraft-side-no-label"
-                  sx={{ color: "red" }}
-                  fontWeight="bold"
-                >
-                  Aircraft Side No.{" "}
-                </Typography>
+
                 <Select
                   labelId="aircraft-side-no-label"
                   id="aircraft-side-no-select"
                   value={selectedAircraftDetail}
                   label="Aircraft Side No"
+                  displayEmpty
                   sx={{ backgroundColor: "white" }}
+                   inputProps={{'aria-label':'Select Aircraft Side no.'}}
                   onChange={handleChange1}
                 >
+                 <MenuItem value="">
+                    <em>Select Aircraft Side no. </em>
+                </MenuItem>
                   {aircraftDetails.map((aircraft) => (
                     <MenuItem key={aircraft.id} value={aircraft.id}>
                       {aircraft.side_no}

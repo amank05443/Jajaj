@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate,useLocation} from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { motion } from "framer-motion";
@@ -26,16 +26,29 @@ import {
   Toolbar,
   TextField,
 } from "@mui/material";
+import { X, Plane } from "lucide-react";
 import { FaMapMarkerAlt, FaTools, FaUser, FaClock } from "react-icons/fa";
+import dayjs from "dayjs";
+
+function formatDateTime(isoString) {
+  if (!isoString) return { date: "", time: "" };
+  const dateObj = dayjs(isoString);
+  const date = dateObj.format("DD/MM/YYYY");
+  const time = dateObj.format("HH:mm");
+  return { date, time };
+}
 
 const ClearUsLog = ({ defect }) => {
   const [formError, setFormError] = useState(null);
   const [wbData, setWbData] = useState({});
   const [compassData, setCompassData] = useState({});
+  const [formData, setFormData] = useState([]);
 
-      const location= useLocation();
-    const data1 = location.state;
-    console.log(data1);
+  const location = useLocation();
+  const gridData = location.state;
+  console.log(gridData);
+
+  const { date, time } = formatDateTime(gridData?.user_time_date);
 
   const methods = useForm({
     defaultValues: {
@@ -47,60 +60,67 @@ const ClearUsLog = ({ defect }) => {
   });
 
   const handleWbData = (data) => {
+    console.log(data);
     setWbData(data);
-    console.log("wbData:", wbData);
   };
   const handleCompassData = (data) => {
     setCompassData(data);
-    console.log("compassData:", compassData);
   };
+
+  useEffect(() => {
+    if (gridData.entry_type == 2025101) {
+      setFormData(wbData);
+    }
+    if (gridData.entry_type == 2025104) {
+      setFormData(compassData);
+    }
+  }, [wbData, compassData]);
+  console.log("formData:", formData);
 
   const {
     register,
-    handleSubmit,
     formState: { errors },
     watch,
   } = methods;
 
-  const infoCards = [
-    {
-      label: "SNOW",
-      value: "2255",
-      icon: <FaMapMarkerAlt size={20} />,
-      bg: "#fef3c7",
-      color: "#92400e",
-    },
-    {
-      label: "Dated",
-      value: "22/10/2015",
-      icon: <FaTools size={20} />,
-      bg: "#e0f2fe",
-      color: "#075985",
-    },
-    {
-      label: "Reason",
-      value: "I am a disco dancer.",
-      icon: <FaUser size={20} />,
-      bg: "#ede9fe",
-      color: "#4c1d95",
-    },
-    {
-      label: "Entry Type",
-      value: "Weight and Balance",
-      icon: <FaClock size={20} />,
-      bg: "#dcfce7",
-      color: "#166534",
-    },
-  ];
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const payload = {
+      formData: formData,
+      gridData: gridData,
+    };
+    if (payload) {
+      try {
+        const res = await fetch("/api/clearUsLog/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
+        if (!res.ok) throw new Error("Failed to save data");
+        const data = await res.json();
+        console.log("Saved:", data);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      console.log("Blundeeeeer");
+    }
+  };
   return (
     <Box
       p={4}
-      /*  className="min-h-screen"
-      sx={{background:"linear-gradient(135deg,#0f1710 0%, #312e81 30%, #7c3aed 100%)",}} */
-      className="min-h-screen bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 space-y-4"
+      className="min-h-screen"
+      /*
+      sx={{background:"linear-gradient(135deg,#0f1710 0%, #312e81 30%, #7c3aed 100%)",}}
+ */
+      /*
+      className="min-h-screen bg-gradient-to-r from-emerald-200 via-teal-200 to-rose-400 space-y-4"
+ */
     >
-      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-1">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-4">
         <h2
           className="text-md font-bold"
           style={{
@@ -112,85 +132,100 @@ const ClearUsLog = ({ defect }) => {
             fontFamily: "Algerian",
           }}
         >
-          CLEAR ~SERVICEABILITY~ LOG
+          CLEAR SERVICEABILITY LOG
         </h2>
       </div>
       {/*      Info Bar */}
-      <Paper
-        elevation={8}
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: 3,
-          background: "linear-gradient(135deg,#fdfbfb 0%,#ebedee 100%)",
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 700,
-            mb: 3,
-            color: "primary.main",
-            textAlign: "center",
-          }}
-        >
-          Defect Information
-        </Typography>
-        <Grid container spacing={3}>
-          {infoCards.map((f, i) => (
-            <Grid item xs={12} sm={6} md={3} key={i}>
-              <Paper
-                elevation={3}
-                sx={{
-                  p: 2,
-                  bgcolor: f.bg,
-                  color: f.color,
-                  borderRadius: 3,
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  transition: "transform 0.2s",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 6,
-                  },
-                }}
-                component={motion.div}
-                whileHover={{ scale: 1.03 }}
+      <div className="space-y-4">
+        <div className="">
+          <div
+            className=" bg-cyan-800 text-white rounded-xl w-auto max-w-8xl p-4 sm:p-6 flex flex-col
+         gap-4 max-h-[90vh] overflow-x-auto "
+          >
+            {/* <div className="flex justify-center items-center font-extrabold text-3xl ">
+              <Plane size={35} color="white" />
+              &nbsp;&nbsp;
+              <div> DEFECT INFO</div>
+            </div> */}
+            <div className="rounded-lg pt-2 pl-2 pr-2 flex flex-col break-all">
+              <div className="grid grid-cols-5 text-center  border-white min-w-[500px] font-bold">
+                <div className="border border-white"> DATE & TIME </div>
+                <div className="border border-white"> SNOW </div>
+                <div className="border border-white"> A/F HRS </div>
+                <div className="border border-white"> HOW FOUND </div>
+                <div className="border border-white"> BY WHOM </div>
+              </div>
+              <div className="grid grid-cols-5 text-center pb-2 min-w-[500px] ">
+                <div className="border border-white">
+                  {date} <br /> {time}
+                </div>
+                <div className="border border-white"> {gridData.snow} </div>
+                <div className="border border-white">
+                  {" "}
+                  {gridData.airframe_hrs}{" "}
+                </div>
+                <div className="border border-white">
+                  {" "}
+                  {gridData.how_found_defect?.occasion || "N/A"}{" "}
+                </div>
+                <div className="border border-white">
+                  {" "}
+                  {gridData.by_whom?.user_name.toUpperCase() +
+                    "," +
+                    gridData.by_whom?.rank?.abbreviation || "N/A"}{" "}
+                </div>
+              </div>
+              <div className="flex p-4 border border-white">
+                <h2 className="font-bold">
+                  REASON FOR PLACING UNSERVICEABLE &nbsp;:
+                </h2>
+                <p>
+                  &nbsp;&nbsp;&nbsp;{gridData.reason_for_placing_unserviceable}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <motion.div
+            //           key={ExtraForm ? "with-extra" : "only-basic"}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <FormProvider {...methods}>
+              <form>
+                <Paper className="p-4 shadow-md">
+                  {gridData.entry_type == 2025104 && (
+                    <CompassLog compassData={handleCompassData} />
+                  )}
+                  {gridData.entry_type == 2025101 && (
+                    <BasicWeightAndMoment wbData={handleWbData} />
+                  )}
+                  {gridData.entry_type == 2025110 && (
+                    <TextField
+                      variant="outlined"
+                      className="mb-6"
+                      label="Enter the details of Work Done."
+                    />
+                  )}
+                </Paper>
+              </form>
+              <Button
+                onClick={handleSubmit}
+                type="submit"
+                variant="contained"
+                /*
+          disabled={!isAuthenticated}
+ */
+                className="primary p-4"
               >
-                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                  {f.icon}
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, ml: 1 }}
-                  >
-                    {f.label}
-                  </Typography>
-                </Box>
-                <Typography variant="body1">{f.value}</Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Paper>
-      <motion.div
-        //           key={ExtraForm ? "with-extra" : "only-basic"}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <FormProvider {...methods}>
-          <form>
-            <Paper className="p-4 shadow-md">
-              <CompassLog compassData={handleCompassData} />
-            </Paper>
-            <Paper className="p-4 shadow-md">
-              <BasicWeightAndMoment wbData={handleWbData} />
-            </Paper>
-          </form>
-        </FormProvider>
-      </motion.div>
+                Submit
+              </Button>
+            </FormProvider>
+          </motion.div>
+        </div>
+      </div>
     </Box>
   );
 };

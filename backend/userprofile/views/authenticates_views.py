@@ -2,27 +2,29 @@ import json
 from django.db.models import F
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
+from django.core.exceptions import ObjectDoesNotExist
 
-from ..models import ( Users, Trades, Quals, UserQuals)
-#--------------------------------- For all user name of related  store type >> template one ----------------------------#
-def user_details_for_authentication_one(request):
-    users = Users.objects.filter(userQualsTrade__isnull=False).distinct()
-    data = list(users.values("id", "pno", "user_name", abbreviation= F("rank__abbreviation")))
-    return JsonResponse(data, safe=False)
+from ..models import (Users, Trades, Quals, UserQuals, AircraftMasters)
 
-#--------------------------------- For checking passkey w.r.t. selected  user >> All templates -------------------------#
+#------------------------ For checking passkey w.r.t. selected  user >> Applicable for all templates -------------------#
 @csrf_exempt
 @require_POST
 def check_passkey_authentication(request):
     data = json.loads(request.body)
-    id= data.get('byWhom')
+    ids= data.get('byWhom')
     pin= data.get('passkey')
     try:
-        user= Users.objects.get(id=id, pin=pin)
-        return JsonResponse({"status": "OK", "user": {"id": user.id, "name": user.user_name+", "+user.rank.abbreviation,}})
+        user= Users.objects.get(userQualsTrade__id=ids, pin=pin)
+        return JsonResponse({"status": "OK", "user": {"id": ids, "name": user.user_name, "rank": user.rank.abbreviation}})
     except ObjectDoesNotExist:
         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
+
+#--------------------------------- For all user name of related  store type >> template one ----------------------------#
+def user_details_for_authentication_one(request, id ):
+    users_from_user_quals = UserQuals.objects.filter(active_yn='Y', aircraft_type_id=id).distinct('user_id')
+    data = list(users_from_user_quals.values("id", pno=F("user__pno"), user_name=F("user__user_name"),  abbreviation=F("user__rank__abbreviation")))
+    return JsonResponse(data, safe=False)
 
 # --------------------------------- For all trades  >> template two ----------------------------------------------------#
 def user_authentication_for_trade(request):
@@ -30,26 +32,52 @@ def user_authentication_for_trade(request):
     data = list(trades.values("id", "trade"))
     return JsonResponse(data, safe=False)
 
-def user_qualification_for_authentication(request):
+# --------------------------------- Fetch users of selected trade & qualification  >> template two ----------------------------------------------------#
+@require_GET
+def user_details_for_authentication_two(request):
+    aircraft_type_id= request.GET.get("aircraft_type_id")
+    qualification= request.GET.get("qualification")
+    trade= request.GET.get("trade")
+    if not (qualification and trade and aircraft_type_id):
+        return JsonResponse([], safe=False)
     try:
-        users= {u.id: u for u in Users.objects.all()}
-        quals= {q.id: q.qual_name for q in Quals.objects.all()}
-        user_quals_data = UserQuals.objects.all()
-        data = []
-        for record in user_quals_data:
-            qual_name =quals.get(record.qual_id, "No Quals"),
-            data.append({
-                'qual_id': record.id ,
-                'qual_name': qual_name ,
-            })
-        return JsonResponse(data, safe=False)
-    except ObjectDoesNotExist:
-        return JsonResponse({"error": "<UNK>"})
-
-def user_details_for_authentication(request, id):
-    users = Users.objects.filter(userQualsTrade__trade_id=id).distinct()
-    data = list(users.values("id", "pno", "user_name", abbreviation= F("rank__abbreviation")))
+        trade= int(trade)
+    except ValueError:
+        return JsonResponse([], safe=False)
+    if qualification == "TDS":
+        qual_code_range= range(1, 8)
+    elif qualification == "SUP":
+        qual_code_range= range(4, 8)
+    else:
+        qual_code_range=Quals.objects.values_list("qual_code", flat=True)
+    qual_code_range_id= Quals.objects.filter(qual_code__in=qual_code_range).values_list("id", flat=True)
+    users_from_user_quals = UserQuals.objects.all().filter(trade_id=trade, aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct()
+    data = list(users_from_user_quals.values("id", pno=F("user__pno"), user_name=F("user__user_name"), abbreviation=F("user__rank__abbreviation")))
     return JsonResponse(data, safe=False)
+
+
+
+
+# def user_qualification_for_authentication(request):
+#     try:
+#         users= {u.id: u for u in Users.objects.all()}
+#         quals= {q.id: q.qual_name for q in Quals.objects.all()}
+#         user_quals_data = UserQuals.objects.all()
+#         data = []
+#         for record in user_quals_data:
+#             qual_name =quals.get(record.qual_id, "No Quals"),
+#             data.append({
+#                 'qual_id': record.id ,
+#                 'qual_name': qual_name ,
+#             })
+#         return JsonResponse(data, safe=False)
+#     except ObjectDoesNotExist:
+#         return JsonResponse({"error": "<UNK>"})
+#
+# def user_details_for_authentication(request, id):
+#     users = Users.objects.filter(userQualsTrade__trade_id=id).distinct()
+#     data = list(users.values("id", "pno", "user_name", abbreviation= F("rank__abbreviation")))
+#     return JsonResponse(data, safe=False)
 
 
 

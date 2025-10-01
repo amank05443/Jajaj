@@ -288,7 +288,7 @@ const CustomGrid = ({
       sx={{
         border: "2px solid #ddd",
         overflow: "hidden",
-        margin: 4,
+        margin: 1,
         p: 2,
         borderRadius: "11px",
         background: themes[selectedTheme].background,

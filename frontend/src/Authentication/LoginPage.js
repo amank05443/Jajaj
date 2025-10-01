@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthContext";
+import CreateProfile from "../PrepareE700/CreateProfile";
 
 const LoginPage = () => {
   const [pno, setPno] = useState("");
@@ -194,6 +195,22 @@ const LoginPage = () => {
                           onClick={() => navigate("/create-profile")}
                         >
                           Create Profile
+                        </Button>
+                      </motion.div>
+                    </Grid>
+                    <Grid item>
+                      <motion.div whileHover={{ scale: 1.05 }}>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            fontWeight: "bold",
+                            backgroundColor: "#1565c0",
+                            color: "#fff",
+                            minWidth: 140,
+                          }}
+                          onClick={() => navigate("/PasswordReset")}
+                        >
+                          PASSCODE RESET
                         </Button>
                       </motion.div>
                     </Grid>

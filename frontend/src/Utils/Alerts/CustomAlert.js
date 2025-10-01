@@ -62,6 +62,7 @@ const alertStyles = {
     bg: "#e3f2fd",
     border: "2px solid #42a5f5",
   },
+
 };
 
 const CustomAlert = ({
@@ -71,7 +72,7 @@ const CustomAlert = ({
   message,
   data = null,
   onClose,
-  autoHideDuration = 2000,
+  autoHideDuration = 3000,
 }) => {
   const style = alertStyles[type] || alertStyles.info;
 

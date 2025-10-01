@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Eye, EyeOff } from "lucide-react";
+import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
 export default function AllUsers({ auth }) {
+  const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
+  const [showPassKey, setShowPassKey] = useState(false);
   const {
     formData,
     errors,
@@ -27,9 +31,10 @@ export default function AllUsers({ auth }) {
     }
   }, [open]);
   useEffect(() => {
-    if (open) {
+    if (open && !loading) {
+      const aircraft_type_id = params.aircraft_type_id;
       axios
-        .get("/api/userDetailsForAuthenticationAllUsers/")
+        .get(`/api/userDetailsForAuthenticationAllUsers/${aircraft_type_id}`)
         .then((response) => {
           setData(response.data);
           console.log("User data found :");
@@ -138,13 +143,20 @@ export default function AllUsers({ auth }) {
                         Passkey
                       </label>
                       <input
-                        type="password"
+                        type={showPassKey ? "text " : "password"}
                         name="passkey"
                         value={formData.passkey}
                         onChange={handleChange}
                         placeholder="******"
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        className="border p-1  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassKey((prev) => !prev)}
+                        className=" absolute right-4  mt-2 text-grey-500 hover: text-gray-700"
+                      >
+                        {showPassKey ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                       {errors.passkey && (
                         <p className="text-red-500">
                           {errors.passkey.message || errors.passkey}

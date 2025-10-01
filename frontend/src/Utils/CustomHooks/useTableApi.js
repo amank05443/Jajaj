@@ -5,19 +5,15 @@
 //added by :- Abhishek Singh,LAM
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-
 export default function useTableApi(table, options = {}) {
   const { id = null, query = {}, autoFetch = true, related = [] } = options;
-
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState(null);
-
   const buildUrl = useCallback(
     (overrideId = id) => {
       const base = `/api/${table}/${overrideId !== null ? `${overrideId}/` : ""}`;
       const params = new URLSearchParams();
-
       //Add query params
       for (let key in query) {
         const value = query[key];
@@ -26,8 +22,7 @@ export default function useTableApi(table, options = {}) {
         } else if (value !== undefined && value !== null) {
           params.append(key, value);
         }
-      }
-      //Add related (include)
+      } //Add related (include)
       if (related.length > 0) {
         params.append("include", related.join(","));
       }
@@ -36,9 +31,7 @@ export default function useTableApi(table, options = {}) {
     },
     [table, id, JSON.stringify(query), related.join(",")],
   );
-
   const url = useMemo(() => buildUrl(), [buildUrl]);
-
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -55,13 +48,11 @@ export default function useTableApi(table, options = {}) {
       setLoading(false);
     }
   }, [url]);
-
   useEffect(() => {
     if (autoFetch) {
       fetchData();
     }
   }, []);
-
   const create = useCallback(
     async (payload) => {
       try {
@@ -81,7 +72,6 @@ export default function useTableApi(table, options = {}) {
     },
     [url],
   );
-
   const update = useCallback(
     async (updateId, updateData, method) => {
       try {
@@ -102,7 +92,6 @@ export default function useTableApi(table, options = {}) {
     },
     [url],
   );
-
   const remove = useCallback(
     async (id) => {
       setError(null);
@@ -126,7 +115,6 @@ export default function useTableApi(table, options = {}) {
     },
     [table],
   );
-
   const empty = useCallback(async () => {
     setError(null);
     try {
@@ -143,7 +131,6 @@ export default function useTableApi(table, options = {}) {
       throw err;
     }
   }, [url]);
-
   return {
     data,
     loading,

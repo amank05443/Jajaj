@@ -54,7 +54,7 @@ const schema = yup.object({
     .required("Date/Time is required")
     .max(new Date(), "Date/Time cannot be in future"),
   main_system: yup.string().required("System Affected is required"),
-  aircraft_role: yup.string().required("Role Affected is required"),
+//   aircraft_role: yup.string().required("Role Affected is required"),
   item: yup.string().required("Item Part No is required"),
   demand_id: yup.number().required("Demand Details is required"),
   deferred_until: yup.string().required("Deferred Until is required"),
@@ -65,7 +65,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
   const [loading, setLoading] = useState(true);
   const { params, loading: paramsLoading } = useParams();
   const [systems, setSystemsOptions] = useState([]);
-  const [roles, setRolesOptions] = useState([]);
+//   const [roles, setRolesOptions] = useState([]);
   const [items, setItemsOptions] = useState([]);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
         });
         console.log(data);
         setSystemsOptions(data.data.systemsData);
-        setRolesOptions(data.data.acRoleData);
+//         setRolesOptions(data.data.acRoleData);
         setItemsOptions(data.data.itemsData);
       } catch (err) {
         console.error(err);
@@ -90,7 +90,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
   const methods = useForm({
     defaultValues: {
       main_system: "",
-      aircraft_role: "",
+//       aircraft_role: "",
       item: "",
       demand_id: "",
       deferred_until: "",
@@ -174,7 +174,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
                 )}
               />
             </div>
-            <div className="w-full">
+            {/* <div className="w-full">
               <Controller
                 name="aircraft_role"
                 control={control}
@@ -204,7 +204,7 @@ export default function NewEntryForLimitationLog({ onDataChange }) {
                   </TextField>
                 )}
               />
-            </div>
+            </div> */}
             <div className="w-full">
               {items && (
                 <Controller
