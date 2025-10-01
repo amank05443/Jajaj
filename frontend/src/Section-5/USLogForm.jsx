@@ -224,8 +224,7 @@ const USLogForm = () => {
                 </p>
               )}
             </div>
-
-            <div>
+               <div>
               <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
                 Date & Time
               </label>

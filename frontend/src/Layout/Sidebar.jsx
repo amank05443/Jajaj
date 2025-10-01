@@ -160,14 +160,14 @@ const sidebarLinks = [
     icon: <SafetyCheck size={20} />,
     children: [
       {
-        label: "ALOTechMemos",
+        label: "ViewTechnicalInstructions",
         icon: <CompassCalibration size={20} />,
-        to: "/aloTechMemos",
+        to: "/viewTechnicalInstructions",
       },
       {
-        label: "AEOTechMemo's",
+        label: "PromulgateTechnicalInstruction",
         icon: <NavigationIcon size={20} />,
-        to: "/aeoTechMemos",
+        to: "/promulgateTechnicalInstruction",
       },
     ],
   },

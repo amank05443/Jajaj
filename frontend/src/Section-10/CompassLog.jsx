@@ -92,7 +92,7 @@ const CompassLog = ({ compassData }) => {
         >
           COMPASS CALIBRATION LOG
         </h2>
-        <div className="col-span-3 flex justify-end mt-1">
+        <div className="col-span-3 flex justify-end">
           <button
             onClick={() => navigate("/CompassLogView")}
             className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
