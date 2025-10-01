@@ -1,19 +1,30 @@
+// <---This modal is used to display a clear, wholesome and well-structured overview of Change of Serviceability Log  (section-5)---> //
+// <---Developed by Ghulam Shirree, LAM on 29 Sep 2025 ---> //
+
 import react from "react";
-import { X, Plane } from "lucide-react";
+import {
+  X,
+  Plane,
+  CalendarClock,
+  FileDigit,
+  Clock,
+  Search,
+  User,
+  AlertTriangle,
+  Wrench,
+  Timer,
+  UserCog,
+  ChevronLeft,
+  ChevronRight,
+  CircleArrowRight,
+} from "lucide-react";
 import React, { useRef } from "react";
 import { Typography, Button, Box, Modal } from "@mui/material";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
-// function formatDateTime(isoString){
-//     if (!isoString) return{date:"",time:""};
-//     const dateObj= new Date(isoString);
-//     const date=dateObj.toLocaleDateString("en-GB");
-//     const time = dateObj.toLocaleDateString("en-GB",{
-//         hour:"2-digit",
-//         minute:"2-digit",});
-//         return {date,time};
-//         }
+// <---Function to convert the Data & Time to Human Readable ---> //
 function formatDateTime(isoString) {
   if (!isoString) return { date: "", time: "" };
   const dateObj = dayjs(isoString);
@@ -22,148 +33,202 @@ function formatDateTime(isoString) {
   return { date, time };
 }
 
-export default function GridModal({ data, onClose,prevSelectedRow,nextSelectedRow }) {
+export default function USLogGridModal({
+  data,
+  onClose,
+  prevSelectedRow,
+  nextSelectedRow,
+}) {
+  const navigate = useNavigate();
   const { date, time } = formatDateTime(data?.user_time_date);
+
+  //  <---Function for the Button to Forward Users to the Right side of Section-5--->
+  const handleAction = (data) => {
+    navigate("/newEntryForUSLog", { state: data });
+    console.log(data);
+  };
+
   return (
-    //     <div
-    //       onClick={onClose}
-    //       className="fixed inset-0  bg-opacity-20 backdrop-blur-sm flex justify-center items-center"
-    //     >
-    //       <div className=" mt-10 flex flex-col gap-5 text-white ">
-    //         <button className="place-self-end " onClick={onClose}>
-    //           <X size={30} color="red" />
-    //         </button>
-    //         <div
-    //           onClick={(e) => e.stopPropagation()}
-    //           className="bg-indigo-600 rounded-xl px-20 py-10 flex flex-col gap-5 items-center mx-4"
-    //         >
-    //           <h1 className="text-3xl font-extrabold"> DETAILS INFO</h1>
-    //           <p className="text-center">SN : {data.snow}</p>
-    //           <p className="text-center">
-    //             FOUND : {data.how_found_defect?.occasion || "N/A"}
-    //           </p>
-    //           <p className="text-center">
-    //             RN : {data.reason_for_placing_unserviceable}
-    //           </p>
-    //           <p className="text-center">MA : {data?.man_hrs || "N/A"}</p>
-    //           <div className="space-y-3 text-lg text-white-700">
-    //             <p>
-    //               <span className="font-semibold"> Na : </span>
-    //               {data.snow}
-    //             </p>
-    //           </div>
-    //         </div>
-    //       </div>
-    //
-    //     </div>
-
-    // another code
-    //     <div
-    //       onClick={onClose}
-    //       className="fixed inset-0  bg-opacity-20 bg-gradient-to-r from-[#FFE6CC]/50 via-[#87CEEB]/35 to-[#FFD5E0]/50  backdrop-blur-sm flex justify-center items-center "
-    //     >
-    //       <Box
-    //         onClick={(e) => e.stopPropagation()}
-    //         className=" w-[400px] h-[400px] mx-auto  bg-white rounded-lg mt-20 shadow-2xl"
-    //       >
-    //         <Box className="bg-indigo-500 text-white p-2 text-center rounded-t-lg py-6 px-6">
-    //           <button className="place-self-end " onClick={onClose}>
-    //             <X size={30} color="red" />
-    //           </button>
-    //           <Typography variant="h5">DETAILS INFO</Typography>
-    //         </Box>
-    //         <Box className="p-4">
-    //           <div className="space-y-2 mt-5">
-    //             <div className="flex mb-2">
-    //               <div className="w-32 font-semibold">SNOW:</div>
-    //               <div> {data.snow}</div>
-    //             </div>
-    //           </div>
-    //
-    //           <div className="space-y-2 mt-5">
-    //             <div className="flex mb-2">
-    //               <div className="w-32 font-semibold">HOW FOUND:</div>
-    //               <div> {data.how_found_defect?.occasion || "N/A"}</div>
-    //             </div>
-    //           </div>
-    //         </Box>
-    //       </Box>
-    //     </div>
-    //     //           another code end
-
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center p-4 z-50"
+      className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center p-4 items-center z-50"
     >
       <div
-        className=" bg-gray-900 text-white rounded-xl w-auto max-w-4xl p-4 sm:p-6 border border-white flex flex-col
-         gap-4 max-h-[90vh] overflow-x-auto "
+        className=" relative bg-gray-300  text-gray-900  rounded-2xl h-auto w-[85%]  p-4 sm:p-6 flex flex-col
+         gap-4  overflow-x-auto  "
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-center items-center font-extrabold text-3xl ">
-          <Plane size={35} color="white" />
-          &nbsp;&nbsp;
-          <div> DETAILS INFO</div>
+        <button
+          className="absolute top-2 right-2 p-2 bg-red-700 rounded-full hover:bg-red-700 transition"
+          onClick={onClose}
+        >
+          <X className="w-5 h-5 text-white" strokeWidth={5} />
+        </button>
+
+        {/* bg-gradient-to-r from-[#f6d5f7] via-[#fbe9d7]/60 to-[#8acbde]  */}
+        <div className="flex p-2 mr-12 ml-14 w-50 justify-center items-center rounded-full shadow-lg bg-blur-sm bg-gray-200 border border-gray-300 font-extrabold text-3xl  ">
+          <div
+            className="w-10 h-10 mr-1 bg-gradient-to-b from-[#ff671f]/60 via-[#ffffff]/60 to-[#046a38]/60  rounded-3xl flex items-center justify-center shadow-lg
+            transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
+          >
+            <Plane size={24} className="text-gray-500" />
+          </div>
+
+          <div className="text-gray-500 font-sans tracking-wide ">
+            DETAILED INFO
+          </div>
         </div>
-        <div className="border border-white rounded-lg p-2 flex flex-col gap-4 break-all">
-          <div className="grid grid-cols-5 text-center  border-white pb-2 min-w-[500px] font-bold">
-            <div> DATE & TIME </div>
-            <div> SNOW </div>
-            <div> A/F HRS </div>
-            <div> HOW FOUND </div>
-            <div> BY WHOM </div>
-          </div>
-          <div className="grid grid-cols-5 text-center border-b border-white pb-2 min-w-[500px] ">
-            <div>
-              {date} <br /> {time}
+
+        <div className="border border-white rounded-lg p-2 flex flex-col gap-3 break-words">
+          <div
+            className="bg-gradient-to-r from-[#f6d5f7]  to-[#fbe9d7] shadow-md  py-2 min-w-[500px] rounded-2xl
+            transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
+          >
+            <div className="grid grid-cols-5 text-center   mb-2 pb-2 min-w-[500px] font-bold  ">
+              <div className="flex items-center justify-center gap-2">
+                <CalendarClock className="w-5 h-5 mb-1" />
+                DATE & TIME
+              </div>
+
+              <div className="flex items-center justify-center gap-2">
+                <FileDigit className="w-5 h-5 mb-1" />
+                SNOW
+              </div>
+
+              <div className="flex items-center justify-center gap-2">
+                <Clock className="w-5 h-5 mb-1" />
+                A/F HRS
+              </div>
+
+              <div className="flex items-center justify-center gap-2">
+                <Search className="w-5 h-5 mb-1" /> HOW FOUND
+              </div>
+
+              <div className="flex items-center justify-center gap-2">
+                <User className="w-5 h-5 mb-1" />
+                BY WHOM
+              </div>
             </div>
-            <div> {data.snow} </div>
-            <div> {data.airframe_hrs} </div>
-            <div> {data.how_found_defect?.occasion || "N/A"} </div>
-            <div> {data.by_whom || "N/A"} </div>
+
+            <div className="grid grid-cols-5 text-center pb-2 min-w-[500px] ">
+              <div>
+                {date} <br /> {time}
+              </div>
+              <div> {data.snow} </div>
+              <div> {data.airframe_hrs} </div>
+              <div> {data.how_found_defect?.occasion || "N/A"} </div>
+              <div>
+                {data.by_whom?.user?.user_name.toUpperCase() || "N/A"} <br />
+                {data.by_whom?.user?.rank?.abbreviation}
+              </div>
+            </div>
           </div>
-          <div className=" py-2 min-w-[500px]  ">
-            <h2 className="font-bold"> REASON FOR PLACING UNSERVICEABLE : </h2>
-            <p> {data.reason_for_placing_unserviceable}</p>
+
+          <div
+            className=" rounded-2xl p-10 bg-gradient-to-r from-[#f6d5f7]  to-[#fbe9d7]  shadow-md py-2 min-w-[500px]
+            transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
+          >
+            <div className="flex gap-2 justify-center ">
+              <AlertTriangle className="w-5 h-5 mb-1" />
+              <h2 className="font-bold mb-2 ">
+                REASON FOR PLACING UNSERVICEABLE
+              </h2>
+            </div>
+            <p className="break-words">
+              {data.reason_for_placing_unserviceable}
+            </p>
           </div>
+
           {data.status_label === "CLOSED" && (
             <>
-              <div className="border-b border-t border-white py-2 min-w-[500px] ">
-                <h2 className="font-bold"> WORK UNDERTAKEN : </h2>
-                <p> this is the work undertaken</p>
+              <div
+                className="rounded-2xl p-10 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md  py-2 min-w-[500px]
+             transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
+              >
+                <div className="flex gap-2 justify-center">
+                  <Wrench className="w-5 h-5 mb-1" />
+                  <h2 className="font-bold mb-2"> WORK UNDERTAKEN </h2>
+                </div>
+                <p className="break-words"> {data.work_carried_out || "N/A"}</p>
               </div>
 
-              <div className="flex ">
-                <h2 className="font-bold "> MAN HRS : </h2>
-                <p> 20 </p>
-              </div>
-              <div className="grid grid-cols-3 text-center py-2 min-w-[500px] font-bold">
-                <div> TRADESMAN </div>
-                <div> SUPERVISOR </div>
-                <div> ATO </div>
-              </div>
+              <div
+                className="rounded-2xl p-4 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md
+                transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
+              >
+                <div className="grid grid-cols-4 text-center mb-2 pb-2 min-w-[500px] font-bold">
+                  <div className="flex items-center justify-center gap-2">
+                    <Timer className="w-5 h-5 mb-1" />
+                    MAN HRS
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <UserCog className="w-5 h-5 mb-1" />
+                    TRADESMAN
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <UserCog className="w-5 h-5 mb-1" />
+                    SUPERVISOR
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <UserCog className="w-5 h-5 mb-1" />
+                    ATO
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-3 text-center py-2 min-w-[500px]">
-                <div> 1 </div>
-                <div> 2 </div>
-                <div> 3 </div>
+                <div className="grid grid-cols-4 text-center py-2 min-w-[500px] py-2 min-w-[500px]">
+                  <div> 10 </div>
+                  <div> 1 </div>
+                  <div> 2 </div>
+                  <div> 3 </div>
+                </div>
               </div>
             </>
           )}
         </div>
- <button
-          className="self-end bg-red-500 px-6 py-2 rounded hover:bg-red-700"
-          onClick={prevSelectedRow}
-        >
-          prev...
-        </button>
-        <button
-          className="self-end bg-red-500 px-6 py-2 rounded hover:bg-red-700"
-          onClick={nextSelectedRow}
-        >
-          next...
-        </button>
 
+        <div className="flex justify-between items-center font-bold ">
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          >
+            <button
+              className="flex items-center gap-2 bg-blue-500 shadow-md text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              onClick={prevSelectedRow}
+            >
+              <ChevronLeft className="w-5 h-5" strokeWidth={4} />
+              PREV
+            </button>
+          </motion.div>
+
+          {data.status_label === "OPEN" && (
+            <div className="flex flex-col items-center">
+              <motion.div
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              >
+                <button
+                  className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 shadow-md rounded-lg hover:bg-green-700  shadow-lg transition"
+                  onClick={() => handleAction(data)}
+                >
+                  WORK UNDERTAKEN
+                  <CircleArrowRight className="w-8 h-7 " strokeWidth={2.5} />
+                </button>
+              </motion.div>
+            </div>
+          )}
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          >
+            <button
+              className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 shadow-md rounded-lg hover:bg-blue-700  transition "
+              onClick={nextSelectedRow}
+            >
+              NEXT
+              <ChevronRight className="w-5 h-5" strokeWidth={4} />
+            </button>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
