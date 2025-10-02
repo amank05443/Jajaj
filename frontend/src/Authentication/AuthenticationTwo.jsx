@@ -4,10 +4,10 @@ import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
 import useValidation from "../Utils/CustomHooks/useValidation";
-export default function TradeSupAto({ authTwo }) {
+export default function TradeSupAto({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
-  const [trades, setTrades] = useState(null);
+  const [isAtz, setIsATZ] = useState(false);
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({
     users: [
@@ -52,9 +52,11 @@ export default function TradeSupAto({ authTwo }) {
   // ------------------------- TO REMOVE ANY ROW FROM TEMPLATE  --------------------------------------------------------
   const removeRow = (index) => {
     const updatedUsers = formData?.users.filter((_, i) => i !== index);
-    //     const updatedErrors = errors?.filter((_, i) => i !== index);
+    const removedUsers = formData?.users[index];
+    if (removedUsers.qualification.toUpperCase() === "ATZ") {
+      setIsATZ(false);
+    }
     setFormData({ ...formData, users: updatedUsers });
-    //     setErrors(updatedErrors);
     setErrors((prev) =>
       Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
     );
@@ -66,8 +68,44 @@ export default function TradeSupAto({ authTwo }) {
     updatedUsers[index][field] = value;
     setFormData({ ...formData, users: updatedUsers });
     validateField(index, field, value);
+
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
+      if (value === "ATZ") {
+        const updatedQuals = updatedUsers.map((u) => u.qualification);
+        const hasTds = updatedUsers.some(
+          (u) => u.qualification === "TDS" && u.status === true,
+        );
+        const hasSup = updatedUsers.some(
+          (u) => u.qualification === "SUP" && u.status === true,
+        );
+        const hasAtz = updatedUsers.some(
+          (u) => u.qualification === "ATZ" && u.status === true,
+        );
+        console.log("Trades :", value, updatedQuals, hasTds, hasSup);
+        if (!hasTds || !hasSup) {
+          alert(
+            "To authorise any limitation entry at least one tradesman and one supervisor signature is mandatory.",
+          );
+          updatedUsers[index].qualification = "";
+          updatedUsers[index].trade = "";
+          updatedUsers[index].byWhom = "";
+          return;
+        }
+        if (hasAtz > 0) {
+          alert(
+            "Entry is authorised already , No further authorisation required..",
+          );
+          updatedUsers[index].qualification = "";
+          updatedUsers[index].trade = "";
+          updatedUsers[index].byWhom = "";
+          return;
+        }
+        updatedUsers[index].trade = "0000";
+        setFormData({ ...formData, users: updatedUsers });
+        handleRowChange(index, "trade", "0000");
+        return;
+      }
       axios
         .get("/api/userAuthenticationTrade/")
         .then((response) => {
@@ -165,6 +203,9 @@ export default function TradeSupAto({ authTwo }) {
         },
         withCredentials: true,
         body: JSON.stringify({
+          snowId: snowId,
+          trade: row.trade,
+          qualification: row.qualification,
           byWhom: row.byWhom,
           passkey: row.passkey,
         }),
@@ -176,7 +217,9 @@ export default function TradeSupAto({ authTwo }) {
         console.log("Authenticated Two :", data.user);
         const updatedUsers = [...formData?.users];
         updatedUsers[index].status = true;
+        updatedUsers[index].showPassKey = false;
         updatedUsers[index].passkey = "••••••";
+        if(updatedUsers[index].qualification ==="ATZ"){setIsATZ(true);}
         setFormData({ ...formData, users: updatedUsers, ...data.user });
         console.log({ ...formData });
         alert("Authenticated by " + data.user.name);
@@ -218,17 +261,14 @@ export default function TradeSupAto({ authTwo }) {
       const u = formData.users.find((u) => u.id === parseInt(row.byWhom));
       return {
         authenticated: "Yes",
-        user_id: row.byWhom,
-        user_name: data.user.name,
-        byWhom: row.byWhom,
-        passkey: row.passkey,
+        user_qual_id: row.byWhom,
       };
     });
     if (authTwo) {
       authTwo(payload);
     }
-    //     setOpen(false);
-    //     setErrors("");
+    setOpen(false);
+    setErrors("");
     //     setFormData({
     //       trade: "",
     //       qualification: "",
@@ -272,6 +312,10 @@ export default function TradeSupAto({ authTwo }) {
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
+                <h2 className="p-2 flex items-center text-lg text-blue-400">
+                  ⚠️ One tradesman one supervisor and a authorizer
+                  authentication is mandatory for submit{" "}
+                </h2>
                 <form className="mt-2 space-y-4 ">
                   {formData?.users.map((row, index) => (
                     <>
@@ -298,30 +342,33 @@ export default function TradeSupAto({ authTwo }) {
                                 <option value="">Select Qualification</option>
                                 <option value="TDS">Tradesman</option>
                                 <option value="SUP">Supervisor</option>
+                                <option value="ATZ">Authorizer</option>
                               </select>
                             </div>
                             <div className="col-span-2">
-                              <select
-                                name="trade"
-                                value={row.trade}
-                                disabled={row.status}
-                                onChange={(e) => {
-                                  handleRowChange(
-                                    index,
-                                    "trade",
-                                    e.target.value,
-                                  );
-                                }}
-                                className="border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                              >
-                                <option value="">Select Trade</option>
-                                {row.availableTrades &&
-                                  row.availableTrades?.map((T) => (
+                              {row.availableTrades !== "ATZ" && (
+                                <select
+                                  name="trade"
+                                  value={row.trade}
+                                  disabled={row.status}
+                                  hidden={row.qualification === "ATZ"}
+                                  onChange={(e) => {
+                                    handleRowChange(
+                                      index,
+                                      "trade",
+                                      e.target.value,
+                                    );
+                                  }}
+                                  className="border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                                >
+                                  <option value="">Select Trade</option>
+                                  {row.availableTrades?.map((T) => (
                                     <option key={T.id} value={T.id}>
                                       {T.trade}
                                     </option>
                                   ))}
-                              </select>
+                                </select>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -423,14 +470,17 @@ export default function TradeSupAto({ authTwo }) {
                   ))}
                 </form>
                 <div className=" mt-2">
-                  <button
-                    type="button"
-                    name="status"
-                    onClick={addRow}
-                    className="px-2 float-left font-bold border border-gray-400 rounded bg-blue-200 text-gray-800 focus:outline-none focus:border-indigo-500"
-                  >
-                    + Add user
-                  </button>
+                  {!isAtz && (
+                    <button
+                      type="button"
+                      name="status"
+                      onClick={addRow}
+                      className="px-2 float-left font-bold border border-gray-400 rounded bg-blue-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                    >
+                      + Add user
+                    </button>
+                  )}
+
                   <button
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-400"
