@@ -4,21 +4,52 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import check_password
 
 from ..models import (Users, Trades, Quals, UserQuals, AircraftMasters)
 
 #------------------------ For checking passkey w.r.t. selected  user >> Applicable for all templates -------------------#
 @csrf_exempt
 @require_POST
+# def check_passkey_authentication(request):
+#     data = json.loads(request.body)
+#     ids= data.get('byWhom')
+#     pin= data.get('passkey')
+#     try:
+#         user= get_object_or_404(Users, userQualsTrade__id=ids)
+#         if check_password(pin, user.pin):
+#             return JsonResponse({"status": "OK", "user": {"id": ids, "name": user.user_name, "rank": user.rank.abbreviation}})
+#         else:
+#             return JsonResponse({"status": "ERROR", "message": "Incorrect password"})
+#     except ObjectDoesNotExist:
+#         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
+
+# def check_passkey_authentication(request):
+#     data = json.loads(request.body)
+#     ids= data.get('byWhom')
+#     pin= data.get('passkey')
+#     try:
+#         user= Users.objects.get(userQualsTrade__id=ids, pin=pin)
+#         return JsonResponse({"status": "OK", "user": {"id": ids, "name": user.user_name, "rank": user.rank.abbreviation}})
+#     except ObjectDoesNotExist:
+#         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
+
 def check_passkey_authentication(request):
     data = json.loads(request.body)
+    snow_id= data.get('snowId')
+    trade = data.get('trade')
     ids= data.get('byWhom')
     pin= data.get('passkey')
+    qualification= data.get('qualification')
     try:
         user= Users.objects.get(userQualsTrade__id=ids, pin=pin)
+        # if user:
+
         return JsonResponse({"status": "OK", "user": {"id": ids, "name": user.user_name, "rank": user.rank.abbreviation}})
     except ObjectDoesNotExist:
         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
+
 
 #--------------------------------- For all user name of related  store type >> template one ----------------------------#
 def user_details_for_authentication_one(request, id ):
@@ -48,10 +79,15 @@ def user_details_for_authentication_two(request):
         qual_code_range= range(1, 8)
     elif qualification == "SUP":
         qual_code_range= range(4, 8)
+    elif qualification == "ATZ":
+        qual_code_range= range(6, 8)
     else:
         qual_code_range=Quals.objects.values_list("qual_code", flat=True)
     qual_code_range_id= Quals.objects.filter(qual_code__in=qual_code_range).values_list("id", flat=True)
-    users_from_user_quals = UserQuals.objects.all().filter(trade_id=trade, aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct()
+    if qualification == "ATZ":
+        users_from_user_quals = UserQuals.objects.all().filter(aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct()
+    else:
+        users_from_user_quals = UserQuals.objects.all().filter(trade_id=trade, aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct()
     data = list(users_from_user_quals.values("id", pno=F("user__pno"), user_name=F("user__user_name"), abbreviation=F("user__rank__abbreviation")))
     return JsonResponse(data, safe=False)
 
