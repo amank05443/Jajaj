@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+
 class WeightBalance(models.Model):
     id = models.AutoField(primary_key=True)
     snow = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -23,7 +24,7 @@ class WeightBalance(models.Model):
     corrected_moment_long = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     corrected_cg_lat = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     corrected_moment_lat = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    authenticated_by = models.ForeignKey('Customers', models.DO_NOTHING, blank=True, null=True)
+    authenticated_by = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     date_authenticated = models.DateField(blank=True, null=True)
 
     class Meta:
