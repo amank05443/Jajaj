@@ -12,7 +12,7 @@ class Items(models.Model):
     id = models.BigIntegerField(primary_key=True)
     old_item_id = models.BigIntegerField(blank=True, null=True)
     part_number = models.CharField(max_length=100, blank=True, null=True)
-    store_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
+    aircraft_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
     denomination = models.CharField(max_length=5, blank=True, null=True)
     cpq_category = models.CharField(max_length=5, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
