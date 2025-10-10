@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
 import CompassLog from "../Section-10/CompassLog";
+import SoftwareLogEntry from "../Section-2/SoftwareLogEntry"
 import {
   Accordion,
   AccordionSummary,
@@ -170,7 +171,7 @@ const ClearUsLog = ({ defect }) => {
                 </div>
                 <div className="border border-white">
                   {" "}
-                  {gridData.by_whom?.user_name.toUpperCase() +
+                  {gridData.by_whom?.user_name?.toUpperCase() +
                     "," +
                     gridData.by_whom?.rank?.abbreviation || "N/A"}{" "}
                 </div>
@@ -202,13 +203,12 @@ const ClearUsLog = ({ defect }) => {
                   {gridData.entry_type == 2025101 && (
                     <BasicWeightAndMoment wbData={handleWbData} />
                   )}
-                  {gridData.entry_type == 2025110 && (
-                    <TextField
-                      variant="outlined"
-                      className="mb-6"
-                      label="Enter the details of Work Done."
-                    />
+{/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
+              {gridData.entry_type == 2025112 && (
+                    <SoftwareLogEntry />
                   )}
+
+
                 </Paper>
               </form>
               <Button

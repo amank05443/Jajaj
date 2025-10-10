@@ -4,7 +4,7 @@ from django.urls import path
 from userprofile.views import (
     DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,
     user_authentication_for_trade,user_details_for_authentication_two,
-    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
+    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData,softwareLogData
 )
 
     #---------------------------------------------- For Dynamic View ---------------------------------------------------#
@@ -63,6 +63,7 @@ urlpatterns = [
     #---------------------------------------------- Section 5  ---------------------------------------------------------#
     path('api/usLogDropDowns/', usLogDropDowns),
     path('api/limLogData/', limLogData),
+    path('api/softwareLogData/', softwareLogData),
     path('api/serviceability-log/<int:id>/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
     path('api/saveUsLogData/', saveUsLogData),
     path('api/clearUsLog/', clearUsLog),

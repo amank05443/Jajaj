@@ -269,7 +269,7 @@ const USLogForm = () => {
               </label>
               <textarea
                 name="reason_for_placing_unserviceable"
-                value={formData.reason_for_placing_unserviceable || ""}
+                value={formData.entryType == 2025112 ? "SOFTWARE MODIFICATION TO BE CARRIED OUT": formData.reason_for_placing_unserviceable || ""}
                 onChange={handleChange}
                 disabled={isAuthenticated}
                 rows={4}
@@ -310,7 +310,7 @@ const USLogForm = () => {
                 </div>
               )}
               {/* Checkboxes for Additional Checks*/}
-              {formData.entryType != 2025110 && (
+              {formData.entryType != 2025110 && formData.entryType != 2025112 && (
                 <div className="border-2 border-black-600 rounded-lg p-4">
                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
                     Select Additional Checks

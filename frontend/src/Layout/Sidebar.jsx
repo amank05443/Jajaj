@@ -59,6 +59,7 @@ import {
   AccountCircle,
   HelpOutline,
   FileCopy,
+  Construction,
 } from "@mui/icons-material";
 
 const sidebarLinks = [
@@ -92,6 +93,11 @@ const sidebarLinks = [
         label: "Concessions",
         icon: <Discount size={20} />,
         to: "/concessions",
+      },
+      {
+        label: "OFP Logs",
+        icon: <Construction size={20} />,
+        to: "/oFPLog",
       },
     ],
   },

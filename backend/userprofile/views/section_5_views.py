@@ -5,8 +5,8 @@ from django.db import transaction
 from datetime import datetime
 from rest_framework.decorators import api_view
 from ..serializers import  (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer, ItemsSerializer,LimDefrDefLogsSerializer)
-from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items,Users,
-                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs)
+from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items, Users,
+                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs, Softwares)
 
 # class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
 #     serializer_class = ChangeOfServiceabilityLogsSerializer
@@ -36,6 +36,18 @@ def limLogData(request):
         # "acRoleData" : AircraftRolesSerializer(acRole_qs,many=True).data,
         "itemsData" : ItemsSerializer(items_qs,many=True).data,
     })
+
+@api_view(['GET'])
+def softwareLogData(request):
+    aircraft_type_id = request.GET["aircraft_type_id"]
+    print(aircraft_type_id)
+    softwares_qs = Softwares.objects.filter(aircraft_type=aircraft_type_id)
+    print(softwares_qs)
+    # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
+    items_qs = Items.objects.filter(store_type=aircraft_type_id)
+    data = list(softwares_qs.values("id", "system_id","system__system", "software_description"))
+    return JsonResponse(data, safe=False)
+
 
 @api_view(['POST'])
 @transaction.atomic
