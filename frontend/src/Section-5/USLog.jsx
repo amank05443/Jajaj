@@ -149,7 +149,7 @@ export default function USLog() {
         >
           <button
             className="flex items-center gap-2 font-bold bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-            onClick={() => navigate("/newEntryForUSLog")}
+            onClick={() => navigate("/usLogForm")}
           >
             <PlusSquare className="w-5 h-5" strokeWidth={3} />
             New Entry

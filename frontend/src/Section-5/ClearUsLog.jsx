@@ -31,6 +31,7 @@ import { X, Plane } from "lucide-react";
 import { FaMapMarkerAlt, FaTools, FaUser, FaClock } from "react-icons/fa";
 import dayjs from "dayjs";
 
+
 function formatDateTime(isoString) {
   if (!isoString) return { date: "", time: "" };
   const dateObj = dayjs(isoString);
@@ -46,8 +47,15 @@ const ClearUsLog = ({ defect }) => {
   const [formData, setFormData] = useState([]);
 
   const location = useLocation();
+  const navigate = useNavigate();
+
   const gridData = location.state;
   console.log(gridData);
+
+  useEffect(()=>{
+      if(!gridData){
+          navigate("/usLog",{replace:true});
+          }},[gridData,navigate]);
 
   const { date, time } = formatDateTime(gridData?.user_time_date);
 
@@ -69,10 +77,10 @@ const ClearUsLog = ({ defect }) => {
   };
 
   useEffect(() => {
-    if (gridData.entry_type == 2025101) {
+    if (gridData?.entry_type == 2025101) {
       setFormData(wbData);
     }
-    if (gridData.entry_type == 2025104) {
+    if (gridData?.entry_type == 2025104) {
       setFormData(compassData);
     }
   }, [wbData, compassData]);
@@ -140,7 +148,7 @@ const ClearUsLog = ({ defect }) => {
       <div className="space-y-4">
         <div className="">
           <div
-            className=" bg-cyan-800 text-white rounded-xl w-auto max-w-8xl p-4 sm:p-6 flex flex-col
+            className=" bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]   rounded-xl w-auto max-w-8xl p-4 sm:p-6 flex flex-col
          gap-4 max-h-[90vh] overflow-x-auto "
           >
             {/* <div className="flex justify-center items-center font-extrabold text-3xl ">
@@ -149,39 +157,39 @@ const ClearUsLog = ({ defect }) => {
               <div> DEFECT INFO</div>
             </div> */}
             <div className="rounded-lg pt-2 pl-2 pr-2 flex flex-col break-all">
-              <div className="grid grid-cols-5 text-center  border-white min-w-[500px] font-bold">
-                <div className="border border-white"> DATE & TIME </div>
-                <div className="border border-white"> SNOW </div>
-                <div className="border border-white"> A/F HRS </div>
-                <div className="border border-white"> HOW FOUND </div>
-                <div className="border border-white"> BY WHOM </div>
+              <div className="grid grid-cols-5 text-center text-black-600 border-white min-w-[500px] font-bold">
+                <div className="border border-green-800"> DATE & TIME </div>
+                 <div className="border border-green-800"> SNOW </div>
+                 <div className="border border-green-800"> A/F HRS </div>
+                 <div className="border border-green-800"> HOW FOUND </div>
+                 <div className="border border-green-800"> BY WHOM </div>
               </div>
-              <div className="grid grid-cols-5 text-center pb-2 min-w-[500px] ">
-                <div className="border border-white">
+              <div className="grid grid-cols-5 text-center text-gray-500 pb-2 min-w-[500px] ">
+                <div className="border border-green-800">
                   {date} <br /> {time}
                 </div>
-                <div className="border border-white"> {gridData.snow} </div>
-                <div className="border border-white">
+                <div className="border border-green-800"> {gridData?.snow} </div>
+                <div className="border border-green-800">
                   {" "}
-                  {gridData.airframe_hrs}{" "}
+                  {gridData?.airframe_hrs}{" "}
                 </div>
-                <div className="border border-white">
+                <div className="border border-green-800">
                   {" "}
-                  {gridData.how_found_defect?.occasion || "N/A"}{" "}
+                  {gridData?.how_found_defect?.occasion || "N/A"}{" "}
                 </div>
-                <div className="border border-white">
+                <div className="border border-green-800">
                   {" "}
-                  {gridData.by_whom?.user_name?.toUpperCase() +
+                  {gridData?.by_whom?.user_name?.toUpperCase() +
                     "," +
-                    gridData.by_whom?.rank?.abbreviation || "N/A"}{" "}
+                    gridData?.by_whom?.rank?.abbreviation || "N/A"}{" "}
                 </div>
               </div>
-              <div className="flex p-4 border border-white">
-                <h2 className="font-bold">
+              <div className="flex p-4 border border-green-800">
+                <h2 className="font-bold text-black-600 ">
                   REASON FOR PLACING UNSERVICEABLE &nbsp;:
                 </h2>
-                <p>
-                  &nbsp;&nbsp;&nbsp;{gridData.reason_for_placing_unserviceable}
+                <p className="text-gray-600">
+                  &nbsp;&nbsp;&nbsp;{gridData?.reason_for_placing_unserviceable}
                 </p>
               </div>
             </div>
@@ -197,18 +205,22 @@ const ClearUsLog = ({ defect }) => {
             <FormProvider {...methods}>
               <form>
                 <Paper className="p-4 shadow-md">
-                  {gridData.entry_type == 2025104 && (
+                  {gridData?.entry_type == 2025104 && (
                     <CompassLog compassData={handleCompassData} />
                   )}
-                  {gridData.entry_type == 2025101 && (
+                  {gridData?.entry_type == 2025101 && (
                     <BasicWeightAndMoment wbData={handleWbData} />
                   )}
+                  {gridData?.entry_type == 2025110 && (
+                    <TextField
+                      variant="outlined"
+                      className="mb-6"
+                      label="Enter the details of Work Done."
+                    />
 {/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
               {gridData.entry_type == 2025112 && (
                     <SoftwareLogEntry />
                   )}
-
-
                 </Paper>
               </form>
               <Button

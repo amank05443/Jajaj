@@ -20,6 +20,7 @@ class AircraftTypes(models.Model):
     weight_denomination = models.CharField(blank=True, null=True)
     oleo_pressure_main = models.CharField(blank=True, null=True)
     oleo_pressure_nose = models.CharField(blank=True, null=True)
+    total_stations = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False
