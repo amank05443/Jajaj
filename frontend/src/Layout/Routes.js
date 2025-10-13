@@ -25,6 +25,7 @@ const LeadingParticularTab = lazy(
 
 //--REPORT E700--//
 const ViewE700 = lazy(() => import("../E700_Report/ViewE700"));
+const WeasyPrint = lazy(() => import("../WeasyPrintReports/WeasyPrint"));
 
 //--SECTION->1--//
 const TestQuals = lazy(() => import("../Section-1/TestQualsSaveAsDraft"));
@@ -113,6 +114,7 @@ export const privateRoutes = [
 
   //--REPORT E700--//
   { path: "/viewE700", element: <ViewE700 /> },
+  { path: "/weasyPrint", element: <WeasyPrint /> },
 
   { path: "/leadingParticularTab", element: <LeadingParticularTab /> },
   { path: "/prepare", element: <Prepare /> },
