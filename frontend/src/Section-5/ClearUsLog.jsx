@@ -170,7 +170,7 @@ const ClearUsLog = ({ defect }) => {
                 </div>
                 <div className="border border-white">
                   {" "}
-                  {gridData.by_whom?.user_name.toUpperCase() +
+                  {gridData.by_whom?.user_name?.toUpperCase() +
                     "," +
                     gridData.by_whom?.rank?.abbreviation || "N/A"}{" "}
                 </div>
