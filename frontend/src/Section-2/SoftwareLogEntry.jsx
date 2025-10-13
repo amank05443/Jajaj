@@ -139,7 +139,6 @@ export default function SoftwareLogEntry({ onDataChange }) {
                         onChange={field.onChange}
                         displayKey="system__system"
                         valueKey="id"
-                        descriptionKey="system"
                       />
                       {!!fieldState.error && (
                         <p style={{ color: "red", fontSize: "0.8rem" }}>

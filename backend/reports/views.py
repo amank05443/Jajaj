@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render
 
-from weasyprint import HTML, CSS
+# from weasyprint import HTML, CSS
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from datetime import datetime

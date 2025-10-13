@@ -44,7 +44,7 @@ def softwareLogData(request):
     softwares_qs = Softwares.objects.filter(aircraft_type=aircraft_type_id)
     print(softwares_qs)
     # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
-    items_qs = Items.objects.filter(store_type=aircraft_type_id)
+    items_qs = Items.objects.filter(aircraft_type=aircraft_type_id)
     data = list(softwares_qs.values("id", "system_id","system__system", "software_description"))
     return JsonResponse(data, safe=False)
 

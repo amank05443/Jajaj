@@ -211,16 +211,16 @@ const ClearUsLog = ({ defect }) => {
                   {gridData?.entry_type == 2025101 && (
                     <BasicWeightAndMoment wbData={handleWbData} />
                   )}
-                  {gridData?.entry_type == 2025110 && (
+              {/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
+              {gridData?.entry_type == 2025110 && (
+                    <SoftwareLogEntry />
+                  )}
+                  {gridData?.entry_type == 2025111 && (
                     <TextField
                       variant="outlined"
                       className="mb-6"
                       label="Enter the details of Work Done."
-                    />
-{/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
-              {gridData.entry_type == 2025112 && (
-                    <SoftwareLogEntry />
-                  )}
+                    />)}
                 </Paper>
               </form>
               <Button
