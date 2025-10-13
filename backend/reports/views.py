@@ -10,14 +10,16 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from datetime import datetime
 
-from userprofile.models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
-                                      EcuMasters,TyrePressures,Pols,Systems, Users, HowFoundDefects, Ranks, UserQuals)
+from userprofile.models import (AircraftMasters, AircraftRoles, AircraftTypes, Customers, FuelTanks,
+                                ChangeOfServiceabilityLogs,
+                                EcuMasters, TyrePressures, Pols, Systems, Users, HowFoundDefects, Ranks, UserQuals)
+
 
 def booklet_pdf(request):
     # Example data (normally from DB)
     entries = [
-        {"open": {"id":1, "description": "Open task for Project A"},
-         "closed": {"id":101, "description": "Closed task for Project A"}},
+        {"open": {"id": 1, "description": "Open task for Project A"},
+         "closed": {"id": 101, "description": "Closed task for Project A"}},
         {"open": {"id": 2, "description": "Open task for Project B"},
          "closed": {"id": 102, "description": "Closed task for Project B"}}
     ]
@@ -45,15 +47,14 @@ def aircraft_pdf(request, id):
     # print(aircraft_roles)
     engine_rows = EcuMasters.objects.filter(aircraft_master_id=data["id"]).values(
         "location", "type", "mark", "serial_no", "date_of_fitment")
-    fuels_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"], type_of_pol = "F").values(
+    fuels_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"], type_of_pol="F").values(
         "description", "sect_ref", "nato_code")
-    olg_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"]).exclude(type_of_pol= "F").values(
-        "system_id", "description", "nato_code","substitute_id", "nato_code")
-    system_ids = [d ["system_id"] for d in olg_rows]
-    systems = Systems.objects.filter(id__in=system_ids).values("id","system")
+    olg_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"]).exclude(type_of_pol="F").values(
+        "system_id", "description", "nato_code", "substitute_id", "nato_code")
+    system_ids = [d["system_id"] for d in olg_rows]
+    systems = Systems.objects.filter(id__in=system_ids).values("id", "system")
     system_lookup = {s["id"]: s["system"] for s in systems}
     for row in olg_rows: row["system"] = system_lookup.get(row["system_id"])
-
 
     for row in olg_rows:
         for key, value in row.items():
@@ -112,17 +113,19 @@ def aircraft_pdf(request, id):
     response['Content-Disposition'] = 'inline; filename="aircraft_form.pdf"'
     return response
 
+
 def change_of_serviceability_logs_pdf(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
-    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(aircraft_master_id=data["id"]).order_by("snow").values(
+    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(
+        aircraft_master_id=data["id"]).order_by("snow").values(
         "user_time_date", "airframe_hrs",
         "by_whom", "snow", "defect_code_id",
         "reason_for_placing_unserviceable",
         "work_carried_out", "how_found_defect_id"
     )
     for item in change_of_serviceability_logs_rows:
-        dt_val= item['user_time_date']
+        dt_val = item['user_time_date']
         if dt_val:
             dt = datetime.fromisoformat(str(dt_val))
             item['date'] = dt.date().strftime("%d-%b-%Y")
