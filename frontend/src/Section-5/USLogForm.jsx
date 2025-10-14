@@ -74,7 +74,7 @@ const USLogForm = () => {
       {
         entryType: { required: true },
         howFound: { required: true },
-        dateAndTime: { dateTimeNotBeforeNow: true },
+        dateAndTime: { dateTimeNotAfterNow: true },
         airframeHrs: { required: true },
         aircraft_master_id: { required: true },
         reason_for_placing_unserviceable: { alphaNumeric: true },
@@ -139,6 +139,9 @@ const USLogForm = () => {
 
         if (!res.ok) throw new Error("Failed to save data");
         const data = await res.json();
+        if (data.success === true) {
+          alert(data.message);
+        }
         console.log("Saved:", data);
       } catch (err) {
         console.error(err);
@@ -153,7 +156,7 @@ const USLogForm = () => {
   }
 
   return (
-    <div className="items-start bg-blue-200 p-1">
+    <div className="items-start bg-gradient-to-r from-blue-200 via-purple-200 to-indigo-200 p-1">
       {/*<h1>------------------------------------------------------Headings ------------------------------------------------------------------</h1>*/}
       <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-1">
         <h2
@@ -171,193 +174,203 @@ const USLogForm = () => {
         </h2>
       </div>
       {/*<h1>-------------------------------------------------------Forms & Body ---------------------------------------------------</h1>*/}
-      <form onSubmit={handleSubmit} className=" p-1 space-y-4 ">
-        <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
-          {/*<h1>-------------------------------------------------------row 1 ---------------------------------------------------</h1>*/}
-          <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                Entry Type
-              </label>
-              <select
-                name="entryType"
-                value={formData.entryType}
-                onChange={handleChange}
-                disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-              >
-                <option value="">Select Entry Type</option>
-                {entryTypeOptions.map((entry_type) => (
-                  <option key={entry_type.id} value={entry_type.id}>
-                    {entry_type.occasion}
-                  </option>
-                ))}
-              </select>
-              {errors.entryType && (
-                <p className="text-red-500">
-                  {errors.entryType.message || errors.entryType}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                How Found
-              </label>
-              <select
-                name="howFound"
-                value={formData.howFound}
-                onChange={handleChange}
-                disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-              >
-                <option value="">Select How Found</option>
-                {howFoundOptions.map((how_found) => (
-                  <option key={how_found.id} value={how_found.id}>
-                    {how_found.occasion}
-                  </option>
-                ))}
-              </select>
-              {errors.howFound && (
-                <p className="text-red-500">
-                  {errors.howFound.message || errors.howFound}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                Date & Time
-              </label>
-              <input
-                type="datetime-local"
-                //                 type="date"
-                name="dateAndTime"
-                value={formData.dateAndTime}
-                onChange={handleChange}
-                disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-              />
-              {errors.dateAndTime && (
-                <p className="text-red-500">
-                  {errors.dateAndTime.message || errors.dateAndTime}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                Airframe Hours
-              </label>
-              <input
-                type="text"
-                name="airframe_hrs"
-                value={formData.airframeHrs}
-                disabled
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                readOnly
-              ></input>
-            </div>
-          </div>
-          {/* SECTION 2: REASON & CONDITIONS */}
-          {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
-          <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2 mt-8">
-            {/* Reason */}
-            <div className="border-2 border-black-600 rounded-lg p-4">
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                Reason for placing aircraft unserviceable
-              </label>
-              <textarea
-                name="reason_for_placing_unserviceable"
-                value={formData.reason_for_placing_unserviceable}
-                onChange={handleChange}
-                disabled={isAuthenticated}
-                rows={4}
-                placeholder="Enter reason for placing aircraft unserviceable"
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-              />
-              {errors.reason_for_placing_unserviceable && (
-                <p className="text-red-500">
-                  {errors.reason_for_placing_unserviceable.message ||
-                    errors.reason_for_placing_unserviceable}
-                </p>
-              )}
-            </div>
-
-            {/* Checkboxes for LDHC*/}
-
-            <div className="grid grid-cols-2 gap-2">
-              {formData.entryType == 2025110 && (
-                <div className="border-2 border-black-600 rounded-lg p-4">
-                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                    Select LDHC
-                  </label>
-                  {checkBoxesLDHC.map((box) => (
-                    <label
-                      key={box.key}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={activeCheckboxes[box.key]}
-                        onChange={() => toggleCheckboxes(box.key)}
-                        disabled={isAuthenticated}
-                        className="accent-pink-600"
-                      />
-                      <span className="text-gray-800">{box.label}</span>
-                    </label>
+      <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
+        <form onSubmit={handleSubmit} className=" p-1 space-y-4 ">
+          <div>
+            {/*<h1>-------------------------------------------------------row 1 ---------------------------------------------------</h1>*/}
+            <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Entry Type
+                </label>
+                <select
+                  name="entryType"
+                  value={formData.entryType}
+                  onChange={handleChange}
+                  disabled={isAuthenticated}
+                  className="border p-2  w-full rounded border-gray-500 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="">Select Entry Type</option>
+                  {entryTypeOptions.map((entry_type) => (
+                    <option key={entry_type.id} value={entry_type.id}>
+                      {entry_type.occasion}
+                    </option>
                   ))}
-                </div>
-              )}
+                </select>
+                {errors.entryType && (
+                  <p className="text-red-500">
+                    {errors.entryType.message || errors.entryType}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  How Found
+                </label>
+                <select
+                  name="howFound"
+                  value={formData.howFound}
+                  onChange={handleChange}
+                  disabled={isAuthenticated}
+                  className="border p-2  w-full rounded border-gray-500 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="">Select How Found</option>
+                  {howFoundOptions.map((how_found) => (
+                    <option key={how_found.id} value={how_found.id}>
+                      {how_found.occasion}
+                    </option>
+                  ))}
+                </select>
+                {errors.howFound && (
+                  <p className="text-red-500">
+                    {errors.howFound.message || errors.howFound}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  //                 type="date"
+                  name="dateAndTime"
+                  value={formData.dateAndTime}
+                  onChange={handleChange}
+                  disabled={isAuthenticated}
+                  max = {new Date().toISOString().slice(0, 16)}
+                  className="border p-2  w-full rounded border-gray-500 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                />
+                {errors.dateAndTime && (
+                  <p className="text-red-500">
+                    {errors.dateAndTime.message || errors.dateAndTime}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Airframe Hours
+                </label>
+                <input
+                  type="text"
+                  name="airframe_hrs"
+                  value={formData.airframeHrs}
+                  disabled
+                  className="border p-2  w-full rounded border-gray-500 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                  readOnly
+                ></input>
+              </div>
+            </div>
+            {/* SECTION 2: REASON & CONDITIONS */}
+            {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
+            <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2 mt-8">
+              {/* Reason */}
+              <div className="border-2 border-black-600 rounded-lg p-4">
+                <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  Reason for placing aircraft unserviceable
+                </label>
+                <textarea
+                  name="reason_for_placing_unserviceable"
+                  value={formData.reason_for_placing_unserviceable || ""}
+                  onChange={handleChange}
+                  disabled={isAuthenticated}
+                  rows={4}
+                  placeholder="Enter reason for placing aircraft unserviceable"
+                  className="border p-2  w-full rounded border-gray-500 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                />
+                {errors.reason_for_placing_unserviceable && (
+                  <p className="text-red-500">
+                    {errors.reason_for_placing_unserviceable.message ||
+                      errors.reason_for_placing_unserviceable}
+                  </p>
+                )}
+              </div>
+              <div className="mt-20 ml-48">
+                {!isAuthenticated ? (
+                  <AllUsers auth={handleDataFromAllUsers} />
+                ) : (
+                  <Typography
+                    variant="body1"
+                    color="success.main"
+                    fontWeight="bold"
+                  >
+                    Authenticated by {formData.user_name}
+                  </Typography>
+                )}
+              </div>
+              {/* Checkboxes for LDHC*/}
+              {/*             <div className="grid grid-cols-2 gap-2"> */}
+              {/*               {formData.entryType == 2025110 && ( */}
+              {/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
+              {/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+              {/*                     Select LDHC */}
+              {/*                   </label> */}
+              {/*                   {checkBoxesLDHC.map((box) => ( */}
+              {/*                     <label */}
+              {/*                       key={box.key} */}
+              {/*                       className="flex items-center space-x-2" */}
+              {/*                     > */}
+              {/*                       <input */}
+              {/*                         type="checkbox" */}
+              {/*                         checked={activeCheckboxes[box.key]} */}
+              {/*                         onChange={() => toggleCheckboxes(box.key)} */}
+              {/*                         disabled={isAuthenticated} */}
+              {/*                         className="accent-pink-600" */}
+              {/*                       /> */}
+              {/*                       <span className="text-gray-800">{box.label}</span> */}
+              {/*                     </label> */}
+              {/*                   ))} */}
+              {/*                 </div> */}
+              {/*               )} */}
+              {/*                */}
               {/* Checkboxes for Additional Checks*/}
-              {formData.entryType != 2025110 && formData.entryType != 2025112 && (
-                <div className="border-2 border-black-600 rounded-lg p-4">
-                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                    Select Additional Checks
-                  </label>
-                  {checkBoxesChecks.map((box) => (
-                    <label
-                      key={box.key}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={activeCheckboxes[box.key]}
-                        onChange={() => toggleCheckboxes(box.key)}
-                        disabled={isAuthenticated}
-                      />
-                      <span className="text-gray-800">{box.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
+              {/*               {formData.entryType != 2025110 && ( */}
+              {/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
+              {/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+              {/*                     Select Additional Checks */}
+              {/*                   </label> */}
+              {/*                   {checkBoxesChecks.map((box) => ( */}
+              {/*                     <label */}
+              {/*                       key={box.key} */}
+              {/*                       className="flex items-center space-x-2" */}
+              {/*                     > */}
+              {/*                       <input */}
+              {/*                         type="checkbox" */}
+              {/*                         checked={activeCheckboxes[box.key]} */}
+              {/*                         onChange={() => toggleCheckboxes(box.key)} */}
+              {/*                         disabled={isAuthenticated} */}
+              {/*                       /> */}
+              {/*                       <span className="text-gray-800">{box.label}</span> */}
+              {/*                     </label> */}
+              {/*                   ))} */}
+              {/*                 </div> */}
+              {/*               )} */}
+              {/*             </div> */}
             </div>
           </div>
+          {activeCheckboxes.lim && (
+            <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
+              <NewEntryForLimitationLog onDataChange={setLimLogData} />
+            </div>
+          )}
+        </form>
+      </div>
+      {/*       <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg"> */}
+      <div class="flex flex-col space-y-4 p-1">
+        <div>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            hidden={!isAuthenticated}
+            className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 "
+          >
+            Submit
+          </button>
         </div>
-        {activeCheckboxes.lim && (
-          <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
-            <NewEntryForLimitationLog onDataChange={setLimLogData} />
-          </div>
-        )}
-      </form>
-      <Stack direction="row" spacing={2} mt={2}>
-        {!isAuthenticated ? (
-          <AllUsers auth={handleDataFromAllUsers} />
-        ) : (
-          <Typography variant="body1" color="success.main" fontWeight="bold">
-            Authenticated by {formData.user_name}
-          </Typography>
-        )}
-        <Button
-          onClick={handleSubmit}
-          type="submit"
-          variant="contained"
-          disabled={!isAuthenticated}
-          className="primary"
-        >
-          Submit
-        </Button>
-      </Stack>
+      </div>
     </div>
   );
 };
