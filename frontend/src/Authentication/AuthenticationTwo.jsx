@@ -14,6 +14,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
   const [isRemove, setIsRemove] = useState(false);
   const [isRemoveOk, setIsRemoveOk] = useState(false);
   const [isForwarded, setIsForwarded] = useState(false);
+  const [isForwardedOk, setIsForwardedOk] = useState(false);
   const [forwardIndex, setForwardIndex] = useState(false);
   const [formData, setFormData] = useState({
     users: [
@@ -39,11 +40,11 @@ export default function TradeSupAto({ snowId, authTwo }) {
     }
   }, [open]);
   useEffect(() => {
-    if (isForwarded) {
+    if (isForwardedOk) {
       const dataQual = [{ id: "ATZ", name: "ATO" }];
       setAvailableQualifications(dataQual);
     }
-    if (!isForwarded) {
+    if (!isForwardedOk) {
       const dataQual = [
         { id: "TDS", name: "Tradesman" },
         { id: "SUP", name: "Supervisor" },
@@ -62,7 +63,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
     if (isRemove === true) {
       setIsRemoveOk(false);
     }
-    if (isForwarded === true) {
+    if (isForwardedOk === true) {
       if (removeBtn1) removeBtn1.classList.add("hidden");
       if (addUserBtn1) addUserBtn1.classList.add("hidden");
     }
@@ -401,21 +402,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
       );
       return;
     }
-
     setIsForwarded(true);
     setForwardIndex(formData.users.length);
-    addRow();
-    //     const payload = formData?.users.map((row) => {
-    //       const u = formData.users.find((u) => u.id === parseInt(row.byWhom));
-    //       return {
-    //         authenticated: "Yes",
-    //         user_qual_id: row.byWhom,
-    //       };
-    //     });
-    //     if (authTwo) {
-    //       authTwo(payload);
-    //     }
-    //     setOpen(false);
+    //     addRow();
     setErrors("");
   };
   const handleSetRemove = () => {
@@ -444,9 +433,34 @@ export default function TradeSupAto({ snowId, authTwo }) {
       });
       if (!res.ok) throw new Error("Invalid Passkey0");
       const data = await res.json();
-      console.log("Authenticated :", data.user);
       setIsRemoveOk(true);
       setIsRemove(false);
+    } catch (err) {
+      console.log("Not Authenticated :", err);
+    }
+  };
+  const handleAuthToForward = async () => {
+    try {
+      const csrfToken = Cookies.get("csrftoken");
+      const res = await fetch("/api/checkPasskey/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        body: JSON.stringify({
+          byWhom: supervisor,
+          passkey: supPassword,
+        }),
+      });
+      if (!res.ok) throw new Error("Invalid Passkey0");
+      const data = await res.json();
+      setIsForwardedOk(true);
+      setIsForwarded(true);
+      setForwardIndex(formData.users.length);
+      addRow();
+      setErrors("");
     } catch (err) {
       console.log("Not Authenticated :", err);
     }
@@ -506,11 +520,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
                         key={index}
                         className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-1"
                       >
-                        {isForwarded && index === forwardIndex && (
+                        {setIsForwardedOk && index === forwardIndex && (
                           <div className="col-span-3">
                             <hr className="my-1 border-t-2 border-dashed border-blue-400" />
                             <h3 className="flex bg-purple-200 py-1 justify-center font-bold border-gray-400 ">
-                              {" "}
                               ATO / FCC / ACC / SSS
                             </h3>
                           </div>
@@ -536,9 +549,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                     ${row.qualification === "ATZ" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 <option value="">Select Qualification</option>
-                                {availableQualifications?.map((T) => (
-                                  <option key={T.id} value={T.id}>
-                                    {T.name}
+                                {availableQualifications?.map((Q) => (
+                                  <option key={Q.id} value={Q.id}>
+                                    {Q.name}
                                   </option>
                                 ))}
                               </select>
@@ -735,7 +748,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       ✘ Remove signed user
                     </button>
                   </div>
-                  {isRemove && (
+                  {(isRemove || isForwarded) && !isForwardedOk &&(
                     <div className="grid lg:grid-cols-12 gap-6">
                       <div className="col-span-4">
                         <select
@@ -770,9 +783,17 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       <div className="col-span-3">
                         <button
                           onClick={handleAuthToRemove}
+                          hidden={isForwarded}
                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400"
                         >
                           Auth To Remove
+                        </button>
+                        <button
+                          onClick={handleAuthToForward}
+                          hidden={isRemove}
+                          className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400"
+                        >
+                          Auth To Forward
                         </button>
                       </div>
                     </div>

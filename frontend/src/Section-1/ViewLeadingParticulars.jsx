@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "../Utils/CustomHooks/useParams";
+import AtoOnly from "../Authentication/AuthenticationAto";
 import AllUsers from "../Authentication/AuthenticationOne";
 import TradeSupAto from "../Authentication/AuthenticationTwo";
+import TradeSupAto1 from "../Authentication/AuthenticationTwo2";
+import AuthRightSide from "../Authentication/AuthenticationThree";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
@@ -47,6 +50,14 @@ const ViewLeadingParticulars = () => {
     setShowEngineGrid(false);
     setShowAircraftClock(!showAircraftClock);
   };
+  const handleDataFromAtoOnly = (data) => {
+    const { authenticated, user_id } = data;
+    setAircraftDetails((prev) => ({
+      ...prev,
+      authenticated: authenticated,
+      user_id: user_id,
+    }));
+  };
   const handleDataFromAllUsers = (data) => {
     const { authenticated, user_id } = data;
     setAircraftDetails((prev) => ({
@@ -54,6 +65,26 @@ const ViewLeadingParticulars = () => {
       authenticated: authenticated,
       user_id: user_id,
     }));
+  };
+  const handleDataFromTradeSupAto = (data) => {
+    console.log("payloadArray :", data);
+    const { byWhom, trade, qualification } = data;
+    //     setAircraftDetails((prev) => ({
+    //       ...prev,
+    //       qualification: qualification,
+    //       trade: trade,
+    //       byWhom: byWhom,
+    //     }));
+  };
+  const handleDataAuthRightSide = (data) => {
+    console.log("payloadArray :", data);
+    const { byWhom, trade, qualification } = data;
+    //     setAircraftDetails((prev) => ({
+    //       ...prev,
+    //       qualification: qualification,
+    //       trade: trade,
+    //       byWhom: byWhom,
+    //     }));
   };
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [aircraftDetails, setAircraftDetails] = useState(null);
@@ -109,8 +140,8 @@ const ViewLeadingParticulars = () => {
           {/*           </h2> */}
         </div>
         {/*<h1>------------------------------------------Body---------------------------------------------</h1>*/}
-        <div class="bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
-          {/*            class="bg-gradient-to-r from-purple-200 via-indigo-200 to-[#EEBBD5]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"> */}
+        <div className="bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
+          {/*            className="bg-gradient-to-r from-purple-200 via-indigo-200 to-[#EEBBD5]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"> */}
           {aircraftDetails && (
             <>
               {/*<h1>----------Row 1--------------------Leading Particulars----------------------------------</h1>*/}
@@ -118,20 +149,20 @@ const ViewLeadingParticulars = () => {
               {/*                 <div className="grid grid-cols-3 gap-6 "> */}
               {/*                   <div> */}
               {/*                     🚀 &nbsp;Aircraft Type &nbsp;&nbsp;:{" "} */}
-              {/*                     <b class="text-green-700"> */}
+              {/*                     <b className="text-green-700"> */}
               {/*                       {aircraftDetails.ac_type || "NA"} */}
               {/*                     </b> */}
               {/*                   </div> */}
               {/*                   <div> */}
               {/*                     ✈️ &nbsp;Airframe Serial No :{" "} */}
-              {/*                     <b class="text-green-700"> */}
+              {/*                     <b className="text-green-700"> */}
               {/*                       {aircraftDetails.side_no || "NA"} */}
               {/*                     </b> */}
               {/*                   </div> */}
               {/*                   <div> */}
               {/*                     ⏱️ Airframe Hours */}
               {/*                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "} */}
-              {/*                     <b class="text-green-700"> */}
+              {/*                     <b className="text-green-700"> */}
               {/*                       {aircraftDetails.side_no || "NA"} */}
               {/*                     </b> */}
               {/*                   </div> */}
@@ -139,14 +170,14 @@ const ViewLeadingParticulars = () => {
               {/*                 <div className="grid grid-cols-3 gap-6 "> */}
               {/*                   <div> */}
               {/*                     🛫 Aircraft Mark &nbsp;&nbsp;:{" "} */}
-              {/*                     <b class="text-green-700"> */}
+              {/*                     <b className="text-green-700"> */}
               {/*                       {aircraftDetails.aircraft_mark || "NA"} */}
               {/*                     </b> */}
               {/*                   </div> */}
 
               {/*                   <div> */}
               {/*                     🛸 Aircraft Primary / Secondary Role :{" "} */}
-              {/*                     <b class="text-green-700"> */}
+              {/*                     <b className="text-green-700"> */}
               {/*                       {aircraftDetails.roles || "NA"} */}
               {/*                     </b> */}
               {/*                   </div> */}
@@ -160,7 +191,7 @@ const ViewLeadingParticulars = () => {
                 </div>
                 {/*                 <div> */}
                 {/*                   🛸 Aircraft Primary / Secondary Role :{" "} */}
-                {/*                   <b class="text-green-700">{aircraftDetails.roles || "NA"}</b> */}
+                {/*                   <b className="text-green-700">{aircraftDetails.roles || "NA"}</b> */}
                 {/*                 </div> */}
                 <div className="grid grid-cols-3 gap-6 p-2">
                   <table>
@@ -168,35 +199,35 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>✈️ A/C Registration Sl No&nbsp;</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.airframe_serial_no || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>📅 Date of Manufacture</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.date_of_manufacture || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>📆 Date of Acceptance</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.date_of_acceptance || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>📆 DOE of Warranty</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.date_of_expiry_of_warranty || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>📆 Date of Expiry of TTL</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.expiry_of_ttl_cal || "NA"}
                         </td>
                       </tr>
@@ -208,7 +239,7 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>🛫 Max Take off Speed</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {" "}
                           {aircraftDetails.max_takeoff_speed + " Knots" || "NA"}
                         </td>
@@ -216,7 +247,7 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>🌀 Max Landing Speed</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {" "}
                           {aircraftDetails.max_landing_speed + " Knots" || "NA"}
                         </td>
@@ -224,7 +255,7 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>🏗️ Max Operating G Load</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {" "}
                           {aircraftDetails.max_operating_g_load + " m/sec 2" ||
                             "NA"}
@@ -233,7 +264,7 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>🩸 Max Fuel Capacity</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {" "}
                           {aircraftDetails.max_fuel_capacity + " Ltr." || "NA"}
                         </td>
@@ -241,7 +272,7 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>⛓️‍ Max Combat Load</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.max_combat_load + " Kg" || "NA"}
                         </td>
                       </tr>
@@ -253,42 +284,42 @@ const ViewLeadingParticulars = () => {
                       <tr>
                         <td>🛸 Aircraft Primary / Secondary Role</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.roles || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>🛫 Max AUW</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.max_auw + " Kg" || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>⚖ Max Landing Weight</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.max_landing_weight + " Kg" || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>⚖ Basic Weight</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.basic_weight + " Kg" || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td>⚖ Empty Weight</td>
                         <td>:</td>
-                        <td class="text-green-700 font-bold">
+                        <td className="text-green-700 font-bold">
                           {aircraftDetails.empty_weight + " Kg" || "NA"}
                         </td>
                       </tr>
                       <tr>
                         <td></td>
                         <td></td>
-                        <td class="text-green-700 font-bold"></td>
+                        <td className="text-green-700 font-bold"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -393,7 +424,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleEngineGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       ⚙️ Engine / E.C.U. Details
                     </div>
@@ -402,7 +433,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 mt-2 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleTyreGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       🛞 Landing Gear & Tyre Pressure
                     </div>
@@ -411,7 +442,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 mt-2 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleAircraftClock}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       ⏰ Aircraft Clock Details
                     </div>
@@ -423,7 +454,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12  border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       🩸 OLGs & Gases
                     </div>
@@ -432,7 +463,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 mt-2 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       onClick={toggleFuelGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       ⛽ Fuels
                     </div>
@@ -441,7 +472,7 @@ const ViewLeadingParticulars = () => {
                   <div className="col-span-12 mt-2 border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
                     <div
                       //                       onClick={toggleFuelGrid}
-                      class=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
+                      className=" cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-300 hover:opacity-80 transition p-2 font-bold userSelect-none"
                     >
                       🛠️ System Details
                     </div>
@@ -714,14 +745,24 @@ const ViewLeadingParticulars = () => {
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center mt-5 gap-5">
-          <AllUsers onSubmit={handleDataFromAllUsers} />
-          <TradeSupAto />
+          <AllUsers auth={handleDataFromAllUsers} />
+          <AtoOnly auth={handleDataFromAtoOnly} />
+          <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
+          <TradeSupAto1
+            snowId={202520373}
+            authRight={handleDataAuthRightSide}
+          />
           <div>
             <h2>{aircraftDetails?.authenticated}</h2>
             <h2>{aircraftDetails?.user_id}</h2>
           </div>
+          {/*           <div> */}
+          {/*             <h2>{aircraftDetails?.qualification}</h2> */}
+          {/*             <h2>{aircraftDetails?.trade}</h2> */}
+          {/*             <h2>{aircraftDetails?.byWhom}</h2> */}
+          {/*           </div> */}
 
-          {/*           class="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 mt-4 */}
+          {/*           className="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 mt-4 */}
           {/*                             transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm" */}
           {/*         > */}
           {/*           🛠️ Other System Details :- */}

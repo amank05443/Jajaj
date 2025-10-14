@@ -48,6 +48,14 @@ export default function AllUsers({ auth }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll) return;
+    if (!formData.byWhom) {
+      alert("Please select By Whom");
+      return;
+    }
+    if (!formData.passkey) {
+      alert("Please enter passkey");
+      return;
+    }
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskey/", {
@@ -93,7 +101,7 @@ export default function AllUsers({ auth }) {
           onClick={() => setOpen(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
         >
-          Authenticate 1
+          By Whom
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
@@ -171,7 +179,7 @@ export default function AllUsers({ auth }) {
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
-                    Authenticate
+                    OK
                   </button>
                 </form>
               </div>

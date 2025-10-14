@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { motion } from "framer-motion";
+import TradeSupAto from "../Authentication/AuthenticationOne";
 
 import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
 import CompassLog from "../Section-10/CompassLog";
@@ -30,7 +31,6 @@ import { X, Plane } from "lucide-react";
 import { FaMapMarkerAlt, FaTools, FaUser, FaClock } from "react-icons/fa";
 import dayjs from "dayjs";
 
-
 function formatDateTime(isoString) {
   if (!isoString) return { date: "", time: "" };
   const dateObj = dayjs(isoString);
@@ -51,10 +51,11 @@ const ClearUsLog = ({ defect }) => {
   const gridData = location.state;
   console.log(gridData);
 
-  useEffect(()=>{
-      if(!gridData){
-          navigate("/usLog",{replace:true});
-          }},[gridData,navigate]);
+  useEffect(() => {
+    if (!gridData) {
+      navigate("/usLog", { replace: true });
+    }
+  }, [gridData, navigate]);
 
   const { date, time } = formatDateTime(gridData?.user_time_date);
 
@@ -158,16 +159,19 @@ const ClearUsLog = ({ defect }) => {
             <div className="rounded-lg pt-2 pl-2 pr-2 flex flex-col break-all">
               <div className="grid grid-cols-5 text-center text-black-600 border-white min-w-[500px] font-bold">
                 <div className="border border-green-800"> DATE & TIME </div>
-                 <div className="border border-green-800"> SNOW </div>
-                 <div className="border border-green-800"> A/F HRS </div>
-                 <div className="border border-green-800"> HOW FOUND </div>
-                 <div className="border border-green-800"> BY WHOM </div>
+                <div className="border border-green-800"> SNOW </div>
+                <div className="border border-green-800"> A/F HRS </div>
+                <div className="border border-green-800"> HOW FOUND </div>
+                <div className="border border-green-800"> BY WHOM </div>
               </div>
               <div className="grid grid-cols-5 text-center text-gray-500 pb-2 min-w-[500px] ">
                 <div className="border border-green-800">
                   {date} <br /> {time}
                 </div>
-                <div className="border border-green-800"> {gridData?.snow} </div>
+                <div className="border border-green-800">
+                  {" "}
+                  {gridData?.snow}{" "}
+                </div>
                 <div className="border border-green-800">
                   {" "}
                   {gridData?.airframe_hrs}{" "}
@@ -219,13 +223,12 @@ const ClearUsLog = ({ defect }) => {
                   )}
                 </Paper>
               </form>
+              <TradeSupAto snowId={202520333} />
               <Button
                 onClick={handleSubmit}
                 type="submit"
                 variant="contained"
-                /*
-          disabled={!isAuthenticated}
- */
+                //                 disabled={!isAuthenticated}
                 className="primary p-4"
               >
                 Submit

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
 import useValidation from "../Utils/CustomHooks/useValidation";
-export default function TradeSupAto({ snowId, authTwo }) {
+export default function TradeSupAto1({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
   const [isAtz, setIsATZ] = useState(false);
@@ -429,7 +429,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                 <option value="">Select Qualification</option>
                                 <option value="TDS">Tradesman</option>
                                 <option value="SUP">Supervisor</option>
-                                <option value="ATZ">ATO / FCC</option>
+                                <option value="ATZ">ATO</option>
                               </select>
                             </div>
                             <div className="col-span-2">
