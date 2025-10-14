@@ -88,7 +88,7 @@ export default function Header({
               className="font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent
             text-lg tracking-tight"
             >
-              E700{" "}
+              e700{" "}
             </Typography>
             <div className="text-cyan-400 text-xs font-mono">v1.0</div>
           </div>
