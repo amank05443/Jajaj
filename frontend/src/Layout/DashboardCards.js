@@ -18,13 +18,13 @@ const cards = [
     color: 'red',
     link: '/usLog',
   },
-  {
-    title: 'Miscellaneous Entries',
-    description: 'Software info, clocks, special logs',
-    icon: <FaClock />,
-    color: 'purple',
-    link: '/clearUsLog',
-  },
+//  {
+//    title: 'Miscellaneous Entries',
+//    description: 'Software info, clocks, special logs',
+//    icon: <FaClock />,
+//    color: 'purple',
+//    link: '/clearUsLog',
+//  },
 //  {
 //    title: 'View/Download E700',
 //    description: 'Form 701, Form 703, Form 703 A',
@@ -32,14 +32,6 @@ const cards = [
 //    color: 'orange',
 //    link: '/viewE700',
 //  },
-
-   {
-    title: 'View/Download E700',
-    description: 'Form 701, Form 703, Form 703 A',
-    icon: <FaEye />,
-    color: 'orange',
-    link: '/weasyPrint',
-  },
 
 ];
 

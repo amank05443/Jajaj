@@ -74,7 +74,7 @@ const USLogForm = () => {
       {
         entryType: { required: true },
         howFound: { required: true },
-        dateAndTime: { dateTimeNotBeforeNow: true },
+        dateAndTime: { dateTimeNotAfterNow: true },
         airframeHrs: { required: true },
         aircraft_master_id: { required: true },
         reason_for_placing_unserviceable: { alphaNumeric: true },
@@ -139,6 +139,9 @@ const USLogForm = () => {
 
         if (!res.ok) throw new Error("Failed to save data");
         const data = await res.json();
+        if (data.success === true) {
+          alert(data.message);
+        }
         console.log("Saved:", data);
       } catch (err) {
         console.error(err);

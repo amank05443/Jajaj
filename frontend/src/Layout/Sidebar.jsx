@@ -12,6 +12,7 @@ import {
   Zap,
   Compass,
   NavigationIcon,
+  Eye,
 } from "lucide-react";
 
 import {
@@ -59,6 +60,8 @@ import {
   AccountCircle,
   HelpOutline,
   FileCopy,
+  VisibilityIcon,
+  Construction,
 } from "@mui/icons-material";
 
 const sidebarLinks = [
@@ -92,6 +95,11 @@ const sidebarLinks = [
         label: "Concessions",
         icon: <Discount size={20} />,
         to: "/concessions",
+      },
+      {
+        label: "OFP Logs",
+        icon: <Construction size={20} />,
+        to: "/oFPLog",
       },
     ],
   },
@@ -170,6 +178,11 @@ const sidebarLinks = [
         to: "/aeoTechMemos",
       },
     ],
+  },
+   {
+    label: "View/Download E-700",
+    icon: <Eye size={23} />,
+    to:  '/viewE700',
   },
 ];
 

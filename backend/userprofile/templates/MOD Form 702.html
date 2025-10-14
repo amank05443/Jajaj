@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 10px; }
+    h3 { text-align: center; margin-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 6px; }
+    th, td {
+      border: 1px solid black;
+      padding: 3px 4px;
+      vertical-align: top;
+    }
+
+    .no-border { border: none !important; }
+    .section-title {
+      font-weight: bold;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    .right { text-align: right; }
+    .center { text-align: center; }
+    .small { font-size: 10px; }
+    footer {
+    text-align: left;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    }
+    .note { font-weight: bold; text-decoration: underline;}
+  </style>
+</head>
+<body>
+
+<h3 style="text-decoration: underline; text-align:right;">MOD Form 702</h3>
+<h3 style="text-decoration: underline;">WEIGHT AND BALANCE DATA - BASIC WEIGHT AND MOMENTS</h3>
+
+<table style="border:none; border-collapse:collapse;">
+  <tr>
+    <td colspan="2" style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td colspan="2" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td colspan="2" style="border:none; font-weight:bold; ">Mark</td>
+    <td colspan="2" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td colspan="2" style="border:none; font-weight:bold; ">Serial No</td>
+    <td colspan="2" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+    <td colspan="29" style="border:none; font-weight:bold; text-decoration:underline; text-align:right;">Page  1</td>
+  </tr>
+</table>
+
+<table style="flex:1; border:1px solid black; margin-bottom:5px; text-align: center;">
+  <tr>
+    <th rowspan="5" colspan="3" class="section-title">Date <br> SNOW</th>
+    <th rowspan="5" colspan="6" class="section-title">Weighing, Change or Modification</th>
+    <th rowspan="1" colspan="12" class="section-title">Details of Change</th>
+    <th rowspan="2" colspan="16" class="section-title">Corrected Basic Data</th>
+    <th rowspan="5" colspan="4" class="section-title">Signature of AEO/ ALO</th>
+  </tr>
+
+  <tr>
+    <td rowspan="2" colspan="4" class="section-title">Weight</td>
+    <td colspan="8" class="section-title">Moment</td>
+  </tr>
+  <tr>
+    <td rowspan="1" colspan="4" class="section-title">Long</td>
+    <td rowspan="1" colspan="4" class="section-title">Lat/Vert</td>
+    <td rowspan="1" colspan="3" class="section-title">Weight</td>
+    <td rowspan="1" colspan="6" class="section-title">Longitudinal</td>
+    <td rowspan="1" colspan="7" class="section-title">Laterral<br>% MAC about X origin</td>
+  </tr>
+  <tr>
+    <td rowspan="2" colspan="1" class="section-title">+<br>-</td>
+    <td rowspan="2" colspan="3" class="section-title">Units<br>-------</td>
+    <td rowspan="2" colspan="1" class="section-title">+<br>-</td>
+    <td rowspan="2" colspan="3" class="section-title">Units<br>-------</td>
+    <td rowspan="2" colspan="1" class="section-title">+<br>-</td>
+    <td rowspan="2" colspan="3" class="section-title">Units<br>-------</td>
+    <td rowspan="2" colspan="3" class="section-title">Units<br>-------</td>
+    <td rowspan="2" colspan="3" class="section-title">CG<br>position</td>
+    <td rowspan="2" colspan="3" class="section-title">Moment</td>
+    <td rowspan="2" colspan="4" class="section-title">CG position</td>
+    <td rowspan="2" colspan="3" class="section-title">Moment</td>
+  </tr>
+<tr></tr>
+  <tr>
+    <td  colspan="3" class="section-title">1</td>
+    <td  colspan="6" class="section-title">2</td>
+    <td  colspan="1" class="section-title"></td>
+    <td  colspan="3" class="section-title">3</td>
+    <td  colspan="1" class="section-title"></td>
+    <td  colspan="3" class="section-title">4</td>
+    <td  colspan="1" class="section-title"></td>
+    <td  colspan="3" class="section-title">5</td>
+    <td  colspan="3" class="section-title">6</td>
+    <td  colspan="3" class="section-title">7</td>
+    <td  colspan="3" class="section-title">8</td>
+    <td  colspan="4" class="section-title">9</td>
+    <td  colspan="3" class="section-title">10</td>
+    <td  colspan="4" class="section-title">11</td>
+  </tr>
+  {% for wbr in weight_balance_rows %}
+  <tr>
+    <td rowspan="1" colspan="3" >{{ wbr.date_authenticated }}</td>
+    <td rowspan="2" colspan="6" >{{ wbr.weighing_change_mod }}</td>
+    <td rowspan="2" colspan="1" >{{ wbr.inc_weight_symbol }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.weight_increased }}</td>
+    <td rowspan="2" colspan="1" >{{ wbr.inc_long_symbol }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.long_increased }}</td>
+    <td rowspan="2" colspan="1" >{{ wbr.inc_lat_symbol }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.lat_vert_increased }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.corrected_weight }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.corrected_cg_long }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.corrected_moment_long }}</td>
+    <td rowspan="2" colspan="4" >{{ wbr.corrected_cg_lat }}</td>
+    <td rowspan="2" colspan="3" >{{ wbr.corrected_moment_lat }}</td>
+    <td rowspan="2" colspan="4" >{{ wbr.authenticated_by }}</td>
+  </tr>
+  <tr><td rowspan="1" colspan="3" style="border:none" >{{ wbr.snow }}</td></tr>
+  {% endfor %}
+</table>
+<!--<footer>-->
+<!--  <span class="note">Note.</span> The MOD Form 703B is a progressive record of onboard software changes. The last entry under each system heading reflects the current software loaded into that system.-->
+<!--</footer>-->
+
+</body>
+</html>

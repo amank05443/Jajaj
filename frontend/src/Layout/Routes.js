@@ -4,6 +4,9 @@ import React, { lazy } from "react";
 const Welcome = lazy(() => import("./Welcome"));
 const LoginPage = lazy(() => import("../Authentication/LoginPage"));
 const Dashboard = lazy(() => import("./Dashboard"));
+const DashboardExp = lazy(() => import("./DashboardExp"));
+const DashboardExp1 = lazy(() => import("./DashboardExp1"));
+
 const DashboardCards = lazy(() => import("./DashboardCards"));
 const E700Page = lazy(() => import("./E700Page"));
 const AircraftHeader = lazy(() => import("./AircraftHeader"));
@@ -25,7 +28,8 @@ const LeadingParticularTab = lazy(
 
 //--REPORT E700--//
 const ViewE700 = lazy(() => import("../E700_Report/ViewE700"));
-const WeasyPrint = lazy(() => import("../WeasyPrintReports/WeasyPrint"));
+//const WeasyPrint = lazy(() => import("../WeasyPrintReports/WeasyPrint_old"));
+const ViewDownloadAllForm = lazy(() => import("../WeasyPrintReports/ViewDownloadAllForm"));
 
 //--SECTION->1--//
 const TestQuals = lazy(() => import("../Section-1/TestQualsSaveAsDraft"));
@@ -106,7 +110,9 @@ export const publicRoutes = [
 //-----------------PRIVATE ROUTES----------(Accessible only for Successfully Logged in)//
 export const privateRoutes = [
   //---LAYOUT---//
-  { path: "/dashboard", element: <Dashboard /> },
+//  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/dashboard", element: <DashboardExp /> },
+  { path: "/exp1", element: <DashboardExp1 /> },
   { path: "/dashboardCards", element: <DashboardCards /> },
   { path: "/e700", element: <E700Page /> },
   { path: "/aircraftHeader", element: <AircraftHeader /> },
@@ -114,7 +120,7 @@ export const privateRoutes = [
 
   //--REPORT E700--//
   { path: "/viewE700", element: <ViewE700 /> },
-  { path: "/weasyPrint", element: <WeasyPrint /> },
+  { path: "/ViewDownloadAllForm", element: <ViewDownloadAllForm /> },
 
   { path: "/leadingParticularTab", element: <LeadingParticularTab /> },
   { path: "/prepare", element: <Prepare /> },

@@ -4,14 +4,14 @@ import CustomGrid from '../Utils/CustomComponents/CustomGrid';
 
 const OFPLog = () => {
 
-    const {data:gridData,loading:gridLoading,update:gridUpdate,create:gridCreate} = useTableApi('aircraft_masters');
+    const {data:gridData,loading:gridLoading,update:gridUpdate,create:gridCreate} = useTableApi('softwares');
     const columns = [
-        {field:'side_no',headerName:'System',sortable:true,filterable:true},
-        {field:'aircraft_mark',headerName:'Software Description',sortable:true},
-        {field:'date_of_acceptance',headerName:'Software Standard/ Version and Date'},
-        {field:'date_of_manufacture',headerName:'MF 707 Ref/SNOW'},
-        {field:'airframe_serial_no',headerName:'Notes/ Compatibility'},
-        {field:'basic_weight',headerName:'Signature of ATO and Date'},
+        {field:'',headerName:'System',sortable:true,filterable:true},
+        {field:'',headerName:'Software Description',sortable:true},
+        {field:'',headerName:'Software Standard/ Version and Date'},
+        {field:'',headerName:'MF 707 Ref/SNOW'},
+        {field:'',headerName:'Notes/ Compatibility'},
+        {field:'',headerName:'Signature of ATO and Date'},
     ];
 
 //        const columns = [

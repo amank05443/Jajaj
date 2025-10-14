@@ -1,14 +1,10 @@
 from django.db import models
 
-
 class UserQuals(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    # user = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey('Users', on_delete=models.CASCADE, related_name='userQualsTrade')
-    qual = models.ForeignKey('Quals', on_delete=models.CASCADE, related_name='userQualsTrade')
-    # qual = models.ForeignKey('Quals', models.DO_NOTHING, blank=True, null=True)
-    trade = models.ForeignKey('Trades', models.DO_NOTHING, blank=True, null=True)
-    # trade = models.ForeignKey('Trades', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey('Users', on_delete= models.CASCADE, related_name='userQualsTrade')
+    qual = models.ForeignKey('Quals', on_delete= models.CASCADE, related_name='userQualsTrade')
+    trade = models.ForeignKey('Trades', on_delete= models.CASCADE, related_name='userQualsTrade')
     aircraft_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
     date_awarded = models.DateField(blank=True, null=True)
     updated_by = models.ForeignKey('Users', models.DO_NOTHING, related_name='userquals_updated_by_set', blank=True,

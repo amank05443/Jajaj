@@ -25,7 +25,13 @@ export default function AuthRightSide({ snowId, authRight }) {
     ],
   });
   const [errors, setErrors] = useState([{}]);
-
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [open]);
   //  ------------------------------- TO ADD THE ROW FOR A NEW USER AUTHENTICATION -------------------------------------
   const addRow = () => {
     setFormData({

@@ -4,10 +4,9 @@ from django.http import JsonResponse
 from django.db import transaction
 from datetime import datetime
 from rest_framework.decorators import api_view
-from ..serializers import (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer,
-                           ItemsSerializer, LimDefrDefLogsSerializer)
+from ..serializers import  (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer, ItemsSerializer,LimDefrDefLogsSerializer)
 from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items, Users,
-                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs, UserQuals)
+                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs, Softwares, UserQuals)
 from django.db.models import Max
 
 
@@ -40,11 +39,21 @@ def limLogData(request):
         "itemsData": ItemsSerializer(items_qs, many=True).data,
     })
 
+@api_view(['GET'])
+def softwareLogData(request):
+    aircraft_type_id = request.GET["aircraft_type_id"]
+    print(aircraft_type_id)
+    softwares_qs = Softwares.objects.filter(aircraft_type=aircraft_type_id)
+    print(softwares_qs)
+    # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
+    items_qs = Items.objects.filter(aircraft_type=aircraft_type_id)
+    data = list(softwares_qs.values("id", "system_id","system__system", "software_description"))
+    return JsonResponse(data, safe=False)
+
 
 @api_view(['POST'])
 @transaction.atomic
 def saveUsLogData(request):
-    # if request.method == 'POST':
     try:
         data = request.data  # fetching of data coming from frontend
         formData = data["formData"]

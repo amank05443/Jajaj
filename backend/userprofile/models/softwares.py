@@ -8,12 +8,15 @@
 from django.db import models
 
 
-class Systems(models.Model):
+class Softwares(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    system = models.CharField(blank=True, null=True)
-    aircraft_type_id = models.BigIntegerField(blank=True, null=True)
-    other_details = models.CharField(blank=True, null=True)
+    item = models.ForeignKey('Items', models.DO_NOTHING, blank=True, null=True)
+    software_description = models.CharField(blank=True, null=True)
+    aircraft_type = models.ForeignKey('AircraftTypes', models.DO_NOTHING, blank=True, null=True)
+    system = models.ForeignKey('Systems', models.DO_NOTHING, blank=True, null=True)
+    standard_version = models.CharField(blank=True, null=True)
+    active_yn = models.CharField(blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'systems'
+        db_table = 'softwares'

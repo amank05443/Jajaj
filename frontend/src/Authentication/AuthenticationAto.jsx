@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { Eye, EyeOff } from "lucide-react";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
-export default function AllUsers({ auth }) {
+export default function AtoOnly({ auth }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
@@ -31,31 +31,31 @@ export default function AllUsers({ auth }) {
     }
   }, [open]);
   useEffect(() => {
-    if (open && !loading) {
-      const aircraft_type_id = params.aircraft_type_id;
+    const aircraft_type_id = params.aircraft_type_id;
+    const qualificationValue = formData.qualification ? '': "ATO";
+    if (!loading && open && qualificationValue) {
       axios
-        .get(`/api/userDetailsForAuthenticationAllUsers/${aircraft_type_id}`)
+        .get("/api/userAllDetailsForAuthenticationTwo/", {
+          params: {
+            aircraft_type_id: aircraft_type_id,
+            qualification: qualificationValue,
+            trade: "0000",
+          },
+        })
         .then((response) => {
           setData(response.data);
-          console.log("User data found :");
+          setFormData({qualification: qualificationValue});
+          console.log("User (ATO) data found :");
           console.log(response.data);
         })
         .catch((error) => {
           console.error("Bluunder:", error);
         });
     }
-  }, [open]);
+  }, [open, loading, formData.qualification]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll) return;
-    if (!formData.byWhom) {
-      alert("Please select By Whom");
-      return;
-    }
-    if (!formData.passkey) {
-      alert("Please enter passkey");
-      return;
-    }
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskey/", {
@@ -84,7 +84,7 @@ export default function AllUsers({ auth }) {
       }
       setOpen(false);
       setErrors("");
-      setFormData({ byWhom: "", passkey: "" });
+      setFormData({qualification:"",  byWhom: "", passkey: "" });
     } catch (err) {
       setErrors((prev) => ({
         ...prev,
@@ -99,19 +99,19 @@ export default function AllUsers({ auth }) {
       <div>
         <button
           onClick={() => setOpen(true)}
-          className="px-10 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-14 py-2 bg-blue-600 text-white rounded-lg"
         >
-          By Whom
+          ATO
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
             <div className="absolute inset-0 bg-black/60 "></div>
-            <div className="relative bg-white p-2 rounded-md w-[600px]  border-2 border-indigo-300 shadow-lg z-10">
+            <div className="relative bg-white p-2 rounded-md w-[700px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
                   onClick={() => {
-                    setFormData({ byWhom: "", passkey: "" });
+                    setFormData({qualification: "", byWhom: "", passkey: "" });
                     setErrors("");
                     setOpen(false);
                   }}
@@ -123,24 +123,39 @@ export default function AllUsers({ auth }) {
                   style={{ fontFamily: "algerian" }}
                   className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl"
                 >
-                   USERS AUTHENTICATION
+                  ATO's AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
                 <form className=" p-1 space-y-4 ">
-                  <div className="grid md:grid-cols-2 sm:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-4 sm:grid-cols-1 gap-4">
                     <div>
                       <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        By Whom
+                        Qualification
+                      </label>
+                      <select
+                        name="qualification"
+                        value={formData.qualification}
+                        onChange={handleChange}
+                        className="border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                      >
+                        <option value="">Select Name</option>
+                        <option value="ATO">ATO</option>
+                        <option value="STO">STO</option>
+                      </select>
+                    </div>
+                    <div className="col-span-2">
+                      <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
+                        Published by ATO
                       </label>
                       <select
                         name="byWhom"
                         value={formData.byWhom}
                         onChange={handleChange}
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        className="border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       >
-                        <option value="">Select Name</option>
+                        <option value="">- - - - Select Name - - - -</option>
                         {data &&
                           data?.map((d) => (
                             <option key={d.id} value={d.id}>
@@ -179,7 +194,7 @@ export default function AllUsers({ auth }) {
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
-                    OK
+                    Authenticate
                   </button>
                 </form>
               </div>

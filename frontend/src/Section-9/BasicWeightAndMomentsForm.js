@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
 import { useNavigate } from "react-router-dom";
+import { ModForm702 } from "../WeasyPrintReports/WeasyPrint";
 import {
   Container,
   IconButton,
@@ -153,6 +154,9 @@ const BasicWeightAndMoments = () => {
           theme="Forest_Fog"
         />
       )}
+      <div className="flex justify-center mt-5 gap-5">
+          <ModForm702 />
+      </div>
       <div className="mb-4 ml-2">
         <button
           onClick={handleBack}
@@ -162,6 +166,7 @@ const BasicWeightAndMoments = () => {
           Back
         </button>
       </div>
+
     </div>
   );
 };
