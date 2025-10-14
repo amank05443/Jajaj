@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import AllUsers from "../Authentication/AuthenticationOne";
-import TradeSupAto from "../Authentication/AuthenticationTwo";
+import {ModForm701} from "../WeasyPrintReports/WeasyPrint";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
@@ -46,14 +45,6 @@ const ViewLeadingParticulars = () => {
     setShowTyreGrid(false);
     setShowEngineGrid(false);
     setShowAircraftClock(!showAircraftClock);
-  };
-  const handleDataFromAllUsers = (data) => {
-    const { authenticated, user_id } = data;
-    setAircraftDetails((prev) => ({
-      ...prev,
-      authenticated: authenticated,
-      user_id: user_id,
-    }));
   };
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [aircraftDetails, setAircraftDetails] = useState(null);
@@ -714,13 +705,7 @@ const ViewLeadingParticulars = () => {
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center mt-5 gap-5">
-          <AllUsers onSubmit={handleDataFromAllUsers} />
-          <TradeSupAto />
-          <div>
-            <h2>{aircraftDetails?.authenticated}</h2>
-            <h2>{aircraftDetails?.user_id}</h2>
-          </div>
-
+          <ModForm701 />
           {/*           class="bg-gradient-to-r from-[#EEBBD5]/70 via-[#F6909E]/50 to-[#2F284E]/40 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 mt-4 */}
           {/*                             transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm" */}
           {/*         > */}

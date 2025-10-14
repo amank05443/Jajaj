@@ -28,6 +28,8 @@ import USLogGridModal from "./USLogGridModal";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useAlert } from "../Utils/Alerts/AlertContext";
+import {ModForm707} from "../WeasyPrintReports/WeasyPrint";
+
 
 export default function USLog() {
   const navigate = useNavigate();
@@ -401,6 +403,9 @@ export default function USLog() {
           nextSelectedRow={handleNext}
         />
       )}
+        <div className="flex justify-center mt-5 gap-5">
+          <ModForm707 />
+        </div>
     </div>
   );
 }

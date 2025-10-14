@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 10px; }
+    h3 { text-align: center; margin-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 6px; }
+    th, td {
+      border: 1px solid black;
+      padding: 3px 4px;
+      vertical-align: top;
+    }
+    .no-border { border: none !important; }
+    .section-title {
+      font-weight: bold;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    .right { text-align: right; }
+    .center { text-align: center; }
+    .small { font-size: 10px; }
+    footer {
+    text-align: left;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    }
+    .note { font-weight: bold; text-decoration: underline;}
+  </style>
+</head>
+<body>
+
+<h3 style="text-decoration: underline; text-align:right;">MOD Form 704A</h3>
+<h3 style="text-decoration: underline;">ACCEPTABLE HUSBANDRY DEFERRED DEFECTS LOG</h3>
+
+<table style="border:none; border-collapse:collapse;">
+  <tr>
+    <td style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td style="border:none; font-weight:bold; ">Mark</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td style="border:none; font-weight:bold; ">Serial No</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline; text-align:right;">Page  1</td>
+  </tr>
+</table>
+
+<table style="flex:1; border:1px solid black; margin-bottom:5px; text-align: center;">
+  <tr>
+    <th rowspan="2" colspan="1" class="section-title">Ser No</th>
+    <th rowspan="2" colspan="2" class="section-title">Date/ Time</th>
+    <th rowspan="2" colspan="3" class="section-title">By Whom</th>
+    <th rowspan="2" colspan="3" class="section-title">Work Area</th>
+    <th rowspan="2" colspan="14" class="section-title">Acceptable Outstanding Defects of Husbandry Nature (Not Affecting Safety or Operational Capability)</th>
+    <th rowspan="2" colspan="3" class="section-title">Deferred Until</th>
+    <th rowspan="2" colspan="2" class="section-title">Est. Man Hrs</th>
+    <th rowspan="2" colspan="8" class="section-title">Name, Rank & Sign of Supervisor</th>
+    <th colspan="14" class="section-title">Defect Removed</th>
+  </tr>
+  <tr>
+    <td colspan="2" class="section-title">SNOW</td>
+    <td colspan="5" class="section-title">Time/ Date</td>
+    <td colspan="7" class="section-title">Rank, Name & Sign of Authorised Person</td>
+  </tr>
+  <tr>
+    <td colspan="1" class="section-title">1</td>
+    <td colspan="2" class="section-title">2</td>
+    <td colspan="3" class="section-title">3</td>
+    <td colspan="3" class="section-title">4</td>
+    <td colspan="14" class="section-title">5</td>
+    <td colspan="3" class="section-title">6</td>
+    <td colspan="2" class="section-title">7</td>
+    <td colspan="8" class="section-title">8</td>
+    <td colspan="2" class="section-title">9</td>
+    <td colspan="5" class="section-title">10</td>
+    <td colspan="7" class="section-title">11</td>
+  </tr>
+<!--  {% for fuel in fuels %}-->
+  <tr>
+    <td colspan="1" >1</td>
+    <td colspan="2" >2</td>
+    <td colspan="3" >3</td>
+    <td colspan="3" >4</td>
+    <td colspan="14">5</td>
+    <td colspan="3" >6</td>
+    <td colspan="2" >7</td>
+    <td colspan="8" >8</td>
+    <td colspan="2" >9</td>
+    <td colspan="5" >10</td>
+    <td colspan="7" >11</td>
+  </tr>
+<!--  {% endfor %}-->
+</table>
+<!--<footer>-->
+<!--  <span class="note">Note.</span> The MOD Form 703B is a progressive record of onboard software changes. The last entry under each system heading reflects the current software loaded into that system.-->
+<!--</footer>-->
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
+import {ModForm710} from "../WeasyPrintReports/WeasyPrint";
+
 export default function RoutineServicingTab() {
   const {
     data: gridData,
@@ -60,6 +62,9 @@ export default function RoutineServicingTab() {
         <div>
           <CustomGrid data={gridData} theme="Forest_Fog" columns={columns} />
         </div>
+        <div className="flex justify-center mt-5 gap-5">
+          <ModForm710 />
+         </div>
       </div>
     </div>
   );

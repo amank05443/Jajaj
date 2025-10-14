@@ -1,17 +1,21 @@
 import tempfile
+import io
 from http.client import responses
+# from typing import io
 
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render
 
 from weasyprint import HTML, CSS
+from pypdf import PdfReader, PdfWriter
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from datetime import datetime
 
-from userprofile.models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,
-                                      EcuMasters,TyrePressures,Pols,Systems, Users, HowFoundDefects, Ranks, UserQuals)
+from userprofile.models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,ChangeOfServiceabilityLogLines,Trades,
+                                EcuMasters,TyrePressures,Pols,Systems, Users, HowFoundDefects, Ranks, UserQuals, LimDefrDefHusLogs,
+                                CompassCalibrationLogs, WeightBalance)
 
 def booklet_pdf(request):
     # Example data (normally from DB)
@@ -22,7 +26,7 @@ def booklet_pdf(request):
          "closed": {"id": 102, "description": "Closed task for Project B"}}
     ]
     # Render HTML with context
-    html_string = render_to_string("part5.html", {"entries": entries})
+    html_string = render_to_string("MOD FORM 707.html", {"entries": entries})
 
     # Convert HTML → PDF
     html = HTML(string=html_string)
@@ -32,7 +36,7 @@ def booklet_pdf(request):
 
     # Return as downloadable PDF
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response['Content-Disposition'] = 'inline; filename="part5.pdf"'
+    response['Content-Disposition'] = 'inline; filename="MOD FORM 707.pdf"'
     return response
 
 
@@ -99,7 +103,7 @@ def aircraft_pdf(request, id):
     }
 
     # Render HTML with context
-    html_string = render_to_string("aircraft_form.html", context)
+    html_string = render_to_string("MOD FORM 701.html", context)
 
     # Convert HTML → PDF
     html = HTML(string=html_string)
@@ -109,52 +113,109 @@ def aircraft_pdf(request, id):
 
     # Return as downloadable PDF
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response['Content-Disposition'] = 'inline; filename="aircraft_form.pdf"'
+    response['Content-Disposition'] = 'inline; filename="MOD FORM 701.pdf"'
     return response
 
 def change_of_serviceability_logs_pdf(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
-    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(aircraft_master_id=data["id"]).order_by("snow").values(
-        "user_time_date", "airframe_hrs",
+    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(aircraft_master_id=data["id"], snow__isnull=False, user_time_date__isnull=False,).order_by("snow").values(
+        "id","user_time_date", "airframe_hrs",
         "by_whom", "snow", "defect_code_id",
         "reason_for_placing_unserviceable",
-        "work_carried_out", "how_found_defect_id"
+        "work_carried_out", "how_found_defect_id",
+        "man_hrs", "user_completion_date", "authorised_by_id"
     )
     for item in change_of_serviceability_logs_rows:
+        man_hrs= item['man_hrs']
+        if man_hrs is None:
+            man_hrs = ""
+            item['man_hrs'] = man_hrs
+
+        defect_code_id = item['defect_code_id']
+        if defect_code_id is None:
+            defect_code_id = ""
+            item['defect_code_id'] = defect_code_id
+
+        work_carried_out = item['work_carried_out']
+        if work_carried_out is None:
+            work_carried_out = ""
+            item['work_carried_out'] = work_carried_out
+
         dt_val= item['user_time_date']
         if dt_val:
             dt = datetime.fromisoformat(str(dt_val))
-            item['date'] = dt.date().strftime("%d-%b-%Y")
-            item['time'] = dt.time().strftime("%H:%M")
+            item['date'] = f"{dt.time().strftime("%H:%M")} {dt.date().strftime("%d-%m-%Y")}"
+            # item['date'] = dt.date().strftime("%d-%b-%Y")
+            # item['time'] = dt.time().strftime("%H:%M")
         else:
-            item['date'] = None
-            item['time'] = None
+            item['date'] = ""
+            # item['time'] = ""
+
+        user_completion_date = item['user_completion_date']
+        if user_completion_date:
+            dt = datetime.fromisoformat(str(user_completion_date))
+            item['user_completion_date'] = f"{dt.time().strftime("%H:%M")} /  {dt.date().strftime("%d-%m-%Y")}"
+        else:
+            item['user_completion_date'] = ""
+
         how_found_defect_id = item['how_found_defect_id']
         if how_found_defect_id:
             how_found_defect = HowFoundDefects.objects.get(id=how_found_defect_id).occasion
             item['how_found_defect'] = how_found_defect
         else:
-            item['how_found_defect'] = None
+            item['how_found_defect'] = ""
         user_qual_id = item['by_whom']
         if user_qual_id:
             user_name_id = UserQuals.objects.get(id=user_qual_id).user_id
             if user_name_id:
                 user_name = Users.objects.get(id=user_name_id).user_name
                 user_pno = Users.objects.get(id=user_name_id).pno
-                user_rank_id = Users.objects.get(id=user_name_id).rank_id
-                user_rank = Ranks.objects.get(id=user_rank_id).abbreviation
-                user_rank_of = Ranks.objects.get(id=user_rank_id).rank_of
-                if user_rank_of == "O":
-                    item['user_name'] = f"{user_rank} {user_name},{user_pno}"
-                else:
-                    item['user_name'] = f"{user_name}, {user_rank}, {user_pno}"
+                # user_rank_id = Users.objects.get(id=user_name_id).rank_id
+                # user_rank = Ranks.objects.get(id=user_rank_id).abbreviation
+                # user_rank_of = Ranks.objects.get(id=user_rank_id).rank_of
+                # if user_rank_of == "O":
+                #     item['user_name'] = f"{user_rank} {user_name},{user_pno}"
+                # else:
+                #     item['user_name'] = f"{user_name}, {user_rank}, {user_pno}"
+                item['user_name'] = f"{user_name} , {user_pno}"
             else:
-                item['user_name'] = None
+                item['user_name'] = ""
         else:
-            item['user_name'] = None
+            item['user_name'] = ""
 
-            # print(user_qual_id)
+
+        authorised_by_id = item['authorised_by_id']
+        if authorised_by_id:
+            authorised_by_name_id = UserQuals.objects.get(id=authorised_by_id).user_id
+            if authorised_by_name_id:
+                authorised_by_name = Users.objects.get(id=authorised_by_name_id).user_name
+                authorised_by_pno = Users.objects.get(id=authorised_by_name_id).pno
+                item['authorised_by'] = f"{authorised_by_name} , {authorised_by_pno}"
+            else:
+                item['authorised_by'] = ""
+        else:
+            item['authorised_by'] = ""
+
+    # change_of_serviceability_log_lines_row = ChangeOfServiceabilityLogLines.objects.filter(change_of_serviceability_log_id=change_of_serviceability_logs_rows["id"]).values(
+    #         "change_of_serviceability_log_id","trade_id", "user_qual_id","tradesman_sup"
+    #     )
+    # olg_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"]).exclude(type_of_pol= "F").values(
+    #     "system_id", "description", "nato_code","substitute_id", "nato_code")
+    # change_of_serviceability_log_id = [d ["id"] for d in change_of_serviceability_logs_rows]
+    # change_of_serviceability_log_lines_row = ChangeOfServiceabilityLogLines.objects.filter(id__in=change_of_serviceability_log_id).values(
+    #     "change_of_serviceability_log_id","trade_id", "user_qual_id","tradesman_sup")
+    # print(change_of_serviceability_log_lines_row)
+    # system_lookup = {s["id"]: s["system"] for s in systems}
+    # for row in olg_rows: row["system"] = system_lookup.get(row["system_id"])
+
+
+    # trade = Trades.objects.get(id=item["trade_id"]).trade
+    # if trade:
+    #     item['trade'] = trade
+    # else:
+    #     item['trade'] = ""
+    # print(change_of_serviceability_log_lines_row)
             # user_id= UserQuals.objects.get(id=user_qual_id).user_id
             # if user_id:
             #     print(user_id)
@@ -254,15 +315,337 @@ def change_of_serviceability_logs_pdf(request, id):
     }
 
     # Render HTML with context
-    html_string = render_to_string("part5.html", context)
+    html_string = render_to_string("MOD FORM 707.html", context)
+
+    # Convert HTML → PDF
+    html = HTML(string=html_string)
+    pdf_bytes = html.write_pdf(
+        stylesheets=[CSS(string='@page{size:594mm 210mm; landscape; margin:5mm;}')]
+    )
+    #Split wide pages
+    reader = PdfReader(io.BytesIO(pdf_bytes))
+    writer = PdfWriter()
+    first_page = reader.pages[0]
+    width = float(first_page.mediabox.width)
+    height = float(first_page.mediabox.height)
+    writer.add_blank_page(width=width / 2, height=height)
+    for page in reader.pages:
+        width = float(page.mediabox.width if hasattr(page.mediabox, 'width') else page.mediabox[2])
+        height = float(page.mediabox.height if hasattr(page.mediabox, 'height') else page.mediabox[3])
+        left_page = page
+        left_page.mediabox.lower_left = (0, 0)
+        left_page.mediabox.upper_right = (width / 2, height)
+        writer.add_page(left_page)
+
+        right_page = page
+        right_page.mediabox.lower_left = (width / 2, 0)
+        right_page.mediabox.upper_right = (width, height)
+        writer.add_page(right_page)
+
+    output_pdf = io.BytesIO()
+    writer.write(output_pdf)
+    output_pdf.seek(0)
+
+    # Return as downloadable PDF
+    response = HttpResponse(output_pdf, content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="MOD FORM 707.pdf"'
+    return response
+
+def Mod703B(request, id):
+    aircraft1 = AircraftMasters.objects.get(id=id)
+    data = model_to_dict(aircraft1)
+
+
+
+
+    context = {
+        "aircraft": {
+            "type": AircraftTypes.objects.get(id=data["aircraft_type"]).aircraft_name,
+            "mark": data.get('aircraft_mark'),
+            "serial_no": data.get('airframe_serial_no'),
+
+        },
+
+    }
+
+    # Render HTML with context
+    html_string = render_to_string("MOD Form 703B.html", context)
 
     # Convert HTML → PDF
     html = HTML(string=html_string)
     pdf_file = html.write_pdf(
-        stylesheets=[CSS(string='@page{size:594mm 210mm; landscape; margin:5mm;}')]
+        stylesheets=[CSS(string='@page{size:a4 landscape; margin:5mm;}')]
     )
 
     # Return as downloadable PDF
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response['Content-Disposition'] = 'inline; filename="MOD FORM 707.pdf"'
+    response['Content-Disposition'] = 'inline; filename="Mod703B.pdf"'
+    return response
+
+def MODForm704A(request, id):
+    aircraft1 = AircraftMasters.objects.get(id=id)
+    data = model_to_dict(aircraft1)
+    acpt_hus_defeat = LimDefrDefHusLogs.objects.filter(aircraft_master_id=data["id"],
+                                                       # husbandry_yn__isnull=False,
+                                                       ).order_by("id").values(
+        "id",
+    )
+    print(acpt_hus_defeat)
+
+
+
+    context = {
+        "aircraft": {
+            "type": AircraftTypes.objects.get(id=data["aircraft_type"]).aircraft_name,
+            "mark": data.get('aircraft_mark'),
+            "serial_no": data.get('airframe_serial_no'),
+
+        },
+
+    }
+
+    # Render HTML with context
+    html_string = render_to_string("MOD Form 704A.html", context)
+
+    # Convert HTML → PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(
+        stylesheets=[CSS(string='@page{size:a4 landscape; margin:5mm;}')]
+    )
+
+    # Return as downloadable PDF
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="MODForm704A.pdf"'
+    return response
+def MODForm712A(request, id):
+    aircraft1 = AircraftMasters.objects.get(id=id)
+    data = model_to_dict(aircraft1)
+    compass_calibration_logs_row =CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).order_by("id").values(
+        "id","ap_reference","compass_swing_date","due_date","ref_snow","compass_type", "compass_ser_no","place","method",
+        "actual_north","actual_south","actual_east","actual_west","a_c_north","a_c_south","a_c_east","a_c_west",
+        "a_c_north_east","a_c_north_west","a_c_south_east","a_c_south_west","coeff_a","coeff_b","coeff_c")
+    heading_compass_row = CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).order_by("-id").values(
+        "id", "ap_reference","compass_swing_date","due_date","ref_snow", "place","method", )
+    latest_compass_row = heading_compass_row[0]
+    print(compass_calibration_logs_row)
+    print(latest_compass_row)
+
+
+
+
+    context = {
+        "aircraft": {
+            "type": AircraftTypes.objects.get(id=data["aircraft_type"]).aircraft_name,
+            "mark": data.get('aircraft_mark'),
+            "serial_no": data.get('airframe_serial_no'),
+
+        },
+        "compass_calibration_logs": compass_calibration_logs_row,
+        "latest_compass_row": latest_compass_row,
+
+    }
+
+    # Render HTML with context
+    html_string = render_to_string("MOD Form 712A.html", context)
+
+    # Convert HTML → PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(
+        stylesheets=[CSS(string='@page{size:a4 landscape; margin:5mm;}')]
+    )
+
+    # Return as downloadable PDF
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="MODForm712A.pdf"'
+    return response
+
+
+def MODForm702(request, id):
+    aircraft1 = AircraftMasters.objects.get(id=id)
+    print(id)
+    data = model_to_dict(aircraft1)
+    weight_balance_rows = WeightBalance.objects.filter(aircraft_master_id=data["id"]).order_by("snow").values(
+        "date_authenticated", "snow","weighing_change_mod","weight_increased", "weight_decreased","long_increased", "long_decreased","lat_vert_increased", "lat_vert_decreased",
+        "corrected_weight", "corrected_cg_long","corrected_cg_lat","corrected_moment_long","corrected_moment_lat","authenticated_by_id"
+    )
+    for item in weight_balance_rows:
+        dt_val = item['date_authenticated']
+        if dt_val:
+            dt = datetime.fromisoformat(str(dt_val))
+            item['date_authenticated'] = f"{dt.date().strftime("%d-%m-%Y")}"
+        else:
+            item['date_authenticated'] = ""
+        inc_weight= item['weight_increased']
+        if inc_weight:
+            item['weight_increased'] = f"{inc_weight}"
+            inc_weight_symbol = "+"
+            item['inc_weight_symbol'] = inc_weight_symbol
+        else:
+            inc_weight = item['weight_decreased']
+            if inc_weight:
+                inc_weight_symbol = "-"
+                item['weight_increased'] = f"{inc_weight}"
+                item['inc_weight_symbol'] = inc_weight_symbol
+            else:
+                item['weight_increased'] = ""
+                item['inc_weight_symbol'] = ""
+        inc_long = item['long_increased']
+        if inc_long:
+            item['long_increased'] = f"{inc_long}"
+            inc_long_symbol = "+"
+            item['inc_long_symbol'] = inc_long_symbol
+        else:
+            inc_long = item['long_decreased']
+            if inc_long:
+                inc_long_symbol = "-"
+                item['long_increased'] = f"{inc_long}"
+                item['inc_long_symbol'] = inc_long_symbol
+            else:
+                item['long_increased'] = ""
+                item['inc_long_symbol'] = ""
+        inc_lat = item['lat_vert_increased']
+        if inc_lat:
+            item['lat_vert_increased'] = f"{inc_lat}"
+            inc_lat_symbol = "+"
+            item['inc_lat_symbol'] = inc_lat_symbol
+        else:
+            inc_lat = item['lat_vert_decreased']
+            if inc_lat:
+                inc_lat_symbol = "-"
+                item['inc_lat_symbol'] = inc_lat_symbol
+                item['lat_vert_increased'] = f"{inc_lat}"
+            else:
+                item['inc_lat_symbol'] = ""
+                item['lat_vert_increased'] = ""
+        authenticated_by_id = item['authenticated_by_id']
+        if authenticated_by_id:
+            authorised_by_name_id = UserQuals.objects.get(id=authenticated_by_id).user_id
+            if authorised_by_name_id:
+                authorised_by_name = Users.objects.get(id=authorised_by_name_id).user_name
+                authorised_by_pno = Users.objects.get(id=authorised_by_name_id).pno
+                item['authenticated_by'] = f"{authorised_by_name} , {authorised_by_pno}"
+            else:
+                item['authenticated_by'] = ""
+        else:
+            item['authenticated_by'] = ""
+
+
+
+
+
+    context = {
+        "aircraft": {
+            "type": AircraftTypes.objects.get(id=data["aircraft_type"]).aircraft_name,
+            "mark": data.get('aircraft_mark'),
+            "serial_no": data.get('airframe_serial_no'),
+
+        },
+        "weight_balance_rows": weight_balance_rows,
+        # "compass_calibration_logs": compass_calibration_logs_row,
+        # "latest_compass_row": latest_compass_row,
+
+    }
+
+    # Render HTML with context
+    html_string = render_to_string("MOD Form 702.html", context)
+
+    # Convert HTML → PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(
+        stylesheets=[CSS(string='@page{size:a4 landscape; margin:5mm;}')]
+    )
+
+    # Return as downloadable PDF
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="MODForm702.pdf"'
+    return response
+
+
+def MODForm710(request, id):
+    aircraft1 = AircraftMasters.objects.get(id=id)
+    print(id)
+    data = model_to_dict(aircraft1)
+    # weight_balance_rows = WeightBalance.objects.filter(aircraft_master_id=data["id"]).order_by("snow").values(
+    #     "date_authenticated", "snow","weighing_change_mod","weight_increased", "weight_decreased","long_increased", "long_decreased","lat_vert_increased", "lat_vert_decreased",
+    #     "corrected_weight", "corrected_cg_long","corrected_cg_lat","corrected_moment_long","corrected_moment_lat","authenticated_by_id"
+    # )
+    # for item in weight_balance_rows:
+    #     dt_val = item['date_authenticated']
+    #     if dt_val:
+    #         dt = datetime.fromisoformat(str(dt_val))
+    #         item['date_authenticated'] = f"{dt.date().strftime("%d-%m-%Y")}"
+    #         # item['date'] = dt.date().strftime("%d-%b-%Y")
+    #         # item['time'] = dt.time().strftime("%H:%M")
+    #     else:
+    #         item['date_authenticated'] = ""
+    #     inc_weight= item['weight_increased']
+    #     if inc_weight:
+    #         item['weight_increased'] = f"{inc_weight}"
+    #         inc_weight_symbol = "+"
+    #         item['inc_weight_symbol'] = inc_weight_symbol
+    #     else:
+    #         inc_weight = item['weight_decreased']
+    #         if inc_weight:
+    #             inc_weight_symbol = "-"
+    #             item['weight_increased'] = f"{inc_weight}"
+    #             item['inc_weight_symbol'] = inc_weight_symbol
+    #         else:
+    #             item['weight_increased'] = ""
+    #             item['inc_weight_symbol'] = ""
+    #     inc_long = item['long_increased']
+    #     if inc_long:
+    #         item['long_increased'] = f"{inc_long}"
+    #         inc_long_symbol = "+"
+    #         item['inc_long_symbol'] = inc_long_symbol
+    #     else:
+    #         inc_long = item['long_decreased']
+    #         if inc_long:
+    #             inc_long_symbol = "-"
+    #             item['long_increased'] = f"{inc_long}"
+    #             item['inc_long_symbol'] = inc_long_symbol
+    #         else:
+    #             item['long_increased'] = ""
+    #             item['inc_long_symbol'] = ""
+    #     inc_lat = item['lat_vert_increased']
+    #     if inc_lat:
+    #         item['lat_vert_increased'] = f"{inc_lat}"
+    #         inc_lat_symbol = "+"
+    #         item['inc_lat_symbol'] = inc_lat_symbol
+    #     else:
+    #         inc_lat = item['lat_vert_decreased']
+    #         if inc_lat:
+    #             inc_lat_symbol = "-"
+    #             item['inc_lat_symbol'] = inc_lat_symbol
+    #             item['lat_vert_increased'] = f"{inc_lat}"
+    #         else:
+    #             item['inc_lat_symbol'] = ""
+    #             item['lat_vert_increased'] = ""
+
+
+
+
+
+    context = {
+        "aircraft": {
+            "type": AircraftTypes.objects.get(id=data["aircraft_type"]).aircraft_name,
+            "mark": data.get('aircraft_mark'),
+            "serial_no": data.get('airframe_serial_no'),
+
+        },
+        # "weight_balance_rows": weight_balance_rows,
+
+    }
+
+    # Render HTML with context
+    html_string = render_to_string("MOD Form 710.html", context)
+
+    # Convert HTML → PDF
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf(
+        stylesheets=[CSS(string='@page{size:a4 landscape; margin:5mm;}')]
+    )
+
+    # Return as downloadable PDF
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="MODForm710.pdf"'
     return response

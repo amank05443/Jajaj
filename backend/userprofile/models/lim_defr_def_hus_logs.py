@@ -17,6 +17,7 @@ class LimDefrDefHusLogs(models.Model):
     deferred_until = models.CharField(max_length=50, blank=True, null=True)
     main_system = models.ForeignKey('Systems', models.DO_NOTHING, blank=True, null=True)
     change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     demand_id = models.BigIntegerField(blank=True, null=True)
     husbandry_yn = models.CharField(blank=True, null=True)
     ldh_no = models.CharField(blank=True, null=True)

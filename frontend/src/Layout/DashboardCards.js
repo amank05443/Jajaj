@@ -38,7 +38,7 @@ const cards = [
     description: 'Form 701, Form 703, Form 703 A',
     icon: <FaEye />,
     color: 'orange',
-    link: '/weasyPrint',
+    link: '/ViewDownloadAllForm',
   },
 
 ];
