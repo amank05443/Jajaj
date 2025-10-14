@@ -555,12 +555,12 @@ const CompassLog = ({ compassData }) => {
           </tbody>
         </table>
         <div className="text-gray-800 font-semibold text-lg">
-          <button
-            onClick={handleSubmit}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer"
-          >
-            Authenticate
-          </button>
+{/*           <button */}
+{/*             onClick={handleSubmit} */}
+{/*             className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer" */}
+{/*           > */}
+{/*             Authenticate */}
+{/*           </button> */}
         </div>
       </div>
     </div>

@@ -99,9 +99,9 @@ export default function AtoOnly({ auth }) {
       <div>
         <button
           onClick={() => setOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-14 py-2 bg-blue-600 text-white rounded-lg"
         >
-          Authenticate
+          ATO
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">

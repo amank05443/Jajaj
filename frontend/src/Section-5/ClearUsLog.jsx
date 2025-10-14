@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as yup from "yup";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { motion } from "framer-motion";
-import TradeSupAto from "../Authentication/AuthenticationOne";
+import TradeSupAto from "../Authentication/AuthenticationTwo";
 
 import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
 import CompassLog from "../Section-10/CompassLog";
@@ -227,16 +227,18 @@ const ClearUsLog = ({ defect }) => {
                     />)}
                 </Paper>
               </form>
-              <TradeSupAto snowId={202520333} />
-              <Button
+              <div className="flex justify-center mt-2">
+                <TradeSupAto snowId={202520333} />
+              </div>
+              <button
                 onClick={handleSubmit}
                 type="submit"
                 variant="contained"
                 //                 disabled={!isAuthenticated}
-                className="primary p-4"
+                className="hidden primary p-4"
               >
                 Submit
-              </Button>
+              </button>
             </FormProvider>
           </motion.div>
         </div>

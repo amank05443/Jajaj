@@ -473,7 +473,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
           onClick={() => setOpen(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
         >
-          Authenticate 2
+          Authenticate
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">

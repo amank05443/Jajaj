@@ -99,7 +99,7 @@ export default function AllUsers({ auth }) {
       <div>
         <button
           onClick={() => setOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-10 py-2 bg-blue-600 text-white rounded-lg"
         >
           By Whom
         </button>

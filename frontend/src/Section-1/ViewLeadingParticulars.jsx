@@ -746,7 +746,6 @@ const ViewLeadingParticulars = () => {
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center mt-5 gap-5">
-           <ModForm701 />
            <AllUsers auth={handleDataFromAllUsers} />
           <AtoOnly auth={handleDataFromAtoOnly} />
           <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
@@ -769,6 +768,9 @@ const ViewLeadingParticulars = () => {
           {/*         > */}
           {/*           🛠️ Other System Details :- */}
         </div>
+         <div className="flex justify-center mt-5 gap-5">
+           <ModForm701 />
+      </div>
       </div>
     </div>
   );
