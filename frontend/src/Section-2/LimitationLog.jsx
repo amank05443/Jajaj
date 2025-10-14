@@ -229,7 +229,7 @@ export default function USLog() {
                           size="small"
                           onClick={() => handleAction(rowData.row)}
                         >
-                          View
+                          Clear
                         </Button>
                       </motion.div>
                     </div>
