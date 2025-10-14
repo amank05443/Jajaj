@@ -153,30 +153,24 @@ const USLogForm = () => {
   }
 
   return (
-    <div className="items-start bg-blue-200 p-1">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-white-600 to-indigo-600 py-12 px-6">
       {/*<h1>------------------------------------------------------Headings ------------------------------------------------------------------</h1>*/}
-      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 mt-1 mb-1">
-        <h2
-          className="absolute text-md font-bold"
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontSize: "35px",
-            margin: 4,
-            fontFamily: "Algerian",
-          }}
-        >
+      <div className="mx-auto max-w-4x1 bg-white/20 backdrop-blur-lg border-white/30 rounded-2x1 p-8">
+{/*           <div className="flex items-center justify-between mb-6"> */}
+        <h1 className="text-center text-1x1 font-bold text-gray-900">
           CHANGE OF SERVICEABILITY LOG
-        </h2>
+        </h1>
+{/*         </div> */}
       </div>
       {/*<h1>-------------------------------------------------------Forms & Body ---------------------------------------------------</h1>*/}
-      <form onSubmit={handleSubmit} className=" p-1 space-y-4 ">
-        <div className="p-4 rounded-lg bg-white/20 backdrop-blur-md border border-white/90 shadow-lg">
+      <form onSubmit={handleSubmit} className=" space-y-6 ">
+        <div className="grid grid-cols-3 gap-6 items-start">
           {/*<h1>-------------------------------------------------------row 1 ---------------------------------------------------</h1>*/}
-          <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+{/*           <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4"> */}
+            <div className="col-span-2 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+              <label className="block font-medium text-gray-700 mb-1">
                 Entry Type
               </label>
               <select
@@ -184,7 +178,7 @@ const USLogForm = () => {
                 value={formData.entryType}
                 onChange={handleChange}
                 disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-md p-2 focus:ring-purple-400"
               >
                 <option value="">Select Entry Type</option>
                 {entryTypeOptions.map((entry_type) => (
@@ -201,7 +195,7 @@ const USLogForm = () => {
             </div>
 
             <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+              <label className="block font-medium text-gray-700 mb-1">
                 How Found
               </label>
               <select
@@ -209,7 +203,7 @@ const USLogForm = () => {
                 value={formData.howFound}
                 onChange={handleChange}
                 disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-purple-400"
               >
                 <option value="">Select How Found</option>
                 {howFoundOptions.map((how_found) => (
@@ -218,15 +212,17 @@ const USLogForm = () => {
                   </option>
                 ))}
               </select>
+              </div>
+{/*               </div> */}
               {errors.howFound && (
                 <p className="text-red-500">
                   {errors.howFound.message || errors.howFound}
                 </p>
               )}
             </div>
-
+    <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+              <label className="block font-sm font-medium text-gray-700 mb-1">
                 Date & Time
               </label>
               <input
@@ -236,17 +232,18 @@ const USLogForm = () => {
                 value={formData.dateAndTime}
                 onChange={handleChange}
                 disabled={isAuthenticated}
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-purple-400"
               />
+              </div>
               {errors.dateAndTime && (
                 <p className="text-red-500">
                   {errors.dateAndTime.message || errors.dateAndTime}
                 </p>
               )}
-            </div>
+
 
             <div>
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Airframe Hours
               </label>
               <input
@@ -254,17 +251,18 @@ const USLogForm = () => {
                 name="airframe_hrs"
                 value={formData.airframeHrs}
                 disabled
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-gray-50 border border-gray-300 rounded-md p-2"
                 readOnly
               ></input>
             </div>
           </div>
+{/*           </div> */}
           {/* SECTION 2: REASON & CONDITIONS */}
           {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
-          <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-2 mt-8">
+          <div>
             {/* Reason */}
-            <div className="border-2 border-black-600 rounded-lg p-4">
-              <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Reason for placing aircraft unserviceable
               </label>
               <textarea
@@ -274,64 +272,67 @@ const USLogForm = () => {
                 disabled={isAuthenticated}
                 rows={4}
                 placeholder="Enter reason for placing aircraft unserviceable"
-                className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-purple-400"
               />
+
               {errors.reason_for_placing_unserviceable && (
                 <p className="text-red-500">
                   {errors.reason_for_placing_unserviceable.message ||
                     errors.reason_for_placing_unserviceable}
                 </p>
               )}
+{/*           </div> */}
             </div>
+
 
             {/* Checkboxes for LDHC*/}
 
-            <div className="grid grid-cols-2 gap-2">
-              {formData.entryType == 2025110 && (
-                <div className="border-2 border-black-600 rounded-lg p-4">
-                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                    Select LDHC
-                  </label>
-                  {checkBoxesLDHC.map((box) => (
-                    <label
-                      key={box.key}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={activeCheckboxes[box.key]}
-                        onChange={() => toggleCheckboxes(box.key)}
-                        disabled={isAuthenticated}
-                        className="accent-pink-600"
-                      />
-                      <span className="text-gray-800">{box.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-              {/* Checkboxes for Additional Checks*/}
-              {formData.entryType != 2025110 && (
-                <div className="border-2 border-black-600 rounded-lg p-4">
-                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                    Select Additional Checks
-                  </label>
-                  {checkBoxesChecks.map((box) => (
-                    <label
-                      key={box.key}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={activeCheckboxes[box.key]}
-                        onChange={() => toggleCheckboxes(box.key)}
-                        disabled={isAuthenticated}
-                      />
-                      <span className="text-gray-800">{box.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
+{/*             <div className="grid grid-cols-2 gap-2"> */}
+{/*               {formData.entryType == 2025110 && ( */}
+{/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
+{/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+{/*                     Select LDHC */}
+{/*                   </label> */}
+{/*                   {checkBoxesLDHC.map((box) => ( */}
+{/*                     <label */}
+{/*                       key={box.key} */}
+{/*                       className="flex items-center space-x-2" */}
+{/*                     > */}
+{/*                       <input */}
+{/*                         type="checkbox" */}
+{/*                         checked={activeCheckboxes[box.key]} */}
+{/*                         onChange={() => toggleCheckboxes(box.key)} */}
+{/*                         disabled={isAuthenticated} */}
+{/*                         className="accent-pink-600" */}
+{/*                       /> */}
+{/*                       <span className="text-gray-800">{box.label}</span> */}
+{/*                     </label> */}
+{/*                   ))} */}
+{/*                 </div> */}
+{/*               )} */}
+{/*                */}{/* Checkboxes for Additional Checks*/}
+{/*               {formData.entryType != 2025110 && ( */}
+{/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
+{/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+{/*                     Select Additional Checks */}
+{/*                   </label> */}
+{/*                   {checkBoxesChecks.map((box) => ( */}
+{/*                     <label */}
+{/*                       key={box.key} */}
+{/*                       className="flex items-center space-x-2" */}
+{/*                     > */}
+{/*                       <input */}
+{/*                         type="checkbox" */}
+{/*                         checked={activeCheckboxes[box.key]} */}
+{/*                         onChange={() => toggleCheckboxes(box.key)} */}
+{/*                         disabled={isAuthenticated} */}
+{/*                       /> */}
+{/*                       <span className="text-gray-800">{box.label}</span> */}
+{/*                     </label> */}
+{/*                   ))} */}
+{/*                 </div> */}
+{/*               )} */}
+{/*             </div> */}
           </div>
         </div>
         {activeCheckboxes.lim && (
@@ -353,7 +354,7 @@ const USLogForm = () => {
           type="submit"
           variant="contained"
           disabled={!isAuthenticated}
-          className="primary"
+          className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-red px-5 py-2 rounded-md font-semibold shadow-md"
         >
           Submit
         </Button>

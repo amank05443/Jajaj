@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('userprofile', '0007_alter_users_customer_id_alter_users_login_pwd_and_more'),
     ]
@@ -128,10 +127,13 @@ class Migration(migrations.Migration):
                 ('basic_weight', models.DecimalField(blank=True, decimal_places=65535, max_digits=65535, null=True)),
                 ('basic_long_moment', models.CharField(blank=True, null=True)),
                 ('basic_lat_vert_moment', models.CharField(blank=True, null=True)),
-                ('weight_item_removed', models.DecimalField(blank=True, decimal_places=65535, max_digits=65535, null=True)),
+                ('weight_item_removed',
+                 models.DecimalField(blank=True, decimal_places=65535, max_digits=65535, null=True)),
                 ('long_moment_item_removed', models.CharField(blank=True, null=True)),
                 ('lat_vert_item_removed', models.CharField(blank=True, null=True)),
-                ('weight_item_fitted', models.DecimalField(blank=True, db_column='weight_item-fitted', decimal_places=65535, max_digits=65535, null=True)),
+                ('weight_item_fitted',
+                 models.DecimalField(blank=True, db_column='weight_item-fitted', decimal_places=65535, max_digits=65535,
+                                     null=True)),
                 ('long_moment_item_fitted', models.CharField(blank=True, null=True)),
                 ('lat_vert_item_fitted', models.CharField(blank=True, null=True)),
                 ('current_weight', models.DecimalField(blank=True, decimal_places=65535, max_digits=65535, null=True)),
@@ -253,7 +255,7 @@ class Migration(migrations.Migration):
                 ('in_use', models.CharField(blank=True, max_length=2, null=True)),
                 ('check_item_serial_no', models.CharField(blank=True, max_length=50, null=True)),
                 ('item_serial_id_old', models.BigIntegerField(blank=True, null=True)),
-                ('store_type_id', models.BigIntegerField(blank=True, null=True)),
+                ('aircraft_type', models.BigIntegerField(blank=True, null=True)),
                 ('aircraft_master_id', models.BigIntegerField(blank=True, null=True)),
                 ('customer_id', models.BigIntegerField(blank=True, null=True)),
                 ('item_serial_id', models.BigIntegerField(blank=True, null=True)),

@@ -8,6 +8,7 @@ from ..serializers import (ChangeOfServiceabilityLogsSerializer, SystemsSerializ
                            ItemsSerializer, LimDefrDefLogsSerializer)
 from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items, Users,
                       ChangeOfServiceabilityLogs, LimDefrDefHusLogs, UserQuals)
+from django.db.models import Max
 
 
 # class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
@@ -31,7 +32,7 @@ def limLogData(request):
     aircraft_type_id = request.GET["aircraft_type_id"]
     systems_qs = Systems.objects.filter(aircraft_type=aircraft_type_id)
     # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
-    items_qs = Items.objects.filter(store_type=aircraft_type_id)
+    items_qs = Items.objects.filter(aircraft_type=aircraft_type_id)
 
     return Response({
         "systemsData": SystemsSerializer(systems_qs, many=True).data,
@@ -43,6 +44,7 @@ def limLogData(request):
 @api_view(['POST'])
 @transaction.atomic
 def saveUsLogData(request):
+    # if request.method == 'POST':
     try:
         data = request.data  # fetching of data coming from frontend
         formData = data["formData"]
@@ -145,14 +147,27 @@ def saveUsLogData(request):
         # Saving data in lim_defr_def_logs table
 
         if activeCheckboxes['lim'] == True:
-            limLog = LimDefrDefLogs.objects.create(
+            current_year = datetime.now().year
+            last_ldh = LimDefrDefHusLogs.objects.filter(ldh_no__startswith=str(current_year)).aggregate(
+                Max('ldh_no')
+            )['ldh_no__max']
+            print(last_ldh)
+            if last_ldh:
+                last_num = int(last_ldh.split('/')[-1])
+                new_num = last_num + 1
+            else:
+                new_num = 1
+                new_ldh_no = f"{current_year}/{str(new_num).zfill(4)}"
+
+            limLog = LimDefrDefHusLogs.objects.create(
                 item_id=limLogData['item'],
+                ldh_no=1,
                 limitations_yn='Y',
                 deferred_until=limLogData['deferred_until'],
-                main_system_id=limLogData['main_system'],
-                demand_no=limLogData['demand_id'],
-                aircraft_role_id=limLogData['aircraft_role'],
-                change_of_serviceability_log_id=cosLog.id,
+                main_system_id=1,
+                demand_no='1',
+                aircraft_role_id='1',
+                change_of_serviceability_log_id='1',
             )
             return_res["lim"] = {
                 "snow": lim.snow,

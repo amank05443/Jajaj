@@ -144,7 +144,7 @@ export default function USLog() {
                 {
                   field: "ldh_no",
                   headerName: "LIMITATION NUMBER",
-                  flex: 1,
+                  flex: 2,
                   headerAlign: "center",
                   align: "center",
                 },
@@ -163,7 +163,7 @@ export default function USLog() {
                 {
                   field: "snow",
                   headerName: "SNOW",
-                  flex: 2,
+                  flex: 1,
                    renderCell: (rowData) =>
                     rowData.row.change_of_serviceability_log?.snow || "N/A",
                   headerAlign: "center",
@@ -174,7 +174,7 @@ export default function USLog() {
              {
                   field: "airframe_hrs",
                   headerName: "A/F HRS",
-                  flex: 2,
+                  flex: 1,
                     renderCell: (rowData) =>
                     rowData.row.change_of_serviceability_log?.airframe_hrs || "N/A",
                   headerAlign: "center",
@@ -194,11 +194,25 @@ export default function USLog() {
                   sortable: false,
                 },
             {
-                  field: "ENTRY STATUS",
-                  headerName: "status",
+                  field: "entryStatus",
+                  headerName: "ENTRY STATUS",
                   flex: 2,
-                  renderCell: (rowData) =>
-                    rowData.row.change_of_serviceability_log?.status || "N/A",
+                  renderCell: (rowData) => {
+//                     rowData.row.change_of_serviceability_log?.status || "N/A",
+                    const  statusValue = rowData.row.change_of_serviceability_log?.status;
+                    let displayStatus;
+
+                    if (statusValue === "2") {
+                        displayStatus = "Open";
+                        }
+                    else if (statusValue === "1"){
+                        displayStatus = "Closed";
+                        }
+                    else{
+                        displayStatus = "NA";
+                        }
+                    return displayStatus;
+                    },
                   headerAlign: "center",
                   align: "center",
                   disableColumnMenu: true,
@@ -229,7 +243,7 @@ export default function USLog() {
                           size="small"
                           onClick={() => handleAction(rowData.row)}
                         >
-                          View
+                          Clear
                         </Button>
                       </motion.div>
                     </div>
