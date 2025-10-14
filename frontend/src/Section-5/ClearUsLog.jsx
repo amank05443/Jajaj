@@ -48,15 +48,13 @@ const ClearUsLog = ({ defect }) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-
   const gridData = location.state;
   console.log(gridData);
 
-  useEffect(() => {
-    if (!gridData) {
-      navigate("/usLog", { replace: true });
-    }
-  }, [gridData, navigate]);
+  useEffect(()=>{
+      if(!gridData){
+          navigate("/usLog",{replace:true});
+          }},[gridData,navigate]);
 
   const { date, time } = formatDateTime(gridData?.user_time_date);
 
@@ -169,10 +167,7 @@ const ClearUsLog = ({ defect }) => {
                 <div className="border border-green-800">
                   {date} <br /> {time}
                 </div>
-                <div className="border border-green-800">
-                  {" "}
-                  {gridData?.snow}{" "}
-                </div>
+                <div className="border border-green-800"> {gridData?.snow} </div>
                 <div className="border border-green-800">
                   {" "}
                   {gridData?.airframe_hrs}{" "}

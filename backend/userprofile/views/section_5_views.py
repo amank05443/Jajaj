@@ -15,6 +15,7 @@ from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, Air
 #         return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect","by_whom").prefetch_related("change_of_serviceability_log_lines").filter(aircraft_master_id=aircraft_master_id).order_by('snow'))
 
 
+
 def usLogDropDowns(request):
     data = {
         "aircraftMasters": AircraftMasters.objects.filter(id=request.GET["aircraft_master_id"]).values().first(),
@@ -22,7 +23,6 @@ def usLogDropDowns(request):
         "entryTypes": list(EntryTypes.objects.values("id", "occasion")),
     }
     return JsonResponse(data, safe=False)
-
 
 @api_view(['GET'])
 def limLogData(request):
@@ -153,6 +153,7 @@ def saveUsLogData(request):
 
         # Saving data in lim_defr_def_logs table
 
+
         if activeCheckboxes['lim'] == True:
             limLog = LimDefrDefLogs.objects.create(
                 item_id=limLogData['item'],
@@ -203,7 +204,6 @@ def clearUsLog(request):
 
 class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
     serializer_class = ChangeOfServiceabilityLogsSerializer
-
     def get_queryset(self):
         aircraft_master_id = self.kwargs.get('id')
         return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect", "by_whom__user").filter(
