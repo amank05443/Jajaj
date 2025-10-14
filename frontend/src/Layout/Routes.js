@@ -119,7 +119,7 @@ export const privateRoutes = [
   { path: "/PasswordReset", element: <PasswordReset /> },
 
   //--REPORT E700--//
-  { path: "/viewE700", element: <ViewE700 /> },
+  { path: "/WeasyPrint", element: <ViewDownloadAllForm /> },
   { path: "/ViewDownloadAllForm", element: <ViewDownloadAllForm /> },
 
   { path: "/leadingParticularTab", element: <LeadingParticularTab /> },

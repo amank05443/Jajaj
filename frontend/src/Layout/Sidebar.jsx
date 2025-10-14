@@ -182,7 +182,7 @@ const sidebarLinks = [
    {
     label: "View/Download E-700",
     icon: <Eye size={23} />,
-    to:  '/viewE700',
+    to:  '/WeasyPrint',
   },
 ];
 
