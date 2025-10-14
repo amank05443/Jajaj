@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 10px; }
+    h3 { text-align: center; margin-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 6px; }
+    th, td {
+      border: 1px solid black;
+      padding: 3px 4px;
+      vertical-align: top;
+    }
+    .no-border { border: none !important; }
+    .section-title {
+      font-weight: bold;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    .right { text-align: right; }
+    .center { text-align: center; }
+    .small { font-size: 10px; }
+    footer {
+    text-align: left;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    }
+    .note { font-weight: bold; text-decoration: underline;}
+  </style>
+</head>
+<body>
+
+<h3 style="text-decoration: underline; text-align:right;">MOD Form 712A</h3>
+<h3 style="text-decoration: underline;">COMPASS CALIBRATION LOG</h3>
+
+<table style="border:none; border-collapse:collapse;">
+  <tr>
+    <td style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td style="border:none; font-weight:bold; ">Mark</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td style="border:none; font-weight:bold; ">Serial No</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+    <td style="border:none; font-weight:bold; text-decoration:underline; text-align:right;">Page  1</td>
+  </tr>
+</table>
+
+<table style="flex:1; border:1px solid black; margin-bottom:5px; text-align: center;">
+  <tr>
+    <td style="border:none; text-align:left;" rowspan="1" colspan="6" class="section-title">COMPASS SWING DATE:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="5" class="section-title">{{ latest_compass_row.compass_swing_date }}</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="4" class="section-title">DUE DATE:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="17" class="section-title">{{ latest_compass_row.due_date }}</td>
+  </tr>
+  <tr>
+    <td style="border:none; text-align:left;" rowspan="1" colspan="6" class="section-title">AP REFERANCE:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="5" class="section-title">{{ latest_compass_row.ap_reference }}</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="4" class="section-title">METHOD:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="17" class="section-title">{{ latest_compass_row.method }}</td>
+  </tr>
+  <tr>
+    <td style="border:none; text-align:left;" rowspan="1" colspan="6" class="section-title">PLACE:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="5" class="section-title">{{ latest_compass_row.place }}</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="4" class="section-title">REF. SNOW:</td>
+    <td style="border:none; text-align:left" rowspan="1" colspan="17" class="section-title">{{ latest_compass_row.ref_snow }}</td>
+  </tr>
+  <tr>
+    <th rowspan="3" colspan="3" class="section-title">Date</th>
+    <th rowspan="2" colspan="6" class="section-title">Compass Particulars</th>
+    <th rowspan="1" colspan="12" class="section-title">Deviation Record</th>
+    <th rowspan="3" colspan="5" class="section-title">Remarks (To include reason for sowing)</th>
+    <th rowspan="3" colspan="2" class="section-title">Coeff 'A'</th>
+    <th rowspan="1" colspan="4" class="section-title">Corrector Currents</th>
+  </tr>
+
+  <tr>
+    <td colspan="4" class="section-title">Before Correction</td>
+    <td colspan="8" class="section-title">After Correction</td>
+    <td rowspan="2" colspan="2" class="section-title">'B'</td>
+    <td rowspan="2" colspan="2" class="section-title">'C'</td>
+  </tr>
+  <tr>
+    <td colspan="2" class="section-title">Type</td>
+    <td colspan="2" class="section-title">Ser No</td>
+    <td colspan="2" class="section-title">Position</td>
+    <td colspan="1" class="section-title">N</td>
+    <td colspan="1" class="section-title">E</td>
+    <td colspan="1" class="section-title">S</td>
+    <td colspan="1" class="section-title">W</td>
+    <td colspan="1" class="section-title">N</td>
+    <td colspan="1" class="section-title">NE</td>
+    <td colspan="1" class="section-title">E</td>
+    <td colspan="1" class="section-title">SE</td>
+    <td colspan="1" class="section-title">S</td>
+    <td colspan="1" class="section-title">SW</td>
+    <td colspan="1" class="section-title">W</td>
+    <td colspan="1" class="section-title">NW</td>
+  </tr>
+  <tr>
+    <td colspan="3" class="section-title">1</td>
+    <td colspan="6" class="section-title">2</td>
+    <td colspan="4" class="section-title">3</td>
+    <td colspan="8" class="section-title">4</td>
+    <td colspan="5" class="section-title">5</td>
+    <td colspan="2" class="section-title">6</td>
+    <td colspan="4" class="section-title">7</td>
+  </tr>
+  {% for compass in compass_calibration_logs %}
+<!--  compass_calibration_logs_row =CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).values(-->
+<!--        "id","ap_reference","compass_swing_date","due_date","ref_snow","compass_type", "compass_ser_no","place","method",-->
+<!--        "actual_north","actual_south","actual_east","actual_west","a_c_north","a_c_south","a_c_east","a_c_west",-->
+<!--        "a_c_north_east","a_c_north_west","a_c_south_east","a_c_south_west","coeff_a","coeff_b","coeff_c")-->
+  <tr>
+    <td colspan="3" >{{ compass.compass_swing_date }}</td>
+    <td colspan="2" >{{ compass.compass_type }}</td>
+    <td colspan="2" >{{ compass.compass_ser_no }}</td>
+    <td colspan="2" >{{ compass.place }}</td>
+    <td colspan="1">{{ compass.actual_north }}</td>
+    <td colspan="1">{{ compass.actual_east }}</td>
+    <td colspan="1">{{ compass.actual_south }}</td>
+    <td colspan="1">{{ compass.actual_west }}</td>
+    <td colspan="1">{{ compass.a_c_north }}</td>
+    <td colspan="1">{{ compass.a_c_north_east }}</td>
+    <td colspan="1">{{ compass.a_c_east }}</td>
+    <td colspan="1">{{ compass.a_c_south_east }}</td>
+    <td colspan="1">{{ compass.a_c_south }}</td>
+    <td colspan="1">{{ compass.a_c_south_west }}</td>
+    <td colspan="1">{{ compass.a_c_west }}</td>
+    <td colspan="1">{{ compass.a_c_north_west }}</td>
+    <td colspan="5" >{{ compass.remarks }}</td>
+    <td colspan="2" >{{ compass.coeff_a }}</td>
+    <td colspan="2" >{{ compass.coeff_b }}</td>
+    <td colspan="2" >{{ compass.coeff_c }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<!--<footer>-->
+<!--  <span class="note">Note.</span> The MOD Form 703B is a progressive record of onboard software changes. The last entry under each system heading reflects the current software loaded into that system.-->
+<!--</footer>-->
+
+</body>
+</html>

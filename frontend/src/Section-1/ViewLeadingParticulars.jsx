@@ -6,6 +6,7 @@ import AllUsers from "../Authentication/AuthenticationOne";
 import TradeSupAto from "../Authentication/AuthenticationTwo";
 import TradeSupAto1 from "../Authentication/AuthenticationTwo2";
 import AuthRightSide from "../Authentication/AuthenticationThree";
+import {ModForm701} from "../WeasyPrintReports/WeasyPrint";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
@@ -745,7 +746,8 @@ const ViewLeadingParticulars = () => {
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center mt-5 gap-5">
-          <AllUsers auth={handleDataFromAllUsers} />
+           <ModForm701 />
+           <AllUsers auth={handleDataFromAllUsers} />
           <AtoOnly auth={handleDataFromAtoOnly} />
           <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
           <TradeSupAto1
