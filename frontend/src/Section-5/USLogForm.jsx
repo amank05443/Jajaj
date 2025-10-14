@@ -269,7 +269,7 @@ const USLogForm = () => {
               </label>
               <textarea
                 name="reason_for_placing_unserviceable"
-                value={formData.entryType == 2025112 ? "SOFTWARE MODIFICATION TO BE CARRIED OUT": formData.reason_for_placing_unserviceable || ""}
+                value={formData.reason_for_placing_unserviceable}
                 onChange={handleChange}
                 disabled={isAuthenticated}
                 rows={4}

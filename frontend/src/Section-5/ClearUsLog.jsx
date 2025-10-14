@@ -212,7 +212,7 @@ const ClearUsLog = ({ defect }) => {
                     <BasicWeightAndMoment wbData={handleWbData} />
                   )}
               {/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
-              {gridData?.entry_type == 2025110 && (
+              {gridData?.entry_type == 2025112 && (
                     <SoftwareLogEntry />
                   )}
                   {gridData?.entry_type == 2025111 && (
