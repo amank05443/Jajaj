@@ -4,6 +4,9 @@ import React, { lazy } from "react";
 const Welcome = lazy(() => import("./Welcome"));
 const LoginPage = lazy(() => import("../Authentication/LoginPage"));
 const Dashboard = lazy(() => import("./Dashboard"));
+const DashboardExp = lazy(() => import("./DashboardExp"));
+const DashboardExp1 = lazy(() => import("./DashboardExp1"));
+
 const DashboardCards = lazy(() => import("./DashboardCards"));
 const E700Page = lazy(() => import("./E700Page"));
 const AircraftHeader = lazy(() => import("./AircraftHeader"));
@@ -105,7 +108,9 @@ export const publicRoutes = [
 //-----------------PRIVATE ROUTES----------(Accessible only for Successfully Logged in)//
 export const privateRoutes = [
   //---LAYOUT---//
-  { path: "/dashboard", element: <Dashboard /> },
+//  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/dashboard", element: <DashboardExp /> },
+  { path: "/exp1", element: <DashboardExp1 /> },
   { path: "/dashboardCards", element: <DashboardCards /> },
   { path: "/e700", element: <E700Page /> },
   { path: "/aircraftHeader", element: <AircraftHeader /> },

@@ -46,7 +46,7 @@ urlpatterns = [
     path("api/reset_passcode/", views.reset_passcode, name="reset_passcode"),
     path("api/validate_security_answer/", views.validate_security_answer, name="validate_password"),
 
-    path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
+    # path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
 
 
     #---------------------------------------------- Section 1  ---------------------------------------------------------#

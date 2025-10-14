@@ -149,7 +149,7 @@ export default function USLog() {
         >
           <button
             className="flex items-center gap-2 font-bold bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-            onClick={() => navigate("/newEntryForUSLog")}
+            onClick={() => navigate("/usLogForm")}
           >
             <PlusSquare className="w-5 h-5" strokeWidth={3} />
             New Entry
@@ -211,12 +211,13 @@ export default function USLog() {
         </Box>
       </Box>
       {/* <---Starting of the Grid---> */}
-      <Card className="shadow-lg rounded-xl">
+      <Card className="shadow-lg rounded-xl ">
         <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
           <div style={{ height: 420, width: "100%" }}>
             <DataGrid
               loading={dataLoading}
               rows={filteredRows}
+              getRowHeight={()=>"auto"}
               columns={[
                 {
                   field: "snow",
@@ -301,48 +302,6 @@ export default function USLog() {
                     </div>
                   ),
                 },
-
-                //                 {
-                //                   field: "Action",
-                //                   headerName: "ACTION",
-                //                   flex: 1,
-                //                   headerAlign: "center",
-                //                   align: "center",
-                //                   disableColumnMenu: true,
-                //                   sortable: false,
-                //                   renderCell: (rowData) =>
-                //                     rowData.row.status_label === "OPEN" ? (
-                //                       <div
-                //                       //                         style={{
-                //                       //                           display: "flex",
-                //                       //                           justifyContent: "center",
-                //                       //                           alignItems: "center",
-                //                       //                           height: "100%",
-                //                       //                         }}
-                //                       >
-                //                         <Button
-                //                           variant="contained"
-                //                           size="small"
-                //                           color="info"
-                //                           onClick={() => handleAction(rowData.row)}
-                //                         >
-                //                           Close Here
-                //                         </Button>{" "}
-                //                       </div>
-                //                     ) : (
-                //                       <span
-                //                         style={{
-                //                           color: "green",
-                //                           display: "flex",
-                //                           justifyContent: "center",
-                //                           alignItems: "center",
-                //                           height: "100%",
-                //                         }}
-                //                       >
-                //                         N/A
-                //                       </span>
-                //                     ),
-                //                 },
               ]}
               pageSize={5}
               rowsPerPageOptions={[5, 10]}

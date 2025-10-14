@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+
+
 import {
   IconButton,TextField,Badge,Fab,InputAdornment,Tooltip,Divider,
   ListItemIcon,Typography,Avatar,Menu,MenuItem,AppBar,
@@ -31,6 +33,7 @@ export default function Header({
     id: params.aircraft_master_id,
     related: ["aircraft_type,customer"],
   });
+  const navigate = useNavigate();
 
 //   const { data: dataCoSLog, loading: loadingCoSLog } = useTableApi(
 //     "change_of_serviceability_logs",
@@ -73,7 +76,9 @@ export default function Header({
           <div
             className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl flex items-center
             justify-center shadow-lg shadow-cyan-500/30 rotate-3 hover:rotate-0 transition-transform duration-300"
-          >
+             onClick={() => navigate("/exp1")}
+                          >
+
             <Plane size={24} />
           </div>
           <div>
@@ -103,13 +108,13 @@ export default function Header({
                 >
                   {" "}
                   <Box display="flex" gap={3} flexWrap="wrap">
-                    <Typography variant="subtitle4" sx={{ color: "white" }}>
+                    <Typography variant="h4" sx={{ color: "white" , fontWeight:"bold" }}>
                       {data.aircraft_type?.aircraft_name} - {data.side_no}
                     </Typography>
 
-                    <Typography variant="subtitle4" sx={{ color: "white" }}>
-                      {loading ? "" : "A/F Hrs: " + data.airframe_hrs}
-                    </Typography>
+{/*                     <Typography variant="subtitle4" sx={{ color: "white" }}> */}
+{/*                       {loading ? "" : "A/F Hrs: " + data.airframe_hrs} */}
+{/*                     </Typography> */}
 {/*                     <Typography variant="subtitle4"> */}
 {/*                       <span style={{ color: "white" }}> Status: </span> */}
 {/*                       {""} */}
@@ -132,17 +137,17 @@ export default function Header({
         {/* Notifications */}
         <div className="flex items-center gap-2">
           {" "}
-          <IconButton
-            color="inherit"
-            onClick={handleNotifClick}
-            aria-label="notifications"
-            className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
-          >
-            <Badge badgeContent={3} color="error">
-              {" "}
-              <Bell size={20} />
-            </Badge>
-          </IconButton>
+{/*           <IconButton */}
+{/*             color="inherit" */}
+{/*             onClick={handleNotifClick} */}
+{/*             aria-label="notifications" */}
+{/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
+{/*           > */}
+{/*             <Badge badgeContent={3} color="error"> */}
+{/*               {" "} */}
+{/*               <Bell size={20} /> */}
+{/*             </Badge> */}
+{/*           </IconButton> */}
           <Menu
             anchorE1={notifAnchor}
             open={Boolean(notifAnchor)}
@@ -158,39 +163,39 @@ export default function Header({
             <Divider />
             <MenuItem>Server load high.</MenuItem>
           </Menu>{" "}
-          <IconButton
-            color="inherit"
-            aria-label="info"
-            className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
-          >
-            <Info size={20} />{" "}
-          </IconButton>
+{/*           <IconButton */}
+{/*             color="inherit" */}
+{/*             aria-label="info" */}
+{/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
+{/*           > */}
+{/*             <Info size={20} />{" "} */}
+{/*           </IconButton> */}
           {/* Search Bar */}
-          <div className="flex-grow max-w-md hidden md:block">
-            <TextField
-              placeholder="Search..."
-              size="small"
-              fullWidth
-              variant="outlined"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  background: "rgba(255,255,255,0.1)",
-                  color: "white",
-                  "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                  "&:hover fieldset": { borderColor: "cyan" },
-                },
-                input: { color: "white" },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon size={18} className="text-cyan-300" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+{/*           <div className="flex-grow max-w-md hidden md:block"> */}
+{/*             <TextField */}
+{/*               placeholder="Search..." */}
+{/*               size="small" */}
+{/*               fullWidth */}
+{/*               variant="outlined" */}
+{/*               sx={{ */}
+{/*                 "& .MuiOutlinedInput-root": { */}
+{/*                   borderRadius: 2, */}
+{/*                   background: "rgba(255,255,255,0.1)", */}
+{/*                   color: "white", */}
+{/*                   "& fieldset": { borderColor: "rgba(255,255,255,0.2)" }, */}
+{/*                   "&:hover fieldset": { borderColor: "cyan" }, */}
+{/*                 }, */}
+{/*                 input: { color: "white" }, */}
+{/*               }} */}
+{/*               InputProps={{ */}
+{/*                 startAdornment: ( */}
+{/*                   <InputAdornment position="start"> */}
+{/*                     <SearchIcon size={18} className="text-cyan-300" /> */}
+{/*                   </InputAdornment> */}
+{/*                 ), */}
+{/*               }} */}
+{/*             /> */}
+{/*           </div> */}
         </div>
       </div>
     </motion.header>

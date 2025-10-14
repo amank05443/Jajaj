@@ -3,7 +3,7 @@ from rest_framework import serializers
 # from .models import  Users, Quals, Trades ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
-    FuelTanks, EcuMasters,SecurityQuestions, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs
+    FuelTanks, EcuMasters,SecurityQuestions, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs,ChangeOfServiceabilityLogLines
 
 
 #--for dynamic views and urls--particularly for useTableapi:-Abhishek Singh
@@ -46,13 +46,13 @@ def get_dynamic_serializer(model_class):
 class RanksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ranks
-        fields = '__all__'
+        fields = ["id","abbreviation"]
 
 class UsersSerializer(serializers.ModelSerializer):
     rank = RanksSerializer(read_only=True)
     class Meta:
         model = Users
-        fields = '__all__'
+        fields = ["id","user_name","rank"]
 
 
 
@@ -70,7 +70,7 @@ class UserQualsSerializer(serializers.ModelSerializer):
     user = UsersSerializer(read_only=True)
     class Meta:
         model = UserQuals
-        fields = '__all__'
+        fields = ["id","user"]
 
 class AircraftMastersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -129,17 +129,22 @@ class HowFoundDefectsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ChangeOfServiceabilityLogLinesSerializer(serializers.ModelSerializer):
+    trade= TradesSerializer(read_only=True)
+    user_qual = UserQualsSerializer(read_only=True)
     class Meta:
-        model = ChangeOfServiceabilityLogs
+        model = ChangeOfServiceabilityLogLines
         fields = '__all__'
+        # depth=1
 
 class ChangeOfServiceabilityLogsSerializer(serializers.ModelSerializer):
     snow=serializers.DecimalField(max_digits=10, decimal_places=0,allow_null=True)
     status_label = serializers.SerializerMethodField(method_name='get_status_label')
     how_found_defect=HowFoundDefectsSerializer(read_only=True)
-    change_of_serviceability_lines=ChangeOfServiceabilityLogLinesSerializer(source="change_of_serviceability_log_lines", read_only=True,many=True)
+    change_of_serviceability_log_lines=ChangeOfServiceabilityLogLinesSerializer( read_only=True,many=True)
     # by_whom_users = serializers.SerializerMethodField( method_name='get_by_whom_users')
     by_whom = UserQualsSerializer(read_only=True)
+    supervisor=UserQualsSerializer(read_only=True)
+    authorised_by=UserQualsSerializer(read_only=True)
     class Meta:
         model = ChangeOfServiceabilityLogs
         fields = '__all__'
