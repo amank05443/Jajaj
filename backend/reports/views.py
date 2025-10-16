@@ -7,21 +7,24 @@ from django.http import JsonResponse
 from django.forms.models import model_to_dict
 from django.shortcuts import render
 
-from weasyprint import HTML, CSS
-from pypdf import PdfReader, PdfWriter
+# from weasyprint import HTML, CSS
+# from pypdf import PdfReader, PdfWriter
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from datetime import datetime
 
-from userprofile.models import (AircraftMasters,AircraftRoles,AircraftTypes,Customers,FuelTanks,ChangeOfServiceabilityLogs,ChangeOfServiceabilityLogLines,Trades,
-                                EcuMasters,TyrePressures,Pols,Systems, Users, HowFoundDefects, Ranks, UserQuals, LimDefrDefHusLogs,
+from userprofile.models import (AircraftMasters, AircraftRoles, AircraftTypes, Customers, FuelTanks,
+                                ChangeOfServiceabilityLogs, ChangeOfServiceabilityLogLines, Trades,
+                                EcuMasters, TyrePressures, Pols, Systems, Users, HowFoundDefects, Ranks, UserQuals,
+                                LimDefrDefHusLogs,
                                 CompassCalibrationLogs, WeightBalance)
+
 
 def booklet_pdf(request):
     # Example data (normally from DB)
     entries = [
-        {"open": {"id":1, "description": "Open task for Project A"},
-         "closed": {"id":101, "description": "Closed task for Project A"}},
+        {"open": {"id": 1, "description": "Open task for Project A"},
+         "closed": {"id": 101, "description": "Closed task for Project A"}},
         {"open": {"id": 2, "description": "Open task for Project B"},
          "closed": {"id": 102, "description": "Closed task for Project B"}}
     ]
@@ -49,15 +52,14 @@ def aircraft_pdf(request, id):
     # print(aircraft_roles)
     engine_rows = EcuMasters.objects.filter(aircraft_master_id=data["id"]).values(
         "location", "type", "mark", "serial_no", "date_of_fitment")
-    fuels_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"], type_of_pol = "F").values(
+    fuels_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"], type_of_pol="F").values(
         "description", "sect_ref", "nato_code")
-    olg_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"]).exclude(type_of_pol= "F").values(
-        "system_id", "description", "nato_code","substitute_id", "nato_code")
-    system_ids = [d ["system_id"] for d in olg_rows]
-    systems = Systems.objects.filter(id__in=system_ids).values("id","system")
+    olg_rows = Pols.objects.filter(aircraft_type_id=data["aircraft_type"]).exclude(type_of_pol="F").values(
+        "system_id", "description", "nato_code", "substitute_id", "nato_code")
+    system_ids = [d["system_id"] for d in olg_rows]
+    systems = Systems.objects.filter(id__in=system_ids).values("id", "system")
     system_lookup = {s["id"]: s["system"] for s in systems}
     for row in olg_rows: row["system"] = system_lookup.get(row["system_id"])
-
 
     for row in olg_rows:
         for key, value in row.items():
@@ -116,18 +118,22 @@ def aircraft_pdf(request, id):
     response['Content-Disposition'] = 'inline; filename="MOD FORM 701.pdf"'
     return response
 
+
 def change_of_serviceability_logs_pdf(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
-    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(aircraft_master_id=data["id"], snow__isnull=False, user_time_date__isnull=False,).order_by("snow").values(
-        "id","user_time_date", "airframe_hrs",
+    change_of_serviceability_logs_rows = ChangeOfServiceabilityLogs.objects.filter(aircraft_master_id=data["id"],
+                                                                                   snow__isnull=False,
+                                                                                   user_time_date__isnull=False, ).order_by(
+        "snow").values(
+        "id", "user_time_date", "airframe_hrs",
         "by_whom", "snow", "defect_code_id",
         "reason_for_placing_unserviceable",
         "work_carried_out", "how_found_defect_id",
         "man_hrs", "user_completion_date", "authorised_by_id"
     )
     for item in change_of_serviceability_logs_rows:
-        man_hrs= item['man_hrs']
+        man_hrs = item['man_hrs']
         if man_hrs is None:
             man_hrs = ""
             item['man_hrs'] = man_hrs
@@ -142,7 +148,7 @@ def change_of_serviceability_logs_pdf(request, id):
             work_carried_out = ""
             item['work_carried_out'] = work_carried_out
 
-        dt_val= item['user_time_date']
+        dt_val = item['user_time_date']
         if dt_val:
             dt = datetime.fromisoformat(str(dt_val))
             item['date'] = f"{dt.time().strftime("%H:%M")} {dt.date().strftime("%d-%m-%Y")}"
@@ -184,7 +190,6 @@ def change_of_serviceability_logs_pdf(request, id):
         else:
             item['user_name'] = ""
 
-
         authorised_by_id = item['authorised_by_id']
         if authorised_by_id:
             authorised_by_name_id = UserQuals.objects.get(id=authorised_by_id).user_id
@@ -209,30 +214,29 @@ def change_of_serviceability_logs_pdf(request, id):
     # system_lookup = {s["id"]: s["system"] for s in systems}
     # for row in olg_rows: row["system"] = system_lookup.get(row["system_id"])
 
-
     # trade = Trades.objects.get(id=item["trade_id"]).trade
     # if trade:
     #     item['trade'] = trade
     # else:
     #     item['trade'] = ""
     # print(change_of_serviceability_log_lines_row)
-            # user_id= UserQuals.objects.get(id=user_qual_id).user_id
-            # if user_id:
-            #     print(user_id)
-        #     if user_id:
-        #         # user_rank_id = Users.objects.get(id=user_id).rank_id
-        #         user_name = Users.objects.get(id=user_id).user_name
-        #         user_pno = Users.objects.get(id=user_id).pno
-        #         # user_rank = Ranks.objects.get(id=user_rank_id).abbreviation
-        #         item['user_name'] = user_name
-        #         item['user_pno'] = user_pno
-        #     else:
-        #         item['user_name'] = None
-        #         item['user_pno'] = None
-        #         # item['user_rank'] = user_rank
-        # else:
-        #     item['user_name'] = None
-        #     item['user_pno'] = None
+    # user_id= UserQuals.objects.get(id=user_qual_id).user_id
+    # if user_id:
+    #     print(user_id)
+    #     if user_id:
+    #         # user_rank_id = Users.objects.get(id=user_id).rank_id
+    #         user_name = Users.objects.get(id=user_id).user_name
+    #         user_pno = Users.objects.get(id=user_id).pno
+    #         # user_rank = Ranks.objects.get(id=user_rank_id).abbreviation
+    #         item['user_name'] = user_name
+    #         item['user_pno'] = user_pno
+    #     else:
+    #         item['user_name'] = None
+    #         item['user_pno'] = None
+    #         # item['user_rank'] = user_rank
+    # else:
+    #     item['user_name'] = None
+    #     item['user_pno'] = None
 
     # print(change_of_serviceability_logs_rows)
     # aircraft_roles = AircraftRoles.objects.filter(aircraft_type_id=data["aircraft_type"]).values(
@@ -322,7 +326,7 @@ def change_of_serviceability_logs_pdf(request, id):
     pdf_bytes = html.write_pdf(
         stylesheets=[CSS(string='@page{size:594mm 210mm; landscape; margin:5mm;}')]
     )
-    #Split wide pages
+    # Split wide pages
     reader = PdfReader(io.BytesIO(pdf_bytes))
     writer = PdfWriter()
     first_page = reader.pages[0]
@@ -351,12 +355,10 @@ def change_of_serviceability_logs_pdf(request, id):
     response['Content-Disposition'] = 'inline; filename="MOD FORM 707.pdf"'
     return response
 
+
 def Mod703B(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
-
-
-
 
     context = {
         "aircraft": {
@@ -382,6 +384,7 @@ def Mod703B(request, id):
     response['Content-Disposition'] = 'inline; filename="Mod703B.pdf"'
     return response
 
+
 def MODForm704A(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
@@ -391,8 +394,6 @@ def MODForm704A(request, id):
         "id",
     )
     print(acpt_hus_defeat)
-
-
 
     context = {
         "aircraft": {
@@ -417,21 +418,22 @@ def MODForm704A(request, id):
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response['Content-Disposition'] = 'inline; filename="MODForm704A.pdf"'
     return response
+
+
 def MODForm712A(request, id):
     aircraft1 = AircraftMasters.objects.get(id=id)
     data = model_to_dict(aircraft1)
-    compass_calibration_logs_row =CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).order_by("id").values(
-        "id","ap_reference","compass_swing_date","due_date","ref_snow","compass_type", "compass_ser_no","place","method",
-        "actual_north","actual_south","actual_east","actual_west","a_c_north","a_c_south","a_c_east","a_c_west",
-        "a_c_north_east","a_c_north_west","a_c_south_east","a_c_south_west","coeff_a","coeff_b","coeff_c")
+    compass_calibration_logs_row = CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).order_by(
+        "id").values(
+        "id", "ap_reference", "compass_swing_date", "due_date", "ref_snow", "compass_type", "compass_ser_no", "place",
+        "method",
+        "actual_north", "actual_south", "actual_east", "actual_west", "a_c_north", "a_c_south", "a_c_east", "a_c_west",
+        "a_c_north_east", "a_c_north_west", "a_c_south_east", "a_c_south_west", "coeff_a", "coeff_b", "coeff_c")
     heading_compass_row = CompassCalibrationLogs.objects.filter(aircraft_master_id=data["id"]).order_by("-id").values(
-        "id", "ap_reference","compass_swing_date","due_date","ref_snow", "place","method", )
+        "id", "ap_reference", "compass_swing_date", "due_date", "ref_snow", "place", "method", )
     latest_compass_row = heading_compass_row[0]
     print(compass_calibration_logs_row)
     print(latest_compass_row)
-
-
-
 
     context = {
         "aircraft": {
@@ -465,8 +467,10 @@ def MODForm702(request, id):
     print(id)
     data = model_to_dict(aircraft1)
     weight_balance_rows = WeightBalance.objects.filter(aircraft_master_id=data["id"]).order_by("snow").values(
-        "date_authenticated", "snow","weighing_change_mod","weight_increased", "weight_decreased","long_increased", "long_decreased","lat_vert_increased", "lat_vert_decreased",
-        "corrected_weight", "corrected_cg_long","corrected_cg_lat","corrected_moment_long","corrected_moment_lat","authenticated_by_id"
+        "date_authenticated", "snow", "weighing_change_mod", "weight_increased", "weight_decreased", "long_increased",
+        "long_decreased", "lat_vert_increased", "lat_vert_decreased",
+        "corrected_weight", "corrected_cg_long", "corrected_cg_lat", "corrected_moment_long", "corrected_moment_lat",
+        "authenticated_by_id"
     )
     for item in weight_balance_rows:
         dt_val = item['date_authenticated']
@@ -475,7 +479,7 @@ def MODForm702(request, id):
             item['date_authenticated'] = f"{dt.date().strftime("%d-%m-%Y")}"
         else:
             item['date_authenticated'] = ""
-        inc_weight= item['weight_increased']
+        inc_weight = item['weight_increased']
         if inc_weight:
             item['weight_increased'] = f"{inc_weight}"
             inc_weight_symbol = "+"
@@ -528,10 +532,6 @@ def MODForm702(request, id):
                 item['authenticated_by'] = ""
         else:
             item['authenticated_by'] = ""
-
-
-
-
 
     context = {
         "aircraft": {
@@ -620,10 +620,6 @@ def MODForm710(request, id):
     #         else:
     #             item['inc_lat_symbol'] = ""
     #             item['lat_vert_increased'] = ""
-
-
-
-
 
     context = {
         "aircraft": {

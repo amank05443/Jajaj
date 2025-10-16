@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class AircraftMasters(models.Model):
     id = models.BigIntegerField(primary_key=True)
     side_no = models.CharField()
@@ -25,7 +26,7 @@ class AircraftMasters(models.Model):
     empty_weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     total_airframe_hrs = models.BigIntegerField(blank=True, null=True)
     last_snow_no = models.BigIntegerField(blank=True, null=True)
-    airframe_hrs = models.CharField()
+    airframe_hrs = models.CharField(blank=True, null=True)
 
     #   * Rearrange models' order
     class Meta:
