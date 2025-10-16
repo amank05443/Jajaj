@@ -177,7 +177,7 @@ const USLogForm = () => {
                     }`}
                 >
 {/*                         <div> */}
-                            <div className="flex text-center justify-between mb-6">
+                            <div className="flex items-center justify-center mb-6 relative">
                         <h1 className={`text-4xl text-center font-extrabold tracking-wide ${
                             darkMode ? "text-white" : "text-black"
                             }`}
@@ -187,7 +187,7 @@ const USLogForm = () => {
 
                          <button
                     onClick={toggleTheme}
-                    className={`realtive inline-flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${
+                    className={`absolute right-0 flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${
                         darkMode
                         ? "bg-gray-800"
                         : "bg-gray-300"
@@ -356,8 +356,7 @@ const USLogForm = () => {
                 placeholder="Enter reason for placing aircraft unserviceable"
                 className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
                             darkMode ? "text-black" : "text-black"
-                            }`}
-              />
+                            }`} />
 
               {errors.reason_for_placing_unserviceable && (
                 <p className="text-red-500">
