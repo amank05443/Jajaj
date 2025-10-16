@@ -2,42 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  Paper,
-  Box,
   TextField,
-  Typography,
-  Select,
-  Button,
-  Grid,
-  Container,
-  Card,
-  CardContent,
-  FormControlLabel,
-  MenuItem,
-  Autocomplete,
 } from "@mui/material";
 import {
-  AccessTime,
-  Flight,
-  Person,
-  Build,
-  Code,
-  ReportProblem,
-  Warning,
-  HourglassEmpty,
-  Home,
-  Gavel,
-  VpnKey,
-  Search,
-  Comment,
-  BugReport,
-  FlightLand,
-  FlightTakeoff,
-  LinkOff,
-  ClosedCaption,
-  Note,
-  Construction,
-  BatteryAlert,
 } from "@mui/icons-material";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { motion } from "framer-motion";
@@ -52,7 +19,7 @@ import { useAlert } from "../Utils/Alerts/AlertContext";
 const schema = yup.object({
 });
 
-export default function SoftwareLogEntry({ onDataChange }) {
+export default function SoftwareLogEntry({}) {
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
   const { params, loading: paramsLoading } = useParams();
@@ -67,8 +34,6 @@ export default function SoftwareLogEntry({ onDataChange }) {
           params: { aircraft_type_id: params.aircraft_type_id },
         });
         setSystems(data.data);
-    console.log(data.data);
-
       } catch (err) {
         console.error(err);
       }
@@ -80,36 +45,11 @@ export default function SoftwareLogEntry({ onDataChange }) {
 
   const methods = useForm({
     defaultValues: {
-
     },
     mode: "onChange", //Validate on every blur
   });
   const { control, setError, clearErrors, formState, watch } = methods;
   const { isDirty } = formState;
-
-  const validateField = async (name, value) => {
-    try {
-      await schema.validateAt(name, { [name]: value });
-      clearErrors(name);
-    } catch (error) {
-      setError(name, { type: "manual", message: error.message });
-    }
-  };
-
-  const { dirtyFields } = formState;
-
-  useEffect(() => {
-    const subscription = watch((values, { name }) => {
-      onDataChange(values);
-      if (dirtyFields[name]) {
-        validateField(name, values[name]);
-      } else {
-        clearErrors(name);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, dirtyFields, onDataChange]);
-
 
   return (
     <FormProvider {...methods}>

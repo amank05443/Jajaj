@@ -296,7 +296,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
 export default function Sidebar({ open, toggleSidebar }) {
   const [expandedItems, setExpandedItems] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
-  const shouldBeOpen = open || isHovered;
+  const shouldBeOpen = open;
   const toggleExpand = useCallback((label) => {
     setExpandedItems((prev) => {
       if (prev.includes(label)) {
