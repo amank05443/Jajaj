@@ -41,7 +41,12 @@ export default function TradeSupAto({ snowId, authTwo }) {
   }, [open]);
   useEffect(() => {
     if (isForwardedOk) {
-      const dataQual = [{ id: "ATZ", name: "ATO" }];
+      const dataQual = [
+        { id: "ATZ", name: "ATO" },
+        { id: "FCC", name: "FCC" },
+        { id: "ACC", name: "ACC" },
+        { id: "SSS", name: "SSS" },
+      ];
       setAvailableQualifications(dataQual);
     }
     if (!isForwardedOk) {
@@ -548,6 +553,14 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                 className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
                                     ${row.qualification === "ATZ" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
+                                {!availableQualifications.includes(
+                                  row.qualification,
+                                ) &&
+                                  row.qualification && (
+                                    <option value={row.qualification}>
+                                      {row.qualification}
+                                    </option>
+                                  )}
                                 <option value="">Select Qualification</option>
                                 {availableQualifications?.map((Q) => (
                                   <option key={Q.id} value={Q.id}>
@@ -748,7 +761,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       ✘ Remove signed user
                     </button>
                   </div>
-                  {(isRemove || isForwarded) && !isForwardedOk &&(
+                  {(isRemove || isForwarded) && !isForwardedOk && (
                     <div className="grid lg:grid-cols-12 gap-6">
                       <div className="col-span-4">
                         <select
