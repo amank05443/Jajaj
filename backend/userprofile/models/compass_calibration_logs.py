@@ -16,7 +16,8 @@ class CompassCalibrationLogs(models.Model):
     due_date = models.DateField(blank=True, null=True)
     ref_snow = models.BigIntegerField(blank=True, null=True)
     compass_type = models.ForeignKey('Items', models.DO_NOTHING, db_column='compass_type', blank=True, null=True)
-    compass_ser_no = models.ForeignKey('ItemSerials', models.DO_NOTHING, db_column='compass_ser_no', blank=True, null=True)
+    compass_ser_no = models.ForeignKey('ItemSerials', models.DO_NOTHING, db_column='compass_ser_no', blank=True,
+                                       null=True)
     place = models.ForeignKey('Customers', models.DO_NOTHING, db_column='place', blank=True, null=True)
     method = models.ForeignKey('HowFoundDefects', models.DO_NOTHING, db_column='method', blank=True, null=True)
     actual_north = models.BigIntegerField(blank=True, null=True)
@@ -34,7 +35,9 @@ class CompassCalibrationLogs(models.Model):
     coeff_a = models.BigIntegerField(blank=True, null=True)
     coeff_b = models.BigIntegerField(blank=True, null=True)
     coeff_c = models.BigIntegerField(blank=True, null=True)
-    change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True, null=True)
+    change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True,
+                                                     null=True)
+    pull = models.ForeignKey('Pulls', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -68,7 +68,6 @@ class AircraftTypes(models.Model):
         db_table = 'aircraft_types'
 
 
-
 class Customers(models.Model):
     id = models.BigIntegerField(primary_key=True)
     customer_name = models.CharField(max_length=40)
@@ -92,6 +91,7 @@ class Customers(models.Model):
     class Meta:
         managed = False
         db_table = 'customers'
+
 
 class EcuMasters(models.Model):
     id = models.BigIntegerField(primary_key=True)
@@ -118,18 +118,21 @@ class FuelTanks(models.Model):
     tank_group = models.CharField(blank=True, null=True)
     capacity = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     aircraft_type_id = models.BigIntegerField(blank=True, null=True)
-    expansion_2_field = models.CharField(db_column='EXPANSION_2%', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
-    expansion_3_field = models.CharField(db_column='EXPANSION_3%', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    expansion_2_field = models.CharField(db_column='EXPANSION_2%', blank=True,
+                                         null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    expansion_3_field = models.CharField(db_column='EXPANSION_3%', blank=True,
+                                         null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
 
     class Meta:
         managed = False
         db_table = 'fuel_tanks'
 
+
 class Items(models.Model):
     id = models.BigIntegerField(primary_key=True)
     old_item_id = models.BigIntegerField(blank=True, null=True)
     part_number = models.CharField(max_length=100, blank=True, null=True)
-    store_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
+    aircraft_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
     denomination = models.CharField(max_length=5, blank=True, null=True)
     cpq_category = models.CharField(max_length=5, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
@@ -163,6 +166,7 @@ class Pols(models.Model):
         managed = False
         db_table = 'pols'
 
+
 class Quals(models.Model):
     id = models.BigIntegerField(primary_key=True)
     abbreviation = models.CharField(max_length=30, blank=True, null=True)
@@ -172,6 +176,7 @@ class Quals(models.Model):
     class Meta:
         managed = False
         db_table = 'quals'
+
 
 class Ranks(models.Model):
     abbreviation = models.CharField(max_length=30, blank=True, null=True)
@@ -195,6 +200,7 @@ class Systems(models.Model):
         managed = False
         db_table = 'systems'
 
+
 class TyrePressures(models.Model):
     id = models.BigIntegerField(primary_key=True)
     ac_condition = models.CharField(blank=True, null=True)
@@ -207,6 +213,7 @@ class TyrePressures(models.Model):
     class Meta:
         managed = False
         db_table = 'tyre_pressures'
+
 
 class Users(models.Model):
     id = models.BigIntegerField(primary_key=True)

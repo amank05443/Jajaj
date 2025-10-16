@@ -52,8 +52,7 @@ urlpatterns = [
     path("api/reset_passcode/", views.reset_passcode, name="reset_passcode"),
     path("api/validate_security_answer/", views.validate_security_answer, name="validate_password"),
 
-    # path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
-
+    path('api/serviceability-log/', ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 
     #---------------------------------------------- Section 1  ---------------------------------------------------------#
     path('api/leadingParticularsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
@@ -69,9 +68,9 @@ urlpatterns = [
     #---------------------------------------------- Section 5  ---------------------------------------------------------#
     path('api/usLogDropDowns/', usLogDropDowns),
     path('api/limLogData/', limLogData),
+    path('api/serviceability-log/<int:id>/', ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
     path('api/softwareLogData/', softwareLogData),
-    path('api/serviceability-log/<int:id>/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
-    path('api/saveUsLogData/', saveUsLogData),
+    path('api/saveUsLogData/', views.saveUsLogData, name='saveUsLogData'),
     path('api/clearUsLog/', clearUsLog),
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 

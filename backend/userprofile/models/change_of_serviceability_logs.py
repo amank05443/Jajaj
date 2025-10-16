@@ -3,7 +3,7 @@ from django.db import models
 
 class ChangeOfServiceabilityLogs(models.Model):
     id = models.BigAutoField(primary_key=True)
-    aircraft_master_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_master = models.ForeignKey('AircraftMasters', models.DO_NOTHING, blank=True, null=True)
     airframe_hrs = models.CharField(blank=True, null=True)
     by_whom = models.ForeignKey('UserQuals', models.DO_NOTHING, db_column='by_whom', blank=True, null=True)
     reason_for_placing_unserviceable = models.CharField(blank=True, null=True)

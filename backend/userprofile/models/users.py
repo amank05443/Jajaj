@@ -25,6 +25,9 @@ class Users(models.Model):
     fsi_yn = models.CharField(blank=True, null=True)
     active_yn = models.CharField(blank=True, null=True)
 
+    security_question = models.ForeignKey('SecurityQuestions', models.DO_NOTHING, blank=True, null=True)
+    security_question_ans = models.CharField(blank=True, null=True)
+
     class Meta:
         managed = False
         db_table = 'users'

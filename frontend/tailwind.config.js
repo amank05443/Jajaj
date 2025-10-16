@@ -4,8 +4,14 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}", // Adjust if your files are elsewhere
   ],
   theme: {
-    extend: {},
+    extend: {
+    fontFamily: {
+    sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+    serif: ['Merriweather', 'serif'],
+    },
+    },
   },
   plugins: [],
+  darkMode: 'class',
 }
 
