@@ -52,7 +52,7 @@ def check_passkey_authentication_right_side(request):
     #-------- if entry is inserted by supervisor Then cleared will be 'I' (initiated but not authenticated)-------------#
     #-------- if cleared === 'I' >> Only cleared_yn will updated to 'Y' ------------------------------------------------#
     #-------- if cleared === 'N' and qualification in ['TDS', 'SUP'] >> Then new insert in COSL-line_table -------------#
-    #-------- if cleared === 'N' and qualification is 'ATZ' >> Then entry of that snow will be updated in COSL_table ---#
+    #-------- if cleared === 'N' and qualification is 'ATO' >> Then entry of that snow will be updated in COSL_table ---#
         user= Users.objects.get(userQualsTrade__id=ids, pin=pin)
         if user and cleared=="I":
             cosl_lines_id = data.get('coslLinesId')
@@ -81,8 +81,8 @@ def check_passkey_authentication_right_side(request):
                 new_id=new_entry.id
                 return JsonResponse({"status": "OK", "cosl_line_id": new_id, "user": {"name": user.user_name, "rank": user.rank.abbreviation}})
 
-            elif qualification == 'ATZ':
-            # -------- if qualification is 'ATZ' >> Then entry of that snow will be updated in COSL_table --------------#
+            elif qualification == 'ATO':
+            # -------- if qualification is 'ATO' >> Then entry of that snow will be updated in COSL_table --------------#
             # -------- authorised_by_id, status, and date will be captured in cosl table w.r.to that snow id -----------#
                 # cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=snow_id)
                 # cosl_instance.authorised_by=UserQuals.objects.get(id=ids)

@@ -7,7 +7,7 @@ import useValidation from "../Utils/CustomHooks/useValidation";
 export default function TradeSupAto1({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
-  const [isAtz, setIsATZ] = useState(false);
+  const [isATO, setIsATO] = useState(false);
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({
     users: [
@@ -143,8 +143,8 @@ export default function TradeSupAto1({ snowId, authTwo }) {
         console.error("Error updating DB :", err);
       }
     }
-    if (removedUsers.qualification.toUpperCase() === "ATZ") {
-      setIsATZ(false);
+    if (removedUsers.qualification.toUpperCase() === "ATO") {
+      setIsATO(false);
     }
   };
 
@@ -157,9 +157,9 @@ export default function TradeSupAto1({ snowId, authTwo }) {
 
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
-      if (value === "ATZ") {
+      if (value === "ATO") {
         const hasNotSigned = updatedUsers.some(
-          (u) => u.qualification !== "ATZ" && u.cleared_yn !== "Y",
+          (u) => u.qualification !== "ATO" && u.cleared_yn !== "Y",
         );
         const hasTds = updatedUsers.some(
           (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
@@ -167,12 +167,12 @@ export default function TradeSupAto1({ snowId, authTwo }) {
         const hasSup = updatedUsers.some(
           (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
         );
-        const hasAtz = updatedUsers.some(
-          (u) => u.qualification === "ATZ" && u.cleared_yn === "Y",
+        const hasAto = updatedUsers.some(
+          (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
         );
         console.log("Trades :", value, hasTds, hasSup);
         if (!hasTds || !hasSup || hasNotSigned) {
-          if ((hasTds && hasSup) && hasNotSigned) {
+          if (hasTds && hasSup && hasNotSigned) {
             alert(
               "To authorise this entry,  Either sign remaining tradesman and supervisor or remove them.",
             );
@@ -186,7 +186,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
           updatedUsers[index].byWhom = "";
           return;
         }
-        if (hasAtz > 0) {
+        if (hasAto > 0) {
           alert(
             "Entry is authorised already , No further authorisation required..",
           );
@@ -319,8 +319,8 @@ export default function TradeSupAto1({ snowId, authTwo }) {
         updatedUsers[index].cleared_yn = "Y";
         updatedUsers[index].showPassKey = false;
         updatedUsers[index].passkey = "••••••";
-        if (updatedUsers[index].qualification === "ATZ") {
-          setIsATZ(true);
+        if (updatedUsers[index].qualification === "ATO") {
+          setIsATO(true);
         }
         setFormData({ ...formData, users: updatedUsers, ...data.user });
         console.log({ ...formData });
@@ -410,12 +410,12 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                           <input type="hidden" name="id" value={row.id || ""} />
                           <div className="grid grid-cols-5 gap-1">
                             <div
-                              className={`${row.qualification === "ATZ" ? "col-span-5" : "col-span-3"}`}
+                              className={`${row.qualification === "ATO" ? "col-span-5" : "col-span-3"}`}
                             >
                               <select
                                 name="qualification"
                                 value={row.qualification}
-                                disabled={row.cleared_yn !== "N"}
+                                //                                 disabled
                                 onChange={(e) => {
                                   handleRowChange(
                                     index,
@@ -424,7 +424,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                   );
                                 }}
                                 className={`border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.qualification === "ATZ" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
+                                    ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 <option value="">Select Qualification</option>
                                 <option value="TDS">Tradesman</option>
@@ -433,12 +433,12 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                               </select>
                             </div>
                             <div className="col-span-2">
-                              {row.availableTrades !== "ATZ" && (
+                              {row.availableTrades !== "ATO" && (
                                 <select
                                   name="trade"
                                   value={row.trade}
                                   disabled={row.cleared_yn !== "N"}
-                                  hidden={row.qualification === "ATZ"}
+                                  hidden={row.qualification === "ATO"}
                                   onChange={(e) => {
                                     handleRowChange(
                                       index,
@@ -549,7 +549,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                   {formData?.users.length > 0 && (
                                     <button
                                       type="button"
-                                      hidden={isAtz} // Remove user 'X' button will be disabled once authorised by authorizer.
+                                      hidden={isATO} // Remove user 'X' button will be disabled once authorised by authorizer.
                                       onClick={() => removeRow(index)}
                                       className="p-1 ml-7 border border-black rounded text-red-700 focus:outline-none focus:border-indigo-500 bg-red-200"
                                     >
@@ -588,7 +588,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                   ))}
                 </form>
                 <div className=" mt-2">
-                  {!isAtz && (
+                  {!isATO && (
                     <button
                       type="button"
                       onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.

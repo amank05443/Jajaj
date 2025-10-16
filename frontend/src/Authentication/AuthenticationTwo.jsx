@@ -6,7 +6,7 @@ import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
 export default function TradeSupAto({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
-  const [isAtz, setIsATZ] = useState(false);
+  const [isATO, setIsATO] = useState(false);
   const [availableQualifications, setAvailableQualifications] = useState([]);
   const [supervisor, setSupervisor] = useState("");
   const [supPassword, setSupPassword] = useState("");
@@ -42,7 +42,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
   useEffect(() => {
     if (isForwardedOk) {
       const dataQual = [
-        { id: "ATZ", name: "ATO" },
+        { id: "ATO", name: "ATO" },
         { id: "FCC", name: "FCC" },
         { id: "ACC", name: "ACC" },
         { id: "SSS", name: "SSS" },
@@ -186,8 +186,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
         console.error("Error updating DB :", err);
       }
     }
-    if (removedUsers.qualification.toUpperCase() === "ATZ") {
-      setIsATZ(false);
+    if (removedUsers.qualification.toUpperCase() === "ATO") {
+      setIsATO(false);
     }
   };
 
@@ -200,9 +200,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
 
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
-      if (value === "ATZ") {
+      if (value === "ATO") {
         const hasNotSigned = updatedUsers.some(
-          (u) => u.qualification !== "ATZ" && u.cleared_yn !== "Y",
+          (u) => u.qualification !== "ATO" && u.cleared_yn !== "Y",
         );
         const hasTds = updatedUsers.some(
           (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
@@ -210,8 +210,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
         const hasSup = updatedUsers.some(
           (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
         );
-        const hasAtz = updatedUsers.some(
-          (u) => u.qualification === "ATZ" && u.cleared_yn === "Y",
+        const hasAto = updatedUsers.some(
+          (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
         );
         console.log("Trades :", value, hasTds, hasSup);
         if (!hasTds || !hasSup || hasNotSigned) {
@@ -229,7 +229,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
           updatedUsers[index].byWhom = "";
           return;
         }
-        if (hasAtz > 0) {
+        if (hasAto > 0) {
           alert(
             "Entry is authorised already , No further authorisation required..",
           );
@@ -362,8 +362,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
         updatedUsers[index].cleared_yn = "Y";
         updatedUsers[index].showPassKey = false;
         updatedUsers[index].passkey = "••••••";
-        if (updatedUsers[index].qualification === "ATZ") {
-          setIsATZ(true);
+        if (updatedUsers[index].qualification === "ATO") {
+          setIsATO(true);
         }
         setFormData({ ...formData, users: updatedUsers, ...data.user });
         console.log({ ...formData });
@@ -537,7 +537,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                           <input type="hidden" name="id" value={row.id || ""} />
                           <div className="grid grid-cols-5 gap-1">
                             <div
-                              className={`${row.qualification === "ATZ" ? "col-span-5" : "col-span-3"}`}
+                              className={`${row.qualification === "ATO" ? "col-span-5" : "col-span-3"}`}
                             >
                               <select
                                 name="qualification"
@@ -551,7 +551,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   );
                                 }}
                                 className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.qualification === "ATZ" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
+                                    ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 {!availableQualifications.includes(
                                   row.qualification,
@@ -570,12 +570,12 @@ export default function TradeSupAto({ snowId, authTwo }) {
                               </select>
                             </div>
                             <div className="col-span-2">
-                              {row.availableTrades !== "ATZ" && (
+                              {row.availableTrades !== "ATO" && (
                                 <select
                                   name="trade"
                                   value={row.trade}
                                   disabled={row.cleared_yn !== "N"}
-                                  hidden={row.qualification === "ATZ"}
+                                  hidden={row.qualification === "ATO"}
                                   onChange={(e) => {
                                     handleRowChange(
                                       index,
@@ -686,7 +686,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   <button
                                     type="button"
                                     hidden={
-                                      isAtz ||
+                                      isATO ||
                                       isForwarded ||
                                       (!isRemoveOk && row.cleared_yn === "Y")
                                     } // Remove user 'X' button will be disabled once authorised by authorizer.
@@ -729,7 +729,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                 </form>
                 <div class="flex flex-col space-y-4">
                   <div>
-                    {!isAtz && (
+                    {!isATO && (
                       <button
                         type="button"
                         id="addUserBtn"
