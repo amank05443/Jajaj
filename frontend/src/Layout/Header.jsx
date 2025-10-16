@@ -50,10 +50,6 @@ export default function Header({
   const [userAnchor, setUserAnchor] = useState(null);
   const { logout } = useAuth();
   const { params, loading } = useParams();
-  //   const { data, loading } = useTableApi("aircraft_masters", {
-  //     id: params.aircraft_master_id,
-  //     related: ["aircraft_type,customer"],
-  //   });
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
