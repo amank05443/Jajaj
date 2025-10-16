@@ -1,4 +1,5 @@
 from gc import is_finalized
+from django.db.models import F
 from http.cookiejar import MISSING_FILENAME_TEXT
 from importlib.metadata import pass_none
 from pydoc import stripid
@@ -54,6 +55,14 @@ class AircraftSideNoView(ListAPIView):
     # side_no= data.get('side_no')
     queryset = AircraftMasters.objects.all()
     serializer_class = AircraftMastersSerializer
+# --------------- Code added for aircraft details fetching for Headers for all page ------------------------------------#
+def data_for_headers(request, id ):
+    data= (AircraftMasters.objects.filter(id=id).annotate(aircraft_name=F("aircraft_type__aircraft_name")).values('id','side_no','aircraft_name').first())
+    print(data)
+    if data:
+        return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({"error": "<UNK>"})
 
 def aircraft_all_detail_view(request, id ):
     try:
