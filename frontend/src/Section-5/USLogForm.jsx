@@ -245,7 +245,7 @@ const USLogForm = () => {
                 disabled={isAuthenticated}
 //                 className="w-full border border-gray-300 rounded-md p-2 focus:ring-purple-400"
                     className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
+                            darkMode ? "text-black" : "text-black"
                             }`}
               >
                 <option value="">Select Entry Type</option>
@@ -274,7 +274,7 @@ const USLogForm = () => {
                 onChange={handleChange}
                 disabled={isAuthenticated}
                 className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
+                            darkMode ? "text-black" : "text-black"
                             }`}
               >
                 <option value="">Select How Found</option>
@@ -307,7 +307,7 @@ const USLogForm = () => {
                 onChange={handleChange}
                 disabled={isAuthenticated}
                 className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
+                            darkMode ? "text-black" : "text-black"
                             }`}
               />
               </div>
@@ -330,7 +330,7 @@ const USLogForm = () => {
                 value={formData.airframeHrs}
                 disabled
                 className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
+                            darkMode ? "text-black" : "text-black"
                             }`}
                 readOnly
               ></input>
@@ -355,7 +355,7 @@ const USLogForm = () => {
                 rows={4}
                 placeholder="Enter reason for placing aircraft unserviceable"
                 className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
+                            darkMode ? "text-black" : "text-black"
                             }`}
               />
 
