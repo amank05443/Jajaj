@@ -138,7 +138,7 @@ const sidebarLinks = [
       {
         label: "Current Operating Data(WEIGHT AND BALANCE DATA)",
         icon: <SafetyCheck size={20} />,
-        to: "/viewCurrentOperatingData",
+        to: "/ViewCurrentOperatingData",
       },
     ],
   },

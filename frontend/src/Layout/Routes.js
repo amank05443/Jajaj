@@ -86,6 +86,10 @@ const BasicWeightAndMoment = lazy(
   () => import("../Section-9/BasicWeightAndMoment"),
 );
 
+const ViewCurrentOperatingData = lazy(
+  () => import("../Section-9/ViewCurrentOperatingData"),
+);
+
 //--SECTION-> 10--//
 const CompassLog = lazy(
   () => import("../Section-10/CompassLog"),
@@ -165,6 +169,9 @@ export const privateRoutes = [
     element: <BasicWeightAndMomentsForm />,
   },
   { path: "/basicWeightAndMoment", element: <BasicWeightAndMoment /> },
+  {
+    path: "/ViewCurrentOperatingData", element: <ViewCurrentOperatingData />,
+   },
   { path: "/testQualsForm", element: <TestQuals /> },
 
   //--SECTION-> 10--//
