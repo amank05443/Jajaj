@@ -4,8 +4,7 @@ import { useParams } from "../Utils/CustomHooks/useParams";
 import AtoOnly from "../Authentication/AuthenticationAto";
 import AllUsers from "../Authentication/AuthenticationOne";
 import TradeSupAto from "../Authentication/AuthenticationTwo";
-import TradeSupAto1 from "../Authentication/AuthenticationTwo2";
-import AuthRightSide from "../Authentication/AuthenticationThree";
+import LimitationAuth from "../Authentication/LimAuthentication";
 import {ModForm701} from "../WeasyPrintReports/WeasyPrint";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
@@ -68,16 +67,6 @@ const ViewLeadingParticulars = () => {
     }));
   };
   const handleDataFromTradeSupAto = (data) => {
-    console.log("payloadArray :", data);
-    const { byWhom, trade, qualification } = data;
-    //     setAircraftDetails((prev) => ({
-    //       ...prev,
-    //       qualification: qualification,
-    //       trade: trade,
-    //       byWhom: byWhom,
-    //     }));
-  };
-  const handleDataAuthRightSide = (data) => {
     console.log("payloadArray :", data);
     const { byWhom, trade, qualification } = data;
     //     setAircraftDetails((prev) => ({
@@ -748,15 +737,9 @@ const ViewLeadingParticulars = () => {
         <div className="flex justify-center mt-5 gap-5">
            <AllUsers auth={handleDataFromAllUsers} />
           <AtoOnly auth={handleDataFromAtoOnly} />
-          <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
-          <TradeSupAto1
-            snowId={202520373}
-            authRight={handleDataAuthRightSide}
-          />
-          <div>
-            <h2>{aircraftDetails?.authenticated}</h2>
-            <h2>{aircraftDetails?.user_id}</h2>
-          </div>
+           <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
+{/*           <TradeSupAto snowId={202520380} authTwo={handleDataFromTradeSupAto} /> */}
+          <LimitationAuth snowId={202520375} />
           {/*           <div> */}
           {/*             <h2>{aircraftDetails?.qualification}</h2> */}
           {/*             <h2>{aircraftDetails?.trade}</h2> */}
