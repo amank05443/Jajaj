@@ -148,7 +148,7 @@ def check_passkey_authentication_right_side_limitation(request):
             cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=snow_id)
             user_qual = UserQuals.objects.get(id=ids)
             trade = Trades.objects.get(id=trade_id)
-            cosl_instance.supervisor = qualification
+            cosl_instance.supervisor = UserQuals.objects.get(id=ids)
             cosl_instance.save()
             new_entry = ChangeOfServiceabilityLogLines(
                 change_of_serviceability_log=cosl_instance,
@@ -169,7 +169,7 @@ def check_passkey_authentication_right_side_limitation(request):
             trade = Trades.objects.get(id=trade_id)
             cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=snow_id)
             # cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=cosl_lines_id.change_of_serviceability_log)
-            cosl_instance.supervisor = qualification
+            cosl_instance.supervisor =  UserQuals.objects.get(id=ids)
             cosl_instance.status = "2"
             cosl_instance.save()
             cosl_lines_instance = ChangeOfServiceabilityLogLines.objects.get(id=cosl_lines_id)

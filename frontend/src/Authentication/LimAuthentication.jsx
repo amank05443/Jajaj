@@ -132,7 +132,6 @@ export default function LimitationAuth({ snowId }) {
         "Are you sure you want to reset this user ?",
       );
       if (confirmRemove) {
-        //     removedUsers[index].id = "";
         removedUsers[index].qualification = "";
         removedUsers[index].trade = "";
         removedUsers[index].byWhom = "";
@@ -148,28 +147,6 @@ export default function LimitationAuth({ snowId }) {
       }
     }
   };
-  //   const removeRow = async (index) => {
-  //     const confirmRemove = window.confirm(
-  //       "Are you sure you want to reset this user ?",
-  //     );
-  //     if (confirmRemove) {
-  //       const removedUsers = formData?.users;
-  //       console.log(formData?.users[index]);
-  //       //     removedUsers[index].id = "";
-  //       removedUsers[index].qualification = "";
-  //       removedUsers[index].trade = "";
-  //       removedUsers[index].byWhom = "";
-  //       removedUsers[index].cleared_yn = "R";
-  //       removedUsers[index].passkey = "";
-  //       removedUsers[index].showPassKey = "";
-  //       removedUsers[index].availableTrades = [];
-  //       removedUsers[index].availableUsers = [];
-  //       setFormData({ ...formData, users: removedUsers });
-  //       setErrors((prev) =>
-  //         Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
-  //       );
-  //     }
-  //   };
 
   // ------------------------- ON CHANGE FUNCTION AND API CALL FOR TRADES & USERS  -------------------------------------
   const handleRowChange = (index, field, value) => {
@@ -380,33 +357,7 @@ export default function LimitationAuth({ snowId }) {
       console.error("Not Authenticated :", err);
     }
   };
-  //----------------- when user or passkey changes we must reset isPasskeyValid for that row ---------------------------
-  //   const handleForwardToAto = () => {
-  //     const updatedUsers = [...formData?.users];
-  //     const hasNotSigned = updatedUsers.some((u) => u.cleared_yn !== "Y");
-  //     const hasTds = updatedUsers.some(
-  //       (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
-  //     );
-  //     const hasSup = updatedUsers.some(
-  //       (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
-  //     );
-  //     if (hasNotSigned) {
-  //       alert(
-  //         "Must sign all the entries initiated. Either sign the remaining tradesman and supervisor or remove them.",
-  //       );
-  //       return;
-  //     }
-  //     if (!hasTds || !hasSup) {
-  //       alert(
-  //         "To forward any entry for authorisation at least one tradesman and one supervisor signature is mandatory.",
-  //       );
-  //       return;
-  //     }
-  //     setIsForwarded(true);
-  //     setForwardIndex(formData.users.length);
-  //     //     addRow();
-  //     setErrors("");
-  //   };
+
   const handleSetRemove = () => {
     const updatedUsers = [...formData?.users];
     const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
@@ -415,56 +366,6 @@ export default function LimitationAuth({ snowId }) {
     }
     setIsRemove(!isRemove);
   };
-
-  const handleAuthToRemove = async () => {
-    try {
-      const csrfToken = Cookies.get("csrftoken");
-      const res = await fetch("/api/checkPasskey/", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": csrfToken,
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-        body: JSON.stringify({
-          byWhom: supervisor,
-          passkey: supPassword,
-        }),
-      });
-      if (!res.ok) throw new Error("Invalid Passkey0");
-      const data = await res.json();
-      setIsRemoveOk(true);
-      setIsRemove(false);
-    } catch (err) {
-      console.log("Not Authenticated :", err);
-    }
-  };
-  //   const handleAuthToForward = async () => {
-  //     try {
-  //       const csrfToken = Cookies.get("csrftoken");
-  //       const res = await fetch("/api/checkPasskey/", {
-  //         method: "POST",
-  //         headers: {
-  //           "X-CSRFToken": csrfToken,
-  //           "Content-Type": "application/json",
-  //         },
-  //         withCredentials: true,
-  //         body: JSON.stringify({
-  //           byWhom: supervisor,
-  //           passkey: supPassword,
-  //         }),
-  //       });
-  //       if (!res.ok) throw new Error("Invalid Passkey0");
-  //       const data = await res.json();
-  //       setIsForwardedOk(true);
-  //       setIsForwarded(true);
-  //       setForwardIndex(formData.users.length);
-  //       addRow();
-  //       setErrors("");
-  //     } catch (err) {
-  //       console.log("Not Authenticated :", err);
-  //     }
-  //   };
 
   return (
     <>
@@ -539,8 +440,7 @@ export default function LimitationAuth({ snowId }) {
                                     ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 <option value="">Select Qualification</option>
-                                {/*                                 <option value="TDS">Tradesman</option> */}
-                                <option value="SUP">Supervisor</option>
+                                <option value="SUP">SUP</option>
                                 <option value="ATO">ATO</option>
                               </select>
                             </div>
@@ -717,17 +617,6 @@ export default function LimitationAuth({ snowId }) {
                         + Add user
                       </button>
                     )}
-
-                    {/*                     <button */}
-                    {/*                       type="button" */}
-                    {/*                       id="forwardToAtoBtn" */}
-                    {/*                       onClick={handleForwardToAto} */}
-                    {/*                       disabled={isRemove} */}
-                    {/*                       hidden={isForwarded} */}
-                    {/*                       className="hidden px-2 mr-6 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 " */}
-                    {/*                     > */}
-                    {/*                       Forward to ATO */}
-                    {/*                     </button> */}
                     <button
                       type="button"
                       id="removeBtn"
@@ -763,29 +652,20 @@ export default function LimitationAuth({ snowId }) {
                       </div>
                       <div className="col-span-3">
                         <input
-                          //                           type={showSupPassKey ? "text " : "password"}
                           type={"password"}
                           onChange={(e) => setSupPassword(e.target.value)}
                           placeholder="**Passkey**"
                           className="border ml-12 p-1 text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                         />
                       </div>
-                      <div className="col-span-3">
-                        <button
-                          onClick={handleAuthToRemove}
-                          //                           hidden={isForwarded}
-                          className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400"
-                        >
-                          Auth To Remove
-                        </button>
-                        {/*                         <button */}
-                        {/*                           onClick={handleAuthToForward} */}
-                        {/*                           hidden={isRemove} */}
-                        {/*                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400" */}
-                        {/*                         > */}
-                        {/*                           Auth To Forward */}
-                        {/*                         </button> */}
-                      </div>
+{/*                       <div className="col-span-3"> */}
+{/*                         <button */}
+{/*                           onClick={handleAuthToRemove} */}
+{/*                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400" */}
+{/*                         > */}
+{/*                           Auth To Remove */}
+{/*                         </button> */}
+{/*                       </div> */}
                     </div>
                   )}
                 </div>

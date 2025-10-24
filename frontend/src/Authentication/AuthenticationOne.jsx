@@ -144,7 +144,7 @@ export default function AllUsers({ auth }) {
                         {data &&
                           data?.map((d) => (
                             <option key={d.id} value={d.id}>
-                              {d.abbreviation}, {d.user_name} ({d.pno})
+                              {d.pno}, {d.user_name}, {d.abbreviation}
                             </option>
                           ))}
                       </select>
