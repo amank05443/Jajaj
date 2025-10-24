@@ -123,7 +123,7 @@ export default function AllUsers({ auth }) {
                   style={{ fontFamily: "algerian" }}
                   className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl"
                 >
-                   USERS AUTHENTICATION
+                  👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
@@ -151,7 +151,7 @@ export default function AllUsers({ auth }) {
                     </div>
                     <div>
                       <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        Passkey
+                        Signature Pin
                       </label>
                       <input
                         type={showPassKey ? "text " : "password"}

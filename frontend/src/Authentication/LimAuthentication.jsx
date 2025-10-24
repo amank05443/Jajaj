@@ -3,12 +3,16 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
-import useValidation from "../Utils/CustomHooks/useValidation";
-export default function TradeSupAto1({ snowId, authTwo }) {
+export default function LimitationAuth({ snowId }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
   const [isATO, setIsATO] = useState(false);
-  const [data, setData] = useState(null);
+  const [availableQualifications, setAvailableQualifications] = useState([]);
+  const [supervisor, setSupervisor] = useState("");
+  const [supPassword, setSupPassword] = useState("");
+  const [showSupPassKey, setShowSupPassKey] = useState(false);
+  const [isRemove, setIsRemove] = useState(false);
+  const [isRemoveOk, setIsRemoveOk] = useState(false);
   const [formData, setFormData] = useState({
     users: [
       {
@@ -24,13 +28,27 @@ export default function TradeSupAto1({ snowId, authTwo }) {
   });
 
   const [errors, setErrors] = useState([{}]);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [open]);
+    const updatedUsers = [...formData?.users];
+    const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
+    const addUserBtn1 = document?.getElementById("addUserBtn");
+    if (updatedUsers.length == 2) {
+      if (addUserBtn1) addUserBtn1.classList.add("hidden");
+    } else if (updatedUsers.length < 2) {
+      if (addUserBtn1) addUserBtn1.classList.remove("hidden");
+    }
+  }, [open, formData]);
+  useEffect(() => {
+    if (isRemove === true) {
+      setIsRemoveOk(false);
+    }
+  }, [formData]);
   useEffect(() => {
     if (!snowId) return;
     const fetchSavedData = async () => {
@@ -40,13 +58,12 @@ export default function TradeSupAto1({ snowId, authTwo }) {
             snowId: snowId,
           },
         });
-        if (Array.isArray(res.data)) {
-          const formattedUsers = res.data.map((item) => ({
+        if (Array.isArray(res.data.data)) {
+          const formattedUsers = res.data.data.map((item) => ({
             id: item.id,
             qualification: item.tradesman_sup,
             trade: item.trade_id,
             byWhom: item.user_qual_id,
-            //             passkey: "••••••",
             cleared_yn: item.cleared_yn,
             availableTrades: [{ id: item.trade_id, trade: item.trade_name }],
             availableUsers: [
@@ -60,7 +77,9 @@ export default function TradeSupAto1({ snowId, authTwo }) {
             showPassKey: false,
           }));
           console.log("Fetched saved formattedUsers:", formattedUsers);
-          setFormData({ users: formattedUsers });
+          if (formattedUsers.length !== 0) {
+            setFormData({ users: formattedUsers });
+          }
         }
       } catch (err) {
         console.error("Error fetching saved authentication:", err);
@@ -100,53 +119,57 @@ export default function TradeSupAto1({ snowId, authTwo }) {
   };
   // ------------------------- TO REMOVE ANY ROW FROM TEMPLATE  --------------------------------------------------------
   const removeRow = async (index) => {
-    const removedUsers = formData?.users[index];
+    const removedUsers = formData?.users;
     console.log(formData?.users[index]);
-    if (removedUsers?.id === "") {
-      const updatedUsers = formData?.users.filter((_, i) => i !== index);
-      setFormData({ ...formData, users: updatedUsers });
-      setErrors((prev) =>
-        Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
-      );
+    const hasAto = removedUsers.some(
+      (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
+    );
+    if (hasAto) {
+      alert("No changes can be done after ATO Authorisation");
+      return;
     } else {
-      try {
-        const csrfToken = Cookies.get("csrftoken");
-        const res = await fetch("/api/removeUser/", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": csrfToken,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          body: JSON.stringify({
-            snowId: snowId,
-            coslLinesId: removedUsers.id,
-            trade: removedUsers.trade,
-            qualification: removedUsers.qualification,
-            byWhom: removedUsers.byWhom,
-          }),
-        });
-        const data = await res.json();
-        if (data.status == "OK") {
-          const updatedUsers = formData?.users.filter((_, i) => i !== index);
-          setFormData({ ...formData, users: updatedUsers });
-          setErrors((prev) =>
-            Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
-          );
-          console.log("DB updated  :", data);
-          alert("Removed  " + data);
-        } else {
-          console.error("Error updating DB :");
-          alert("Error updating DB :");
-        }
-      } catch (err) {
-        console.error("Error updating DB :", err);
+      const confirmRemove = window.confirm(
+        "Are you sure you want to reset this user ?",
+      );
+      if (confirmRemove) {
+        //     removedUsers[index].id = "";
+        removedUsers[index].qualification = "";
+        removedUsers[index].trade = "";
+        removedUsers[index].byWhom = "";
+        removedUsers[index].cleared_yn = "R";
+        removedUsers[index].passkey = "";
+        removedUsers[index].showPassKey = "";
+        removedUsers[index].availableTrades = [];
+        removedUsers[index].availableUsers = [];
+        setFormData({ ...formData, users: removedUsers });
+        setErrors((prev) =>
+          Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
+        );
       }
     }
-    if (removedUsers.qualification.toUpperCase() === "ATO") {
-      setIsATO(false);
-    }
   };
+  //   const removeRow = async (index) => {
+  //     const confirmRemove = window.confirm(
+  //       "Are you sure you want to reset this user ?",
+  //     );
+  //     if (confirmRemove) {
+  //       const removedUsers = formData?.users;
+  //       console.log(formData?.users[index]);
+  //       //     removedUsers[index].id = "";
+  //       removedUsers[index].qualification = "";
+  //       removedUsers[index].trade = "";
+  //       removedUsers[index].byWhom = "";
+  //       removedUsers[index].cleared_yn = "R";
+  //       removedUsers[index].passkey = "";
+  //       removedUsers[index].showPassKey = "";
+  //       removedUsers[index].availableTrades = [];
+  //       removedUsers[index].availableUsers = [];
+  //       setFormData({ ...formData, users: removedUsers });
+  //       setErrors((prev) =>
+  //         Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
+  //       );
+  //     }
+  //   };
 
   // ------------------------- ON CHANGE FUNCTION AND API CALL FOR TRADES & USERS  -------------------------------------
   const handleRowChange = (index, field, value) => {
@@ -157,28 +180,52 @@ export default function TradeSupAto1({ snowId, authTwo }) {
 
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
+      const hasNotSigned = updatedUsers.some(
+        (u) => u.qualification !== "ATO" && u.cleared_yn !== "Y",
+      );
+      //       const hasSignedTds = updatedUsers.some(
+      //         (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
+      //       );
+      const hasSignedSup = updatedUsers.some(
+        (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
+      );
+      const hasAto = updatedUsers.some(
+        (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
+      );
+      console.log("Trades :", value);
+      //       if (value === "TDS") {
+      //         const count = updatedUsers.filter((u) => u.qualification === value,).length;
+      //         if (count > 1) {
+      //           alert("Tradesman allotted already , No further tradesman required.");
+      //           updatedUsers[index].qualification = "";
+      //           updatedUsers[index].trade = "";
+      //           updatedUsers[index].byWhom = "";
+      //           return;
+      //         }
+      //       }
+      if (value === "SUP") {
+        const count = updatedUsers.filter(
+          (u) => u.qualification === value,
+        ).length;
+        if (count > 1) {
+          alert(
+            "Supervisor allotted already , No further supervisor required.",
+          );
+          updatedUsers[index].qualification = "";
+          updatedUsers[index].trade = "";
+          updatedUsers[index].byWhom = "";
+          return;
+        }
+      }
       if (value === "ATO") {
-        const hasNotSigned = updatedUsers.some(
-          (u) => u.qualification !== "ATO" && u.cleared_yn !== "Y",
-        );
-        const hasTds = updatedUsers.some(
-          (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
-        );
-        const hasSup = updatedUsers.some(
-          (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
-        );
-        const hasAto = updatedUsers.some(
-          (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
-        );
-        console.log("Trades :", value, hasTds, hasSup);
-        if (!hasTds || !hasSup || hasNotSigned) {
-          if (hasTds && hasSup && hasNotSigned) {
+        if (!hasSignedSup || hasNotSigned) {
+          if (hasSignedSup && hasNotSigned) {
             alert(
-              "To authorise this entry,  Either sign remaining tradesman and supervisor or remove them.",
+              "To authorise this entry,  Either sign supervisor or remove him.",
             );
           } else {
             alert(
-              "To authorise any limitation entry at least one tradesman and one supervisor signature is mandatory.",
+              "To authorise any limitation entry supervisor signature is mandatory.",
             );
           }
           updatedUsers[index].qualification = "";
@@ -186,18 +233,9 @@ export default function TradeSupAto1({ snowId, authTwo }) {
           updatedUsers[index].byWhom = "";
           return;
         }
-        if (hasAto > 0) {
-          alert(
-            "Entry is authorised already , No further authorisation required..",
-          );
-          updatedUsers[index].qualification = "";
-          updatedUsers[index].trade = "";
-          updatedUsers[index].byWhom = "";
-          return;
-        }
-        updatedUsers[index].trade = "0000";
+        updatedUsers[index].trade = "202500012";
         setFormData({ ...formData, users: updatedUsers });
-        handleRowChange(index, "trade", "0000");
+        handleRowChange(index, "trade", "202500012");
         return;
       }
       axios
@@ -294,7 +332,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
     }
     try {
       const csrfToken = Cookies.get("csrftoken");
-      const res = await fetch("/api/checkPasskeyRightSide/", {
+      const res = await fetch("/api/checkPasskeyRightSideLimitation/", {
         method: "POST",
         headers: {
           "X-CSRFToken": csrfToken,
@@ -343,20 +381,90 @@ export default function TradeSupAto1({ snowId, authTwo }) {
     }
   };
   //----------------- when user or passkey changes we must reset isPasskeyValid for that row ---------------------------
-  const handleSubmit = () => {
-    const payload = formData?.users.map((row) => {
-      const u = formData.users.find((u) => u.id === parseInt(row.byWhom));
-      return {
-        authenticated: "Yes",
-        user_qual_id: row.byWhom,
-      };
-    });
-    if (authTwo) {
-      authTwo(payload);
+  //   const handleForwardToAto = () => {
+  //     const updatedUsers = [...formData?.users];
+  //     const hasNotSigned = updatedUsers.some((u) => u.cleared_yn !== "Y");
+  //     const hasTds = updatedUsers.some(
+  //       (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
+  //     );
+  //     const hasSup = updatedUsers.some(
+  //       (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
+  //     );
+  //     if (hasNotSigned) {
+  //       alert(
+  //         "Must sign all the entries initiated. Either sign the remaining tradesman and supervisor or remove them.",
+  //       );
+  //       return;
+  //     }
+  //     if (!hasTds || !hasSup) {
+  //       alert(
+  //         "To forward any entry for authorisation at least one tradesman and one supervisor signature is mandatory.",
+  //       );
+  //       return;
+  //     }
+  //     setIsForwarded(true);
+  //     setForwardIndex(formData.users.length);
+  //     //     addRow();
+  //     setErrors("");
+  //   };
+  const handleSetRemove = () => {
+    const updatedUsers = [...formData?.users];
+    const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
+    console.log(hasSigned);
+    if (hasSigned) {
     }
-    setOpen(false);
-    setErrors("");
+    setIsRemove(!isRemove);
   };
+
+  const handleAuthToRemove = async () => {
+    try {
+      const csrfToken = Cookies.get("csrftoken");
+      const res = await fetch("/api/checkPasskey/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        body: JSON.stringify({
+          byWhom: supervisor,
+          passkey: supPassword,
+        }),
+      });
+      if (!res.ok) throw new Error("Invalid Passkey0");
+      const data = await res.json();
+      setIsRemoveOk(true);
+      setIsRemove(false);
+    } catch (err) {
+      console.log("Not Authenticated :", err);
+    }
+  };
+  //   const handleAuthToForward = async () => {
+  //     try {
+  //       const csrfToken = Cookies.get("csrftoken");
+  //       const res = await fetch("/api/checkPasskey/", {
+  //         method: "POST",
+  //         headers: {
+  //           "X-CSRFToken": csrfToken,
+  //           "Content-Type": "application/json",
+  //         },
+  //         withCredentials: true,
+  //         body: JSON.stringify({
+  //           byWhom: supervisor,
+  //           passkey: supPassword,
+  //         }),
+  //       });
+  //       if (!res.ok) throw new Error("Invalid Passkey0");
+  //       const data = await res.json();
+  //       setIsForwardedOk(true);
+  //       setIsForwarded(true);
+  //       setForwardIndex(formData.users.length);
+  //       addRow();
+  //       setErrors("");
+  //     } catch (err) {
+  //       console.log("Not Authenticated :", err);
+  //     }
+  //   };
 
   return (
     <>
@@ -365,7 +473,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
           onClick={() => setOpen(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
         >
-          Authenticate 2
+          Lim Authentication
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
@@ -381,6 +489,8 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                     });
                     setErrors("");
                     setOpen(false);
+                    setIsRemove(false);
+                    setIsRemoveOk(false);
                   }}
                   className="absolute top-3 right-3 border border-gray-400 rounded bg-red-200"
                 >
@@ -390,16 +500,15 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                   style={{ fontFamily: "algerian" }}
                   className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-12 rounded-lg text-xl"
                 >
-                  USERS AUTHENTICATION
+                 👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
-                <h2 className="p-2 flex items-center text-lg text-blue-400">
-                  ⚠️ One tradesman one supervisor and a authorizer
-                  authentication is mandatory to submit
-                </h2>
                 <form className="mt-2 space-y-4 ">
+                  <h3 className="flex bg-purple-200 py-1 justify-center font-bold border-gray-400 ">
+                    ⚠️ One supervisor and an ATO authentication is mandatory.
+                  </h3>
                   {formData?.users.map((row, index) => (
                     <>
                       <div
@@ -415,7 +524,10 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                               <select
                                 name="qualification"
                                 value={row.qualification}
-                                //                                 disabled
+                                disabled={
+                                  row.cleared_yn === "I" ||
+                                  row.cleared_yn === "Y"
+                                }
                                 onChange={(e) => {
                                   handleRowChange(
                                     index,
@@ -423,13 +535,13 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                     e.target.value,
                                   );
                                 }}
-                                className={`border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500
+                                className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
                                     ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 <option value="">Select Qualification</option>
-                                <option value="TDS">Tradesman</option>
+                                {/*                                 <option value="TDS">Tradesman</option> */}
                                 <option value="SUP">Supervisor</option>
-                                <option value="ATZ">ATO</option>
+                                <option value="ATO">ATO</option>
                               </select>
                             </div>
                             <div className="col-span-2">
@@ -437,7 +549,10 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                 <select
                                   name="trade"
                                   value={row.trade}
-                                  disabled={row.cleared_yn !== "N"}
+                                  disabled={
+                                    row.cleared_yn === "I" ||
+                                    row.cleared_yn === "Y"
+                                  }
                                   hidden={row.qualification === "ATO"}
                                   onChange={(e) => {
                                     handleRowChange(
@@ -446,7 +561,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                       e.target.value,
                                     );
                                   }}
-                                  className={`border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500
+                                  className={`border p-2 text-center w-full rounded border-gray-300  text-gray-800 focus:outline-none focus:border-indigo-500
                                       ${
                                         row.trade == "202500007"
                                           ? "bg-orange-100"
@@ -477,7 +592,10 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                               <select
                                 name="byWhom"
                                 value={row.byWhom}
-                                disabled={row.cleared_yn !== "N"}
+                                disabled={
+                                  row.cleared_yn === "I" ||
+                                  row.cleared_yn === "Y"
+                                }
                                 onChange={(e) => {
                                   handleRowChange(
                                     index,
@@ -491,7 +609,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                 {row.availableUsers &&
                                   row.availableUsers.map((d) => (
                                     <option key={d.id} value={d.id}>
-                                      {d.pno}, {d.user_name},{d.abbreviation}
+                                      {d.pno}, {d.user_name}, {d.abbreviation}
                                     </option>
                                   ))}
                               </select>
@@ -513,7 +631,7 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                     e.target.value,
                                   );
                                 }}
-                                placeholder="**Passkey**"
+                                placeholder="* signature pin *"
                                 className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                               />
                               <button
@@ -546,16 +664,14 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                                   </button>
                                 </div>
                                 <div className="col-span-2">
-                                  {formData?.users.length > 0 && (
-                                    <button
-                                      type="button"
-                                      hidden={isATO} // Remove user 'X' button will be disabled once authorised by authorizer.
-                                      onClick={() => removeRow(index)}
-                                      className="p-1 ml-7 border border-black rounded text-red-700 focus:outline-none focus:border-indigo-500 bg-red-200"
-                                    >
-                                      ✘
-                                    </button>
-                                  )}
+                                  <button
+                                    type="button"
+                                    //                                     hidden={} // Remove user 'X' button will be disabled once authorised by authorizer.
+                                    onClick={() => removeRow(index)}
+                                    className="p-1 ml-7 border border-black rounded text-red-700 focus:outline-none focus:border-indigo-500 bg-red-200"
+                                  >
+                                    ✘
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -563,14 +679,15 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                         </div>
                       </div>
                       <div>
-                        {errors[index]?.passkey && (
-                          <p className="text-sm text-red-500">
-                            {errors[index].passkey}
-                          </p>
-                        )}
                         {errors[index]?.qualification && (
                           <p className="text-sm text-red-500">
                             {errors[index].qualification}
+                          </p>
+                        )}
+
+                        {errors[index]?.trade && (
+                          <p className="text-sm text-red-500">
+                            {errors[index].trade}
                           </p>
                         )}
                         {errors[index]?.byWhom && (
@@ -578,32 +695,99 @@ export default function TradeSupAto1({ snowId, authTwo }) {
                             {errors[index].byWhom}
                           </p>
                         )}
-                        {errors[index]?.trade && (
+                        {errors[index]?.passkey && (
                           <p className="text-sm text-red-500">
-                            {errors[index].trade}
+                            {errors[index].passkey}
                           </p>
                         )}
                       </div>
                     </>
                   ))}
                 </form>
-                <div className=" mt-2">
-                  {!isATO && (
+                <div class="flex flex-col space-y-4">
+                  <div>
+                    {!isATO && (
+                      <button
+                        type="button"
+                        id="addUserBtn"
+                        disabled={isRemove}
+                        onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.
+                        className="px-8 ml-1 float-left font-bold border border-gray-400 rounded text-gray-800 focus:outline-none focus:border-indigo-500 bg-blue-200 disabled:opacity-30 "
+                      >
+                        + Add user
+                      </button>
+                    )}
+
+                    {/*                     <button */}
+                    {/*                       type="button" */}
+                    {/*                       id="forwardToAtoBtn" */}
+                    {/*                       onClick={handleForwardToAto} */}
+                    {/*                       disabled={isRemove} */}
+                    {/*                       hidden={isForwarded} */}
+                    {/*                       className="hidden px-2 mr-6 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 " */}
+                    {/*                     > */}
+                    {/*                       Forward to ATO */}
+                    {/*                     </button> */}
                     <button
                       type="button"
-                      onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.
-                      className="px-2 float-left font-bold border border-gray-400 rounded bg-blue-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                      id="removeBtn"
+                      onClick={handleSetRemove}
+                      hidden={""}
+                      className="hidden px-2 mr-60 float-right font-bold border border-gray-400 rounded bg-red-500 text-gray-800 focus:outline-none focus:border-indigo-500"
                     >
-                      + Add user
+                      ✘ Remove signed user
                     </button>
+                  </div>
+                  {isRemove && (
+                    <div className="grid lg:grid-cols-12 gap-6">
+                      <div className="col-span-4">
+                        <select
+                          onChange={(e) => setSupervisor(e.target.value)}
+                          className="border ml-2 p-1  text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                          className="border p-2  rounded border-gray-300 bg-gray-200 text-gray-800  focus:border-indigo-500"
+                        >
+                          <option value="">Select Supervisor</option>
+                          {formData.users
+                            .filter(
+                              (group) =>
+                                group.qualification === "SUP" &&
+                                group.cleared_yn === "Y",
+                            )
+                            .flatMap((group) => group.availableUsers)
+                            .map((user) => (
+                              <option key={user.id} value={user.id}>
+                                {user.pno}, {user.user_name},{user.abbreviation}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                      <div className="col-span-3">
+                        <input
+                          //                           type={showSupPassKey ? "text " : "password"}
+                          type={"password"}
+                          onChange={(e) => setSupPassword(e.target.value)}
+                          placeholder="**Passkey**"
+                          className="border ml-12 p-1 text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <button
+                          onClick={handleAuthToRemove}
+                          //                           hidden={isForwarded}
+                          className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400"
+                        >
+                          Auth To Remove
+                        </button>
+                        {/*                         <button */}
+                        {/*                           onClick={handleAuthToForward} */}
+                        {/*                           hidden={isRemove} */}
+                        {/*                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400" */}
+                        {/*                         > */}
+                        {/*                           Auth To Forward */}
+                        {/*                         </button> */}
+                      </div>
+                    </div>
                   )}
-
-                  <button
-                    onClick={handleSubmit}
-                    className=" hidden px-2 float-right font-bold border border-gray-400 rounded bg-green-400"
-                  >
-                    Submit
-                  </button>
                 </div>
               </div>
             </div>
