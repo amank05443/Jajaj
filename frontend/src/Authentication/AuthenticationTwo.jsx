@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
+import { Eye, EyeOff} from "lucide-react";
 export default function TradeSupAto({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
@@ -608,6 +608,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                 value={row.qualification}
                                 disabled={row.cleared_yn !== "N"}
                                 onChange={(e) => {
+
                                   handleRowChange(
                                     index,
                                     "qualification",

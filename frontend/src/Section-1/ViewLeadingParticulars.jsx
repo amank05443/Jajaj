@@ -5,7 +5,7 @@ import AtoOnly from "../Authentication/AuthenticationAto";
 import AllUsers from "../Authentication/AuthenticationOne";
 import TradeSupAto from "../Authentication/AuthenticationTwo";
 import LimitationAuth from "../Authentication/LimAuthentication";
-import {ModForm701} from "../WeasyPrintReports/WeasyPrint";
+import { ModForm701 } from "../WeasyPrintReports/WeasyPrint";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
 const ViewLeadingParticulars = () => {
@@ -59,23 +59,24 @@ const ViewLeadingParticulars = () => {
     }));
   };
   const handleDataFromAllUsers = (data) => {
-    const { authenticated, user_id } = data;
+    const { authenticated, user_qual_id } = data;
     setAircraftDetails((prev) => ({
       ...prev,
       authenticated: authenticated,
-      user_id: user_id,
+      user_id: user_qual_id,
     }));
   };
-  const handleDataFromTradeSupAto = (data) => {
-    console.log("payloadArray :", data);
-    const { byWhom, trade, qualification } = data;
-    //     setAircraftDetails((prev) => ({
-    //       ...prev,
-    //       qualification: qualification,
-    //       trade: trade,
-    //       byWhom: byWhom,
-    //     }));
-  };
+  //   const handleDataFromTradeSupAto = (data) => {
+  //     console.log("payloadArray :", data);
+  //     const { byWhom, trade, qualification } = data;
+  //     setAircraftDetails((prev) => ({
+  //       ...prev,
+  //       qualification: qualification,
+  //       trade: trade,
+  //       byWhom: byWhom,
+  //     }));
+  //   };
+
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [aircraftDetails, setAircraftDetails] = useState(null);
   const { params, loading } = useParams();
@@ -117,199 +118,177 @@ const ViewLeadingParticulars = () => {
           >
             LEADING PARTICULARS
           </h2>
-          {/*           <h2 */}
-          {/*             style={{ */}
-          {/*               marginLeft: "90%", */}
-          {/*               fontWeight: "bold", */}
-          {/*               fontSize: "15px", */}
-          {/*               color: "crimson", */}
-          {/*               margin: 0, */}
-          {/*             }} */}
-          {/*           > */}
-          {/*             MOD Form 701 */}
-          {/*           </h2> */}
         </div>
         {/*<h1>------------------------------------------Body---------------------------------------------</h1>*/}
         <div className="bg-gradient-to-r from-[#EEBBD5]/40 via-indigo-200 to-[#2F284E]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-3 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm">
-          {/*            className="bg-gradient-to-r from-purple-200 via-indigo-200 to-[#EEBBD5]/20 rounded-xl shadow-2xl boarder boarder-grey-300 p-5 ml-2 mr-3 transform hover:shadow-[0_5px_rgba(0,0,0,0.2)] transition-all duration-500 backdrop-blur-sm"> */}
           {aircraftDetails && (
             <>
               {/*<h1>----------Row 1--------------------Leading Particulars----------------------------------</h1>*/}
-              {/*               <div className="border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm"> */}
-              {/*                 <div className="grid grid-cols-3 gap-6 "> */}
-              {/*                   <div> */}
-              {/*                     🚀 &nbsp;Aircraft Type &nbsp;&nbsp;:{" "} */}
-              {/*                     <b className="text-green-700"> */}
-              {/*                       {aircraftDetails.ac_type || "NA"} */}
-              {/*                     </b> */}
-              {/*                   </div> */}
-              {/*                   <div> */}
-              {/*                     ✈️ &nbsp;Airframe Serial No :{" "} */}
-              {/*                     <b className="text-green-700"> */}
-              {/*                       {aircraftDetails.side_no || "NA"} */}
-              {/*                     </b> */}
-              {/*                   </div> */}
-              {/*                   <div> */}
-              {/*                     ⏱️ Airframe Hours */}
-              {/*                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "} */}
-              {/*                     <b className="text-green-700"> */}
-              {/*                       {aircraftDetails.side_no || "NA"} */}
-              {/*                     </b> */}
-              {/*                   </div> */}
-              {/*                 </div> */}
-              {/*                 <div className="grid grid-cols-3 gap-6 "> */}
-              {/*                   <div> */}
-              {/*                     🛫 Aircraft Mark &nbsp;&nbsp;:{" "} */}
-              {/*                     <b className="text-green-700"> */}
-              {/*                       {aircraftDetails.aircraft_mark || "NA"} */}
-              {/*                     </b> */}
-              {/*                   </div> */}
+              <div className="border-2 border-black-400 rounded-lg p-4 backdrop-blur-sm">
+                <div className="grid grid-cols-3 gap-6 ">
+                  <div>
+                    🚀 &nbsp;Aircraft Type &nbsp;&nbsp;:{" "}
+                    <b className="text-green-700">
+                      {aircraftDetails.ac_type || "NA"}
+                    </b>
+                  </div>
+                  <div>
+                    ✈️ &nbsp;Airframe Serial No :{" "}
+                    <b className="text-green-700">
+                      {aircraftDetails.side_no || "NA"}
+                    </b>
+                  </div>
+                  <div>
+                    ⏱️ Airframe Hours
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:{" "}
+                    <b className="text-green-700">
+                      {aircraftDetails.side_no || "NA"}
+                    </b>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-6 ">
+                  <div>
+                    🛫 Aircraft Mark &nbsp;&nbsp;:{" "}
+                    <b className="text-green-700">
+                      {aircraftDetails.aircraft_mark || "NA"}
+                    </b>
+                  </div>
 
-              {/*                   <div> */}
-              {/*                     🛸 Aircraft Primary / Secondary Role :{" "} */}
-              {/*                     <b className="text-green-700"> */}
-              {/*                       {aircraftDetails.roles || "NA"} */}
-              {/*                     </b> */}
-              {/*                   </div> */}
-              {/*                 </div> */}
-              {/*               </div> */}
+                  <div>
+                    🛸 Aircraft Primary / Secondary Role :{" "}
+                    <b className="text-green-700">
+                      {aircraftDetails.roles || "NA"}
+                    </b>
+                  </div>
+                </div>
+              </div>
 
               {/*<h1>----------Row 2--------------------Basic Information----------------------------------</h1>*/}
               <div className="border-2 border-black-400 rounded-lg p-1 backdrop-blur-sm mt-2">
                 <div className="text-center font-bold text-[#2c5364] p-1 backdrop-blur-sm bg-purple-300 rounded-md">
                   📑 Basic Information
                 </div>
-                {/*                 <div> */}
-                {/*                   🛸 Aircraft Primary / Secondary Role :{" "} */}
-                {/*                   <b className="text-green-700">{aircraftDetails.roles || "NA"}</b> */}
-                {/*                 </div> */}
-                <div className="grid grid-cols-3 gap-6 p-2">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>✈️ A/C Registration Sl No&nbsp;</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-2">
+                  <table className="col-span-1">
+                    <tbody >
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">✈️ A/C Registration Sl No&nbsp;</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.airframe_serial_no || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>📅 Date of Manufacture</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">📅 Date of Manufacture</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.date_of_manufacture || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>📆 Date of Acceptance</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">📆 Date of Acceptance</td>
+                        <td className="col-span-1">:</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.date_of_acceptance || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>📆 DOE of Warranty</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3"> 📆 Date of Expiry of Warranty</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.date_of_expiry_of_warranty || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>📆 Date of Expiry of TTL</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">📆 Date of Expiry of TTL</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.expiry_of_ttl_cal || "NA"}
+                        </td>
+                      </tr>
+
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">⚖ Basic Weight</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.basic_weight + " Kg" || "NA"}
+                        </td>
+                      </tr>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">⚖ Empty Weight</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.empty_weight + " Kg" || "NA"}
+                        </td>
+                      </tr>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🛫 Max AUW</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.max_auw + " Kg" || "NA"}
                         </td>
                       </tr>
                     </tbody>
                   </table>
 
-                  <table>
+                  <table className="col-span-1">
                     <tbody>
-                      <tr>
-                        <td>🛫 Max Take off Speed</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {" "}
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🛸 Aircraft Primary / Secondary Role</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.roles || "NA"}
+                        </td>
+                      </tr>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🛫 Max Take off Speed</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.max_takeoff_speed + " Knots" || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>🌀 Max Landing Speed</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🌀 Max Landing Speed</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {" "}
                           {aircraftDetails.max_landing_speed + " Knots" || "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>🏗️ Max Operating G Load</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {" "}
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🩸 Max Fuel Capacity</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.max_fuel_capacity + " Ltr." || "NA"}
+                        </td>
+                      </tr>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">⛓️‍ Max Combat Load</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.max_combat_load + " Kg" || "NA"}
+                        </td>
+                      </tr>
+
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">⚖ Max Landing Weight</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
+                          {aircraftDetails.max_landing_weight + " Kg" || "NA"}
+                        </td>
+                      </tr>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3">🏗️ Max Operating G Load</td>
+                        <td className="col-span-1"> :</td>
+                        <td className="col-span-2 text-green-700 font-bold">
                           {aircraftDetails.max_operating_g_load + " m/sec 2" ||
                             "NA"}
                         </td>
                       </tr>
-                      <tr>
-                        <td>🩸 Max Fuel Capacity</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {" "}
-                          {aircraftDetails.max_fuel_capacity + " Ltr." || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>⛓️‍ Max Combat Load</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.max_combat_load + " Kg" || "NA"}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>🛸 Aircraft Primary / Secondary Role</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.roles || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>🛫 Max AUW</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.max_auw + " Kg" || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>⚖ Max Landing Weight</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.max_landing_weight + " Kg" || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>⚖ Basic Weight</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.basic_weight + " Kg" || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>⚖ Empty Weight</td>
-                        <td>:</td>
-                        <td className="text-green-700 font-bold">
-                          {aircraftDetails.empty_weight + " Kg" || "NA"}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td className="text-green-700 font-bold"></td>
+                       <tr className="grid grid-cols-6 gap-6 p-2 ">
+                        <td className="col-span-3"> </td>
+                        <td> </td>
+                        <td className="col-span-2 text-green-700 font-bold"> </td>
                       </tr>
                     </tbody>
                   </table>
@@ -735,11 +714,11 @@ const ViewLeadingParticulars = () => {
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center mt-5 gap-5">
-           <AllUsers auth={handleDataFromAllUsers} />
+          <AllUsers auth={handleDataFromAllUsers} />
           <AtoOnly auth={handleDataFromAtoOnly} />
-           <TradeSupAto snowId={202520371} authTwo={handleDataFromTradeSupAto} />
-{/*           <TradeSupAto snowId={202520380} authTwo={handleDataFromTradeSupAto} /> */}
-          <LimitationAuth snowId={202520375} />
+          <TradeSupAto snowId={202520384} />
+          {/*           <TradeSupAto snowId={202520380}/> */}
+          <LimitationAuth snowId={202520383} />
           {/*           <div> */}
           {/*             <h2>{aircraftDetails?.qualification}</h2> */}
           {/*             <h2>{aircraftDetails?.trade}</h2> */}
@@ -751,9 +730,9 @@ const ViewLeadingParticulars = () => {
           {/*         > */}
           {/*           🛠️ Other System Details :- */}
         </div>
-         <div className="flex justify-center mt-5 gap-5">
-           <ModForm701 />
-      </div>
+        <div className="flex justify-center mt-5 gap-5">
+          <ModForm701 />
+        </div>
       </div>
     </div>
   );

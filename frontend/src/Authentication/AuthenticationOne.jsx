@@ -76,7 +76,7 @@ export default function AllUsers({ auth }) {
       console.log("Authenticated :", data.user);
       const authData = {
         authenticated: "Yes",
-        user_id: data.user.id,
+        user_qual_id: data.user.id,
         user_name: data.user.name,
       };
       if (auth) {

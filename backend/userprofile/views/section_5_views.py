@@ -59,18 +59,18 @@ def saveUsLogData(request):
         formData = data["formData"]
         activeCheckboxes = data['activeCheckboxes']
         limLogData = data['limLogData']
-        user_id = formData.get('user_id')
-        if not user_id:
+        user_qual_id = formData.get('user_qual_id')
+        if not user_qual_id:
             return JsonResponse({
                 "success": False,
                 "error": "Missing key 'user_id' in request data.",
             })
         try:
-            user_instance = UserQuals.objects.get(id=user_id)
+            user_instance = UserQuals.objects.get(id=user_qual_id)
         except UserQuals.DoesNotExist:
             return JsonResponse({
                 "success": False,
-                "error": f"No UserQuals found for user_id: {user_id}"
+                "error": f"No UserQuals found for user_id: {user_qual_id}"
             })
 
         return_res = {"success": True, "message": "Saved successfully"}
