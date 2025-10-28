@@ -12,6 +12,7 @@ import {
   Zap,
   Compass,
   NavigationIcon,
+  Eye,
 } from "lucide-react";
 
 import {
@@ -59,6 +60,8 @@ import {
   AccountCircle,
   HelpOutline,
   FileCopy,
+  VisibilityIcon,
+  Construction,
 } from "@mui/icons-material";
 
 const sidebarLinks = [
@@ -92,6 +95,11 @@ const sidebarLinks = [
         label: "Concessions",
         icon: <Discount size={20} />,
         to: "/concessions",
+      },
+      {
+        label: "OFP Logs",
+        icon: <Construction size={20} />,
+        to: "/oFPLog",
       },
     ],
   },
@@ -130,7 +138,7 @@ const sidebarLinks = [
       {
         label: "Current Operating Data(WEIGHT AND BALANCE DATA)",
         icon: <SafetyCheck size={20} />,
-        to: "/viewCurrentOperatingData",
+        to: "/ViewCurrentOperatingData",
       },
     ],
   },
@@ -170,6 +178,11 @@ const sidebarLinks = [
         to: "/promulgateTechnicalInstruction",
       },
     ],
+  },
+   {
+    label: "View/Download E-700",
+    icon: <Eye size={23} />,
+    to:  '/WeasyPrint',
   },
 ];
 
@@ -283,7 +296,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
 export default function Sidebar({ open, toggleSidebar }) {
   const [expandedItems, setExpandedItems] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
-  const shouldBeOpen = open || isHovered;
+  const shouldBeOpen = open;
   const toggleExpand = useCallback((label) => {
     setExpandedItems((prev) => {
       if (prev.includes(label)) {

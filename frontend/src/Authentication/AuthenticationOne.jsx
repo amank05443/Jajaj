@@ -48,6 +48,14 @@ export default function AllUsers({ auth }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll) return;
+    if (!formData.byWhom) {
+      alert("Please select By Whom");
+      return;
+    }
+    if (!formData.passkey) {
+      alert("Please enter passkey");
+      return;
+    }
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskey/", {
@@ -68,7 +76,7 @@ export default function AllUsers({ auth }) {
       console.log("Authenticated :", data.user);
       const authData = {
         authenticated: "Yes",
-        user_id: data.user.id,
+        user_qual_id: data.user.id,
         user_name: data.user.name,
       };
       if (auth) {
@@ -91,9 +99,9 @@ export default function AllUsers({ auth }) {
       <div>
         <button
           onClick={() => setOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-10 py-2 bg-blue-600 text-white rounded-lg"
         >
-          Authenticate
+          By Whom
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
@@ -111,8 +119,11 @@ export default function AllUsers({ auth }) {
                 >
                   ❌
                 </button>
-                <h2 className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl font-family: 'Algerian'">
-                  Users authentication
+                <h2
+                  style={{ fontFamily: "algerian" }}
+                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl"
+                >
+                  👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
@@ -133,14 +144,14 @@ export default function AllUsers({ auth }) {
                         {data &&
                           data?.map((d) => (
                             <option key={d.id} value={d.id}>
-                              {d.abbreviation}, {d.user_name} ({d.pno})
+                              {d.pno}, {d.user_name}, {d.abbreviation}
                             </option>
                           ))}
                       </select>
                     </div>
                     <div>
                       <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
-                        Passkey
+                        Signature Pin
                       </label>
                       <input
                         type={showPassKey ? "text " : "password"}
@@ -168,7 +179,7 @@ export default function AllUsers({ auth }) {
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
-                    Authenticate
+                    OK
                   </button>
                 </form>
               </div>

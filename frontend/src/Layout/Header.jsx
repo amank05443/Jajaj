@@ -1,16 +1,42 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { useThemeMode } from "./ThemeProvider";
 import {
-  IconButton,TextField,Badge,Fab,InputAdornment,Tooltip,Divider,
-  ListItemIcon,Typography,Avatar,Menu,MenuItem,AppBar,
+  IconButton,
+  TextField,
+  Badge,
+  Fab,
+  InputAdornment,
+  Tooltip,
+  Divider,
+  ListItemIcon,
+  Typography,
+  Avatar,
+  Menu,
+  MenuItem,
+  AppBar,
   Box,
 } from "@mui/material";
 import {
-  Menu as MenuIcon, Bell, LogOut, User, Plane, Search as SearchIcon,
+  Menu as MenuIcon,
+  Bell,
+  LogOut,
+  User,
+  Plane,
+  Search as SearchIcon,
   Info,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
-  Home, ContactMail, Logout, Settings, AccountCircle, HelpOutline, FileCopy,
+  Home,
+  ContactMail,
+  Logout,
+  Settings,
+  AccountCircle,
+  HelpOutline,
+  FileCopy,
 } from "@mui/icons-material";
 import { useAuth } from "../Authentication/AuthContext";
 import { useParams } from "../Utils/CustomHooks/useParams";
@@ -26,19 +52,33 @@ export default function Header({
   const [notifAnchor, setNotifAnchor] = useState(null);
   const [userAnchor, setUserAnchor] = useState(null);
   const { logout } = useAuth();
-  const { params } = useParams();
-  const { data, loading } = useTableApi("aircraft_masters", {
-    id: params.aircraft_master_id,
-    related: ["aircraft_type,customer"],
-  });
+  const { params, loading } = useParams();
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
 
-//   const { data: dataCoSLog, loading: loadingCoSLog } = useTableApi(
-//     "change_of_serviceability_logs",
-//     {
-//       query: { aircraft_master_id: params.aircraft_master_id },
-//     },
-//   );
-
+  //   const { data: dataCoSLog, loading: loadingCoSLog } = useTableApi(
+  //     "change_of_serviceability_logs",
+  //     {
+  //       query: { aircraft_master_id: params.aircraft_master_id },
+  //     },
+  //   );
+  const { mode, toggleTheme } = useThemeMode();
+  useEffect(() => {
+    if (!loading) {
+      const aircraft_master_id = params.aircraft_master_id;
+      if (aircraft_master_id) {
+        axios
+          .get(`/api/headersData/${aircraft_master_id}`)
+          .then((response) => {
+            setData(response.data);
+            console.log("Headers data found :", response.data);
+          })
+          .catch((error) => {
+            console.error("Error Headers:", error);
+          });
+      }
+    }
+  }, [params, loading]);
   const handleNotifClick = (event) => {
     setNotifAnchor(event.currentTarget);
   };
@@ -48,7 +88,7 @@ export default function Header({
   };
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900
+      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-600 dark:via-gray-800 dark:to-gray-700
     backdrop-blur-xl border-b border-cyan-500/20 flex items-center px-4 z-30 shadow-2xl shadow-purple-500/10"
       initial={{ y: -56 }}
       animate={{ y: 0 }}
@@ -64,15 +104,16 @@ export default function Header({
               color="inherit"
               aria-label="toggle sidebar"
               size="large"
-              className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 border border-cyan-500/30
+              className="text-cyan-300 dark:text-white hover:text-white hover:bg-cyan-500/20 transition-all duration-300 border border-cyan-500/30
             rounded-xl"
             >
               <MenuIcon size={24} />
             </IconButton>
           )}
           <div
-            className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl flex items-center
+            className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600  dark:from-white dark:via-white dark:to-white rounded-3xl flex items-center
             justify-center shadow-lg shadow-cyan-500/30 rotate-3 hover:rotate-0 transition-transform duration-300"
+            onClick={() => navigate("/exp1")}
           >
             <Plane size={24} />
           </div>
@@ -81,16 +122,16 @@ export default function Header({
               variant="h6"
               component="h1"
               className="font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent
-            text-lg tracking-tight"
+            text-lg tracking-tight dark:text-white"
             >
-              E700{" "}
+              e700
             </Typography>
-            <div className="text-cyan-400 text-xs font-mono">v1.0</div>
+            <div className="text-cyan-400 text-xs font-mono dark:text-white ">v1.0</div>
           </div>
         </div>
         {
-          <div className="">
-            {!loading && data && data.aircraft_type && (
+          <div>
+            {!loading && data.side_no && data.aircraft_name && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -103,26 +144,30 @@ export default function Header({
                 >
                   {" "}
                   <Box display="flex" gap={3} flexWrap="wrap">
-                    <Typography variant="subtitle4" sx={{ color: "white" }}>
-                      {data.aircraft_type?.aircraft_name} - {data.side_no}
+                    <Typography
+                      variant="h4"
+                      sx={{ color: "white", fontWeight: "bold" }}
+                    >
+                      {data.aircraft_name} - {data.side_no}
                     </Typography>
 
-                    <Typography variant="subtitle4" sx={{ color: "white" }}>
-                      {loading ? "" : "A/F Hrs: " + data.airframe_hrs}
-                    </Typography>
-{/*                     <Typography variant="subtitle4"> */}
-{/*                       <span style={{ color: "white" }}> Status: </span> */}
-{/*                       {""} */}
-{/*                       {dataCoSLog && ( */}
-{/*                         <span */}
-{/*                           style={{ */}
-{/*                             color: "lightgreen", */}
-{/*                           }} */}
-{/*                         > */}
-{/*                           {dataCoSLog[0].status} */}
-{/*                         </span> */}
-{/*                       )} */}
-{/*                     </Typography> */}
+                    {/*                     <Typography variant="subtitle4" sx={{ color: "white" }}> */}
+                    {/*                       {loading ? "" : "A/F Hrs: " + data.airframe_hrs} */}
+                    {/*                     </Typography> */}
+                    {/*                     <Typography variant="subtitle4"> */}
+                    {/*                       <span style={{ color: "white" }}> Status: </span> */}
+                    {/*                       {""} */}
+                    {/*                       {dataCoSLog && ( */}
+                    {/*                         <span */}
+                    {/*                           style={{ */}
+                    {/*                             color: "lightgreen", */}
+                    {/*                           }} */}
+                    {/*                         > */}
+                    {/*                           {dataCoSLog[0].status} */}
+                    {/*                         </span> */}
+                    {/*                       )} */}
+                    {/*                     </Typography> */}
+
                   </Box>
                 </Box>
               </motion.div>
@@ -132,17 +177,17 @@ export default function Header({
         {/* Notifications */}
         <div className="flex items-center gap-2">
           {" "}
-          <IconButton
-            color="inherit"
-            onClick={handleNotifClick}
-            aria-label="notifications"
-            className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
-          >
-            <Badge badgeContent={3} color="error">
-              {" "}
-              <Bell size={20} />
-            </Badge>
-          </IconButton>
+          {/*           <IconButton */}
+          {/*             color="inherit" */}
+          {/*             onClick={handleNotifClick} */}
+          {/*             aria-label="notifications" */}
+          {/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
+          {/*           > */}
+          {/*             <Badge badgeContent={3} color="error"> */}
+          {/*               {" "} */}
+          {/*               <Bell size={20} /> */}
+          {/*             </Badge> */}
+          {/*           </IconButton> */}
           <Menu
             anchorE1={notifAnchor}
             open={Boolean(notifAnchor)}
@@ -158,39 +203,59 @@ export default function Header({
             <Divider />
             <MenuItem>Server load high.</MenuItem>
           </Menu>{" "}
-          <IconButton
-            color="inherit"
-            aria-label="info"
-            className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
-          >
-            <Info size={20} />{" "}
-          </IconButton>
+          {/*           <IconButton */}
+          {/*             color="inherit" */}
+          {/*             aria-label="info" */}
+          {/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
+          {/*           > */}
+          {/*             <Info size={20} />{" "} */}
+          {/*           </IconButton> */}
           {/* Search Bar */}
-          <div className="flex-grow max-w-md hidden md:block">
-            <TextField
-              placeholder="Search..."
-              size="small"
-              fullWidth
-              variant="outlined"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  background: "rgba(255,255,255,0.1)",
-                  color: "white",
-                  "& fieldset": { borderColor: "rgba(255,255,255,0.2)" },
-                  "&:hover fieldset": { borderColor: "cyan" },
-                },
-                input: { color: "white" },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon size={18} className="text-cyan-300" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+          {/*           <div className="flex-grow max-w-md hidden md:block"> */}
+          {/*             <TextField */}
+          {/*               placeholder="Search..." */}
+          {/*               size="small" */}
+          {/*               fullWidth */}
+          {/*               variant="outlined" */}
+          {/*               sx={{ */}
+          {/*                 "& .MuiOutlinedInput-root": { */}
+          {/*                   borderRadius: 2, */}
+          {/*                   background: "rgba(255,255,255,0.1)", */}
+          {/*                   color: "white", */}
+          {/*                   "& fieldset": { borderColor: "rgba(255,255,255,0.2)" }, */}
+          {/*                   "&:hover fieldset": { borderColor: "cyan" }, */}
+          {/*                 }, */}
+          {/*                 input: { color: "white" }, */}
+          {/*               }} */}
+          {/*               InputProps={{ */}
+          {/*                 startAdornment: ( */}
+          {/*                   <InputAdornment position="start"> */}
+          {/*                     <SearchIcon size={18} className="text-cyan-300" /> */}
+          {/*                   </InputAdornment> */}
+          {/*                 ), */}
+          {/*               }} */}
+          {/*             /> */}
+          {/*           </div> */}
+          <div>
+                      <button
+                        onClick={toggleTheme}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800 dark:bg-gray-200 text-gray-100 dark:text-gray-900 shadow hover:shadow-lg transition-all duration-500"
+                      >
+                        {mode === "light" ? (
+                          <>
+                            {" "}
+                            <Moon className="w-5 h-5 text-yellow-500" />
+                            <span> Dark </span>{" "}
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <Sun className="w-5 h-5 text-yellow-500" />
+                            <span> Light </span>{" "}
+                          </>
+                        )}
+                      </button>
+                    </div>
         </div>
       </div>
     </motion.header>

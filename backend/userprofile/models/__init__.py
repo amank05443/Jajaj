@@ -28,3 +28,5 @@ from .compass_calibration_logs import CompassCalibrationLogs
 from .trades import Trades
 from .pulls import Pulls
 from .security_questions import SecurityQuestions
+from .softwares import Softwares
+from .software_lines import SoftwareLines

@@ -197,7 +197,8 @@ class CompassCalibrationLogs(models.Model):
     due_date = models.DateField(blank=True, null=True)
     ref_snow = models.BigIntegerField(blank=True, null=True)
     compass_type = models.ForeignKey('Items', models.DO_NOTHING, db_column='compass_type', blank=True, null=True)
-    compass_ser_no = models.ForeignKey('ItemSerials', models.DO_NOTHING, db_column='compass_ser_no', blank=True, null=True)
+    compass_ser_no = models.ForeignKey('ItemSerials', models.DO_NOTHING, db_column='compass_ser_no', blank=True,
+                                       null=True)
     place = models.ForeignKey('Customers', models.DO_NOTHING, db_column='place', blank=True, null=True)
     method = models.ForeignKey('HowFoundDefects', models.DO_NOTHING, db_column='method', blank=True, null=True)
     actual_north = models.BigIntegerField(blank=True, null=True)
@@ -215,7 +216,8 @@ class CompassCalibrationLogs(models.Model):
     coeff_a = models.BigIntegerField(blank=True, null=True)
     coeff_b = models.BigIntegerField(blank=True, null=True)
     coeff_c = models.BigIntegerField(blank=True, null=True)
-    change_of_serviceability_log = models.ForeignKey(ChangeOfServiceabilityLogs, models.DO_NOTHING, blank=True, null=True)
+    change_of_serviceability_log = models.ForeignKey(ChangeOfServiceabilityLogs, models.DO_NOTHING, blank=True,
+                                                     null=True)
     pull = models.ForeignKey('Pulls', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -232,7 +234,8 @@ class CurrentOperatingDataWb(models.Model):
     weight_item_removed = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     long_moment_item_removed = models.CharField(blank=True, null=True)
     lat_vert_item_removed = models.CharField(blank=True, null=True)
-    weight_item_fitted = models.DecimalField(db_column='weight_item-fitted', max_digits=65535, decimal_places=65535, blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    weight_item_fitted = models.DecimalField(db_column='weight_item-fitted', max_digits=65535, decimal_places=65535,
+                                             blank=True, null=True)  # Field renamed to remove unsuitable characters.
     long_moment_item_fitted = models.CharField(blank=True, null=True)
     lat_vert_item_fitted = models.CharField(blank=True, null=True)
     current_weight = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
@@ -350,8 +353,10 @@ class FuelTanks(models.Model):
     tank_group = models.CharField(blank=True, null=True)
     capacity = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     aircraft_type_id = models.BigIntegerField(blank=True, null=True)
-    expansion_2_field = models.CharField(db_column='EXPANSION_2%', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
-    expansion_3_field = models.CharField(db_column='EXPANSION_3%', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    expansion_2_field = models.CharField(db_column='EXPANSION_2%', blank=True,
+                                         null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    expansion_3_field = models.CharField(db_column='EXPANSION_3%', blank=True,
+                                         null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
 
     class Meta:
         managed = False
@@ -376,7 +381,7 @@ class InapReferences(models.Model):
     inap_figure = models.CharField(max_length=20, blank=True, null=True)
     inap_item = models.CharField(max_length=15, blank=True, null=True)
     item_id = models.BigIntegerField(blank=True, null=True)
-    store_type_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_type = models.BigIntegerField(blank=True, null=True)
     system = models.CharField(max_length=100, blank=True, null=True)
     qty_fitted = models.BigIntegerField(blank=True, null=True)
     approved_by_id = models.BigIntegerField(blank=True, null=True)
@@ -394,7 +399,7 @@ class ItemSerialTrails(models.Model):
     in_use = models.CharField(max_length=2, blank=True, null=True)
     check_item_serial_no = models.CharField(max_length=50, blank=True, null=True)
     item_serial_id_old = models.BigIntegerField(blank=True, null=True)
-    store_type_id = models.BigIntegerField(blank=True, null=True)
+    aircraft_type = models.BigIntegerField(blank=True, null=True)
     aircraft_master_id = models.BigIntegerField(blank=True, null=True)
     customer_id = models.BigIntegerField(blank=True, null=True)
     item_serial_id = models.BigIntegerField(blank=True, null=True)
@@ -412,7 +417,7 @@ class ItemSerials(models.Model):
     in_use = models.CharField(max_length=2, blank=True, null=True)
     check_item_serial_no = models.CharField(max_length=50, blank=True, null=True)
     item_serial_id_old = models.BigIntegerField(blank=True, null=True)
-    store_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
+    aircraft_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
     aircraft_master = models.ForeignKey(AircraftMasters, models.DO_NOTHING, blank=True, null=True)
     customer = models.ForeignKey(Customers, models.DO_NOTHING, blank=True, null=True)
 
@@ -425,7 +430,7 @@ class Items(models.Model):
     id = models.BigIntegerField(primary_key=True)
     old_item_id = models.BigIntegerField(blank=True, null=True)
     part_number = models.CharField(max_length=100, blank=True, null=True)
-    store_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
+    aircraft_type = models.ForeignKey(AircraftTypes, models.DO_NOTHING, blank=True, null=True)
     denomination = models.CharField(max_length=5, blank=True, null=True)
     cpq_category = models.CharField(max_length=5, blank=True, null=True)
     description = models.CharField(max_length=200, blank=True, null=True)
@@ -532,7 +537,8 @@ class SecurityQuestions(models.Model):
     sec_questions = models.CharField(blank=True, null=True)
     created_by = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     created_date = models.BigIntegerField(blank=True, null=True)
-    updated_by = models.ForeignKey('Users', models.DO_NOTHING, related_name='securityquestions_updated_by_set', blank=True, null=True)
+    updated_by = models.ForeignKey('Users', models.DO_NOTHING, related_name='securityquestions_updated_by_set',
+                                   blank=True, null=True)
     updated_date = models.DateField(blank=True, null=True)
     active_yn = models.CharField(blank=True, null=True)
 
@@ -582,7 +588,8 @@ class Trades(models.Model):
     id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
     trade = models.CharField(db_column='TRADE', blank=True, null=True)  # Field name made lowercase.
     dba_remarks = models.CharField(db_column='DBA_REMARKS', blank=True, null=True)  # Field name made lowercase.
-    date_dba_remarks = models.DateField(db_column='DATE_DBA_REMARKS', blank=True, null=True)  # Field name made lowercase.
+    date_dba_remarks = models.DateField(db_column='DATE_DBA_REMARKS', blank=True,
+                                        null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False

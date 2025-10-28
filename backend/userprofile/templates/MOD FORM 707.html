@@ -1,0 +1,126 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewreport" content="width=device-width, initial-scale=1">
+<!--    <title> MOD Form 707</title>-->
+  <style>
+      @page { size:594mm 210mm; margin:10mm;}
+      body { font-family: Arial; font-size:10px; color:#111; }
+      header { text-align: center; margin-bottom: 8px; }
+      h1 { font-size:14px; margin:2px 0; }
+      table { width: 100%; border-collapse:collapse; table-layout: fixed; page-break-inside: auto; }
+      th, td {border:1px solid #222; padding: 3px 5px; vertical-align: top; word-wrap:break-word; }
+      th { background: #f0f0f0; font-weight:700; font-size: 10px; }
+      thead { display: table-header-group; }
+      tr { page-break-inside: avoid; }
+      h1.page-number:: after {
+      content: " - Page " counter(page);
+      font-size:14px;
+      color:#111;
+      margin-left:6px;
+      }
+      .content{page-break-after: always}
+  </style>
+</head>
+<body>
+
+
+  <table style="width:100%; height:100%; ;text-align: left;">
+      <thead>
+      <tr>
+            <td style="border:none; font-weight:bold;" colspan="12">
+                <h1 style="text-decoration: underline; text-align:right; ">MOD Form 707</h1>
+                <h1 class = "page-number" style="text-decoration: underline; text-align:right; ">Page- L</h1>
+                <h1 style="text-decoration: underline; text-align:center;">CHANGE OF SERVICEABILITY LOG</h1>
+            </td>
+<!--          <td class="content"></td>-->
+
+            <td style="border:none; font-weight:bold;" colspan="1"></td>
+
+            <td style="border:none; font-weight:bold;" colspan="12">
+                <h1 style="text-decoration: underline; text-align:right; ">MOD Form 707</h1>
+                <h1 style="text-decoration: underline; text-align:right; ">Page- R</h1>
+                <h1 style="text-decoration: underline; text-align:center;">CHANGE OF SERVICEABILITY LOG</h1>
+             </td>
+         </tr>
+        <tr>
+    <td colspan="1" style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td colspan="1"  style="border:none; font-weight:bold; ">Mark</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td colspan="1" style="border:none; font-weight:bold; ">Serial No</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+       <td colspan="7" style="border:none; font-weight:bold; ">     </td>
+      <td colspan="1" style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td colspan="1" style="border:none; font-weight:bold; ">Mark</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td colspan="1" style="border:none; font-weight:bold; ">Serial No</td>
+    <td colspan="1" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+             <td colspan="6" style="border:none; font-weight:bold; ">     </td>
+  </tr>
+  <tr>
+      <th colspan="12" class="section-title" style="border:1px solid black">Aircraft Placed Unserviceable</th>
+      <th colspan="1" class="section-title" style="border:none"></th>
+      <th colspan="12" class="section-title" style="border:1px solid black">Record of Work Carried Out, Replacement etc.</th>
+  </tr>
+  <tr>
+    <td rowspan="1" style="text-align:justify;"><b>Time & Date</b></td>
+    <td colspan="1" style="text-align:justify;"><b>A/F Hrs</b></td>
+    <td colspan="1" style="text-align:justify;"><b>How Found</b></td>
+    <td colspan="1" style="text-align:justify;"><b>By Whom</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Serial No Of Work (SNOW)</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Defect Code</b></td>
+    <td colspan="6" style="text-align:justify;"><b>Reason for Placing Unserviceable <br>(For removal of components sign/ date/ time of operatives and supervisors are to be endorsed)</b></td>
+<!--    <td colspan="1"><b>Line No.</b></td>-->
+
+    <td colspan="1" style="border:none"><b></b></td>
+
+<!--    <td colspan="1"><b>Line No.</b></td>-->
+    <td colspan="5" style="text-align:justify;"><b>Details of Repair, Storage Instructions, Modifications, special Technical Instruction, Servicing Instructions
+            or Other work Including Component Replacement <br>
+            Note. 1.State Serial Numbers of Replacement Items Where applicable. <br>
+                  2.Quote workshop reference.</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Signature of Operative (s)</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Completion Time & Date</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Trade</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Man Hrs</b></td>
+    <td colspan="1" style="text-align:justify;"><b>Signature of Supervisor</b></td>
+    <td colspan="2" style="text-align:justify;"><b>Authorised Signature Certified Defect Cleared or Transferred to MOD Form 703/ 704 Series</b></td>
+  </tr>
+</thead>
+      <tbody>
+  {% for unsl in unsl %}
+  <tr>
+<!--    <td>{{ unsl.time }} {{"/"}}<br>{{ unsl.date }}</td>-->
+    <td style="text-align:justify;">{{ unsl.date }}</td>
+    <td style="text-align:justify;">{{ unsl.airframe_hrs }}</td>
+    <td style="text-align:justify;">{{ unsl.how_found_defect }}</td>
+    <td style="text-align:justify;">{{ unsl.user_name }}
+<!--        {{" , "}} {{unsl.user_rank}} {{" , "}} {{ unsl.user_pno }}-->
+    </td>
+    <td style="text-align:justify;">{{ unsl.snow }}</td>
+    <td style="text-align:justify;">{{ unsl.defect_code_id }}</td>
+    <td colspan="6" style="text-align:justify;">{{ unsl.reason_for_placing_unserviceable }}</td>
+<!--    <td>{{ item.nato_code }}</td>-->
+
+    <td style="border:none"></td>
+
+<!--    <td>{{ item.nato_code }}</td>-->
+    <td colspan="5" style="text-align:justify;">{{ unsl.work_carried_out }}</td>
+    <td style="text-align:justify;">{{ item.nato_code }}</td>
+    <td style="text-align:justify;">{{ unsl.user_completion_date }}</td>
+    <td style="text-align:justify;">{{ item.nato_code }}</td>
+    <td style="text-align:justify;">{{ unsl.man_hrs }}</td>
+    <td style="text-align:justify;">{{ item.nato_code }}</td>
+    <td colspan="2" style="text-align:justify;">{{ unsl.authorised_by }}</td>
+  </tr>
+  {% endfor %}
+      </tbody>
+</table>
+
+</body>
+</html>

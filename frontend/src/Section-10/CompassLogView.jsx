@@ -5,6 +5,7 @@ import useTableApi from "../Utils/CustomHooks/useTableApi";
 import { useAlert } from "../Utils/Alerts/AlertContext";
 import axios from "axios";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
+import {ModForm712A} from "../WeasyPrintReports/WeasyPrint";
 
 const CompassLogView = () => {
   //   const [CompassData, setCompassData] = useState({});
@@ -444,6 +445,9 @@ const CompassLogView = () => {
               />
             </div>
           )}
+        </div>
+        <div className="flex justify-center mt-5 gap-5">
+          <ModForm712A />
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 //import useTableApi from '.../Utils/useTableApi';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import {ModForm704A} from "../WeasyPrintReports/WeasyPrint";
 
 const HusbandryLog = () => {
 
@@ -99,6 +100,9 @@ const HusbandryLog = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <div className="flex justify-center mt-5 gap-5">
+          <ModForm704A />
+        </div>
         </div>
     );
 

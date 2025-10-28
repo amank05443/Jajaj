@@ -44,9 +44,19 @@ export default function USLogGridModal({
 
   //  <---Function for the Button to Forward Users to the Right side of Section-5--->
   const handleAction = (data) => {
+    {data && Object.keys(data).length &&
     navigate("/ClearUsLog", { state: data });
-    console.log(data);
+    console.log(data);}
   };
+  //   <---For filtering of Tradesman data further used in showing Name and Rank--->
+  const tradesmanData = data.change_of_serviceability_log_lines.filter(
+    (row) => row.tradesman_sup === "TDS",
+  );
+
+  //   <---For filtering of Supervisor data further used in showing Name and Rank--->
+  const supervisorData = data.change_of_serviceability_log_lines.filter(
+    (row) => row.tradesman_sup === "SUP",
+  );
 
   return (
     <div
@@ -65,7 +75,6 @@ export default function USLogGridModal({
           <X className="w-5 h-5 text-white" strokeWidth={5} />
         </button>
 
-        {/* bg-gradient-to-r from-[#f6d5f7] via-[#fbe9d7]/60 to-[#8acbde]  */}
         <div className="flex p-2 mr-12 ml-14 w-50 justify-center items-center rounded-full shadow-lg bg-blur-sm bg-gray-200 border border-gray-300 font-extrabold text-3xl  ">
           <div
             className="w-10 h-10 mr-1 bg-gradient-to-b from-[#ff671f]/60 via-[#ffffff]/60 to-[#046a38]/60  rounded-3xl flex items-center justify-center shadow-lg
@@ -84,83 +93,97 @@ export default function USLogGridModal({
             className="bg-gradient-to-r from-[#f6d5f7]  to-[#fbe9d7] shadow-md  py-2 min-w-[500px] rounded-2xl
             transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
           >
-            <div className="grid grid-cols-5 text-center   mb-2 pb-2 min-w-[500px] font-bold  ">
-              <div className="flex items-center justify-center gap-2">
+            <div className="grid grid-cols-12 text-center   mb-2 pb-2 min-w-[500px] font-bold  ">
+              <div className="flex items-center col-span-2 justify-center gap-2">
                 <CalendarClock className="w-5 h-5 mb-1" />
                 DATE & TIME
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center col-span-2 justify-center gap-2">
                 <FileDigit className="w-5 h-5 mb-1" />
                 SNOW
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center col-span-2 justify-center gap-2">
                 <Clock className="w-5 h-5 mb-1" />
                 A/F HRS
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center col-span-4 justify-center gap-2">
                 <Search className="w-5 h-5 mb-1" /> HOW FOUND
               </div>
 
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center col-span-2 justify-center gap-2">
                 <User className="w-5 h-5 mb-1" />
                 BY WHOM
               </div>
             </div>
 
-            <div className="grid grid-cols-5 text-center pb-2 min-w-[500px] ">
-              <div>
+            <div className="grid grid-cols-12 text-center pb-2 min-w-[500px] ">
+              <div className="col-span-2">
                 {date} <br /> {time}
               </div>
-              <div> {data.snow} </div>
-              <div> {data.airframe_hrs} </div>
-              <div> {data.how_found_defect?.occasion || "N/A"} </div>
-              <div>
-                {data.by_whom?.user?.user_name.toUpperCase() || "N/A"} <br />
+              <div className="col-span-2"> {data.snow || "N/A"} </div>
+              <div className="col-span-2"> {data.airframe_hrs || "N/A"} </div>
+              <div className="col-span-4">
+                {data.how_found_defect?.occasion || "N/A"}
+              </div>
+              <div className="col-span-2">
+                {data.by_whom?.user?.user_name?.toUpperCase() || "N/A"} <br />
                 {data.by_whom?.user?.rank?.abbreviation}
               </div>
             </div>
           </div>
 
           <div
-            className=" rounded-2xl p-10 bg-gradient-to-r from-[#f6d5f7]  to-[#fbe9d7]  shadow-md py-2 min-w-[500px]
+            className=" rounded-2xl p-6 bg-gradient-to-r from-[#f6d5f7]  to-[#fbe9d7]  shadow-md py-2 min-w-[500px]
             transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
           >
-            <div className="flex gap-2 justify-center ">
+            <div className="flex gap-2 ">
               <AlertTriangle className="w-5 h-5 mb-1" />
               <h2 className="font-bold mb-2 ">
                 REASON FOR PLACING UNSERVICEABLE
               </h2>
             </div>
-            <p className="break-words">
+            <div className="break-words ml-7">
               {data.reason_for_placing_unserviceable}
-            </p>
+            </div>
           </div>
 
           {data.status_label === "CLOSED" && (
             <>
               <div
-                className="rounded-2xl p-10 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md  py-2 min-w-[500px]
+                className="rounded-2xl p-6 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md  py-2 min-w-[500px]
              transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
               >
-                <div className="flex gap-2 justify-center">
-                  <Wrench className="w-5 h-5 mb-1" />
-                  <h2 className="font-bold mb-2"> WORK UNDERTAKEN </h2>
+                <div className=" grid grid-cols-9">
+                  <div className="col-span-8">
+                    <div className="flex gap-2 ">
+                      <Wrench className="w-5 h-5 mb-1" />
+                      <h2 className="font-bold mb-2 "> WORK UNDERTAKEN </h2>
+                    </div>
+                    <div className="break-words ml-7 ">
+                      {data.work_carried_out || "N/A"}
+                    </div>
+                  </div>
+
+                  <div className="col-span-1">
+                    <div className="flex gap-2 ">
+                      <Timer className="w-5 h-5 mb-1" />
+                      <h2 className="font-bold mb-2 "> MAN HRS </h2>
+                    </div>
+                    <div className="break-words ml-7 ">
+                      {data.man_hrs || "N/A"}
+                    </div>
+                  </div>
                 </div>
-                <p className="break-words"> {data.work_carried_out || "N/A"}</p>
               </div>
 
               <div
-                className="rounded-2xl p-4 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md
+                className="rounded-2xl p-2 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md
                 transform transition-transform duration-300 hover:scale-101 hover:translate-y-1 hover:shadow-xl"
               >
-                <div className="grid grid-cols-4 text-center mb-2 pb-2 min-w-[500px] font-bold">
-                  <div className="flex items-center justify-center gap-2">
-                    <Timer className="w-5 h-5 mb-1" />
-                    MAN HRS
-                  </div>
+                <div className="grid grid-cols-3 text-center mb-2 pb-2 min-w-[500px] font-bold">
                   <div className="flex items-center justify-center gap-2">
                     <UserCog className="w-5 h-5 mb-1" />
                     TRADESMAN
@@ -175,11 +198,35 @@ export default function USLogGridModal({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-4 text-center py-2 min-w-[500px] py-2 min-w-[500px]">
-                  <div> 10 </div>
-                  <div> 1 </div>
-                  <div> 2 </div>
-                  <div> 3 </div>
+                <div className="grid grid-cols-3 text-left  mb-2 pb-2 min-w-[500px] ">
+                  <div className="flex  justify-center gap-2">
+                    <ul className="list-disc list-inside">
+                      {tradesmanData?.map((tradesman) => (
+                        <li key={tradesman.id}>
+                          {tradesman?.user_qual?.user?.user_name?.toUpperCase()}
+                          , {tradesman?.user_qual?.user?.rank?.abbreviation}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex  justify-center gap-2">
+                    <ul className="list-disc list-inside">
+                      {supervisorData?.map((supervisor) => (
+                        <li key={supervisor.id}>
+                          {supervisor?.user_qual?.user?.user_name?.toUpperCase()}
+                          , {supervisor?.user_qual?.user?.rank?.abbreviation}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex  justify-center gap-2">
+                    <ul className="list-disc list-inside">
+                      <li>
+                        {data?.authorised_by?.user?.rank?.abbreviation}&nbsp;
+                        {data?.authorised_by?.user?.user_name?.toUpperCase()}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </>

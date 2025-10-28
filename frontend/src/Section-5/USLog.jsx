@@ -28,6 +28,8 @@ import USLogGridModal from "./USLogGridModal";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useAlert } from "../Utils/Alerts/AlertContext";
+import {ModForm707} from "../WeasyPrintReports/WeasyPrint";
+
 
 export default function USLog() {
   const navigate = useNavigate();
@@ -90,7 +92,7 @@ export default function USLog() {
       //       alert("THIS IS THE FIRST SNOW");
       showAlert({
         type: "INFO",
-        message: "THIS IS THE FIRST SNOW",
+        message: "THIS IS THE LATEST SNOW",
       });
     }
     if (rowIndex <= 0) return;
@@ -211,12 +213,13 @@ export default function USLog() {
         </Box>
       </Box>
       {/* <---Starting of the Grid---> */}
-      <Card className="shadow-lg rounded-xl">
+      <Card className="shadow-lg rounded-xl ">
         <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
           <div style={{ height: 420, width: "100%" }}>
             <DataGrid
               loading={dataLoading}
               rows={filteredRows}
+              getRowHeight={()=>"auto"}
               columns={[
                 {
                   field: "snow",
@@ -301,48 +304,6 @@ export default function USLog() {
                     </div>
                   ),
                 },
-
-                //                 {
-                //                   field: "Action",
-                //                   headerName: "ACTION",
-                //                   flex: 1,
-                //                   headerAlign: "center",
-                //                   align: "center",
-                //                   disableColumnMenu: true,
-                //                   sortable: false,
-                //                   renderCell: (rowData) =>
-                //                     rowData.row.status_label === "OPEN" ? (
-                //                       <div
-                //                       //                         style={{
-                //                       //                           display: "flex",
-                //                       //                           justifyContent: "center",
-                //                       //                           alignItems: "center",
-                //                       //                           height: "100%",
-                //                       //                         }}
-                //                       >
-                //                         <Button
-                //                           variant="contained"
-                //                           size="small"
-                //                           color="info"
-                //                           onClick={() => handleAction(rowData.row)}
-                //                         >
-                //                           Close Here
-                //                         </Button>{" "}
-                //                       </div>
-                //                     ) : (
-                //                       <span
-                //                         style={{
-                //                           color: "green",
-                //                           display: "flex",
-                //                           justifyContent: "center",
-                //                           alignItems: "center",
-                //                           height: "100%",
-                //                         }}
-                //                       >
-                //                         N/A
-                //                       </span>
-                //                     ),
-                //                 },
               ]}
               pageSize={5}
               rowsPerPageOptions={[5, 10]}
@@ -401,6 +362,9 @@ export default function USLog() {
           nextSelectedRow={handleNext}
         />
       )}
+        <div className="flex justify-center mt-5 gap-5">
+          <ModForm707 />
+        </div>
     </div>
   );
 }

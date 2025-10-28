@@ -2,9 +2,10 @@ from userprofile import views
 from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
-    DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,
-    user_authentication_for_trade,user_details_for_authentication_two,get_partNumbers,
-    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
+    DynamicModelView, get_params, set_params,get_customers,data_for_headers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
+    user_details_for_authentication_one,check_passkey_authentication_right_side,user_authentication_for_trade,user_details_for_authentication_two,remove_user,
+    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData,fetch_authenticated_data,forward_to_ato_for_authorisation,
+    softwareLogData, check_passkey_authentication_right_side_limitation,get_partNumbers,
 )
 
     #---------------------------------------------- For Dynamic View ---------------------------------------------------#
@@ -21,6 +22,8 @@ detail_view = DynamicModelView.as_view({
 })
 
 urlpatterns = [
+    #------------------------------------------------ Headers ------------------------------------------------------#
+    path('api/headersData/<int:id>/', data_for_headers, name='dataForHeaders'),
     #------------------------------------------------ Test & View ------------------------------------------------------#
     path('api/qualsData', Quals_view.as_view(), name='AircraftDetailView'),
     path('api/VariableExpandableLoadItemsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
@@ -29,14 +32,18 @@ urlpatterns = [
     path('api/customers/',get_customers,name='get_customers'),
 
     # --------------------------------------------- e-sign Authentication  ----------------------------------------------#
-    path('api/userDetailsForAuthenticationAllUsers/<int:id>/', user_details_for_authentication_one,
-         name='viewUserDetailsForAuthentication'),
+    path('api/userDetailsForAuthenticationAllUsers/<int:id>/', user_details_for_authentication_one, name='viewUserDetailsForAuthentication'),
+    path('api/fetchSavedEntries/', fetch_authenticated_data, name='fetchAuthenticatedData'),
+    path('api/forwardToAtoForAuthorisation/', forward_to_ato_for_authorisation, name='forwardToAtoForAuthorisation'),
     path('api/checkPasskey/', check_passkey_authentication, name='checkPasskeyForAuthentication'),
+    path('api/checkPasskeyRightSide/', check_passkey_authentication_right_side, name='checkPasskeyForAuthentication'),
+    path('api/checkPasskeyRightSideLimitation/', check_passkey_authentication_right_side_limitation, name='checkPasskeyForAuthentication'),
+    path('api/removeUser/', remove_user, name='removeExistingUser'),
     path('api/userAuthenticationTrade/', user_authentication_for_trade, name='viewUserAuthenticationForTrade'),
     path('api/userAllDetailsForAuthenticationTwo/', views.user_details_for_authentication_two,
          name='viewUserDetailsForAuthenticationTwo'),
     # path('api/userQualification/', user_qualification_for_authentication, name='viewUserQualificationForAuthentication'),
-    # path('api/userDetailsForAuthenticationTwo/<int:id>/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
+    # path('api/userDetailsForAuthenticationTwo/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
 
 
     # ------------------------------------------- Security questions ---------------------------------------------------#
@@ -46,8 +53,7 @@ urlpatterns = [
     path("api/reset_passcode/", views.reset_passcode, name="reset_passcode"),
     path("api/validate_security_answer/", views.validate_security_answer, name="validate_password"),
 
-    path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(),name='serviceability-log'),
-
+    path('api/serviceability-log/', ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 
     #---------------------------------------------- Section 1  ---------------------------------------------------------#
     path('api/leadingParticularsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
@@ -63,8 +69,9 @@ urlpatterns = [
     #---------------------------------------------- Section 5  ---------------------------------------------------------#
     path('api/usLogDropDowns/', usLogDropDowns),
     path('api/limLogData/', limLogData),
-    path('api/serviceability-log/<int:id>/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
-    path('api/saveUsLogData/', saveUsLogData),
+    path('api/serviceability-log/<int:id>/', ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
+    path('api/softwareLogData/', softwareLogData),
+    path('api/saveUsLogData/', views.saveUsLogData, name='saveUsLogData'),
     path('api/clearUsLog/', clearUsLog),
     path('api/serviceability-log/',ChangeOfServiceabilityLogsCreateView.as_view(), name='serviceability-log'),
 
