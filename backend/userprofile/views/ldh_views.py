@@ -14,4 +14,4 @@ class LimGridData(generics.ListCreateAPIView):
     def get_queryset(self):
         aircraft_master_id = self.kwargs.get('id')
         return (LimDefrDefHusLogs.objects.select_related("change_of_serviceability_log", "item").filter(
-            change_of_serviceability_log__aircraft_master_id=aircraft_master_id))
+            change_of_serviceability_log__aircraft_master_id=aircraft_master_id,  limitations_yn="Y").order_by('-change_of_serviceability_log__snow'))

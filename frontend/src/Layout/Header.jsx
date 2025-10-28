@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useThemeMode } from "./ThemeProvider";
 import {
   IconButton,
   TextField,
@@ -24,6 +25,8 @@ import {
   Plane,
   Search as SearchIcon,
   Info,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -59,6 +62,7 @@ export default function Header({
   //       query: { aircraft_master_id: params.aircraft_master_id },
   //     },
   //   );
+  const { mode, toggleTheme } = useThemeMode();
   useEffect(() => {
     if (!loading) {
       const aircraft_master_id = params.aircraft_master_id;
@@ -84,7 +88,7 @@ export default function Header({
   };
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900
+      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-600 dark:via-gray-800 dark:to-gray-700
     backdrop-blur-xl border-b border-cyan-500/20 flex items-center px-4 z-30 shadow-2xl shadow-purple-500/10"
       initial={{ y: -56 }}
       animate={{ y: 0 }}
@@ -100,14 +104,14 @@ export default function Header({
               color="inherit"
               aria-label="toggle sidebar"
               size="large"
-              className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 border border-cyan-500/30
+              className="text-cyan-300 dark:text-white hover:text-white hover:bg-cyan-500/20 transition-all duration-300 border border-cyan-500/30
             rounded-xl"
             >
               <MenuIcon size={24} />
             </IconButton>
           )}
           <div
-            className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-3xl flex items-center
+            className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600  dark:from-white dark:via-white dark:to-white rounded-3xl flex items-center
             justify-center shadow-lg shadow-cyan-500/30 rotate-3 hover:rotate-0 transition-transform duration-300"
             onClick={() => navigate("/exp1")}
           >
@@ -118,11 +122,11 @@ export default function Header({
               variant="h6"
               component="h1"
               className="font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent
-            text-lg tracking-tight"
+            text-lg tracking-tight dark:text-white"
             >
-              e700{" "}
+              e700
             </Typography>
-            <div className="text-cyan-400 text-xs font-mono">v1.0</div>
+            <div className="text-cyan-400 text-xs font-mono dark:text-white ">v1.0</div>
           </div>
         </div>
         {
@@ -163,6 +167,7 @@ export default function Header({
                     {/*                         </span> */}
                     {/*                       )} */}
                     {/*                     </Typography> */}
+
                   </Box>
                 </Box>
               </motion.div>
@@ -231,6 +236,26 @@ export default function Header({
           {/*               }} */}
           {/*             /> */}
           {/*           </div> */}
+          <div>
+                      <button
+                        onClick={toggleTheme}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800 dark:bg-gray-200 text-gray-100 dark:text-gray-900 shadow hover:shadow-lg transition-all duration-500"
+                      >
+                        {mode === "light" ? (
+                          <>
+                            {" "}
+                            <Moon className="w-5 h-5 text-yellow-500" />
+                            <span> Dark </span>{" "}
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <Sun className="w-5 h-5 text-yellow-500" />
+                            <span> Light </span>{" "}
+                          </>
+                        )}
+                      </button>
+                    </div>
         </div>
       </div>
     </motion.header>
