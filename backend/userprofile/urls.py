@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
     DynamicModelView, get_params, set_params,get_customers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication, user_details_for_authentication_one,
-    user_authentication_for_trade,user_details_for_authentication_two,
+    user_authentication_for_trade,user_details_for_authentication_two,get_partNumbers,
     Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData
 )
 
@@ -83,8 +83,8 @@ urlpatterns = [
     path('api/params/get/', get_params),
     path('api/params/set/', set_params),
     path("api/get_user_details/<str:pno>/", views.get_user_details, name="get_user_details"),
-
-
+#-------------------------------------------------- technicalInstructions()  ---------------------------------------------------#
+    path('api/fetchAllPartNumbers/', views.get_partNumbers, name='technicalInstructions'),
 
 
 ]
