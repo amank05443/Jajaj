@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
+import { Eye, EyeOff} from "lucide-react";
 export default function TradeSupAto({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
   const [isATO, setIsATO] = useState(false);
   const [availableQualifications, setAvailableQualifications] = useState([]);
+  const [actualStatus, setActualStatus] = useState("");
+  const [supervisorBy, setSupervisorBy] = useState("");
   const [supervisor, setSupervisor] = useState("");
   const [supPassword, setSupPassword] = useState("");
   const [showSupPassKey, setShowSupPassKey] = useState(false);
@@ -39,6 +41,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
       document.body.style.overflow = "auto";
     }
   }, [open]);
+
   useEffect(() => {
     if (isForwardedOk) {
       const dataQual = [
@@ -71,19 +74,45 @@ export default function TradeSupAto({ snowId, authTwo }) {
     if (isForwardedOk === true) {
       if (removeBtn1) removeBtn1.classList.add("hidden");
       if (addUserBtn1) addUserBtn1.classList.add("hidden");
+      if (forwardToAtoBtn1) forwardToAtoBtn1.classList.add("hidden");
     }
   }, [formData]);
+  useEffect(() => {
+    const updatedUsers = [...formData?.users];
+    const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
+    const addUserBtn1 = document?.getElementById("addUserBtn");
+    const removeBtn1 = document?.getElementById("removeBtn");
+    const forwardToAtoBtn1 = document?.getElementById("forwardToAtoBtn");
+    if (actualStatus == 2) {
+      console.log(actualStatus);
+      if (removeBtn1) removeBtn1.classList.add("hidden");
+      if (addUserBtn1) addUserBtn1.classList.add("hidden");
+      if (forwardToAtoBtn1) forwardToAtoBtn1.classList.add("hidden");
+      setIsForwardedOk(true);
+      setIsForwarded(true);
+      setForwardIndex(formData.users.length);
+      addRow();
+      setErrors("");
+    } else if (actualStatus == 3) {
+      console.log(actualStatus);
+      if (removeBtn1) removeBtn1.classList.add("hidden");
+      if (addUserBtn1) addUserBtn1.classList.add("hidden");
+      if (forwardToAtoBtn1) forwardToAtoBtn1.classList.add("hidden");
+      setIsForwardedOk(true);
+      setIsForwarded(true);
+      setForwardIndex(formData.users.length);
+      setErrors("");
+    }
+  }, [actualStatus]);
   useEffect(() => {
     if (!snowId) return;
     const fetchSavedData = async () => {
       try {
         const res = await axios.get("/api/fetchSavedEntries/", {
-          params: {
-            snowId: snowId,
-          },
+          params: { snowId: snowId },
         });
-        if (Array.isArray(res.data)) {
-          const formattedUsers = res.data.map((item) => ({
+        if (Array.isArray(res.data.data)) {
+          const formattedUsers = res.data.data.map((item) => ({
             id: item.id,
             qualification: item.tradesman_sup,
             trade: item.trade_id,
@@ -100,9 +129,14 @@ export default function TradeSupAto({ snowId, authTwo }) {
             ],
             showPassKey: false,
           }));
-          console.log("Fetched saved formattedUsers:", formattedUsers);
           if (formattedUsers.length !== 0) {
             setFormData({ users: formattedUsers });
+          }
+          if (res.data.data1[0].status) {
+            setActualStatus(res.data.data1[0].status);
+            setSupervisorBy(
+              res.data.data1[0].user_qual_name + " " + res.data.data1[0].rank,
+            );
           }
         }
       } catch (err) {
@@ -140,6 +174,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
     const updatedUsers = [...formData?.users];
     updatedUsers[index].showPassKey = !updatedUsers[index].showPassKey;
     setFormData({ ...formData, users: updatedUsers });
+  };
+  const handleChangeSupShowPasskey = (index) => {
+    setShowSupPassKey(!showSupPassKey);
   };
   // ------------------------- TO REMOVE ANY ROW FROM TEMPLATE  --------------------------------------------------------
   const removeRow = async (index) => {
@@ -200,19 +237,21 @@ export default function TradeSupAto({ snowId, authTwo }) {
 
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
-      if (value === "ATO") {
-        const hasNotSigned = updatedUsers.some(
-          (u) => u.qualification !== "ATO" && u.cleared_yn !== "Y",
-        );
-        const hasTds = updatedUsers.some(
-          (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
-        );
-        const hasSup = updatedUsers.some(
-          (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
-        );
-        const hasAto = updatedUsers.some(
-          (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
-        );
+      const hasNotSigned = updatedUsers.some(
+        (u) =>
+          !["ATO", "FCC", "ACC"].includes(u.qualification?.toUpperCase()) &&
+          u.cleared_yn !== "Y",
+      );
+      const hasTds = updatedUsers.some(
+        (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
+      );
+      const hasSup = updatedUsers.some(
+        (u) => u.qualification === "SUP" && u.cleared_yn === "Y",
+      );
+      const hasAto = updatedUsers.some(
+        (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
+      );
+      if (["ATO", "FCC", "ACC"].includes(value?.toUpperCase())) {
         console.log("Trades :", value, hasTds, hasSup);
         if (!hasTds || !hasSup || hasNotSigned) {
           if (hasTds && hasSup && hasNotSigned) {
@@ -238,10 +277,20 @@ export default function TradeSupAto({ snowId, authTwo }) {
           updatedUsers[index].byWhom = "";
           return;
         }
-        updatedUsers[index].trade = "0000";
+        updatedUsers[index].trade = "202500012";
         setFormData({ ...formData, users: updatedUsers });
-        handleRowChange(index, "trade", "0000");
+        handleRowChange(index, "trade", "202500012");
         return;
+      } else if (value === "TDS") {
+        if (!hasSup) {
+          alert(
+            "To initiate/ authenticate any tradesman, supervisor must make an entry first.",
+          );
+          updatedUsers[index].qualification = "";
+          updatedUsers[index].trade = "";
+          updatedUsers[index].byWhom = "";
+          return;
+        }
       }
       axios
         .get("/api/userAuthenticationTrade/")
@@ -331,10 +380,16 @@ export default function TradeSupAto({ snowId, authTwo }) {
       });
       return;
     }
-    if (!row.passkey) {
+    if (
+      !row.passkey &&
+      ["ATO", "FCC", "ACC", "SSS"].includes(
+        row.qualification?.toUpperCase() || row.id,
+      )
+    ) {
       alert("Enter passkey");
       return;
     }
+
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskeyRightSide/", {
@@ -356,18 +411,29 @@ export default function TradeSupAto({ snowId, authTwo }) {
       });
       const data = await res.json();
       if (data.status == "OK") {
-        console.log("Authenticated Two :", data.user);
-        const updatedUsers = [...formData?.users];
-        updatedUsers[index].id = data?.cosl_line_id;
-        updatedUsers[index].cleared_yn = "Y";
-        updatedUsers[index].showPassKey = false;
-        updatedUsers[index].passkey = "••••••";
-        if (updatedUsers[index].qualification === "ATO") {
-          setIsATO(true);
+        if (data.action == "AUTHENTICATED") {
+          console.log("Authenticated Two :", data.user);
+          const updatedUsers = [...formData?.users];
+          updatedUsers[index].id = data?.cosl_line_id;
+          updatedUsers[index].cleared_yn = "Y";
+          updatedUsers[index].showPassKey = false;
+          updatedUsers[index].passkey = "••••••";
+          if (updatedUsers[index].qualification === "ATO") {
+            setIsATO(true);
+          }
+          setFormData({ ...formData, users: updatedUsers, ...data.user });
+          console.log({ ...formData });
+          alert("Authenticated by " + data.user.rank+' , '+ data.user.name);
+        } else if (data.action == "INITIATED") {
+          console.log("Authenticated Two :", data.user);
+          const updatedUsers = [...formData?.users];
+          updatedUsers[index].id = data?.cosl_line_id;
+          updatedUsers[index].cleared_yn = "I";
+          updatedUsers[index].showPassKey = false;
+          setFormData({ ...formData, users: updatedUsers, ...data.user });
+          console.log({ ...formData });
+          alert("Initiated for " + data.user.rank+' , '+ data.user.name);
         }
-        setFormData({ ...formData, users: updatedUsers, ...data.user });
-        console.log({ ...formData });
-        alert("Authenticated by " + data.user.name);
       } else {
         console.log(data);
         setErrors((prev) => {
@@ -408,8 +474,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
       return;
     }
     setIsForwarded(true);
+    setIsForwarded(!isForwarded);
     setForwardIndex(formData.users.length);
-    //     addRow();
     setErrors("");
   };
   const handleSetRemove = () => {
@@ -419,6 +485,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
     if (hasSigned) {
     }
     setIsRemove(!isRemove);
+    setIsRemoveOk(false);
   };
 
   const handleAuthToRemove = async () => {
@@ -455,12 +522,17 @@ export default function TradeSupAto({ snowId, authTwo }) {
         },
         withCredentials: true,
         body: JSON.stringify({
+          actionFor: "forwardToAto",
+          snowId: snowId,
           byWhom: supervisor,
           passkey: supPassword,
         }),
       });
       if (!res.ok) throw new Error("Invalid Passkey0");
       const data = await res.json();
+      console.log("Forwarded :", data);
+      console.log("Forwarded :", data.user.name + " " + data.user.rank);
+      setSupervisorBy(data.user.name + " " + data.user.rank);
       setIsForwardedOk(true);
       setIsForwarded(true);
       setForwardIndex(formData.users.length);
@@ -475,7 +547,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
     <>
       <div>
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            setActualStatus("");
+          }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
         >
           Authenticate
@@ -505,45 +580,35 @@ export default function TradeSupAto({ snowId, authTwo }) {
                   style={{ fontFamily: "algerian" }}
                   className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-12 rounded-lg text-xl"
                 >
-                  USERS AUTHENTICATION
+                  👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
-                {/*                 <h2 className="p-2 flex items-center text-lg text-blue-400"> */}
-                {/*                   ⚠️ One tradesman one supervisor and a authorizer */}
-                {/*                   authentication is mandatory to submit */}
-                {/*                 </h2> */}
-
                 <form className="mt-2 space-y-4 ">
-                  <h3 className="flex bg-purple-200 py-1 justify-center font-bold border-gray-400 ">
-                    TRADESMAN / SUPERVISOR
-                  </h3>
                   {formData?.users.map((row, index) => (
                     <>
                       <div
                         key={index}
                         className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-1"
                       >
-                        {setIsForwardedOk && index === forwardIndex && (
+                        {isForwardedOk && index === forwardIndex && (
                           <div className="col-span-3">
                             <hr className="my-1 border-t-2 border-dashed border-blue-400" />
-                            <h3 className="flex bg-purple-200 py-1 justify-center font-bold border-gray-400 ">
-                              ATO / FCC / ACC / SSS
-                            </h3>
                           </div>
                         )}
                         <div className="col-span-1">
                           <input type="hidden" name="id" value={row.id || ""} />
                           <div className="grid grid-cols-5 gap-1">
                             <div
-                              className={`${row.qualification === "ATO" ? "col-span-5" : "col-span-3"}`}
+                              className={`${["ATO", "FCC", "ACC"].includes(row.qualification?.toUpperCase()) ? "col-span-5" : "col-span-3"}`}
                             >
                               <select
                                 name="qualification"
                                 value={row.qualification}
                                 disabled={row.cleared_yn !== "N"}
                                 onChange={(e) => {
+
                                   handleRowChange(
                                     index,
                                     "qualification",
@@ -551,7 +616,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   );
                                 }}
                                 className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
+                                    ${["ATZ", "ATO", "FCC", "ACC", "SSS"].includes(row.qualification?.toUpperCase()) ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 {!availableQualifications.includes(
                                   row.qualification,
@@ -575,7 +640,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   name="trade"
                                   value={row.trade}
                                   disabled={row.cleared_yn !== "N"}
-                                  hidden={row.qualification === "ATO"}
+                                  hidden={["ATO", "FCC", "ACC"].includes(
+                                    row.qualification?.toUpperCase(),
+                                  )}
                                   onChange={(e) => {
                                     handleRowChange(
                                       index,
@@ -650,7 +717,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                     e.target.value,
                                   );
                                 }}
-                                placeholder="**Passkey**"
+                                placeholder="* Signature pin *"
                                 className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                               />
                               <button
@@ -675,11 +742,15 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                     disabled={row.cleared_yn === "Y"}
                                     onClick={() => handleCheck(index)}
                                     className={`p-1 w-32 font-bold border border-gray-400 rounded  text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.cleared_yn === "Y" ? "bg-green-100 " : " bg-purple-100  "}`}
+                                    ${row.cleared_yn === "Y" ? "bg-green-100 " : row.cleared_yn === "I" ? "bg-purple-100 " : " bg-blue-200 "}`}
                                   >
                                     {row.cleared_yn === "Y"
-                                      ? "Signed "
-                                      : "Sign here "}
+                                      ? "️️☑️ Signed "
+                                      : row.cleared_yn === "I"
+                                        ? " 🖋️ Sign here "
+                                        : isForwardedOk
+                                          ? " 🖋️ Authorise  "
+                                          : "+ Add user"}
                                   </button>
                                 </div>
                                 <div className="col-span-2">
@@ -688,7 +759,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                     hidden={
                                       isATO ||
                                       isForwarded ||
-                                      (!isRemoveOk && row.cleared_yn === "Y")
+                                      (!isRemoveOk && row.cleared_yn === "Y") ||
+                                      (!isRemoveOk && row.cleared_yn === "I")
                                     } // Remove user 'X' button will be disabled once authorised by authorizer.
                                     onClick={() => removeRow(index)}
                                     className="p-1 ml-7 border border-black rounded text-red-700 focus:outline-none focus:border-indigo-500 bg-red-200"
@@ -727,13 +799,20 @@ export default function TradeSupAto({ snowId, authTwo }) {
                     </>
                   ))}
                 </form>
+                {supervisorBy && (
+                  <div className="col-span-3">
+                    <h3 className="flex bg-green-100 py-1 justify-center font-bold border-gray-400 ">
+                      ➤ Forwarded By Supervisor : {supervisorBy}
+                    </h3>
+                  </div>
+                )}
                 <div class="flex flex-col space-y-4">
                   <div>
                     {!isATO && (
                       <button
                         type="button"
                         id="addUserBtn"
-                        disabled={isRemove}
+                        disabled={isRemove || isForwarded}
                         onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.
                         className="px-8 ml-1 float-left font-bold border border-gray-400 rounded text-gray-800 focus:outline-none focus:border-indigo-500 bg-blue-200 disabled:opacity-30 "
                       >
@@ -746,7 +825,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       id="forwardToAtoBtn"
                       onClick={handleForwardToAto}
                       disabled={isRemove}
-                      hidden={isForwarded}
+                      //                       hidden={isForwardedOk}
                       className="hidden px-2 mr-6 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 "
                     >
                       Forward to ATO
@@ -754,9 +833,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
                     <button
                       type="button"
                       id="removeBtn"
+                      disabled={isForwarded}
                       onClick={handleSetRemove}
                       hidden={""}
-                      className="hidden px-2 mr-60 float-right font-bold border border-gray-400 rounded bg-red-500 text-gray-800 focus:outline-none focus:border-indigo-500"
+                      className="hidden px-2 mr-60 float-right font-bold border border-gray-400 rounded bg-red-500 text-gray-800 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
                     >
                       ✘ Remove signed user
                     </button>
@@ -784,14 +864,26 @@ export default function TradeSupAto({ snowId, authTwo }) {
                             ))}
                         </select>
                       </div>
-                      <div className="col-span-3">
+                      <div className="col-span-3 relative">
                         <input
-                          //                           type={showSupPassKey ? "text " : "password"}
-                          type={"password"}
-                          onChange={(e) => setSupPassword(e.target.value)}
-                          placeholder="**Passkey**"
-                          className="border ml-12 p-1 text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                          type={showSupPassKey ? "text " : "password"}
+                          onChange={(e) => {
+                            setSupPassword(e.target.value);
+                          }}
+                          placeholder="* Signature pin *"
+                          className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                         />
+                        <button
+                          type="button"
+                          onClick={handleChangeSupShowPasskey}
+                          className=" absolute inset-y-0 right-1 flex items-center text-grey-500 hover: text-gray-700"
+                        >
+                          {showSupPassKey ? (
+                            <EyeOff size={20} />
+                          ) : (
+                            <Eye size={20} />
+                          )}
+                        </button>
                       </div>
                       <div className="col-span-3">
                         <button

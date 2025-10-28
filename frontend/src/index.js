@@ -9,6 +9,7 @@ import { ParamsProvider } from "./Utils/CustomHooks/useParams"; //✅useParams c
 import { AlertProvider } from "./Utils/Alerts/AlertContext";
 import { ConfirmProvider } from "./Utils/Alerts/ConfirmContext";
 import { AuthProvider, useAuth } from "./Authentication/AuthContext";
+import ThemeProvider from "./Layout/ThemeProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,7 +19,9 @@ root.render(
         <E700DataProvider>
           <AlertProvider>
             <ConfirmProvider>
+            <ThemeProvider>
               <App />
+              </ThemeProvider>
             </ConfirmProvider>
           </AlertProvider>
         </E700DataProvider>

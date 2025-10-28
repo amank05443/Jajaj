@@ -2,13 +2,10 @@ from userprofile import views
 from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
-    DynamicModelView, get_params, set_params, get_customers, data_for_headers, AircraftDetailsView,
-    AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
-    user_details_for_authentication_one, check_passkey_authentication_right_side, user_authentication_for_trade,
-    user_details_for_authentication_two, remove_user,
-    Quals_view, ChangeOfServiceabilityLogsCreateView, usLogDropDowns, limLogData, saveUsLogData, clearUsLog,
-    LimGridData, fetch_authenticated_data, forward_to_ato_for_authorisation,
-    softwareLogData
+    DynamicModelView, get_params, set_params,get_customers,data_for_headers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
+    user_details_for_authentication_one,check_passkey_authentication_right_side,user_authentication_for_trade,user_details_for_authentication_two,remove_user,
+    Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData,fetch_authenticated_data,forward_to_ato_for_authorisation,
+    softwareLogData,  check_passkey_authentication_right_side_limitation,get_partNumbers,
 )
 from userprofile.views.section_5_views import get_items
 
@@ -42,12 +39,14 @@ urlpatterns = [
     path('api/forwardToAtoForAuthorisation/', forward_to_ato_for_authorisation, name='forwardToAtoForAuthorisation'),
     path('api/checkPasskey/', check_passkey_authentication, name='checkPasskeyForAuthentication'),
     path('api/checkPasskeyRightSide/', check_passkey_authentication_right_side, name='checkPasskeyForAuthentication'),
+    path('api/checkPasskeyRightSideLimitation/', check_passkey_authentication_right_side_limitation, name='checkPasskeyForAuthentication'),
     path('api/removeUser/', remove_user, name='removeExistingUser'),
     path('api/userAuthenticationTrade/', user_authentication_for_trade, name='viewUserAuthenticationForTrade'),
     path('api/userAllDetailsForAuthenticationTwo/', views.user_details_for_authentication_two,
          name='viewUserDetailsForAuthenticationTwo'),
     # path('api/userQualification/', user_qualification_for_authentication, name='viewUserQualificationForAuthentication'),
     # path('api/userDetailsForAuthenticationTwo/', user_details_for_authentication, name='viewUserDetailsForAuthentication'),
+
 
     # ------------------------------------------- Security questions ---------------------------------------------------#
 
@@ -85,5 +84,9 @@ urlpatterns = [
     path('api/params/get/', get_params),
     path('api/params/set/', set_params),
     path("api/get_user_details/<str:pno>/", views.get_user_details, name="get_user_details"),
+#-------------------------------------------------- technicalInstructions()  ---------------------------------------------------#
+    path('api/fetchAllPartNumbers/', views.get_partNumbers, name='technicalInstructions'),
+
 
 ]
+
