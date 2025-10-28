@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import * as yup from "yup";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
-import { motion } from "framer-motion";
-import TradeSupAto from "../Authentication/AuthenticationTwo";
-
-import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
-import CompassLog from "../Section-10/CompassLog";
-import SoftwareLogEntry from "../Section-2/SoftwareLogEntry"
 import {
   Accordion,
   AccordionSummary,
@@ -27,7 +19,24 @@ import {
   Typography,
   Toolbar,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  MenuItem
 } from "@mui/material";
+import * as yup from "yup";
+import { useParams } from "../Utils/CustomHooks/useParams";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { motion } from "framer-motion";
+import TradeSupAto from "../Authentication/AuthenticationTwo";
+// import { Dialog, DialogTitle, DialogContent, TextFiled, DialogActions, Button} from "@mui/material";
+
+
+import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
+import CompassLog from "../Section-10/CompassLog";
+import SoftwareLogEntry from "../Section-2/SoftwareLogEntry"
+
 import { X, Plane } from "lucide-react";
 import { FaMapMarkerAlt, FaTools, FaUser, FaClock } from "react-icons/fa";
 import dayjs from "dayjs";
@@ -41,10 +50,12 @@ function formatDateTime(isoString) {
 }
 
 const ClearUsLog = ({ defect }) => {
+     const { params, loading } = useParams();
   const [formError, setFormError] = useState(null);
   const [wbData, setWbData] = useState({});
   const [compassData, setCompassData] = useState({});
   const [formData, setFormData] = useState([]);
+    const [items, setItems] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,13 +68,38 @@ const ClearUsLog = ({ defect }) => {
           }},[gridData,navigate]);
 
   const { date, time } = formatDateTime(gridData?.user_time_date);
-
+  useEffect(() => {
+      console.log("amruth");
+      const params = JSON.parse(sessionStorage.getItem('params'));
+      if (params && params.aircraft_type_id){
+          fetchItems(params.aircraft_type_id);
+          }
+      }, []);
+  const fetchItems = async (aircrafttypeid) => {
+      try{
+          const response = await fetch(`http://localhost:8000/api/get_items/?aircraft_type_id=${aircrafttypeid}`);
+          const data = await response.json();
+          console.log('Fetched Items:', data);
+          } catch (error) {
+              console.log('Error fetching items:', error);
+              }
+          };
   const methods = useForm({
     defaultValues: {
       workDone: "",
       manHrs: "",
       tradesmen: 0,
       supervisor: 0,
+      remarks: "",
+      workDateTime: new Date().toISOString().slice(0, 16),
+      manHours: "",
+      limitaion: false,
+      defered: false,
+      husbandary: false,
+      concession: false,
+      entryEIE: false,
+      lseChecks: false,
+      indeChecks: false,
     },
   });
 
@@ -74,6 +110,35 @@ const ClearUsLog = ({ defect }) => {
   const handleCompassData = (data) => {
     setCompassData(data);
   };
+  const [openLimitation, setOpenLimitation] = useState(false);
+  const [limitationText, setLimitationText] = useState("");
+  const [deferedText, setDeferedText] = useState("");
+  const [openDefered, setOpenDefered] = useState("");
+  const handleLimitationChange = (event) => {
+         if (event.target.checked) {
+              setOpenLimitation(true);
+              }
+          else {
+              setOpenLimitation(false);
+              }
+          };
+      const handleDeferedChange = (event) => {
+          if(event.taget.checked){
+              setOpenDefered(true);
+              }
+          else{
+              setOpenDefered(false);
+              }
+          };
+      const handleCloseDefered = () =>{
+          setOpenDefered(false);
+          };
+      const handleCloseLimitation = () => {
+          setOpenLimitation(false);
+          };
+      const [systemAffected, setSystemAffected] = useState("");
+      const [partNumber, setPartNumber] = useState("");
+
 
   useEffect(() => {
     if (gridData?.entry_type == 2025101) {
@@ -84,6 +149,14 @@ const ClearUsLog = ({ defect }) => {
     }
   }, [wbData, compassData]);
   console.log("formData:", formData);
+   useEffect(() => {
+           if (openLimitation) {
+               fetch("http://localhost:8000/api/items/")
+               .then((res) => res.json())
+               .then((data) => setItems(data))
+               .catch((err) => console.error("Error fetching items:", err));
+               }
+           }, [openLimitation]);
 
   const {
     register,
@@ -192,11 +265,103 @@ const ClearUsLog = ({ defect }) => {
                 </p>
               </div>
             </div>
+            <div className="mt-6 border border-green-700 rounded-lg p-4 bg-gray-100">
+                  <h3 className="text-lg font-semibold text-green-900 border-b-2 border-b-2 border-green-700 pb-2 mb-6 text-center">
+                      RECORD OF WORK CARRIED OUT, REPLACMENT ETC.
+                      </h3>
+                      {/* ---ldhc checkbox Section ---*/}
+                        <div className="flex flex-wrap items-center gap-6 mb-8 justify-center">
+                            <div className="flex items-center gap-2 font-semibold text-gray-700">
+                                <label className="font-semibold text-gray-700">Limitation</label>
+                                <input
+                                    type="checkbox"
+                                    {...register("limitaion")}
+                                    onChange={handleLimitationChange}
+                                    className="w-5 h-5 accent-green-700"
+                                    />
+
+                                <label className="font-semibold text-gray-700">Defered</label>
+                                <input
+                                type="checkbox"
+                                {...register("defered")}
+                                onChange={handleDeferedChange}
+                                className="w-4 h-5 accent-green-700"
+                                />
+
+                                <label className="font-semibold text-gray-700">Husbandary</label>
+                                <input
+                                type="checkbox"
+                                {...register("husbandary")}
+                                className="w-4 h-5 accent-green-700"
+                                />
+
+                                <label className="font-semibold text-gray-700">Concession</label>
+                                <input
+                                type="checkbox"
+                                {...register("concession")}
+                                className="w-4 h-5 accent-green-700"
+                                />
+
+                                <label className="font-semibold text-gray-700">Independtent Checks</label>
+                                <input
+                                type="checkbox"
+                                {...register("indeChecks")}
+                                className="w-4 h-5 accent-green-700"
+                                />
+
+                                <label className="font-semibold text-gray-700">Loose Article Checks</label>
+                                <input
+                                type="checkbox"
+                                {...register("lseChecks")}
+                                className="w-4 h-5 accent-green-700"
+                                />
+
+                                <label className="font-semibold text-gray-700">Entry In Error</label>
+                                <input
+                                type="checkbox"
+                                {...register("entryEIE")}
+                                className="w-4 h-5 accent-green-700"
+                                />
+                          </div>
+                  </div>
+
+                {/* --- work done details section --- */}
+                <div className="mb-8">
+                      <TextField
+                            label="Details of Work Carried Out, Replacement etc."
+                            variant="outlined"
+                            fullWidth
+                            {...register("remarks")}
+                            className="mb-4"
+                            />
+                </div>
+
+                      <div className="flex md: flex-row gap-6">
+
+                          <TextField
+                            label="Select Date & Time"
+                            type="datetime-local"
+                            InputLabelProps={{ shrink: true}}
+                            fullWidth
+                            {...register("workDateTime")}
+                            inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+                            />
+
+                            <TextField
+                        label="Man Hours"
+                        type="number"
+                        inputProps={{ min: 0, step: 0.5}}
+                        fullWidth
+                        {...register("manHours")}
+                        />
+                        </div>
+
+                </div>
           </div>
         </div>
         <div>
           <motion.div
-            //           key={ExtraForm ? "with-extra" : "only-basic"}
+
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -211,10 +376,10 @@ const ClearUsLog = ({ defect }) => {
                     <BasicWeightAndMoment wbData={handleWbData} />
                   )}
               {/*  Attaching the software modification form with Clear Serviceability Log  Suman@LEMAR */}
-              {gridData?.entry_type == 2025112 && (
+              {gridData?.entry_type === 2025112 && (
                     <SoftwareLogEntry />
                   )}
-                  {gridData?.entry_type == 2025111 && (
+                  {gridData?.entry_type ===  2025111 && (
                     <TextField
                       variant="outlined"
                       className="mb-6"
@@ -225,19 +390,145 @@ const ClearUsLog = ({ defect }) => {
               <div className="flex justify-center mt-2">
                 <TradeSupAto snowId={202520333} />
               </div>
+
               <button
                 onClick={handleSubmit}
                 type="submit"
                 variant="contained"
-                //                 disabled={!isAuthenticated}
-                className="hidden primary p-4"
+//                                 disabled={!isAuthenticated}
+                className="primary p-4"
               >
                 Submit
               </button>
             </FormProvider>
           </motion.div>
-        </div>
+
+         </div>
       </div>
+       {/* limitaion popup */}
+
+
+
+          <Dialog open={openLimitation} onClose={handleCloseLimitation}>
+              <DialogTitle className="font-bold text-green-800">Limitation Details</DialogTitle>
+              <DialogContent className="space-y-4">
+                  <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Enter Limitation Details"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  value={limitationText}
+                  onChange={(e) => setLimitationText(e.target.value)}
+                  />
+                  <TextField
+                  select
+                  label="System Affected"
+                  fullWidth
+                  variant="outlined"
+                  value={systemAffected}
+                  onChange={(e) => setSystemAffected(e.target.value)}
+                  SelectProps={{
+                      MenuProps: {
+                          PaperProps: {
+                              style: {
+                                  maxHeight: 200,
+                                  width: 300,
+                                  },
+                              },
+                          },
+                      }}
+                  >
+                  <MenuItem value="">Select System</MenuItem>
+                  {items.map((item) => (
+                      <MenuItem key={item.id} value={item.part_number}>
+                          {item.part_number},{item.description}
+                          </MenuItem>
+                          ))}
+                  </TextField>
+                   <TextField
+                  select
+                  label="Select Part Number"
+                  fullWidth
+                  variant="outlined"
+                  value={systemAffected}
+                  onChange={(e) => setSystemAffected(e.target.value)}
+                  >
+                  <MenuItem value="">Select System</MenuItem>
+                  <MenuItem value="Engine">Engine</MenuItem>
+                  <MenuItem value="Hydraulics">Hydraulics</MenuItem>
+                  </TextField>
+
+              </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseLimitation} color="error">Cancel</Button>
+                <Button
+                onClick={() => {
+                    handleCloseLimitation();
+                    console.log("Limitation details:", limitationText);
+                    }}
+                color="primary"
+                variant="contained"
+                >
+                Save
+                </Button>
+              </DialogActions>
+          </Dialog>
+
+                   <Dialog open={openDefered} onClose={handleCloseDefered}>
+              <DialogTitle className="font-bold text-green-800">Defered Details</DialogTitle>
+              <DialogContent className="space-y-4">
+                  <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Enter Defered Details"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  value={deferedText}
+                  onChange={(e) => setDeferedText(e.target.value)}
+                  />
+                  <TextField
+                  select
+                  label="System Affected"
+                  fullWidth
+                  variant="outlined"
+                  value={systemAffected}
+                  onChange={(e) => setSystemAffected(e.target.value)}
+                  >
+                  <MenuItem value="">Select System</MenuItem>
+                  <MenuItem value="Engine">Engine</MenuItem>
+                  <MenuItem value="Hydraulics">Hydraulics</MenuItem>
+                  </TextField>
+                   <TextField
+                  select
+                  label="Select Part Number"
+                  fullWidth
+                  variant="outlined"
+                  value={systemAffected}
+                  onChange={(e) => setSystemAffected(e.target.value)}
+                  >
+                  <MenuItem value="">Select System</MenuItem>
+                  <MenuItem value="Engine">Engine</MenuItem>
+                  <MenuItem value="Hydraulics">Hydraulics</MenuItem>
+                  </TextField>
+
+              </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseDefered} color="error">Cancel</Button>
+                <Button
+                onClick={() => {
+                    handleCloseDefered();
+                    console.log("Limitation details:", limitationText);
+                    }}
+                color="primary"
+                variant="contained"
+                >
+                Save
+                </Button>
+              </DialogActions>
+          </Dialog>
     </Box>
   );
 };

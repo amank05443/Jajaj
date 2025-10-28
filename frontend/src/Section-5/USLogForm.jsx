@@ -37,6 +37,8 @@ const USLogForm = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [limLogData, setLimLogData] = useState({});
   const [darkMode, setDarkMode] = useState(false);
+  const [defectCodeOptions, setDefectCodeOptions] = useState([]);
+  const [defectCode, setDefectCode] = useState("");
 
   const toggleTheme = () => {
       setDarkMode((prev) => !prev);
@@ -100,6 +102,7 @@ const USLogForm = () => {
         setHowFoundOptions(data.data.howFoundDefects);
         setEntryTypeOptions(data.data.entryTypes);
         setAircraftMaster(data.data.aircraftMasters);
+
         setFormData((prev) => ({
           ...prev,
           ["airframeHrs"]: data.data.aircraftMasters.airframe_hrs,
@@ -111,6 +114,9 @@ const USLogForm = () => {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+       console.log("amruth"+formData.entry_type+formData.entryType)
+       }, [formData]);
 
   //for handling authentication data
   const handleDataFromAllUsers = (data) => {
@@ -131,6 +137,7 @@ const USLogForm = () => {
       formData: formData,
       limLogData: limLogData,
       activeCheckboxes: activeCheckboxes,
+      defect_code: defectCode
     };
     if (validateAll()) {
       try {
@@ -165,7 +172,7 @@ const USLogForm = () => {
       <div className={`min-h-screen transition-all duration-500 ${
            darkMode
            ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white"
-          : "bg-gradient-to-br from-blue-400 via-white-600 to-indigo-600 text-black"
+          : "bg-gray-100 min-h-screen items-center justify-center "
            } p-8` }
          >
 
@@ -173,12 +180,12 @@ const USLogForm = () => {
                 <div className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
                     darkMode
                     ? "bg-gray-800/60 border border-gray-600 text-gray-100"
-                    : "bg-white/20 border border-gray-200 text-gray-900"
+                    : "rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md"
                     }`}
                 >
 {/*                         <div> */}
                             <div className="flex items-center justify-center mb-6 relative">
-                        <h1 className={`text-4xl text-center font-extrabold tracking-wide ${
+                        <h1 className={`absolute text-md font-bold text-4xl text-center font-extrabold tracking-wide ${
                             darkMode ? "text-white" : "text-black"
                             }`}
                         >
@@ -199,28 +206,17 @@ const USLogForm = () => {
                     </button>
                     </div>
 
-                                <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform hover:scale-[1.50]">
+                                <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform">
                                     <h2 className="text-xl font-extrabold text-gray-800 border-b-2 border-b-2 border-indigo-500 pb-2 mb-4">
-                                        Previous Entry
+                                        SNOW Details
                                     </h2>
                                                 <div className="font justify-between">
                                                     <span className="font-semibold">Previous SNOW:</span>
-                                                    <span className="font-semibold">Previous SNOW</span>
                                                 </div>
                                                 <div className="font justify-between">
-                                                    <span className="font-semibold">Previous Entry Type:</span>
+                                                    <span className="font-semibold">Current SNOW:</span>
                                                 </div>
-                                                <div className="font justify-between">
-                                                    <span className="font-semibold">Previous How Found:</span>
-                                                </div>
-                                                <div className="font justify-between">
-                                                    <span className="font-semibold">Previous Airframe Hours:</span>
-                                                </div>
-                                                <div className="font justify-between">
-                                                    <span className="font-semibold">Previous Reason:</span>
-                                                </div>
-
-                               </div>
+                                </div>
 
                 </div>
 
@@ -334,9 +330,42 @@ const USLogForm = () => {
                             }`}
                 readOnly
               ></input>
+
             </div>
           </div>
+
+          {formData.entryType == 2025110 && (
+              <div className="mt-4">
+                  <label
+                        className={`text-1xl text-center font-extrabold tracking-wide ${
+                            darkMode ? "text-white" : "text-black"
+                            }`}
+                        >
+                        Defect Code
+                        </label>
+                        <select
+                            name="defectCode"
+                            value={handleChange}
+                            className={`w-full border rounded-md p-2 text-1xl font-semibold tracking-wide ${
+                                darkMode
+                                ? "bg-gray-700 text-white border-gray-500"
+                                :"bg-white text-black border-gray-300"
+                                }`}
+                            >
+
+                            <option value="">Select Defect Code</option>
+                            {defectCodeOptions.map((def) => (
+                                <option key={def.id} value={def.code}>
+                                    {def.code} - {def.description}
+                                    </option>
+                                    ))}
+                                </select>
+                                {errors.defectCode && ( <p className="text-red-500 text-sm">{errors.defectCode.message}</p>
+                                    )}
+                                </div>
+                            )}
 {/*           </div> */}
+
           {/* SECTION 2: REASON & CONDITIONS */}
           {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
           <div>
@@ -368,54 +397,54 @@ const USLogForm = () => {
             </div>
 
 
-            {/* Checkboxes for LDHC*/}
+{/*             Checkboxes for LDHC*/} */}
 
-{/*             <div className="grid grid-cols-2 gap-2"> */}
-{/*               {formData.entryType == 2025110 && ( */}
-{/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
-{/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
-{/*                     Select LDHC */}
-{/*                   </label> */}
-{/*                   {checkBoxesLDHC.map((box) => ( */}
-{/*                     <label */}
-{/*                       key={box.key} */}
-{/*                       className="flex items-center space-x-2" */}
-{/*                     > */}
-{/*                       <input */}
-{/*                         type="checkbox" */}
-{/*                         checked={activeCheckboxes[box.key]} */}
-{/*                         onChange={() => toggleCheckboxes(box.key)} */}
-{/*                         disabled={isAuthenticated} */}
-{/*                         className="accent-pink-600" */}
-{/*                       /> */}
-{/*                       <span className="text-gray-800">{box.label}</span> */}
-{/*                     </label> */}
-{/*                   ))} */}
-{/*                 </div> */}
-{/*               )} */}
-{/*                */}{/* Checkboxes for Additional Checks*/}
-{/*               {formData.entryType != 2025110 && ( */}
-{/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
-{/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
-{/*                     Select Additional Checks */}
-{/*                   </label> */}
-{/*                   {checkBoxesChecks.map((box) => ( */}
-{/*                     <label */}
-{/*                       key={box.key} */}
-{/*                       className="flex items-center space-x-2" */}
-{/*                     > */}
-{/*                       <input */}
-{/*                         type="checkbox" */}
-{/*                         checked={activeCheckboxes[box.key]} */}
-{/*                         onChange={() => toggleCheckboxes(box.key)} */}
-{/*                         disabled={isAuthenticated} */}
-{/*                       /> */}
-{/*                       <span className="text-gray-800">{box.label}</span> */}
-{/*                     </label> */}
-{/*                   ))} */}
-{/*                 </div> */}
-{/*               )} */}
-{/*             </div> */}
+            <div className="grid grid-cols-2 gap-2">
+              {formData.entryType == 2025110 && (
+                <div className="border-2 border-black-600 rounded-lg p-4">
+                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                    Select LDHC
+                  </label>
+                  {checkBoxesLDHC.map((box) => (
+                    <label
+                      key={box.key}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={activeCheckboxes[box.key]}
+                        onChange={() => toggleCheckboxes(box.key)}
+                        disabled={isAuthenticated}
+                        className="accent-pink-600"
+                      />
+                      <span className="text-gray-800">{box.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              Checkboxes for Additional Checks*/}
+              {formData.entryType != 2025110 && (
+                <div className="border-2 border-black-600 rounded-lg p-4">
+                  <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                    Select Additional Checks
+                  </label>
+                  {checkBoxesChecks.map((box) => (
+                    <label
+                      key={box.key}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={activeCheckboxes[box.key]}
+                        onChange={() => toggleCheckboxes(box.key)}
+                        disabled={isAuthenticated}
+                      />
+                      <span className="text-gray-800">{box.label}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {activeCheckboxes.lim && (

@@ -135,7 +135,7 @@ export default function USLog() {
         </h2>
       </div>
       <Card className="shadow-lg rounded-xl">
-        <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
+        <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] ">
           <div style={{ height: 420, width: "100%" }}>
             <DataGrid
               loading={dataLoading}

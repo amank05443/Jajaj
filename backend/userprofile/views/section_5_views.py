@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from django.db import transaction
 from datetime import datetime
 from rest_framework.decorators import api_view
-from ..serializers import  (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer, ItemsSerializer,LimDefrDefLogsSerializer)
+from ..serializers import (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer,
+                           ItemsSerializer, LimDefrDefLogsSerializer)
 from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items, Users,
                       ChangeOfServiceabilityLogs, LimDefrDefHusLogs, Softwares, UserQuals)
 from django.db.models import Max
@@ -39,6 +40,7 @@ def limLogData(request):
         "itemsData": ItemsSerializer(items_qs, many=True).data,
     })
 
+
 @api_view(['GET'])
 def softwareLogData(request):
     aircraft_type_id = request.GET["aircraft_type_id"]
@@ -47,8 +49,22 @@ def softwareLogData(request):
     print(softwares_qs)
     # acRole_qs = AircraftRoles.objects.filter(aircraft_type=aircraft_type_id)
     items_qs = Items.objects.filter(aircraft_type=aircraft_type_id)
-    data = list(softwares_qs.values("id", "system_id","system__system", "software_description"))
+    data = list(softwares_qs.values("id", "system_id", "system__system", "software_description"))
     return JsonResponse(data, safe=False)
+
+
+@api_view(['GET'])
+def get_items(request):
+    aircraft_type_id = request.GET.get('aircraft_type_id')
+    if not aircraft_type_id:
+        return JsonResponse({"error": "aircraft_type_id is required"}, status=400)
+
+    try:
+        items_queryset = Items.objects.filter(aircraft_type_id=aircraft_type_id)
+        serializer = ItemsSerializer(items_queryset, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @api_view(['POST'])
@@ -104,6 +120,7 @@ def saveUsLogData(request):
             entry_type_id=formData['entryType'],
             system_time_date=datetime.now(),
             user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
+            defect_code=formData['code'],
         )
         return_res["cosLog"] = {
             "snow": cosLog.snow,
