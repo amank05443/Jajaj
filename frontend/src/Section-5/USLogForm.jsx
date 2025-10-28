@@ -132,6 +132,7 @@ const USLogForm = () => {
       limLogData: limLogData,
       activeCheckboxes: activeCheckboxes,
     };
+//         console.log("payload",payload);
     if (validateAll()) {
       try {
         const res = await fetch("/api/saveUsLogData/", {

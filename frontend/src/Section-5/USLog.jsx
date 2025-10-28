@@ -92,7 +92,7 @@ export default function USLog() {
       //       alert("THIS IS THE FIRST SNOW");
       showAlert({
         type: "INFO",
-        message: "THIS IS THE FIRST SNOW",
+        message: "THIS IS THE LATEST SNOW",
       });
     }
     if (rowIndex <= 0) return;

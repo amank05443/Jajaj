@@ -222,4 +222,4 @@ class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         aircraft_master_id = self.kwargs.get('id')
         return (ChangeOfServiceabilityLogs.objects.select_related("how_found_defect", "by_whom__user").filter(
-            aircraft_master_id=aircraft_master_id).order_by('snow'))
+            aircraft_master_id=aircraft_master_id).order_by('-snow'))

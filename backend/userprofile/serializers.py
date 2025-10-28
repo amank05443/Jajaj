@@ -182,9 +182,17 @@ class LimDefrDefLogsSerializer(serializers.ModelSerializer):
     change_of_serviceability_log=ChangeOfServiceabilityLogsSerializer(read_only=True)
     item = ItemsSerializer(read_only=True)
     main_system = SystemsSerializer(read_only=True)
+    # status_label = serializers.SerializerMethodField(method_name='get_status_label')
     class Meta:
         model = LimDefrDefHusLogs
         fields = '__all__'
+    #
+    # def get_status_label(self, obj):
+    #     # if obj.status is None:
+    #     #     return None
+    #     if obj.entryStatus == "3":
+    #         return "CLOSED"
+    #     return "OPEN"
 
 class SecurityQuestionsSerializer(serializers.ModelSerializer):
     class Meta:
