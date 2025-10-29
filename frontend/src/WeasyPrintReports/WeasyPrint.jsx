@@ -6,6 +6,25 @@ import {
 } from '@mui/material';
 import { useParams } from "../Utils/CustomHooks/useParams";
 
+export const InstructionsButton = () => {
+    const openPdf = () => {
+        window.open("./images/instructions of e700.pdf","_blank", "noopener", "noreferrer");
+        };
+    return (
+        <Button fontFamily="algerian"fontWeight="bold" color="black" variant="contained" onClick ={openPdf} className="bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white">Instructions for MOD Form 700C</Button>
+        );
+}
+
+export const BlankForm = () => {
+    const openPdf = () => {
+        window.open("./images/Dornier e700.pdf","_blank", "noopener", "noreferrer");
+        };
+    return (
+        <Button fontFamily="algerian"fontWeight="bold" color="black" variant="contained" onClick ={openPdf} className="bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white">Blank MOD Form 700C</Button>
+//         <Button fontFamily="algerian"fontWeight="bold"  variant="contained" onClick ={openPdf} className="bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition">Blank MOD Form 700C</button>
+        );
+}
+
 export const ModForm701 = () => {
   const { params, loading } = useParams();
   const [aircraftMasterId, setAircraftMasterId] = useState('');
@@ -42,18 +61,17 @@ export const ModForm701 = () => {
       }
   };
   return (
-      <div style={{ textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+                style={{textAlign:'left'}}
                 variant="contained"
                 onClick={handlePrint}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 701'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 701'}
+              </button>
           </div>
-      </div>
   );
  }
 
@@ -99,18 +117,17 @@ export const ModForm707 = () => {
     }
   };
   return (
-      <div style={{  textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
                 variant="contained"
+                style={{textAlign:'left'}}
                 onClick={handlePrintSec5}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 707'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 707'}
+              </button>
           </div>
-      </div>
   );
  }
 
@@ -155,74 +172,17 @@ export const ModForm707 = () => {
     }
   };
   return (
-      <div style={{ textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
                 variant="contained"
+                style={{textAlign:'left'}}
                 onClick={handlePrintMod703B}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 703B'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 703B'}
+              </button>
           </div>
-      </div>
-  );
- }
-
- export const ModForm704A = () => {
-  const { params, loading } = useParams();
-  const [aircraftMasterId, setAircraftMasterId] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-      if(!loading){
-          const aircraft_master_id= params.aircraft_master_id
-            setAircraftMasterId(aircraft_master_id)
-      }
-  },[params, loading]);
-   const handlePrintMODForm704A = async () => {
-    setIsLoading(true);
-    if(aircraftMasterId){
-     try {
-      const response = await fetch(
-        `http://localhost:8000/handlePrintMODForm704A/pdf/${aircraftMasterId}`,
-        {
-          method: 'GET',
-        }
-      );
-      if (!response.ok) {
-        throw new Error('Failed to generate report');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'MOD Form 704A.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      alert('Error generating the report');
-    } finally {
-      setIsLoading(false);
-    }
-    }
-  };
-  return (
-      <div style={{ textAlign: 'center' }}>
-          <div className="m-5">
-              <Button
-                variant="contained"
-                onClick={handlePrintMODForm704A}
-                disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
-              >
-                {isLoading ? 'Generating...' : 'Print MOD Form 704A'}
-              </Button>
-          </div>
-      </div>
   );
  }
 
@@ -267,18 +227,17 @@ export const ModForm707 = () => {
     }
   };
   return (
-      <div style={{textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
                 variant="contained"
+                style={{textAlign:'left'}}
                 onClick={handlePrintMODForm712A}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 712A'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 712A'}
+              </button>
           </div>
-      </div>
   );
  }
 
@@ -323,18 +282,17 @@ export const ModForm707 = () => {
     }
   };
   return (
-      <div style={{textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
                 variant="contained"
+                style={{textAlign:'left'}}
                 onClick={handlePrintMODForm702}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 702'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 702'}
+              </button>
           </div>
-      </div>
   );
  }
 
@@ -379,17 +337,183 @@ export const ModForm707 = () => {
     }
   };
   return (
-      <div style={{textAlign: 'center' }}>
           <div className="m-5">
-              <Button
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
                 variant="contained"
+                style={{textAlign:'left'}}
                 onClick={handlePrintMODForm710}
                 disabled={isLoading}
-                startIcon={isLoading ? <CircularProgress size={18} /> : null}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
               >
-                {isLoading ? 'Generating...' : 'Print MOD Form 710'}
-              </Button>
+                {isLoading ? 'Generating...' : 'MOD Form 710'}
+              </button>
           </div>
-      </div>
+  );
+ }
+ export const ModForm703 = () => {
+  const { params, loading } = useParams();
+  const [aircraftMasterId, setAircraftMasterId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+      if(!loading){
+          const aircraft_master_id= params.aircraft_master_id
+            setAircraftMasterId(aircraft_master_id)
+      }
+  },[params, loading]);
+   const handlePrintMODForm703 = async () => {
+    setIsLoading(true);
+    if(aircraftMasterId){
+     try {
+      const response = await fetch(
+        `http://localhost:8000/handlePrintMODForm703/pdf/${aircraftMasterId}`,
+        {
+          method: 'GET',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'MOD Form 703.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert('Error generating the report');
+    } finally {
+      setIsLoading(false);
+    }
+    }
+  };
+  return (
+          <div className="m-5">
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+                variant="contained"
+                style={{textAlign:'left'}}
+                onClick={handlePrintMODForm703}
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
+              >
+                {isLoading ? 'Generating...' : 'MOD Form 703'}
+              </button>
+          </div>
+  );
+ }
+
+ export const ModForm704 = () => {
+  const { params, loading } = useParams();
+  const [aircraftMasterId, setAircraftMasterId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+      if(!loading){
+          const aircraft_master_id= params.aircraft_master_id
+            setAircraftMasterId(aircraft_master_id)
+      }
+  },[params, loading]);
+   const handlePrintMODForm704 = async () => {
+    setIsLoading(true);
+    if(aircraftMasterId){
+     try {
+      const response = await fetch(
+        `http://localhost:8000/handlePrintMODForm704/pdf/${aircraftMasterId}`,
+        {
+          method: 'GET',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'MOD Form 704.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert('Error generating the report');
+    } finally {
+      setIsLoading(false);
+    }
+    }
+  };
+  return (
+          <div className="m-5">
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+                variant="contained"
+                style={{textAlign:'left'}}
+                onClick={handlePrintMODForm704}
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
+              >
+                {isLoading ? 'Generating...' : 'MOD Form 704'}
+              </button>
+          </div>
+  );
+ }
+
+
+
+
+ export const ModForm704A = () => {
+  const { params, loading } = useParams();
+  const [aircraftMasterId, setAircraftMasterId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+      if(!loading){
+          const aircraft_master_id= params.aircraft_master_id
+            setAircraftMasterId(aircraft_master_id)
+      }
+  },[params, loading]);
+   const handlePrintMODForm704A = async () => {
+    setIsLoading(true);
+    if(aircraftMasterId){
+     try {
+      const response = await fetch(
+        `http://localhost:8000/handlePrintMODForm704A/pdf/${aircraftMasterId}`,
+        {
+          method: 'GET',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to generate report');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'MOD Form 704A.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert('Error generating the report');
+    } finally {
+      setIsLoading(false);
+    }
+    }
+  };
+  return (
+          <div className="m-5">
+              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+                variant="contained"
+                style={{textAlign:'left'}}
+                onClick={handlePrintMODForm704A}
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={10} /> : null}
+              >
+                {isLoading ? 'Generating...' : 'MOD Form 704A'}
+              </button>
+          </div>
   );
  }

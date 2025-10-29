@@ -1,0 +1,125 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewreport" content="width=device-width, initial-scale=1">
+  <!--    <title> MOD Form 707</title>-->
+  <style>
+    @media print {
+      tr, td, tbody {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important
+        }
+    }
+    @page { size:297mm 210mm; margin:15mm;}
+    @page { @bottom-center { content: "Page " counter(page) " of " counter(pages); } }
+    body { font-family: Arial; font-size:12px; color:#111; }
+    header { text-align: center; margin-bottom: 8px; }
+    h1 { font-size:15px; margin:2px 0; }
+    table { width: 100%; border-collapse:collapse; table-layout: fixed; page-break-inside: auto; }
+    th, td {border:1px solid #222; padding: 3px 5px; vertical-align: top; word-wrap:break-word; }
+    th { background: #f0f0f0; font-weight:700; font-size: 12px; }
+    thead { display: table-header-group; }
+    tbody { display: table-row-group; page-break-inside: avoid; }
+    tr { page-break-inside: avoid; }
+    h1.page-number:: after {
+    content: " - Page " counter(page);
+    font-size:15px;
+    color:#111;
+    margin-left:6px;
+    }
+    .content{page-break-after: always}
+  </style>
+</head>
+<body>
+<table style="width:100%; height:100%; ;text-align: left;">
+  <thead>
+  <tr>
+    <td style="border:none; font-weight:bold;" colspan="28">
+      <h1 style="text-decoration: underline; text-align:right; ">MOD Form 703</h1>
+      <h1 style="text-decoration: underline; text-align:center;">LIMITATIONS LOG</h1>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4" style="border:none; font-weight:bold;">Aircraft Type</td>
+    <td colspan="4" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.type }}</td>
+    <td colspan="4"  style="border:none; font-weight:bold; ">Mark</td>
+    <td colspan="4" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
+    <td colspan="4" style="border:none; font-weight:bold; ">Serial No</td>
+    <td colspan="4" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
+  </tr>
+
+  <tr>
+    <th rowspan="2" colspan="16" class="section-title">Defects in this Aircraft which may Affect its Performance or Role/ Limitations</th>
+    <th rowspan="2" colspan="4" class="section-title">Deffered<br>Until</th>
+    <th rowspan="1" colspan="8" class="section-title">Limitation Removed</th>
+  </tr>
+  <tr>
+    <td rowspan="1" colspan="8" class="section-title">Signature of ATO</td>
+  </tr>
+  </thead>
+  <tbody>
+
+  {% for lim_log in limitation_logs %}
+  <tr>
+    <td rowspan="1" colspan="4" style="font-weight:bold;">Ser</td>
+    <td rowspan="1" colspan="2" style=" font-weight:bold;">Trade</td>
+    <td rowspan="1" colspan="2" style=" font-weight:bold;">SNOW</td>
+    <td rowspan="1" colspan="2" style=" font-weight:bold;">Date</td>
+    <td rowspan="1" colspan="2" style=" font-weight:bold;">A/F Hrs</td>
+    <td rowspan="2" colspan="4" style=" font-weight:bold;">Rank, Name, Sign of ATO <br>Authorising Limitation</td>
+    <td rowspan="10" colspan="4" >{{lim_log.deferred_until}}</td>
+    <td rowspan="2" colspan="4" style="border:none; font-weight:bold;">SNOW :</td>
+    <td rowspan="2" colspan="4" style="border:none; border-right: 1px solid black;">{{ lim_log.ldh_no }}</td>
+  </tr>
+  <tr>
+    <td rowspan="1" colspan="4" >{{ lim_log.ldh_no }}</td>
+    <td rowspan="1" colspan="2" >AR</td>
+    <td rowspan="1" colspan="2" >{{ lim_log.snow }}</td>
+    <td rowspan="1" colspan="2" >{{ lim_log.user_date }}</td>
+    <td rowspan="1" colspan="2" >{{ lim_log.airframe_hrs }}</td>
+  </tr>
+  <tr>
+    <td rowspan="1" colspan="12" class="section-title">Defect/ Limitation Details</td>
+    <td rowspan="2" colspan="4" style="border:none; ">{{ lim_log.authorised_by_rank }}</td>
+    <td rowspan="2" colspan="4" style="border:none; font-weight:bold;">Rank :</td>
+    <td rowspan="2" colspan="4" style="border:none; border-right: 1px solid black;">Lt Cdr</td>
+  </tr>
+  <tr>
+    <td rowspan="5" colspan="12">{{ lim_log.reason_for_placing_unserviceable }}</td>
+  </tr>
+  <tr>
+    <td rowspan="2" colspan="4" style="border:none;">{{ lim_log.authorised_by_name }}</td>
+    <td rowspan="2" colspan="4" style="border:none; font-weight:bold;">Name :</td>
+    <td rowspan="2" colspan="4" style="border:none; border-right: 1px solid black;">Aditya Verma</td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td rowspan="2" colspan="4" style="border:none;">{{ lim_log.authorised_by_pno }}</td>
+    <td rowspan="2" colspan="4" style="border:none; font-weight:bold;">P No :</td>
+    <td rowspan="2" colspan="4" style="border:none; border-right: 1px solid black;">50356-R</td>
+  </tr>
+  <tr></tr>
+  <tr>
+    <td rowspan="1" colspan="3" style=" font-weight:bold;">System Affected</td>
+    <td rowspan="1" colspan="3" >Compass III / FUR</td>
+    <td rowspan="1" colspan="6" style=" font-weight:bold;">Time & Date</td>
+    <td rowspan="1" colspan="4" style=" font-weight:bold;">Demand No & Date/ Unit</td>
+    <td rowspan="1" colspan="8" style=" font-weight:bold;">Time & Date</td>
+  </tr>
+  <tr>
+    <td rowspan="1" colspan="3" style=" font-weight:bold;">Main Item Part/ NSN No</td>
+    <td rowspan="1" colspan="3">ELRF</td>
+    <td rowspan="1" colspan="6">{{ lim_log.user_time_date }}</td>
+    <td rowspan="1" colspan="4">30/4/24/GAR</td>
+    <td rowspan="1" colspan="8">{{ lim_log.user_completion_date }}</td>
+  </tr>
+  {% endfor %}
+  <br>
+  </tbody>
+</table>
+
+</body>
+</html>

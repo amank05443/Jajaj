@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: Arial, sans-serif; font-size: 10px; }
+    @page { size:297mm 210mm; margin:10mm;font-family: Arial;}
+    @page { @bottom-center  { content: "Page " counter(page) " of " counter(pages); }}
+    body { font-family: Arial, sans-serif; font-size: 12px; }
     h3 { text-align: center; margin-bottom: 4px; }
     table { border-collapse: collapse; width: 100%; margin-bottom: 6px; }
     th, td {
@@ -20,7 +22,7 @@
     }
     .right { text-align: right; }
     .center { text-align: center; }
-    .small { font-size: 10px; }
+    .small { font-size: 12px; }
     footer {
     text-align: left;
     padding: 10px;
@@ -29,12 +31,13 @@
     width: 100%;
     }
     .note { font-weight: bold; text-decoration: underline;}
+    .content{page-break-after: always}
   </style>
 </head>
 <body>
 
 <h3 style="text-decoration: underline; text-align:right;">MOD Form 702</h3>
-<h3 style="text-decoration: underline;">WEIGHT AND BALANCE DATA - BASIC WEIGHT AND MOMENTS</h3>
+<h3 style="text-decoration: underline; font-size: 15px;">WEIGHT AND BALANCE DATA - BASIC WEIGHT AND MOMENTS</h3>
 
 <table style="border:none; border-collapse:collapse;">
   <tr>
@@ -44,7 +47,7 @@
     <td colspan="2" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.mark }}</td>
     <td colspan="2" style="border:none; font-weight:bold; ">Serial No</td>
     <td colspan="2" style="border:none; font-weight:bold; text-decoration:underline;">{{ aircraft.serial_no }}</td>
-    <td colspan="29" style="border:none; font-weight:bold; text-decoration:underline; text-align:right;">Page  1</td>
+<!--    <td colspan="29" style="border:none; font-weight:bold; text-decoration:underline; text-align:right;">Page  1</td>-->
   </tr>
 </table>
 
