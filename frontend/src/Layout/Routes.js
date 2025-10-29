@@ -47,6 +47,7 @@ const NewEntryForLimitationLog = lazy(
 
 //--SECTION->3--//
 const DeferredDefectLog = lazy(() => import("../Section-3/DeferredDefectLog"));
+const DeferredDefectLog1 = lazy(() => import("../Section-3/DeferredDefectLog1"));
 const Concessions = lazy(() => import("../Section-3/Concessions"));
 const NewEntryForConcessions = lazy(
   () => import("../Section-3/NewEntryForConcessions"),
@@ -145,6 +146,7 @@ export const privateRoutes = [
 
   //--SECTION-> 3--//
   { path: "/deferredDefectLog", element: <DeferredDefectLog /> },
+  { path: "/deferredDefectLog1", element: <DeferredDefectLog1 /> },
   { path: "/husbandryLog", element: <HusbandryLog /> },
   { path: "/concessions", element: <Concessions /> },
   {

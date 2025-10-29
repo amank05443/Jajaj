@@ -17,6 +17,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleArrowRight,
+  Cog,
+  Bug,
 } from "lucide-react";
 import React, { useRef } from "react";
 import { Typography, Button, Box, Modal } from "@mui/material";
@@ -33,14 +35,14 @@ function formatDateTime(isoString) {
   return { date, time };
 }
 
-export default function USLogGridModal({
+export default function DeferredLogGridModal({
   data,
   onClose,
   prevSelectedRow,
   nextSelectedRow,
 }) {
   const navigate = useNavigate();
-  const { date, time } = formatDateTime(data?.user_time_date);
+  const { date, time } = formatDateTime(data?.change_of_serviceability_log.user_time_date);
 
   //  <---Function for the Button to Forward Users to the Right side of Section-5--->
   const handleAction = (data) => {
@@ -49,14 +51,14 @@ export default function USLogGridModal({
     console.log(data);}
   };
   //   <---For filtering of Tradesman data further used in showing Name and Rank--->
-  const tradesmanData = data.change_of_serviceability_log_lines.filter(
-    (row) => row.tradesman_sup === "TDS",
-  );
+//   const tradesmanData = data.change_of_serviceability_log_lines.filter(
+//     (row) => row.tradesman_sup === "TDS",
+//   );
 
   //   <---For filtering of Supervisor data further used in showing Name and Rank--->
-  const supervisorData = data.change_of_serviceability_log_lines.filter(
-    (row) => row.tradesman_sup === "SUP",
-  );
+//   const supervisorData = data.change_of_serviceability_log_lines.filter(
+//     (row) => row.tradesman_sup === "SUP",
+//   );
 
   return (
     <div
@@ -64,8 +66,8 @@ export default function USLogGridModal({
       className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center p-4 items-center z-50"
     >
       <div
-        className=" relative bg-gray-300  text-gray-900  rounded-2xl  w-[85%]  max-h-[100%] p-4 sm:p-6 flex flex-col
-         gap-4 overflow-y-auto   "
+        className=" relative bg-gray-300  text-gray-900  rounded-2xl h-auto w-[85%]  p-4 sm:p-6 flex flex-col
+         gap-4  overflow-y-auto  "
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -110,12 +112,13 @@ export default function USLogGridModal({
               </div>
 
               <div className="flex items-center col-span-4 justify-center gap-2">
-                <Search className="w-5 h-5 mb-1" /> HOW FOUND
+                <Bug className="w-5 h-5 mb-1" />
+                SYSTEM AFFECTED
               </div>
 
               <div className="flex items-center col-span-2 justify-center gap-2">
-                <User className="w-5 h-5 mb-1" />
-                BY WHOM
+                <Cog className="w-5 h-5 mb-1" />
+               ITEM PART NO
               </div>
             </div>
 
@@ -123,14 +126,18 @@ export default function USLogGridModal({
               <div className="col-span-2">
                 {date} <br /> {time}
               </div>
-              <div className="col-span-2"> {data.snow || "N/A"} </div>
-              <div className="col-span-2"> {data.airframe_hrs || "N/A"} </div>
+              <div className="col-span-2">
+                  {data.change_of_serviceability_log.snow || "N/A"}
+                  </div>
+              <div className="col-span-2">
+                  {data.change_of_serviceability_log.airframe_hrs || "N/A"}
+                  </div>
               <div className="col-span-4">
-                {data.how_found_defect?.occasion || "N/A"}
+{/*                 {data.how_found_defect?.occasion || "N/A"} */}
               </div>
               <div className="col-span-2">
-                {data.by_whom?.user?.user_name?.toUpperCase() || "N/A"} <br />
-                {data.by_whom?.user?.rank?.abbreviation}
+{/*                 {data.by_whom?.user?.user_name?.toUpperCase() || "N/A"} <br /> */}
+{/*                 {data.by_whom?.user?.rank?.abbreviation} */}
               </div>
             </div>
           </div>
@@ -142,15 +149,15 @@ export default function USLogGridModal({
             <div className="flex gap-2 ">
               <AlertTriangle className="w-5 h-5 mb-1" />
               <h2 className="font-bold mb-2 ">
-                REASON FOR PLACING UNSERVICEABLE
+                DEFERRED DEFECT DETAILS
               </h2>
             </div>
             <div className="break-words ml-7">
-              {data.reason_for_placing_unserviceable}
+              {data.change_of_serviceability_log.reason_for_placing_unserviceable}
             </div>
           </div>
 
-          {data.status_label === "CLOSED" && (
+          {data.lim_def_removal_by === !null && (
             <>
               <div
                 className="rounded-2xl p-6 bg-gradient-to-r from-[#8acbde]  to-[#d3f3f1] shadow-md  py-2 min-w-[500px]
@@ -163,7 +170,7 @@ export default function USLogGridModal({
                       <h2 className="font-bold mb-2 "> WORK UNDERTAKEN </h2>
                     </div>
                     <div className="break-words ml-7 ">
-                      {data.work_carried_out || "N/A"}
+                      {data.change_of_serviceability_log.work_carried_out || "N/A"}
                     </div>
                   </div>
 
@@ -173,7 +180,7 @@ export default function USLogGridModal({
                       <h2 className="font-bold mb-2 "> MAN HRS </h2>
                     </div>
                     <div className="break-words ml-7 ">
-                      {data.man_hrs || "N/A"}
+                      {data.change_of_serviceability_log.man_hrs || "N/A"}
                     </div>
                   </div>
                 </div>
@@ -200,32 +207,32 @@ export default function USLogGridModal({
 
                 <div className="grid grid-cols-3 text-left  mb-2 pb-2 min-w-[500px] ">
                   <div className="flex  justify-center gap-2">
-                    <ul className="list-disc list-inside">
-                      {tradesmanData?.map((tradesman) => (
-                        <li key={tradesman.id}>
-                          {tradesman?.user_qual?.user?.user_name?.toUpperCase()}
-                          , {tradesman?.user_qual?.user?.rank?.abbreviation}
-                        </li>
-                      ))}
-                    </ul>
+{/*                     <ul className="list-disc list-inside"> */}
+{/*                       {tradesmanData?.map((tradesman) => ( */}
+{/*                         <li key={tradesman.id}> */}
+{/*                           {tradesman?.user_qual?.user?.user_name?.toUpperCase()} */}
+{/*                           , {tradesman?.user_qual?.user?.rank?.abbreviation} */}
+{/*                         </li> */}
+{/*                       ))} */}
+{/*                     </ul> */}
                   </div>
                   <div className="flex  justify-center gap-2">
-                    <ul className="list-disc list-inside">
-                      {supervisorData?.map((supervisor) => (
-                        <li key={supervisor.id}>
-                          {supervisor?.user_qual?.user?.user_name?.toUpperCase()}
-                          , {supervisor?.user_qual?.user?.rank?.abbreviation}
-                        </li>
-                      ))}
-                    </ul>
+{/*                     <ul className="list-disc list-inside"> */}
+{/*                       {supervisorData?.map((supervisor) => ( */}
+{/*                         <li key={supervisor.id}> */}
+{/*                           {supervisor?.user_qual?.user?.user_name?.toUpperCase()} */}
+{/*                           , {supervisor?.user_qual?.user?.rank?.abbreviation} */}
+{/*                         </li> */}
+{/*                       ))} */}
+{/*                     </ul> */}
                   </div>
                   <div className="flex  justify-center gap-2">
-                    <ul className="list-disc list-inside">
-                      <li>
-                        {data?.authorised_by?.user?.rank?.abbreviation}&nbsp;
-                        {data?.authorised_by?.user?.user_name?.toUpperCase()}
-                      </li>
-                    </ul>
+{/*                     <ul className="list-disc list-inside"> */}
+{/*                       <li> */}
+{/*                         {data?.authorised_by?.user?.rank?.abbreviation}&nbsp; */}
+{/*                         {data?.authorised_by?.user?.user_name?.toUpperCase()} */}
+{/*                       </li> */}
+{/*                     </ul> */}
                   </div>
                 </div>
               </div>
@@ -247,7 +254,7 @@ export default function USLogGridModal({
             </button>
           </motion.div>
 
-          {data.status_label === "OPEN" && (
+          {data.lim_def_removal_by === null && (
             <div className="flex flex-col items-center">
               <motion.div
                 whileTap={{ scale: 0.95 }}
@@ -257,7 +264,7 @@ export default function USLogGridModal({
                   className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 shadow-md rounded-lg hover:bg-green-700  shadow-lg transition"
                   onClick={() => handleAction(data)}
                 >
-                  WORK UNDERTAKEN
+                  CLEAR DEFERRED DEFECT
                   <CircleArrowRight className="w-8 h-7 " strokeWidth={2.5} />
                 </button>
               </motion.div>

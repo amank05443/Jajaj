@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import path
 from userprofile.views import (
     DynamicModelView, get_params, set_params,get_customers,data_for_headers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
-    user_details_for_authentication_one,check_passkey_authentication_right_side,user_authentication_for_trade,user_details_for_authentication_two,remove_user,
+    user_details_for_authentication_one,check_passkey_authentication_right_side,user_authentication_for_trade,user_details_for_authentication_two,remove_user,DeferredGridData,
     Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData,fetch_authenticated_data,forward_to_ato_for_authorisation,
     softwareLogData, check_passkey_authentication_right_side_limitation,get_partNumbers,
 )
@@ -63,6 +63,8 @@ urlpatterns = [
     #---------------------------------------------- Section 2  ---------------------------------------------------------#
     path('api/limGridData/<int:id>/', LimGridData.as_view(), name='LimGridData'),
 
+    # ---------------------------------------------- Section 3  ---------------------------------------------------------#
+    path('api/DeferredGridData/<int:id>/', DeferredGridData.as_view(), name='DeferredGridData'),
 
 
 

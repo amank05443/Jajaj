@@ -198,6 +198,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
     }
   }, [hasChildren, item.label, toggleExpand, open]);
 
+
   return (
     <div>
       <Tooltip title={!open ? item.label : ""} placement="right" arrow>

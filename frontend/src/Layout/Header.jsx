@@ -88,7 +88,7 @@ export default function Header({
   };
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-600 dark:via-gray-800 dark:to-gray-700
+      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-600 dark:via-gray-800 dark:to-gray-600
     backdrop-blur-xl border-b border-cyan-500/20 flex items-center px-4 z-30 shadow-2xl shadow-purple-500/10"
       initial={{ y: -56 }}
       animate={{ y: 0 }}
