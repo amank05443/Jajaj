@@ -505,7 +505,7 @@ export default function LimitationAuth({ snowId }) {
                                 }}
                                 className="border p-2  w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                               >
-                                <option value="">Select Name</option>
+                                <option value="">- -  Select Name - - </option>
                                 {row.availableUsers &&
                                   row.availableUsers.map((d) => (
                                     <option key={d.id} value={d.id}>
@@ -531,7 +531,7 @@ export default function LimitationAuth({ snowId }) {
                                     e.target.value,
                                   );
                                 }}
-                                placeholder="* signature pin *"
+                                placeholder="* 06 Digit Pin *"
                                 className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                               />
                               <button

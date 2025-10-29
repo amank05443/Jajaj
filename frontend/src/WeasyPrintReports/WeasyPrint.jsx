@@ -11,7 +11,8 @@ export const InstructionsButton = () => {
         window.open("./images/instructions of e700.pdf","_blank", "noopener", "noreferrer");
         };
     return (
-        <Button fontFamily="algerian"fontWeight="bold" color="black" variant="contained" onClick ={openPdf} className="bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white">Instructions for MOD Form 700C</Button>
+        <button fontFamily="algerian" variant="contained" onClick ={openPdf} className="flex items-center justify-center py-1 w-72 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md border border-green-500 dark:border-yellow-500 !backdrop-blur-lg">Instructions for MOD Form 700C</button>
         );
 }
 
@@ -20,7 +21,8 @@ export const BlankForm = () => {
         window.open("./images/Dornier e700.pdf","_blank", "noopener", "noreferrer");
         };
     return (
-        <Button fontFamily="algerian"fontWeight="bold" color="black" variant="contained" onClick ={openPdf} className="bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white">Blank MOD Form 700C</Button>
+        <button fontFamily="algerian" variant="contained" onClick ={openPdf} className="flex items-center justify-center py-1 w-60 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg">Blank MOD Form 700C</button>
 //         <Button fontFamily="algerian"fontWeight="bold"  variant="contained" onClick ={openPdf} className="bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition">Blank MOD Form 700C</button>
         );
 }
@@ -62,7 +64,8 @@ export const ModForm701 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 style={{textAlign:'left'}}
                 variant="contained"
                 onClick={handlePrint}
@@ -118,7 +121,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintSec5}
@@ -173,7 +177,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMod703B}
@@ -228,7 +233,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm712A}
@@ -283,7 +289,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm702}
@@ -338,7 +345,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm710}
@@ -392,7 +400,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm703}
@@ -447,7 +456,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm704}
@@ -505,7 +515,8 @@ export const ModForm707 = () => {
   };
   return (
           <div className="m-5">
-              <button fontFamily="algerian"fontWeight="bold" color="black" className="flex items-center justify-center py-1 w-44 rounded-md bg-gradient-to-r from-indigo-300 via-purple-400 to-sky-300 hover:bg-gray-300 text-white"
+              <button fontFamily="algerian" className="flex items-center justify-center py-1 w-44 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md  border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
                 variant="contained"
                 style={{textAlign:'left'}}
                 onClick={handlePrintMODForm704A}
