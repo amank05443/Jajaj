@@ -109,7 +109,8 @@ export default function Header({
                   {" "}
                   <Box display="flex" gap={3} flexWrap="wrap">
                     <Typography variant="h4" sx={{ color: "white" , fontWeight:"bold" }}>
-                      {data.aircraft_type?.aircraft_name} - {data.side_no}
+{/*                       {data.aircraft_type?.aircraft_name} - {data.side_no} */}
+                    DORNIER - 223
                     </Typography>
 
 {/*                     <Typography variant="subtitle4" sx={{ color: "white" }}> */}
