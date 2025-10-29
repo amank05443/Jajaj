@@ -80,13 +80,13 @@ const CompassLog = ({ compassData }) => {
   };
 
   return (
-    <div className="bg-gray-100 p-2 space-y-3">
-      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-14 mt-1 mb-1">
+    <div className="bg-gray-100 p-2 space-y-3 dark:from-black dark:via-black dark:to-black dark:text-white">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-black dark:via-black dark:to-black dark:text-gray-400  h-14 mt-1 mb-1">
         <h2
           className="font-bold"
           style={{
             textAlign: "center",
-            fontSize: "35px",
+            fontSize: "230%",
             fontFamily: "algerian",
           }}
         >
@@ -101,11 +101,11 @@ const CompassLog = ({ compassData }) => {
 {/*           </button> */}
 {/*         </div> */}
       </div>
-      <div className="grid grid-cols-3 gap-6 rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] ">
+      <div className="grid grid-cols-3 gap-6 rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-black dark:via-black dark:to-black dark:text-white">
         {data && (
           <table className="table-auto border-collapse border-gray-400 w-full text-center shadow-lg">
             <thead>
-              <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black">
+              <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
                 <th className="border border-gray-400 p-2" colSpan="2">
                   Compass Particular
                 </th>
@@ -116,13 +116,13 @@ const CompassLog = ({ compassData }) => {
                 <td className="border border-gray-400 p-2 font-semibold">
                   Type
                 </td>
-                <td className="border border-gray-400 p-2">
+                <td className="border border-gray-400 p-2 dark:from-black dark:via-black dark:to-black dark:text-white dark:font-bold">
                   <input
                     type="text"
                     value={form.compass_type}
                     name="compass_ser_no"
                     onChange={handleFormChange}
-                    className="border p-1 w-full"
+                    className="border p-1 w-full dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black dark:font-bold"
                   />
                 </td>
               </tr>
@@ -136,21 +136,21 @@ const CompassLog = ({ compassData }) => {
                     value={form.compass_ser_no}
                     name="compass_ser_no"
                     onChange={handleFormChange}
-                    className="border p-1 w-full"
+                    className="border p-1 w-full dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black dark:font-bold"
                   />
                 </td>
               </tr>
               <tr>
-                <td className="border border-gray-400 p-2 font-semibold">
+                <td className="border border-gray-400 p-2 font-semibold dark:from-black dark:via-black dark:to-black dark:text-white">
                   Position
                 </td>
-                <td className="border border-gray-400 p-2">
+                <td className="border border-gray-400 p-2 dark:from-black dark:via-black dark:to-black dark:text-yellow-500">
                   <input
                     type="text"
                     value={form.place}
                     name="place"
                     onChange={handleFormChange}
-                    className="border p-1 w-full"
+                    className="border p-1 w-full dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black dark:font-bold"
                   />
                 </td>
               </tr>
@@ -159,14 +159,14 @@ const CompassLog = ({ compassData }) => {
         )}
         <table className="table-auto border-collapse border-gray-400 w-full text-center shadow-lg">
           <thead>
-            <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black">
+            <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
               <th className="border border-gray-400 p-2" colSpan="4">
                 Deviation Record
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-gradient-to-r from-orange-300 via-cyan-100 to-indigo-300 font-bold text-black">
+            <tr className="bg-gradient-to-r from-orange-300 via-cyan-100 to-indigo-300 font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
               <td colSpan="4" className="border border-gray-400 font-semibold">
                 {" "}
                 Before Correction{" "}
@@ -185,7 +185,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.actual_north}
                   name="actual_north"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
                 {errors.actual_north && (
                   <span className="text-red-500">{errors.actual_north}</span>
@@ -197,7 +197,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.actual_east}
                   name="actual_east"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -206,7 +206,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.actual_south}
                   name="actual_south"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -215,11 +215,11 @@ const CompassLog = ({ compassData }) => {
                   value={form.actual_west}
                   name="actual_west"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
             </tr>
-            <tr className="bg-gradient-to-r from-orange-300 via-cyan-100 to-indigo-300 font-bold text-black">
+            <tr className="bg-gradient-to-r from-orange-300 via-cyan-100 to-indigo-300 font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
               <td colSpan="4" className="border border-gray-400 font-semibold">
                 {" "}
                 After Correction{" "}
@@ -238,7 +238,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_north}
                   name="a_c_north"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -247,7 +247,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_north_east}
                   name="a_c_north_east"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -256,7 +256,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_east}
                   name="a_c_east"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -265,7 +265,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_south_east}
                   name="a_c_south_east"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
             </tr>
@@ -282,7 +282,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_south}
                   name="a_c_south"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -291,7 +291,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_south_west}
                   name="a_c_south_west"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -300,7 +300,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_west}
                   name="a_c_west"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
               <td className="border p-2">
@@ -309,7 +309,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.a_c_north_west}
                   name="a_c_north_west"
                   onChange={handleFormChange}
-                  className="w-14 border p-1"
+                  className="w-14 border p-1 dark:bg-black"
                 />
               </td>
             </tr>
@@ -317,7 +317,7 @@ const CompassLog = ({ compassData }) => {
         </table>
         <table className="table-auto border-collapse border-gray-400 w-full text-center shadow-lg">
           <thead>
-            <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black">
+            <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
               <th className="border border-gray-400 p-2" colSpan="2">
                 Coeff & Corrector Currents
               </th>
@@ -332,7 +332,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.coeff_a}
                   name="coeff_a"
                   onChange={handleFormChange}
-                  className="border p-1 w-full"
+                  className="border p-1 w-full dark:bg-black"
                 />
               </td>
             </tr>
@@ -344,7 +344,7 @@ const CompassLog = ({ compassData }) => {
                   value={form.coeff_b}
                   name="coeff_b"
                   onChange={handleFormChange}
-                  className="border p-1 w-full"
+                  className="border p-1 w-full dark:bg-black"
                 />
               </td>
             </tr>
@@ -356,15 +356,15 @@ const CompassLog = ({ compassData }) => {
                   value={form.coeff_c}
                   name="coeff_c"
                   onChange={handleFormChange}
-                  className="border p-1 w-full"
+                  className="border p-1 w-full dark:bg-black"
                 />{" "}
               </td>
             </tr>
           </tbody>
         </table>
-        <div className="text-gray-800 font-semibold text-lg">
+        <div className="w-[180%] text-gray-800 font-semibold text-lg dark:from-black dark:via-black dark:to-black dark:text-white">
             <div className="flex items-center mb-4">
-            <label className="w-32 font-bold text-black">Remarks:</label>
+            <label className="w-32 font-bold text-black block ml-[24px] dark:text-white">Remarks:</label>
             <textarea
               type="text"
               name="Remarks"
@@ -372,7 +372,7 @@ const CompassLog = ({ compassData }) => {
 //               onChange={handleChange}
               rows={1}
               placeholder="Enter Remarks"
-              className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+              className="flex-2 border border-gray-300 rounded px-3 py-2 w-full h-12 resize-none focus:outline-none focus:ring focus:ring-blue-300 dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black"
             />
           </div>
 {/*           <button */}
