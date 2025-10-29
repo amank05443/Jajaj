@@ -8,12 +8,10 @@ from ..serializers import (ChangeOfServiceabilityLogsSerializer, LimDefrDefLogsS
 from ..models import (ChangeOfServiceabilityLogs, LimDefrDefHusLogs)
 
 
-class LimGridData(generics.ListCreateAPIView):
+class DeferredGridData(generics.ListCreateAPIView):
     serializer_class = LimDefrDefLogsSerializer
 
     def get_queryset(self):
         aircraft_master_id = self.kwargs.get('id')
         return (LimDefrDefHusLogs.objects.select_related("change_of_serviceability_log", "item").filter(
-            change_of_serviceability_log__aircraft_master_id=aircraft_master_id,  limitations_yn="Y").order_by('-change_of_serviceability_log__snow'))
-
-
+            change_of_serviceability_log__aircraft_master_id=aircraft_master_id, deferred_defects_yn="Y").order_by('-change_of_serviceability_log__snow'))

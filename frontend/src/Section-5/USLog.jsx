@@ -20,11 +20,13 @@ import {
   AlertTriangle,
   CircleCheckBig,
   Eye,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import USLogGridModal from "./USLogGridModal";
+import HighlightSearchedText from "../Utils/GridComponent/HighlightSearchedText";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useAlert } from "../Utils/Alerts/AlertContext";
@@ -42,6 +44,9 @@ export default function USLog() {
   const [dataLoading, setDataLoading] = useState(false);
   const [allEntryHidden, SetAllEntryHidden] = useState(false);
   const [openHidden, SetOpenHidden] = useState(true);
+   const [searchText, setSearchText] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [columnFilterName, setColumnFilterName] = useState("snow");
   const { showAlert } = useAlert();
 
   useEffect(() => {
@@ -68,6 +73,13 @@ export default function USLog() {
   //  <---Data is filtering here to show as per requirements of ALL ENTRY and OPEN ENTRY buttons--->
   const filteredRows =
     filter === "all" ? rows : rows.filter((row) => row.status_label === "OPEN");
+
+      //  <---Data is further filtering here to show as per requirements with SEARCH --->
+     const filteredParticularColumn = filteredRows.filter((row) =>
+    row?.[columnFilterName]
+      .toLowerCase()
+      .includes(searchText.toLowerCase()),
+  );
 
   // <---All open entries are filtering here to get the total counts --->
   const openEntries = useMemo(() => {
@@ -118,22 +130,29 @@ export default function USLog() {
     navigate("/clearUsLog", { state: data });
     console.log(data);
   };
+   const handleOpenSearch = () => {
+    setSearchOpen(searchOpen => !searchOpen);
+  };
+  const handelToggleSearchFilter=(data)=>{
+      setColumnFilterName(data);
+      setSearchText("");
+      }
 
   return (
     <div className="bg-gray-100 min-h-screen items-center justify-center">
-      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md ">
+      <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-gray-700 dark:via-gray-700 dark:to-gray-700 dark:text-white  h-[4.68vw] p-[0.29vw] m-[0.29vw] ml-[0.59vw] mr-[0.59vw] shadow-md ">
         <h2
           className=" absolute text-md font-bold"
           style={{
             position: "absolute",
             left: "50%",
             transform: "translateX(-50%)",
-            fontSize: "35px",
+            fontSize: "2.56vw",
             margin: 0,
             fontFamily: "algerian",
           }}
         >
-          Change of Serviceability Log
+        CHANGE OF SERVICEABILITY LOG
         </h2>
       </div>
       {/*       <---Button for New Entry---> */}
@@ -142,21 +161,95 @@ export default function USLog() {
           display: "flex",
           justifyContent: "space-between",
           width: "100%",
-          padding: "16px",
+          padding: "1.17vw",
         }}
       >
+       <div className="flex gap-[0.88vw] ">
         <motion.div
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <button
-            className="flex items-center gap-2 font-bold bg-blue-500 text-white shadow-md px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center gap-[0.59vw] font-bold bg-blue-500  text-white dark:bg-black  dark:hover:bg-gray-700  dark:text-yellow-300 shadow-md px-[1.17vw] py-[0.59vw] rounded-lg hover:bg-blue-700 transition"
             onClick={() => navigate("/usLogForm")}
           >
-            <PlusSquare className="w-5 h-5" strokeWidth={3} />
+            <PlusSquare className="w-[1.46vw]" strokeWidth={3} />
             New Entry
           </button>
         </motion.div>
+         <motion.div
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <button
+            className="flex items-center gap-[0.59vw] text-[1.17vw] font-bold bg-green-600 dark:bg-black  dark:hover:bg-gray-700 shadow-lg text-white dark:text-yellow-300 px-[1.17vw] py-[0.59vw] shadow-md rounded-lg hover:bg-green-700 transition"
+            onClick={handleOpenSearch}
+          >
+            <Search className="w-[1.46vw] " strokeWidth={3} />
+
+          </button>
+        </motion.div>
+        {searchOpen && (
+              <div className="flex ml-[1.17vw]  gap-[0.88vw] ">
+{/*                   button */}
+             <button
+            className={`flex items-center gap-[0.59vw] font-bold  text-white px-[1.17vw] py-[0.59vw] shadow-md rounded-lg text-[1.17vw]
+            transition ${columnFilterName ==="snow" ? "bg-gradient-to-r from-indigo-600 to-purple-500 shadow-lg  scale-110 dark:from-black dark:to-black dark:text-yellow-300 " :"bg-gray-500 text-gray-700 hover:shadow-md" }`}
+            onClick={()=> handelToggleSearchFilter("snow") }
+          >
+          SNOW
+
+          </button>
+            <button
+            className={`flex items-center gap-[0.59vw] font-bold  text-white px-[1.17vw] py-[0.59vw] shadow-md rounded-lg text-[1.17vw]
+            transition ${columnFilterName ==="reason_for_placing_unserviceable" ? "bg-gradient-to-r from-orange-500 to-red-500  shadow-lg  scale-110 dark:from-black dark:to-black dark:text-yellow-300 " :"bg-gray-500 text-gray-700 hover:shadow-md" }`}
+                onClick={()=> handelToggleSearchFilter("reason_for_placing_unserviceable")}
+          >
+
+            DEFECT
+
+          </button>
+
+{/*                 <TextField */}
+{/*                   label="Search Here..." */}
+{/*                   variant="outlined" */}
+{/*                   size="small" */}
+{/*                   fullWidth */}
+{/* //                   sx={{ mb: 2 }} */}
+{/*                   value={searchText} */}
+{/*                   onChange={(e) => setSearchText(e.target.value)} */}
+{/* //                   InputProps ={{ */}
+{/* //                       endAdornment:<InputAdornment position="end"> */}
+{/* //                           <IconButton */}
+{/* //                             size="small" */}
+{/* //                             onclick={handleOpenSearch} */}
+{/* //                             edge="end"> */}
+{/* //                             <ClearIcon/> */}
+{/* //                             </IconButton> */}
+{/* //                             </InputAdornment> */}
+{/* // */}
+{/* //                         }} */}
+{/*                 /> */}
+                <div className="relative flex items-center  ">
+
+                <input
+                type="text"
+                value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder={columnFilterName === "reason_for_placing_unserviceable" ? "Search Defect Here..." : `Search SNOW Here...`}
+                  className="w-full h-full px-[1.17vw] text-lg border-2 border-gray-200 rounded-xl
+                  focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition all"/>
+               <button
+                  onClick={()=>{
+                       setSearchText("");}}
+                    className=" absolute  right-[0.59vw] text-[1.17vw] p-[0.29vw] bg-gray-400 rounded-full hover:bg-red-700 transition">
+                     <X className="w-[0.88vw] h-[0.88vw] text-white" strokeWidth={5} />
+                         </button>
+                          </div>
+
+               </div>
+            )}
+        </div>
         <Box
           sx={{
             display: "flex",
@@ -169,10 +262,10 @@ export default function USLog() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <button
-              className="flex items-center gap-2 font-bold bg-blue-500 text-white px-4 py-2 shadow-md rounded-lg hover:bg-blue-700 transition"
+              className="flex items-center gap-[0.59vw] font-bold bg-blue-500   text-white dark:bg-black  dark:hover:bg-gray-700  dark:text-yellow-300 px-[1.17vw] py-[0.59vw] shadow-md rounded-lg hover:bg-blue-700 transition"
               onClick={() => setFilter("all")}
             >
-              <List className="w-5 h-5" strokeWidth={3} />
+              <List className="w-[1.46vw] " strokeWidth={3} />
               All Entry
             </button>
           </motion.div>
@@ -184,16 +277,16 @@ export default function USLog() {
             <Badge
               badgeContent={openEntries.length}
               sx={{
-                "& .MuiBadge-badge": {
-                  height: "28px",
-                  borderRadius: "50%",
-                  minWidth: "28px",
-                  fontSize: "1rem",
-                  color: "white",
-                  backgroundColor: "#ef4444",
-                  boxShadow: "0 0 10px 3px #ffffff",
-                  //                 animation:"glow 1.5s ease-in-out infinite alternate",
-                },
+              "& .MuiBadge-badge": {
+                height: "2.05vw",
+                borderRadius: "50%",
+                minWidth: "2.05vw",
+                fontSize: "1.17vw",
+                color: "white",
+                backgroundColor: "#ef4444",
+                boxShadow: "0 0 0.73vw 0.22vw #ffffff",
+                //                 animation:"glow 1.5s ease-in-out infinite alternate",
+              },
                 //           "@keyframes glow":{
                 //               from:{
                 //                    boxShadow:"0 0 5px 2px #ffffff",},
@@ -202,10 +295,10 @@ export default function USLog() {
               }}
             >
               <button
-                className="flex items-center gap-2 font-bold bg-red-500 text-white px-4 py-2 shadow-md rounded-lg hover:bg-red-700 transition"
+                className="flex items-center gap-[0.59vw] font-bold bg-red-500   text-white dark:bg-black  dark:hover:bg-gray-700  dark:text-yellow-300 px-[1.17vw] py-[0.59vw] shadow-md rounded-lg hover:bg-red-700 transition"
                 onClick={() => setFilter("openOnly")}
               >
-                <FolderOpen className="w-5 h-5" strokeWidth={3} />
+                <FolderOpen className="w-[1.46vw]" strokeWidth={3} />
                 Open Entry
               </button>
             </Badge>
@@ -215,10 +308,10 @@ export default function USLog() {
       {/* <---Starting of the Grid---> */}
       <Card className="shadow-lg rounded-xl ">
         <CardContent className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0]  ">
-          <div style={{ height: 420, width: "100%" }}>
+           <div style={{ height: "30.74vw", width: "100%" }}>
             <DataGrid
               loading={dataLoading}
-              rows={filteredRows}
+              rows={filteredParticularColumn}
               getRowHeight={()=>"auto"}
               columns={[
                 {
@@ -227,6 +320,13 @@ export default function USLog() {
                   flex: 1,
                   headerAlign: "center",
                   align: "center",
+                  renderCell: (rowData) =>{
+                   const value = rowData.row?.snow || "N/A";
+                   return HighlightSearchedText(value,searchText);
+                   }
+
+
+
                 },
                 {
                   field: "occasion",
@@ -248,6 +348,11 @@ export default function USLog() {
                   align: "center",
                   disableColumnMenu: true,
                   sortable: false,
+                  renderCell: (rowData) => {
+                          const value =  rowData.row?.reason_for_placing_unserviceable || "N/A";
+                   return HighlightSearchedText(value,searchText);
+                   }
+
                 },
 
                 {
@@ -257,13 +362,13 @@ export default function USLog() {
                   headerAlign: "center",
                   align: "center",
                   disableColumnMenu: true,
-                  sortable: false,
+                  sortable: true,
                   renderCell: (rowData) => (
                     <span
                       style={{
                         color:
                           rowData.value === "CLOSED"
-                            ? "green"
+                            ?  "#3bb143"
                             : rowData.value === "OPEN"
                               ? "red"
                               : "inherit",
@@ -290,10 +395,16 @@ export default function USLog() {
                       >
                         <Button
                           variant="contained"
-                          sx={{
-                            backgroundColor: "#3b82f6",
-                            color: "white",
+                         sx={{
+
+                             backgroundColor: (theme)=>
+                  theme.palette.mode === "dark" ? "#ffffff" : "#3b82f6",
+
+                             color: (theme)=>
+                  theme.palette.mode === "dark" ? "#000000" : "white",
                             fontWeight: "bold",
+                             border:(theme)=>
+                  theme.palette.mode === "dark" ? "1px solid yellow" : "",
                           }}
                           size="small"
                           onClick={() => handleOpenModel(rowData.row)}
@@ -310,13 +421,16 @@ export default function USLog() {
               disableColumnSelector
               sx={{
                 border: 0,
-                backgroundColor: "#F9FAFB ",
+                backgroundColor: (theme)=>
+                  theme.palette.mode === "dark" ? "#3f3f3f" : "#F9FAFB",
                 "& .MuiDataGrid-columnHeader": {
-                  backgroundColor: "#352A87",
+                   backgroundColor: (theme)=>
+                  theme.palette.mode === "dark" ? "black" : "#352A87",
                   color: "#FFFFFF",
                   fontWeight: "bold",
-                  fontSize: "1.2 rem",
-                  border: "1px solid #708238",
+                  fontSize: "1.1vw",
+                   border:(theme)=>
+                  theme.palette.mode === "dark" ? "0.073vw solid #ffffff" : "0.073vw solid #708238",
                 },
                 "& .MuiDataGrid-columnHeaderTitle": {
                   fontWeight: "bold",
@@ -324,18 +438,23 @@ export default function USLog() {
 
                 "& .MuiDataGrid-cell": {
                   //  backgroundColor: "cream",
-                  fontSize: "1 rem ",
-                  padding: "12px",
-                  border: "1px solid #708238",
+                  fontSize: "1vw ",
+                  padding: "0.88vw",
+                   border:(theme)=>
+                  theme.palette.mode === "dark" ? "1px solid #ffffff" : "0.1vw solid #708238",
+                  color: (theme)=>
+                  theme.palette.mode === "dark" ? "#ffffff" : "#000000",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 },
                 "& .MuiDataGrid-row:hover": {
-                  backgroundColor: "#F0F7FE ",
+                   backgroundColor: (theme)=>
+                  theme.palette.mode === "dark" ? "gray" : "#F0F7FE ",
                 },
                 "& .MuiDataGrid-footerContainer": {
-                  backgroundColor: "#EDE9FE ",
+                 backgroundColor: (theme)=>
+                  theme.palette.mode === "dark" ? "white" : "#EDE9FE ",
                 },
                 "& .MuiDataGrid-columnSeparator": {
                   display: "none",

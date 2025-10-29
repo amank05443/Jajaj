@@ -222,7 +222,7 @@ export default function DashboardExp() {
                               />
                               <Link
                                 to="/usLog"
-                                className="  hover:text-green-300 hover:underline decoration-pink-100 transition-colors hover:scale-105"
+                                className="  hover:text-green-300 underline decoration-pink-100 transition-colors hover:scale-105"
                               >
                                 Change of Serviceability Log
                               </Link>
@@ -235,7 +235,7 @@ export default function DashboardExp() {
                               />
                               <Link
                                 to="/limitationLog"
-                                className=" hover:text-green-300 hover:underline decoration-pink-100 transition-colors hover:scale-105"
+                                className=" hover:text-green-300 underline decoration-pink-100 transition-colors hover:scale-105"
                               >
                                 Limitation Log
                               </Link>
@@ -246,7 +246,11 @@ export default function DashboardExp() {
                                 className="w-[2vw] h-[2vw] text-yellow-300 dark:text-white"
                                 strokeWidth={2}
                               />
-                              Deferred Defect
+                             <Link
+                                to="/deferredDefectLog1"
+                                className="  hover:text-green-300 underline decoration-pink-100 transition-colors hover:scale-105"
+                              > Deferred Defect
+                              </Link>
                             </li>
 
                             <li className="flex items-center gap-[1.2vw]">
