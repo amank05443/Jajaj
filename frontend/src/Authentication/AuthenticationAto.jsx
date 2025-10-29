@@ -4,6 +4,8 @@ import Cookies from "js-cookie";
 import { Eye, EyeOff } from "lucide-react";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
+import Select3 from "../Utils/CustomComponents/Select3";
+import { useForm, Controller, FormProvider } from "react-hook-form";
 export default function AtoOnly({ auth }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
@@ -30,6 +32,14 @@ export default function AtoOnly({ auth }) {
       document.body.style.overflow = "auto";
     }
   }, [open]);
+   const methods = useForm({
+    defaultValues: {},
+    mode: "onChange", //Validate on every blur
+  });
+  const { control, setError, clearErrors, formState, watch } = methods;
+  const handleChangeByWhom = (field, value) => {
+    setFormData({...formData, [field]: value});
+  };
   useEffect(() => {
     const aircraft_type_id = params.aircraft_type_id;
     const qualificationValue = formData.qualification ? '': "ATO";
@@ -43,7 +53,11 @@ export default function AtoOnly({ auth }) {
           },
         })
         .then((response) => {
-          setData(response.data);
+          const formatted = response.data.map((item) => ({
+            ...item,
+            display: `${item.pno || ""}, ${item.user_name || ""}, ${item.abbreviation || ""}`,
+          }));
+          setData(formatted);
           setFormData({qualification: qualificationValue});
           console.log("User (ATO) data found :");
           console.log(response.data);
@@ -149,20 +163,26 @@ export default function AtoOnly({ auth }) {
                       <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
                         Authorised by ATO
                       </label>
-                      <select
-                        name="byWhom"
-                        value={formData.byWhom}
-                        onChange={handleChange}
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                      >
-                        <option value="">- -  Select Name - - </option>
-                        {data &&
-                          data?.map((d) => (
-                            <option key={d.id} value={d.id}>
-                              {d.pno}, {d.user_name}, {d.abbreviation}
-                            </option>
-                          ))}
-                      </select>
+                      {data && (
+                        <Controller
+                          name="byWhom"
+                          control={control}
+                          render={({ field }) => (
+                            <div>
+                              <Select3
+                                items={data}
+                                placeholder="- - Select Name - -"
+                                value={formData.byWhom}
+                                onChange={(value) => {
+                                  handleChangeByWhom("byWhom", value);
+                                }}
+                                valueKey="id"
+                                displayKey="display"
+                              />
+                            </div>
+                          )}
+                        />
+                      )}
                     </div>
                     <div>
                       <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
@@ -173,7 +193,7 @@ export default function AtoOnly({ auth }) {
                         name="passkey"
                         value={formData.passkey}
                         onChange={handleChange}
-                        placeholder="******"
+                        placeholder="* 06 Digit Pin *"
                         className="border p-1  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       />
                       <button

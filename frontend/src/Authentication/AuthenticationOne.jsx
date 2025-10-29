@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Eye, EyeOff } from "lucide-react";
+import Select3 from "../Utils/CustomComponents/Select3";
+import { useForm, Controller, FormProvider } from "react-hook-form";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
 export default function AllUsers({ auth }) {
@@ -30,21 +32,32 @@ export default function AllUsers({ auth }) {
       document.body.style.overflow = "auto";
     }
   }, [open]);
+  const methods = useForm({
+    defaultValues: {},
+    mode: "onChange", //Validate on every blur
+  });
+  const { control, setError, clearErrors, formState, watch } = methods;
   useEffect(() => {
     if (open && !loading) {
       const aircraft_type_id = params.aircraft_type_id;
       axios
         .get(`/api/userDetailsForAuthenticationAllUsers/${aircraft_type_id}`)
         .then((response) => {
-          setData(response.data);
-          console.log("User data found :");
-          console.log(response.data);
+          const formatted = response.data.map((item) => ({
+            ...item,
+            display: `${item.pno || ""}, ${item.user_name || ""}, ${item.abbreviation || ""}`,
+          }));
+          setData(formatted);
         })
         .catch((error) => {
           console.error("Bluunder:", error);
         });
     }
   }, [open]);
+
+  const handleChangeByWhom = (field, value) => {
+    setFormData({...formData, [field]: value});
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateAll) return;
@@ -129,27 +142,52 @@ export default function AllUsers({ auth }) {
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
                 <form className=" p-1 space-y-4 ">
-                  <div className="grid md:grid-cols-2 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
+                  <div className="grid md:grid-cols-5 sm:grid-cols-2 gap-4">
+                    <div className="col-span-3">
+                        <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
                         By Whom
                       </label>
-                      <select
-                        name="byWhom"
-                        value={formData.byWhom}
-                        onChange={handleChange}
-                        className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
-                      >
-                        <option value="">Select Name</option>
-                        {data &&
-                          data?.map((d) => (
-                            <option key={d.id} value={d.id}>
-                              {d.pno}, {d.user_name}, {d.abbreviation}
-                            </option>
-                          ))}
-                      </select>
+                      {data && (
+                        <Controller
+                          name="byWhom"
+                          control={control}
+                          render={({ field }) => (
+                            <div>
+                              <Select3
+                                items={data}
+                                placeholder="- - Select Name - -"
+                                value={formData.byWhom}
+                                onChange={(value) => {
+                                  handleChangeByWhom("byWhom", value);
+                                }}
+                                valueKey="id"
+                                displayKey="display"
+                              />
+                            </div>
+                          )}
+                        />
+                      )}
                     </div>
-                    <div>
+{/*                     <div> */}
+{/*                       <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+{/*                         By Whom */}
+{/*                       </label> */}
+{/*                       <select */}
+{/*                         name="byWhom" */}
+{/*                         value={formData.byWhom} */}
+{/*                         onChange={handleChange} */}
+{/*                         className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500" */}
+{/*                       > */}
+{/*                         <option value="">- - Select Name - - </option> */}
+{/*                         {data && */}
+{/*                           data?.map((d) => ( */}
+{/*                             <option key={d.id} value={d.id}> */}
+{/*                               {d.pno}, {d.user_name}, {d.abbreviation} */}
+{/*                             </option> */}
+{/*                           ))} */}
+{/*                       </select> */}
+{/*                     </div> */}
+                    <div className="col-span-2">
                       <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
                         Signature Pin
                       </label>
@@ -158,7 +196,7 @@ export default function AllUsers({ auth }) {
                         name="passkey"
                         value={formData.passkey}
                         onChange={handleChange}
-                        placeholder="******"
+                        placeholder="* 06 Digit Pin *"
                         className="border p-1  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
                       />
                       <button
