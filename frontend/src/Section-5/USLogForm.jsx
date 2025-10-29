@@ -108,7 +108,7 @@ const USLogForm = () => {
     setFormData((prev) => ({
       ...prev,
       authenticated: authenticated,
-      user_id: user_id,
+      user_qual_id: user_qual_id,
       user_name: user_name,
     }));
     setIsAuthenticated(true);
@@ -174,30 +174,7 @@ const USLogForm = () => {
                         >
                                 CHANGE OF SERVICEABILITY LOG
                         </h1>
-    <div
-      className={`min-h-screen transition-all duration-500 ${
-        darkMode
-          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white"
-          : "bg-gradient-to-br from-blue-400 via-white-600 to-indigo-600 text-black"
-      } p-8`}
-    >
-      {/*             <div className="flex justify-between items-start mb-8"> */}
-      <div
-        className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
-          darkMode
-            ? "bg-gray-800/60 border border-gray-600 text-gray-100"
-            : "bg-white/20 border border-gray-200 text-gray-900"
-        }`}
-      >
-        {/*                         <div> */}
-        <div className="flex items-center justify-center mb-6 relative">
-          <h1
-            className={`text-4xl text-center font-extrabold tracking-wide ${
-              darkMode ? "text-white" : "text-black"
-            }`}
-          >
-            CHANGE OF SERVICEABILITY LOG
-          </h1>
+
 
           <button
             onClick={toggleTheme}
