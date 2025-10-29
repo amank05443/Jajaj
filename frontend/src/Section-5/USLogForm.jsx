@@ -152,12 +152,7 @@ const USLogForm = () => {
 
   return (
 
-      <div className={`min-h-screen transition-all duration-500 ${
-           darkMode
-           ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white"
-          : "bg-gray-100 min-h-screen items-center justify-center "
-           } p-8` }
-         >
+      <div className="bg-gray-100 min-h-screen items-center justify-center">
 
 {/*             <div className="flex justify-between items-start mb-8"> */}
                 <div className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
@@ -168,25 +163,32 @@ const USLogForm = () => {
                 >
 {/*                         <div> */}
                             <div className="flex items-center justify-center mb-6 relative">
-                        <h1 className={`absolute text-md font-bold text-4xl text-center font-extrabold tracking-wide ${
-                            darkMode ? "text-white" : "text-black"
-                            }`}
-                        >
+                       <h2
+          className=" absolute  font-bold"
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontSize: "2.56vw",
+            margin: 0,
+            fontFamily: "algerian",
+          }}
+        >
                                 CHANGE OF SERVICEABILITY LOG
-                        </h1>
+                        </h2>
 
 
-          <button
-            onClick={toggleTheme}
-            className={`absolute right-0 flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${
-              darkMode ? "bg-gray-800" : "bg-gray-300"
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transform-transform duration-3500
-                        ${darkMode ? " translate-x-5" : "translate-x-0.5"}`}
-            />
-          </button>
+{/*           <button */}
+{/*             onClick={toggleTheme} */}
+{/*             className={`absolute right-0 flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${ */}
+{/*               darkMode ? "bg-gray-800" : "bg-gray-300" */}
+{/*             }`} */}
+{/*           > */}
+{/*             <span */}
+{/*               className={`inline-block h-4 w-4 transform rounded-full bg-white transform-transform duration-3500 */}
+{/*                         ${darkMode ? " translate-x-5" : "translate-x-0.5"}`} */}
+{/*             /> */}
+{/*           </button> */}
         </div>
 
                                 <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform">
