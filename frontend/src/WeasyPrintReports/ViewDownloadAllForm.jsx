@@ -16,7 +16,7 @@ const PrintReport = () => {
 {/*       <Typography style={{textAlign:'center'}} fontSize="35px" fontFamily="algerian"fontWeight="bold" color="black" gutterBottom> */}
 {/*        📑 Download MOD Form 700C */}
 {/*       </Typography> */}
-       <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md ">
+       <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] text-black dark:text-white dark:from-gray-600 dark:via-gray-500 dark:to-gray-500 h-16 p-1 m-1 ml-2 mr-2 shadow-md ">
         <h2
           className=" absolute text-md font-bold"
           style={{
@@ -40,56 +40,56 @@ const PrintReport = () => {
 {/*       <div style={{textAlign:'left'}} variant="h4" fontWeight="bold" color="primary" gutterBottom> */}
 {/*           <span style={{textAlign:'left'}}> <InstructionsButton />  </span> <span style={{textAlign:'right'}} ><BlankForm /> </span> */}
 {/*       </div> */}
-        <div className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] ">
-      <div className ="flex items-center gap-3 p-1 border rounded-1g shadow-sm ">
+        <div className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] text-black dark:text-white dark:from-gray-600 dark:via-gray-500 dark:to-gray-500">
+      <div className ="flex items-center gap-3 p-1 rounded-2xl shadow-sm ">
           <div className="m-5">
-              <Typography style={{textAlign:'left'}}  fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Section 1</Typography>
+              <Typography style={{textAlign:'left'}}  fontFamily="algerian"fontWeight="bold" gutterBottom>Section 1</Typography>
           </div>
           <div>
               <ModForm701 />
           </div>
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Leading Particulars</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" gutterBottom>Leading Particulars</Typography>
           </div>
       </div>
 
       <div className ="flex items-center gap-3 p-1 border rounded-1g shadow-sm">
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Section 2</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" gutterBottom>Section 2</Typography>
           </div>
           <div>
               <ModForm703/><ModForm703B/>
           </div>
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Limitations Log </Typography>
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Operational Flight Program Log/ Onboard Software Log  </Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Limitations Log </Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Operational Flight Program Log/ Onboard Software Log  </Typography>
 
           </div>
       </div>
 
       <div className ="flex items-center gap-3 p-1 border rounded-1g shadow-sm">
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Section 3</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Section 3</Typography>
           </div>
           <div>
               <ModForm704/><ModForm704A/>
           </div>
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Acceptable Deferred Defects Log</Typography>
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Acceptable Husbandry Deferred Defects Log </Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Acceptable Deferred Defects Log</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Acceptable Husbandry Deferred Defects Log </Typography>
 
           </div>
       </div>
 
       <div className ="flex items-center gap-3 p-1 border rounded-1g shadow-sm">
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Section 5</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Section 5</Typography>
           </div>
           <div>
               <ModForm707/>
           </div>
           <div className="m-5">
-              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold" color="black" gutterBottom>Change of Serviceability Log</Typography>
+              <Typography style={{textAlign:'left'}} fontFamily="algerian"fontWeight="bold"   gutterBottom>Change of Serviceability Log</Typography>
 
           </div>
       </div>
