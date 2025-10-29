@@ -20,6 +20,8 @@ const USLogForm = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [limLogData, setLimLogData] = useState({});
   const [darkMode, setDarkMode] = useState(false);
+  const [defectCodeOptions, setDefectCodeOptions] = useState([]);
+  const [defectCode, setDefectCode] = useState("");
 
   const toggleTheme = () => {
     setDarkMode((prev) => !prev);
@@ -84,6 +86,7 @@ const USLogForm = () => {
         setHowFoundOptions(data.data.howFoundDefects);
         setEntryTypeOptions(data.data.entryTypes);
         setAircraftMaster(data.data.aircraftMasters);
+
         setFormData((prev) => ({
           ...prev,
           ["airframeHrs"]: data.data.aircraftMasters.airframe_hrs,
@@ -95,6 +98,9 @@ const USLogForm = () => {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+       console.log("amruth"+formData.entry_type+formData.entryType)
+       }, [formData]);
 
   //for handling authentication data
   const handleDataFromAllUsers = (data) => {
@@ -116,7 +122,6 @@ const USLogForm = () => {
       limLogData: limLogData,
       activeCheckboxes: activeCheckboxes,
     };
-//         console.log("payload",payload);
     if (validateAll()) {
       try {
         const res = await fetch("/api/saveUsLogData/", {
@@ -146,30 +151,30 @@ const USLogForm = () => {
   }
 
   return (
-    <div
-      className={`min-h-screen transition-all duration-500 ${
-        darkMode
-          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white"
-          : "bg-gradient-to-br from-blue-400 via-white-600 to-indigo-600 text-black"
-      } p-8`}
-    >
-      {/*             <div className="flex justify-between items-start mb-8"> */}
-      <div
-        className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
-          darkMode
-            ? "bg-gray-800/60 border border-gray-600 text-gray-100"
-            : "bg-white/20 border border-gray-200 text-gray-900"
-        }`}
-      >
-        {/*                         <div> */}
-        <div className="flex items-center justify-center mb-6 relative">
-          <h1
-            className={`text-4xl text-center font-extrabold tracking-wide ${
-              darkMode ? "text-white" : "text-black"
-            }`}
-          >
-            CHANGE OF SERVICEABILITY LOG
-          </h1>
+
+      <div className={`min-h-screen transition-all duration-500 ${
+           darkMode
+           ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white"
+          : "bg-gray-100 min-h-screen items-center justify-center "
+           } p-8` }
+         >
+
+{/*             <div className="flex justify-between items-start mb-8"> */}
+                <div className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
+                    darkMode
+                    ? "bg-gray-800/60 border border-gray-600 text-gray-100"
+                    : "rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md"
+                    }`}
+                >
+{/*                         <div> */}
+                            <div className="flex items-center justify-center mb-6 relative">
+                        <h1 className={`absolute text-md font-bold text-4xl text-center font-extrabold tracking-wide ${
+                            darkMode ? "text-white" : "text-black"
+                            }`}
+                        >
+                                CHANGE OF SERVICEABILITY LOG
+                        </h1>
+
 
           <button
             onClick={toggleTheme}
@@ -184,28 +189,21 @@ const USLogForm = () => {
           </button>
         </div>
 
-        <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform hover:scale-[1.50]">
-          <h2 className="text-xl font-extrabold text-gray-800 border-b-2 border-b-2 border-indigo-500 pb-2 mb-4">
-            Previous Entry
-          </h2>
-          <div className="font justify-between">
-            <span className="font-semibold">Previous SNOW:</span>
-            <span className="font-semibold">Previous SNOW</span>
-          </div>
-          <div className="font justify-between">
-            <span className="font-semibold">Previous Entry Type:</span>
-          </div>
-          <div className="font justify-between">
-            <span className="font-semibold">Previous How Found:</span>
-          </div>
-          <div className="font justify-between">
-            <span className="font-semibold">Previous Airframe Hours:</span>
-          </div>
-          <div className="font justify-between">
-            <span className="font-semibold">Previous Reason:</span>
-          </div>
-        </div>
-      </div>
+                                <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform">
+                                    <h2 className="text-xl font-extrabold text-gray-800 border-b-2 border-b-2 border-indigo-500 pb-2 mb-4">
+                                        SNOW Details
+                                    </h2>
+                                                <div className="font justify-between">
+                                                    <span className="font-semibold">Previous SNOW:</span>
+                                                </div>
+                                                <div className="font justify-between">
+                                                    <span className="font-semibold">Current SNOW:</span>
+                                                </div>
+                                </div>
+
+                </div>
+
+
 
       <form onSubmit={handleSubmit} className=" space-y-6 ">
         <div className="grid grid-cols-3 gap-6 items-start">
@@ -330,11 +328,9 @@ const USLogForm = () => {
             <div>
               {/* Reason */}
 
-              <label
-                className={`rounded-md p-2 text-1xl font-extrabold tracking-wide ${
-                  darkMode ? "text-white" : "text-black"
-                }`}
-              >
+              <label className={`rounded-md p-2 text-1xl font-extrabold tracking-wide ${
+                            darkMode ? "text-white" : "text-black"
+                            }`}>
                 Reason for placing aircraft unserviceable
               </label>
               <textarea
