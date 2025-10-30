@@ -1,14 +1,15 @@
-from rest_framework import status, generics
-from rest_framework.response import Response
-from django.http import JsonResponse
-from django.db import transaction
 from datetime import datetime
-from rest_framework.decorators import api_view
-from ..serializers import (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, AircraftRolesSerializer,
-                           ItemsSerializer, LimDefrDefLogsSerializer)
-from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, AircraftRoles, Items, Users,
-                      ChangeOfServiceabilityLogs, LimDefrDefHusLogs, Softwares, UserQuals)
+
+from django.db import transaction
 from django.db.models import Max
+from django.http import JsonResponse
+from rest_framework import status, generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from ..models import (AircraftMasters, HowFoundDefects, EntryTypes, Systems, Items, ChangeOfServiceabilityLogs,
+                      LimDefrDefHusLogs, Softwares, UserQuals)
+from ..serializers import (ChangeOfServiceabilityLogsSerializer, SystemsSerializer, ItemsSerializer)
 
 
 # class ChangeOfServiceabilityLogsCreateView(generics.ListCreateAPIView):
@@ -25,6 +26,34 @@ def usLogDropDowns(request):
         "entryTypes": list(EntryTypes.objects.values("id", "occasion")),
     }
     return JsonResponse(data, safe=False)
+
+
+@api_view(['GET'])
+def getLatestUsLogEntry(request, aircraft_master_id):
+    try:
+        latest_entry = ChangeOfServiceabilityLogs.objects.filter(
+            aircraft_master_id=aircraft_master_id
+        ).order_by('-snow').first()
+
+        if latest_entry is None:
+            return JsonResponse({'message': 'no such entry'}, status=404)
+
+        data = {
+            "lastSnow": latest_entry.snow if latest_entry.snow else "",
+            "entryType": latest_entry.entry_type.occasion if latest_entry.entry_type else "",
+            "howFound": latest_entry.how_found_defect.occasion if latest_entry.how_found_defect else "",
+            "dateTime": latest_entry.user_time_date if latest_entry.user_time_date else "",
+            # "dateAndTime": latest_entry.user_time_date.strftime(
+            #     "%Y-%m-%d %H:%M:%S") if latest_entry.user_time_date else "",
+            "airframeHrs": latest_entry.airframe_hrs,
+            "reason_for_placing_unserviceable": latest_entry.reason_for_placing_unserviceable,
+            "entered_by": latest_entry.by_whom.user.user_name if latest_entry.by_whom else "",
+        }
+        return JsonResponse(data, safe=False)
+
+    except Exception as e:
+        print("error:", e)
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @api_view(['GET'])
