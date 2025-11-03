@@ -6,3 +6,4 @@ from .ldh_views import *
 from .section_5_views import *
 from .technicalInstruction_views import *
 from .deferred_views import *
+from .section_9_views import *

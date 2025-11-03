@@ -36,6 +36,7 @@ import TradeSupAto from "../Authentication/AuthenticationTwo";
 import BasicWeightAndMoment from "../Section-9/BasicWeightAndMoment";
 import CompassLog from "../Section-10/CompassLog";
 import SoftwareLogEntry from "../Section-2/SoftwareLogEntry"
+import RoleChangeLogEntry from "../Section-9/RoleChangeLogEntry"
 
 import { X, Plane } from "lucide-react";
 import { FaMapMarkerAlt, FaTools, FaUser, FaClock } from "react-icons/fa";
@@ -379,12 +380,9 @@ const ClearUsLog = ({ defect }) => {
               {gridData?.entry_type === 2025112 && (
                     <SoftwareLogEntry />
                   )}
-                  {gridData?.entry_type ===  2025111 && (
-                    <TextField
-                      variant="outlined"
-                      className="mb-6"
-                      label="Enter the details of Work Done."
-                    />)}
+                  {gridData?.entry_type == 2025111 && (
+                    <RoleChangeLogEntry />
+                    )}
                 </Paper>
               </form>
               <div className="flex justify-center mt-2">

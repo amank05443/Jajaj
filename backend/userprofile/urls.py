@@ -5,7 +5,7 @@ from userprofile.views import (
     DynamicModelView, get_params, set_params,get_customers,data_for_headers, AircraftDetailsView, AircraftTypeDetailsView, aircraft_all_detail_view, check_passkey_authentication,
     user_details_for_authentication_one,check_passkey_authentication_right_side,user_authentication_for_trade,user_details_for_authentication_two,remove_user,DeferredGridData,
     Quals_view,ChangeOfServiceabilityLogsCreateView,usLogDropDowns,limLogData,saveUsLogData,clearUsLog,LimGridData,fetch_authenticated_data,forward_to_ato_for_authorisation,
-    softwareLogData,  check_passkey_authentication_right_side_limitation,get_partNumbers,
+    softwareLogData,  check_passkey_authentication_right_side_limitation,get_partNumbers, roleChangeLogData
 )
 from userprofile.views.section_5_views import get_items
 
@@ -80,6 +80,7 @@ urlpatterns = [
 
     # -------------------------------------------- Section 9 & 10 -------------------------------------------------------#
     path('api/BasicWeightAndMomentsOfAircraft/<int:id>/', aircraft_all_detail_view, name='AircraftAllDetailView'),
+    path('api/roleChangeLogData/', roleChangeLogData),
 
     # --------------------------------------------- Dynamic views & urls  -----------------------------------------------#
     path('api/<str:table>/', dynamic_view),
