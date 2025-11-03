@@ -495,8 +495,8 @@ export default function DashboardExp() {
                         <TableRow>
                           <TableCell
                      >
-                            INSPECTION
-
+                            INSPECTION / <br />
+                            COMPONENT
                           </TableCell>
                           <TableCell
                           >TIME LEFT</TableCell>

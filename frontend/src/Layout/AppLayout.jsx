@@ -27,7 +27,7 @@ export default function AppLayout() {
       {isAuthenticated && (
         <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       )}
-      <div className={`flex flex-1 ${isAuthenticated ? "pt-14" : "" }`}>
+      <div className={`flex flex-1 ${isAuthenticated ? "pt-14" : ""}`}>
         {showSidebar && (
           <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
         )}

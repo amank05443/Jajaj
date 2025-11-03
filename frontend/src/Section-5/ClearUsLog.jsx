@@ -388,7 +388,7 @@ const ClearUsLog = ({ defect }) => {
                 </Paper>
               </form>
               <div className="flex justify-center mt-2">
-                <TradeSupAto snowId={202520390} />
+                <TradeSupAto snowId={202520333} />
               </div>
 
               <button
@@ -396,7 +396,7 @@ const ClearUsLog = ({ defect }) => {
                 type="submit"
                 variant="contained"
 //                                 disabled={!isAuthenticated}
-                className="hidden primary p-4"
+                className="primary p-4"
               >
                 Submit
               </button>

@@ -653,9 +653,9 @@ const ViewLeadingParticulars = () => {
         <div className="flex justify-center mt-5 gap-5">
           <AllUsers auth={handleDataFromAllUsers} />
           <AtoOnly auth={handleDataFromAtoOnly} />
-          <TradeSupAto snowId={202520387} />
+          <TradeSupAto snowId={202520385} />
           {/*           <TradeSupAto snowId={202520380} /> */}
-          <LimitationAuth snowId={202520388} />
+          <LimitationAuth snowId={202520385} />
           <div>
             <h2>{aircraftDetails?.qualification}</h2>
             <h2>{aircraftDetails?.trade}</h2>
