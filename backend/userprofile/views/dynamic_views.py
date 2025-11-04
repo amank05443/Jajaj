@@ -277,25 +277,19 @@ def validate_password(request):
     if not pno or incoming is None:
         print("missing pno or incoming password in payload")
         return JsonResponse({"valid":False})
-
     try:
         user = Users.objects.get(pno=pno)
         print("found user:",user)
         stored_hashed_pwd = user.login_pwd
-
         print("stored_hashed_pwd preview",(stored_hashed_pwd[:60] + "...") if stored_hashed_pwd else None)
-
         incoming_clean = incoming.strip() if isinstance(incoming,str) else incoming
         print ("incoming_clean repr:",repr(incoming_clean))
-
         ok = False
-
         try :
             ok = check_password(incoming_clean,stored_hashed_pwd )
         except Exception as e:
             print("check_password threw exception:",e)
         print ("check_password result:",ok)
-
         return JsonResponse({"valid":bool(ok)})
     except Users.DoesNotExist:
         print("user does not exist for pno:",pno)
@@ -303,27 +297,43 @@ def validate_password(request):
 
 def validate_security_answer(request):
     if request.method != "POST":
-        return JsonResponse({"error":"Invalid request"}, status=400)
+        return JsonResponse({'valid': False,'error':'Invalid request'}, status=405)
     try:
         data = json.loads(request.body)
-    except Exception:
-        return JsonResponse({"error":"Invalid Json"}, status=400)
+    except Exception as e:
+        return JsonResponse({'valid': False, 'error':'Invalid Json'}, status=400)
     pno = data.get("pno")
-    id  = data.get("security_question_id")
-    ans = data.get("security_question_ans")
-    if not pno or not id or not ans:
-        return JsonResponse({"valid":False, "error": "Missing fields"}, status=400)
+    qid  = data.get("security_question_id")
+    ans = data.get("security_question_ans") or ""
+    print("validate_security_answer request:", {"pno":pno,"qid":qid,"ans":ans})
+    if not pno or not qid is None or ans.strip() == "":
+        return JsonResponse({'valid':False, 'error': 'Missing fields'}, status=400)
     try:
         user = Users.objects.get(pno=pno)
     except Users.DoesNotExist:
-        return JsonResponse({"valid":False, "error": "User not found"}, status=404)
-    if (
-        str(user.security_question_id) == str(id)
-        and user.security_question_ans.strip().lower() == ans.strip().lower()
-    ):
-        return JsonResponse({"valid":True})
+        print("validate_security_answer: user not found for pno:", pno)
+        return JsonResponse({'valid':False, 'error': 'User not found'}, status=404)
+    try:
+        user_qid = int(user.security_question_id) if user.security_question_id is not None else None
+    except Exception:
+        user_qid = user.security_question_id
+    stored_hashed_ans = user.security_question_ans
+    incoming_answer = ans.strip().lower()
+
+    print("stored qid/user_answer:", user_qid, stored_hashed_ans[:20] if stored_hashed_ans else None)
+    print("incoming qid/ incoming_answer:", qid, incoming_answer)
+    if not stored_hashed_ans:
+        return JsonResponse({'valid':False, 'error': 'No stored security answer'}, status=400)
+    try:
+        answer_ok = check_password(incoming_answer,stored_hashed_ans)
+    except Exception as e:
+        print("check_password threw exception:",e)
+        return JsonResponse({'valid':False, 'error':'Invalid answer'}, status=500)
+    if  answer_ok:
+        return JsonResponse({'valid':True})
     else:
-        return JsonResponse({"valid":False, "error": "Incorrect answer"})
+        return JsonResponse({'valid':False, 'error':'Incoming answer is incorrect'})
+
 
 
 

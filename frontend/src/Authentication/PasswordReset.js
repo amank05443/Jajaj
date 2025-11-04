@@ -109,32 +109,40 @@ export default function PasswordReset() {
   };
 
   const fetchValidationSecurity = async () => {
-    if (!pno || !selectedQ || !securityAns) return;
-
+    if (!pno || !selectedQ || !securityAns)
+    {setValidationMsg("Please select a question and enter the answer");
+              return;
+}
     try {
+    setIsLoading(true);
       const csrfToken = Cookies.get("csrftoken");
+      const payload = {
+      pno, security_question_id: parseInt(selectedQ, 10),
+      security_question_ans: securityAns.trim()
+      };
+      console.log("Sending validate_security_answer payload:", payload);
+
       const res = await fetch(`/api/validate_security_answer/`, {
         method: "POST",
         headers: {
           "X-CSRFToken": csrfToken || "",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          pno,
-          security_question_id: selectedQ,
-          validate_security_answer: securityAns,
-        }),
-      });
+        body: JSON.stringify(payload),});
 
       const json = await res.json();
+      console.log("validate_security_answer response:", res.status, json);
       if (json.valid) {
         setValidationMsg("Security answer validated successfully");
         setCanReset(true);
       } else {
-        setValidationMsg("Incorrect answer, please try again");
+        setValidationMsg(json.error || "Incorrect answer, please try again");
         setCanReset(false);
       }
     } catch (err) {
-      setValidationMsg("Error validating security answer");
+    console.error ("fetchValidationSecurity error:", err);
+      setValidationMsg("Error validating security answer(check console)");
+      setCanReset(false);
     } finally {
       setIsLoading(false);
     }
@@ -286,7 +294,7 @@ export default function PasswordReset() {
                   >
                     <option value="">--Select Questions --</option>
                     {securityQ.map((q) => (
-                      <option key={q.id} value={q.sec_questions}>
+                      <option key={q.id} value={q.id}>
                         {q.sec_questions}
                       </option>
                     ))}
