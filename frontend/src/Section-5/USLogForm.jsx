@@ -13,6 +13,7 @@ import {
 const USLogForm = () => {
   //::-- States and variables used in the page
   const [loading, setLoading] = useState(true);
+  const [latestLogEntry, setLatestLogEntry] = useState(null);
   const { params, loading: paramsLoading } = useParams();
   const [howFoundOptions, setHowFoundOptions] = useState([]);
   const [entryTypeOptions, setEntryTypeOptions] = useState([]);
@@ -27,16 +28,7 @@ const USLogForm = () => {
     setDarkMode((prev) => !prev);
   };
 
-  //::--checkboxes states and its management
-//   const checkBoxesLDHC = [
-//     { key: "lim", label: "Limitation" },
-//     { key: "def", label: "Deferred" },
-//     { key: "hus", label: "Husbandry" },
-//   ];
-//   const checkBoxesChecks = [
-//     { key: "indCheck", label: "Independent Check" },
-//     { key: "lartCheck", label: "Loose Articles Check" },
-//   ];
+
   const [activeCheckboxes, setActiveCheckboxes] = useState({
     lim: false,
     def: false,
@@ -44,10 +36,6 @@ const USLogForm = () => {
     indCheck: false,
     lartCheck: false,
   });
-
-//   const toggleCheckboxes = (box) =>
-//     setActiveCheckboxes((prev) => ({ ...prev, [box]: !prev[box] }));
-
   //::-- the FORM State
   const { formData, errors, handleChange, validateAll, setFormData } =
     useValidation(
@@ -102,6 +90,26 @@ const USLogForm = () => {
        console.log("amruth"+formData.entry_type+formData.entryType)
        }, [formData]);
 
+   useEffect(() => {
+       const fetchLatestLog = async () => {
+           try {
+               const res = await axios.get(`/api/getLatestUsLogEntry/${params.aircraft_master_id}`, {
+                   params: { aircraft_master_id: params.aircraft_master_id },
+                   });
+               if (res.data && !res.data.message) {
+                   setLatestLogEntry(res.data);
+                   }
+			   else {
+				   setLatestLogEntry(null);
+				   }
+               } catch (err) {
+                   console.error("Error fetching latest log entry:", err);
+                   setLatestLogEntry(null);
+                   }
+               };
+           if (params?.aircraft_master_id) fetchLatestLog();
+           }, [params]);
+
   //for handling authentication data
   const handleDataFromAllUsers = (data) => {
     const { authenticated, user_qual_id, user_name } = data;
@@ -131,7 +139,6 @@ const USLogForm = () => {
           },
           body: JSON.stringify(payload),
         });
-
         if (!res.ok) throw new Error("Failed to save data");
         const data = await res.json();
         if (data.success === true) {
@@ -145,30 +152,19 @@ const USLogForm = () => {
       console.log("Blundeeeeer");
     }
   };
-
-  if (loading) {
+ if (loading) {
     <p>Loading...</p>;
   }
-
   return (
-
-      <div className="bg-gray-100 min-h-screen items-center justify-center">
-
-{/*             <div className="flex justify-between items-start mb-8"> */}
-                <div className={`max-w-8xl mx-auto backdrop-blur-lg rounded-2xl p-8 shadow-lg transition-all${
-                    darkMode
-                    ? "bg-gray-800/60 border border-gray-600 text-gray-100"
-                    : "rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md"
-                    }`}
-                >
-{/*                         <div> */}
-                            <div className="flex items-center justify-center mb-6 relative">
+      <div className="bg-gray-100 min-h-screen items-center justify-center mb-10">
+                <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] h-16 p-1 m-1 ml-2 mr-2 shadow-md">
+                            <div className="flex items-center justify-center mb-20">
                        <h2
           className=" absolute  font-bold"
           style={{
-            position: "absolute",
+            position: "relative",
             left: "50%",
-            transform: "translateX(-50%)",
+            transform: "translateX(-100%)",
             fontSize: "2.56vw",
             margin: 0,
             fontFamily: "algerian",
@@ -176,31 +172,29 @@ const USLogForm = () => {
         >
                                 CHANGE OF SERVICEABILITY LOG
                         </h2>
-
-
-{/*           <button */}
-{/*             onClick={toggleTheme} */}
-{/*             className={`absolute right-0 flex items-center h-5 w-10 rounded-full transition-colors duration-300 ${ */}
-{/*               darkMode ? "bg-gray-800" : "bg-gray-300" */}
-{/*             }`} */}
-{/*           > */}
-{/*             <span */}
-{/*               className={`inline-block h-4 w-4 transform rounded-full bg-white transform-transform duration-3500 */}
-{/*                         ${darkMode ? " translate-x-5" : "translate-x-0.5"}`} */}
-{/*             /> */}
-{/*           </button> */}
         </div>
 
                                 <div className="absolute right-0 top-36 w-[30%] bg-white/30 backdrop-blur-md border-gray-200 rounded-xl p-5 transition-transform">
-                                    <h2 className="text-xl font-extrabold text-gray-800 border-b-2 border-b-2 border-indigo-500 pb-2 mb-4">
-                                        SNOW Details
-                                    </h2>
-                                                <div className="font justify-between">
-                                                    <span className="font-semibold">Previous SNOW:</span>
-                                                </div>
-                                                <div className="font justify-between">
-                                                    <span className="font-semibold">Current SNOW:</span>
-                                                </div>
+{/*                                 <form onSubmit={handleSubmit} className="flex-1 bg-white p-8 rounded-2xl shadow-lg space-y-8"></form> */}
+                                <div className="w-full md:w-80 bg-gray-50 border border-gray-300 rounded-xl shadow-md p-4">
+                                        <h2 className="text-lg font-bold text-gray-700 mb-4 text-center">
+                                       SNOW Details
+                                      </h2>
+                                     {latestLogEntry && latestLogEntry.entryType ? (
+                                         <div className="text-sm space-y-3">
+                                             <p><span className="font-semibold">Last SNOW:</span> {latestLogEntry.lastSnow}</p>
+                                              <p><span className="font-semibold">SNOW Date Time:</span> {latestLogEntry.dateTime}</p>
+                                              <p><span className="font-semibold">Airframe Hours:</span> {latestLogEntry.airframeHrs}</p>
+                                              <p><span className="font-semibold">Entry By:</span> {latestLogEntry.entered_by}</p>
+                                             <p><span className="font-semibold">Entry Type:</span> {latestLogEntry.entryType}</p>
+                                             <p><span className="font-semibold">How Found:</span> {latestLogEntry.howFound}</p>
+                                             <p><span className="font-semibold">Reason For Placing Unserviceable:</span> {latestLogEntry.reason_for_placing_unserviceable}</p>
+                                         </div>) : (
+                                             <p className="text-gray-500 italic text-center">
+                                                 No Previous entries.
+                                                 </p>
+                                                 )}
+                                  </div>
                                 </div>
 
                 </div>
@@ -210,7 +204,6 @@ const USLogForm = () => {
       <form onSubmit={handleSubmit} className=" space-y-6 ">
         <div className="grid grid-cols-3 gap-6 items-start">
           {/*<h1>-------------------------------------------------------row 1 ---------------------------------------------------</h1>*/}
-          {/*           <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4"> */}
           <div className="col-span-2 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -226,7 +219,6 @@ const USLogForm = () => {
                   value={formData.entryType}
                   onChange={handleChange}
                   disabled={isAuthenticated}
-                  //                 className="w-full border border-gray-300 rounded-md p-2 focus:ring-purple-400"
                   className={`w-full border rounded-md p-2 text-1xl font-extrabold tracking-wide ${
                     darkMode ? "text-black" : "text-black"
                   }`}
@@ -270,7 +262,6 @@ const USLogForm = () => {
                   ))}
                 </select>
               </div>
-              {/*               </div> */}
               {errors.howFound && (
                 <p className="text-red-500">
                   {errors.howFound.message || errors.howFound}
@@ -288,7 +279,6 @@ const USLogForm = () => {
                 </label>
                 <input
                   type="datetime-local"
-                  //                 type="date"
                   name="dateAndTime"
                   value={formData.dateAndTime}
                   onChange={handleChange}
@@ -324,12 +314,9 @@ const USLogForm = () => {
                 ></input>
               </div>
             </div>
-            {/*           </div> */}
             {/* SECTION 2: REASON & CONDITIONS */}
             {/*<h1>------------------------------------------------------- row 2 ---------------------------------------------------</h1>*/}
             <div>
-              {/* Reason */}
-
               <label className={`rounded-md p-2 text-1xl font-extrabold tracking-wide ${
                             darkMode ? "text-white" : "text-black"
                             }`}>
@@ -346,65 +333,13 @@ const USLogForm = () => {
                   darkMode ? "text-black" : "text-black"
                 }`}
               />
-
               {errors.reason_for_placing_unserviceable && (
                 <p className="text-red-500">
                   {errors.reason_for_placing_unserviceable.message ||
                     errors.reason_for_placing_unserviceable}
                 </p>
               )}
-              {/*           </div> */}
             </div>
-
-            {/* Checkboxes for LDHC*/}
-
-            {/*             <div className="grid grid-cols-2 gap-2"> */}
-            {/*               {formData.entryType == 2025110 && ( */}
-            {/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
-            {/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
-            {/*                     Select LDHC */}
-            {/*                   </label> */}
-            {/*                   {checkBoxesLDHC.map((box) => ( */}
-            {/*                     <label */}
-            {/*                       key={box.key} */}
-            {/*                       className="flex items-center space-x-2" */}
-            {/*                     > */}
-            {/*                       <input */}
-            {/*                         type="checkbox" */}
-            {/*                         checked={activeCheckboxes[box.key]} */}
-            {/*                         onChange={() => toggleCheckboxes(box.key)} */}
-            {/*                         disabled={isAuthenticated} */}
-            {/*                         className="accent-pink-600" */}
-            {/*                       /> */}
-            {/*                       <span className="text-gray-800">{box.label}</span> */}
-            {/*                     </label> */}
-            {/*                   ))} */}
-            {/*                 </div> */}
-            {/*               )} */}
-            {/*                */}
-            {/* Checkboxes for Additional Checks*/}
-            {/*               {formData.entryType != 2025110 && ( */}
-            {/*                 <div className="border-2 border-black-600 rounded-lg p-4"> */}
-            {/*                   <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
-            {/*                     Select Additional Checks */}
-            {/*                   </label> */}
-            {/*                   {checkBoxesChecks.map((box) => ( */}
-            {/*                     <label */}
-            {/*                       key={box.key} */}
-            {/*                       className="flex items-center space-x-2" */}
-            {/*                     > */}
-            {/*                       <input */}
-            {/*                         type="checkbox" */}
-            {/*                         checked={activeCheckboxes[box.key]} */}
-            {/*                         onChange={() => toggleCheckboxes(box.key)} */}
-            {/*                         disabled={isAuthenticated} */}
-            {/*                       /> */}
-            {/*                       <span className="text-gray-800">{box.label}</span> */}
-            {/*                     </label> */}
-            {/*                   ))} */}
-            {/*                 </div> */}
-            {/*               )} */}
-            {/*             </div> */}
           </div>
         </div>
         {activeCheckboxes.lim && (

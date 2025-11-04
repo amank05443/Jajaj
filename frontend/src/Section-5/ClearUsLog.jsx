@@ -171,9 +171,10 @@ const ClearUsLog = ({ defect }) => {
       formData: formData,
       gridData: gridData,
     };
+console.log(payload)
     if (payload) {
       try {
-        const res = await fetch("/api/clearUsLog/", {
+        const res = await fetch("/api/clear_us_log/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
