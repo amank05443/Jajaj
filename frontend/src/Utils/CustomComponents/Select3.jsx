@@ -29,14 +29,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TextField, MenuItem, Paper } from "@mui/material";
 
-export default function Select2({
+export default function Select3({
   items = [],
   placeholder = "Select",
   value = "",
   onChange,
-  displayKey = "product_no",
+  displayKey = "",
   valueKey = "id",
   descriptionKey = null,
+  descriptionKey1 = null,
+  descriptionKey2 = null,
+  disabled,
+  className,
   limit = 50,
 }) {
   const [search, setSearch] = useState("");
@@ -47,7 +51,9 @@ export default function Select2({
   const selectedItem = items.find((item) => item[valueKey] === value);
 
   const filtered = items.filter((item) =>
-    item[displayKey].toLowerCase().includes(search.toLowerCase()),
+    `${item[displayKey]} ${item[descriptionKey]} ${item[descriptionKey1]} ${item[descriptionKey2] || "" }`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
 
   useEffect(() => {
@@ -99,6 +105,8 @@ export default function Select2({
           setHighlightedIndex(0);
         }}
         onKeyDown={handleKeyDown}
+        disabled={disabled}
+        className={className}
       />
       {open && (
         <div
@@ -120,7 +128,9 @@ export default function Select2({
               }}
             >
               {item[displayKey]}
-              {descriptionKey && ` - ${item[descriptionKey]}`}
+              {descriptionKey && `  ${item[descriptionKey]}`}
+              {descriptionKey1 && ` , ${item[descriptionKey1]}`}
+              {descriptionKey2 && ` (${item[descriptionKey2]})`}
             </MenuItem>
           ))}
           {filtered.length === 0 && (

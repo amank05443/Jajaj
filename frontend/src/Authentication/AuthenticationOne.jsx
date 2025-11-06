@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Eye, EyeOff } from "lucide-react";
 import Select3 from "../Utils/CustomComponents/Select3";
-import { useForm, Controller, FormProvider } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useValidation from "../Utils/CustomHooks/useValidation";
 export default function AllUsers({ auth }) {
@@ -25,6 +25,7 @@ export default function AllUsers({ auth }) {
       passkey: { required: true, passkey: true },
     },
   );
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -56,7 +57,11 @@ export default function AllUsers({ auth }) {
   }, [open]);
 
   const handleChangeByWhom = (field, value) => {
-    setFormData({...formData, [field]: value});
+      const safeForm = Array.isArray(formData) ? formData : [];
+    const updated = [...safeForm];
+    updated.byWhom = value;
+    updated.passkey = "";
+    setFormData(updated );
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,15 +116,15 @@ export default function AllUsers({ auth }) {
     <>
       <div>
         <button
-          onClick={() => setOpen(true)}
-          className="px-10 py-2 bg-blue-600 text-white rounded-lg"
+          fontFamily="algerian" variant="contained" onClick={() => setOpen(true)} className="flex items-center justify-center px-10 py-2 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
         >
           By Whom
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
             <div className="absolute inset-0 bg-black/60 "></div>
-            <div className="relative bg-white p-2 rounded-md w-[600px]  border-2 border-indigo-300 shadow-lg z-10">
+            <div className="relative bg-white dark:bg-gray-400 p-2 rounded-md w-[600px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
@@ -130,11 +135,11 @@ export default function AllUsers({ auth }) {
                   }}
                   className="absolute top-3 right-3 border border-gray-400 rounded bg-red-200"
                 >
-                  ❌
+                ❌
                 </button>
                 <h2
                   style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl"
+                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black rounded-lg text-xl"
                 >
                   👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
@@ -144,7 +149,7 @@ export default function AllUsers({ auth }) {
                 <form className=" p-1 space-y-4 ">
                   <div className="grid md:grid-cols-5 sm:grid-cols-2 gap-4">
                     <div className="col-span-3">
-                        <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 dark:text-white font-semibold hover:bg-blue-300 transition">
                         By Whom
                       </label>
                       {data && (
@@ -152,7 +157,7 @@ export default function AllUsers({ auth }) {
                           name="byWhom"
                           control={control}
                           render={({ field }) => (
-                            <div>
+                            <div >
                               <Select3
                                 items={data}
                                 placeholder="- - Select Name - -"
@@ -162,33 +167,34 @@ export default function AllUsers({ auth }) {
                                 }}
                                 valueKey="id"
                                 displayKey="display"
+                                className="border p-1 w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                               />
                             </div>
                           )}
                         />
                       )}
                     </div>
-{/*                     <div> */}
-{/*                       <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
-{/*                         By Whom */}
-{/*                       </label> */}
-{/*                       <select */}
-{/*                         name="byWhom" */}
-{/*                         value={formData.byWhom} */}
-{/*                         onChange={handleChange} */}
-{/*                         className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500" */}
-{/*                       > */}
-{/*                         <option value="">- - Select Name - - </option> */}
-{/*                         {data && */}
-{/*                           data?.map((d) => ( */}
-{/*                             <option key={d.id} value={d.id}> */}
-{/*                               {d.pno}, {d.user_name}, {d.abbreviation} */}
-{/*                             </option> */}
-{/*                           ))} */}
-{/*                       </select> */}
-{/*                     </div> */}
+                    {/*                     <div> */}
+                    {/*                       <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition"> */}
+                    {/*                         By Whom */}
+                    {/*                       </label> */}
+                    {/*                       <select */}
+                    {/*                         name="byWhom" */}
+                    {/*                         value={formData.byWhom} */}
+                    {/*                         onChange={handleChange} */}
+                    {/*                         className="border p-2  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500" */}
+                    {/*                       > */}
+                    {/*                         <option value="">- - Select Name - - </option> */}
+                    {/*                         {data && */}
+                    {/*                           data?.map((d) => ( */}
+                    {/*                             <option key={d.id} value={d.id}> */}
+                    {/*                               {d.pno}, {d.user_name}, {d.abbreviation} */}
+                    {/*                             </option> */}
+                    {/*                           ))} */}
+                    {/*                       </select> */}
+                    {/*                     </div> */}
                     <div className="col-span-2">
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 dark:text-white font-semibold hover:bg-blue-300 transition">
                         Signature Pin
                       </label>
                       <input
@@ -197,7 +203,7 @@ export default function AllUsers({ auth }) {
                         value={formData.passkey}
                         onChange={handleChange}
                         placeholder="* 06 Digit Pin *"
-                        className="border p-1  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        className="border p-1  w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                       />
                       <button
                         type="button"
@@ -217,7 +223,7 @@ export default function AllUsers({ auth }) {
                     onClick={handleSubmit}
                     className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
                   >
-                    OK
+                    Authenticate
                   </button>
                 </form>
               </div>

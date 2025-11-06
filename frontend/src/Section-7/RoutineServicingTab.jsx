@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import CustomGrid from "../Utils/CustomComponents/CustomGrid";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
-import {ModForm710} from "../WeasyPrintReports/WeasyPrint";
+import { ModForm710 } from "../WeasyPrintReports/WeasyPrint";
+import AtoOnly from "../Authentication/AuthenticationAto";
+import AllUsers from "../Authentication/AuthenticationOne";
+import TradeSupAto from "../Authentication/AuthenticationTwo";
+import LimitationAuth from "../Authentication/LimAuthentication";
 
 export default function RoutineServicingTab() {
   const {
@@ -41,6 +45,10 @@ export default function RoutineServicingTab() {
     },
   ];
   if (gridLoading) return <p> Loading ...</p>;
+  const handleDataFromAtoOnly = (data) => {};
+  const handleDataFromAllUsers = (data) => {};
+  const handleDataFromTradeSupAto = (data) => {};
+
   return (
     <div>
       <div className="bg-gray-100 min-h-screen items-center justify-center">
@@ -59,12 +67,19 @@ export default function RoutineServicingTab() {
             ROUTINE SERVICING CERTIFICATE
           </h2>
         </div>
+        <div className="flex justify-center mt-5 gap-5">
+          <AllUsers auth={handleDataFromAllUsers} />
+          <AtoOnly auth={handleDataFromAtoOnly} />
+          {/*           <TradeSupAto snowId={202520386} /> */}
+          <TradeSupAto snowId={202520391} />
+          <LimitationAuth snowId={202520391} />
+        </div>
         <div>
           <CustomGrid data={gridData} theme="Forest_Fog" columns={columns} />
         </div>
         <div className="flex justify-center mt-5 gap-5">
           <ModForm710 />
-         </div>
+        </div>
       </div>
     </div>
   );

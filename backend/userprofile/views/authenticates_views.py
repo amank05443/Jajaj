@@ -1,4 +1,5 @@
 import json
+import bcrypt
 from django.db.models import F , Q
 from django.utils import timezone
 from django.http import JsonResponse
@@ -19,7 +20,9 @@ from ..models import (Users, Trades, Quals, UserQuals,ChangeOfServiceabilityLogs
 #     pin= data.get('passkey')
 #     try:
 #         user= get_object_or_404(Users, userQualsTrade__id=ids)
-#         if check_password(pin, user.pin):
+#         pin1=user.pin
+#         stored_hash= pin1.replace('$2y$','$2b$').encode('utf-8')
+#         if bcrypt.checkpw(pin.encode('utf-8'), stored_hash):
 #             return JsonResponse({"status": "OK", "user": {"id": ids, "name": user.user_name, "rank": user.rank.abbreviation}})
 #         else:
 #             return JsonResponse({"status": "ERROR", "message": "Incorrect password"})
@@ -212,7 +215,7 @@ def remove_user(request):
             cosl_lines_instance= ChangeOfServiceabilityLogLines.objects.filter(user_qual_id=ids, trade=trade_id, tradesman_sup=qualification, change_of_serviceability_log_id=snow_id)
             cosl_lines_instance[0].cleared_yn = "N"
             cosl_lines_instance[0].save()
-        return JsonResponse({"status": "OK", "user": {"id": ids}})
+        return JsonResponse({"status": "OK", "user": {"id": ids, "user_name": UserQuals.objects.get(id=ids).user.user_name, "rank": UserQuals.objects.get(id=ids).rank.abbreviation}})
     except ObjectDoesNotExist:
         return JsonResponse({"status": "Fail", "message": "Invalid Passkey"}, status=400)
 
@@ -237,7 +240,7 @@ def user_details_for_authentication_one(request, id ):
 
 # --------------------------------- For all trades  >> template two ----------------------------------------------------#
 def user_authentication_for_trade(request):
-    trades = Trades.objects.all().distinct()
+    trades = Trades.objects.all().distinct().exclude(id=202500012)
     data = list(trades.values("id", "trade"))
     return JsonResponse(data, safe=False)
 
@@ -298,14 +301,14 @@ def user_details_for_authentication_two(request):
         trade= int(trade)
     except ValueError:
         return JsonResponse([], safe=False)
-    if qualification == "TDS": qual_code_range= range(1, 8)
-    elif qualification == "SUP": qual_code_range= range(4, 8)
-    elif qualification == "FSI": qual_code_range= range(5, 6)
+    if qualification == "TDS": qual_code_range= range(1, 10)
+    elif qualification == "SUP": qual_code_range= range(4, 10)
+    # elif qualification == "FSI": qual_code_range= range(5, 6)
     elif qualification == "SSS": qual_code_range= range(6, 7)
-    elif qualification == "ACC": qual_code_range= range(6, 7)
-    elif qualification == "FCC": qual_code_range= range(6, 7)
-    elif qualification == "ATZ": qual_code_range= range(6, 8)
-    elif qualification == "ATO": qual_code_range= range(7, 8)
+    elif qualification == "ACC": qual_code_range= range(7, 8)
+    elif qualification == "FCC": qual_code_range= range(8, 9)
+    elif qualification == "ATO": qual_code_range= range(9, 10)
+    elif qualification == "ATZ": qual_code_range= range(6, 10) # Recently not in use made for authorizer ranges from SSS to ATO
     else: qual_code_range=Quals.objects.values_list("qual_code", flat=True)
     qual_code_range_id= Quals.objects.filter(qual_code__in=qual_code_range).values_list("id", flat=True)
     if qualification in ["TDS"]:
@@ -313,11 +316,11 @@ def user_details_for_authentication_two(request):
     elif qualification in ["SUP"]:
         users_from_user_quals = UserQuals.objects.all().filter(trade_id__in=[trade, 202500012] , aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
     elif qualification in ["SSS"]:
-        users_from_user_quals = UserQuals.objects.all().filter(trade_id__in=[trade] , aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
+        users_from_user_quals = UserQuals.objects.all().filter( aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
     elif qualification in ["FCC" , "ACC" ]:
-        users_from_user_quals = UserQuals.objects.all().filter(trade_id__in=[trade]  , aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
+        users_from_user_quals = UserQuals.objects.all().filter( aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
     elif qualification in ["ATZ","ATO"]:
-        users_from_user_quals = UserQuals.objects.all().filter(trade_id=trade ,aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
+        users_from_user_quals = UserQuals.objects.all().filter(aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
     else:
         users_from_user_quals = UserQuals.objects.all().filter(trade_id=trade, aircraft_type_id=aircraft_type_id, qual_id__in=qual_code_range_id).distinct('user_id')
     data = list(users_from_user_quals.values("id", pno=F("user__pno"), user_name=F("user__user_name"), abbreviation=F("user__rank__abbreviation")))

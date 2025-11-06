@@ -3,6 +3,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { Eye, EyeOff, CheckCircle, Trash2, Plus } from "lucide-react";
+import Select3 from "../Utils/CustomComponents/Select3";
+import { useForm, Controller } from "react-hook-form";
 export default function LimitationAuth({ snowId }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
@@ -28,7 +30,11 @@ export default function LimitationAuth({ snowId }) {
   });
 
   const [errors, setErrors] = useState([{}]);
-
+  const methods = useForm({
+    defaultValues: {},
+    mode: "onChange",
+  });
+  const { control, setError, clearErrors, formState, watch } = methods;
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -38,7 +44,7 @@ export default function LimitationAuth({ snowId }) {
     const updatedUsers = [...formData?.users];
     const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
     const addUserBtn1 = document?.getElementById("addUserBtn");
-    if (updatedUsers.length == 2) {
+    if (updatedUsers.length >= 2) {
       if (addUserBtn1) addUserBtn1.classList.add("hidden");
     } else if (updatedUsers.length < 2) {
       if (addUserBtn1) addUserBtn1.classList.remove("hidden");
@@ -72,6 +78,7 @@ export default function LimitationAuth({ snowId }) {
                 pno: item.pno,
                 user_name: item.user_qual_name,
                 abbreviation: item.rank,
+                display: `${item.pno || ""}, ${item.user_qual_name || ""}, ${item.rank || ""}`,
               },
             ],
             showPassKey: false,
@@ -243,7 +250,12 @@ export default function LimitationAuth({ snowId }) {
           },
         })
         .then((response) => {
-          updatedUsers[index].availableUsers = response.data;
+          console.log(response.data);
+          const formatted = response.data.map((item) => ({
+            ...item,
+            display: `${item.pno || ""}, ${item.user_name || ""}, ${item.abbreviation || ""}`,
+          }));
+          updatedUsers[index].availableUsers = formatted;
           updatedUsers[index].byWhom = "";
           updatedUsers[index].passkey = "";
           setFormData({ ...formData, users: updatedUsers });
@@ -371,15 +383,18 @@ export default function LimitationAuth({ snowId }) {
     <>
       <div>
         <button
+          fontFamily="algerian"
+          variant="contained"
           onClick={() => setOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="flex items-center justify-center px-4 py-2 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
         >
           Lim Authentication
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
             <div className="absolute inset-0 bg-black/60 "></div>
-            <div className="relative bg-white p-2 rounded-md w-[980px]  border-2 border-indigo-300 shadow-lg z-10">
+            <div className="relative bg-white dark:bg-gray-400 p-2 rounded-md w-[980px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
@@ -399,15 +414,16 @@ export default function LimitationAuth({ snowId }) {
                 </button>
                 <h2
                   style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-12 rounded-lg text-xl"
+                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
                 >
-                 👮🏻‍♂️ USERS AUTHENTICATION
+                  👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
                 <form className="mt-2 space-y-4 ">
-                  <h3 className="flex bg-purple-200 py-1 justify-center font-bold border-gray-400 ">
+                  <h3 className="shadow-lg text-black dark:text-white text-center font-bold flex item-center justify-center w-[90%] h-8 rounded-full mx-auto px-4 py-1 [clip-path:ellipse(50%_50%_at_50%_50%)] bg-purple-200 dark:bg-gray-500 ">
+                    {/*                   <h3 className="flex py-1 justify-center font-bold bg-purple-200 dark:bg-gray-500 text-black dark:text-white border-gray-400 rounded-md"> */}
                     ⚠️ One supervisor and an ATO authentication is mandatory.
                   </h3>
                   {formData?.users.map((row, index) => (
@@ -436,8 +452,8 @@ export default function LimitationAuth({ snowId }) {
                                     e.target.value,
                                   );
                                 }}
-                                className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
+                                className={`border p-2 text-center w-full rounded border-gray-300 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500
+                                    ${row.qualification === "ATO" ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-green-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 <option value="">Select Qualification</option>
                                 <option value="SUP">SUP</option>
@@ -461,7 +477,7 @@ export default function LimitationAuth({ snowId }) {
                                       e.target.value,
                                     );
                                   }}
-                                  className={`border p-2 text-center w-full rounded border-gray-300  text-gray-800 focus:outline-none focus:border-indigo-500
+                                  className={`border p-2 text-center w-full rounded border-gray-300  bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500
                                       ${
                                         row.trade == "202500007"
                                           ? "bg-orange-100"
@@ -489,32 +505,57 @@ export default function LimitationAuth({ snowId }) {
                         <div className="col-span-2">
                           <div className="grid grid-cols-2 lg:grid-cols-8 gap-1">
                             <div className="col-span-4">
-                              <select
+                              <Controller
                                 name="byWhom"
-                                value={row.byWhom}
-                                disabled={
-                                  row.cleared_yn === "I" ||
-                                  row.cleared_yn === "Y"
-                                }
-                                onChange={(e) => {
-                                  handleRowChange(
-                                    index,
-                                    "byWhom",
-                                    e.target.value,
-                                  );
-                                }}
-                                className="border p-2  w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
-                              >
-                                <option value="">- -  Select Name - - </option>
-                                {row.availableUsers &&
-                                  row.availableUsers.map((d) => (
-                                    <option key={d.id} value={d.id}>
-                                      {d.pno}, {d.user_name}, {d.abbreviation}
-                                    </option>
-                                  ))}
-                              </select>
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="border w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500">
+                                    <Select3
+                                      items={row.availableUsers}
+                                      placeholder="- - Select Name - -"
+                                      disabled={
+                                        row.cleared_yn === "I" ||
+                                        row.cleared_yn === "Y"
+                                      }
+                                      value={row.byWhom}
+                                      onChange={(value) => {
+                                        handleRowChange(index, "byWhom", value);
+                                      }}
+                                      valueKey="id"
+                                      displayKey="display"
+                                      className="border p-1 w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
+                                    />
+                                  </div>
+                                )}
+                              />
                             </div>
-                            <div className="col-span-2 relative">
+                            {/*                             <div className="col-span-4"> */}
+                            {/*                               <select */}
+                            {/*                                 name="byWhom" */}
+                            {/*                                 value={row.byWhom} */}
+                            {/*                                 disabled={ */}
+                            {/*                                   row.cleared_yn === "I" || */}
+                            {/*                                   row.cleared_yn === "Y" */}
+                            {/*                                 } */}
+                            {/*                                 onChange={(e) => { */}
+                            {/*                                   handleRowChange( */}
+                            {/*                                     index, */}
+                            {/*                                     "byWhom", */}
+                            {/*                                     e.target.value, */}
+                            {/*                                   ); */}
+                            {/*                                 }} */}
+                            {/*                                 className="border p-2  w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500" */}
+                            {/*                               > */}
+                            {/*                                 <option value="">- -  Select Name - - </option> */}
+                            {/*                                 {row.availableUsers && */}
+                            {/*                                   row.availableUsers.map((d) => ( */}
+                            {/*                                     <option key={d.id} value={d.id}> */}
+                            {/*                                       {d.pno}, {d.user_name}, {d.abbreviation} */}
+                            {/*                                     </option> */}
+                            {/*                                   ))} */}
+                            {/*                               </select> */}
+                            {/*                             </div> */}
+                            <div className="col-span-2 relative ">
                               <input
                                 type={row.showPassKey ? "text " : "password"}
                                 name="passkey"
@@ -532,13 +573,13 @@ export default function LimitationAuth({ snowId }) {
                                   );
                                 }}
                                 placeholder="* 06 Digit Pin *"
-                                className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                                className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                               />
                               <button
                                 type="button"
                                 disabled={row.cleared_yn === "Y"}
                                 onClick={() => handleChangeShowPasskey(index)}
-                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 hover: text-gray-700"
+                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white hover: text-gray-700"
                               >
                                 {row.showPassKey ? (
                                   <EyeOff size={20} />
@@ -555,12 +596,14 @@ export default function LimitationAuth({ snowId }) {
                                     type="button"
                                     disabled={row.cleared_yn === "Y"}
                                     onClick={() => handleCheck(index)}
-                                    className={`p-1 w-32 font-bold border border-gray-400 rounded  text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.cleared_yn === "Y" ? "bg-green-100 " : " bg-purple-100  "}`}
+                                    className={`p-1 w-32 font-bold text-gray-800 dark:text-yellow-500 border rounded  border-gray-400 dark:border-yellow-500 dark:from-gray-500 dark:to-gray-600 focus:outline-none focus:border-indigo-500
+                                    ${row.cleared_yn === "Y" ? "bg-gradient-to-r from-green-100 to-green-300 " : row.cleared_yn === "I" ? "bg-gradient-to-r from-purple-100 to-purple-300 " : " bg-gradient-to-r from-blue-100 to-blue-300 "}`}
+                                    className={`p-1 w-32 font-bold border border-gray-400 dark:border-yellow-500 rounded text-gray-800 dark:text-yellow-500 dark:from-gray-500 dark:to-gray-600 focus:outline-none focus:border-indigo-500
+                                    ${row.cleared_yn === "Y" ? "bg-gradient-to-r from-green-100 to-green-300 " : " bg-gradient-to-r from-purple-100 to-purple-300"}`}
                                   >
                                     {row.cleared_yn === "Y"
-                                      ? "Signed "
-                                      : "Sign here "}
+                                      ? "️️☑️ Signed "
+                                      : "🖋️ Sign here "}
                                   </button>
                                 </div>
                                 <div className="col-span-2">
@@ -658,17 +701,34 @@ export default function LimitationAuth({ snowId }) {
                           className="border ml-12 p-1 text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                         />
                       </div>
-{/*                       <div className="col-span-3"> */}
-{/*                         <button */}
-{/*                           onClick={handleAuthToRemove} */}
-{/*                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400" */}
-{/*                         > */}
-{/*                           Auth To Remove */}
-{/*                         </button> */}
-{/*                       </div> */}
+                      {/*                       <div className="col-span-3"> */}
+                      {/*                         <button */}
+                      {/*                           onClick={handleAuthToRemove} */}
+                      {/*                           className="px-2 py-1 float-right font-bold border border-gray-400 rounded bg-gradient-to-r from-green-200 to-red-400" */}
+                      {/*                         > */}
+                      {/*                           Auth To Remove */}
+                      {/*                         </button> */}
+                      {/*                       </div> */}
                     </div>
                   )}
                 </div>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      users: [...formData?.users],
+                    });
+                    setOpen(false);
+                    setIsRemove(false);
+                    setIsRemoveOk(false);
+                  }}
+                  className="px-2  float-right font-bold text-black dark:text-yellow-500 bg-gradient-to-r from-blue-200 to-blue-400 dark:from-gray-500 dark:to-gray-600
+                   border rounded border-gray-400 dark:border-yellow-500 disabled:opacity-30"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>

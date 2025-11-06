@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import { Eye, EyeOff} from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import Select3 from "../Utils/CustomComponents/Select3";
+import { useForm, Controller } from "react-hook-form";
 export default function TradeSupAto({ snowId, authTwo }) {
   const { params, loading } = useParams();
   const [open, setOpen] = useState(false);
@@ -13,6 +15,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
   const [supervisor, setSupervisor] = useState("");
   const [supPassword, setSupPassword] = useState("");
   const [showSupPassKey, setShowSupPassKey] = useState(false);
+  const [showSupError, setShowSupError] = useState("");
   const [isRemove, setIsRemove] = useState(false);
   const [isRemoveOk, setIsRemoveOk] = useState(false);
   const [isForwarded, setIsForwarded] = useState(false);
@@ -34,6 +37,11 @@ export default function TradeSupAto({ snowId, authTwo }) {
 
   const [errors, setErrors] = useState([{}]);
 
+  const methods = useForm({
+    defaultValues: {},
+    mode: "onChange", //Validate on every blur
+  });
+  const { control, setError, clearErrors, formState, watch } = methods;
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -112,19 +120,22 @@ export default function TradeSupAto({ snowId, authTwo }) {
           params: { snowId: snowId },
         });
         if (Array.isArray(res.data.data)) {
-          const formattedUsers = res.data.data.map((item) => ({
-            id: item.id,
-            qualification: item.tradesman_sup,
-            trade: item.trade_id,
-            byWhom: item.user_qual_id,
-            cleared_yn: item.cleared_yn,
-            availableTrades: [{ id: item.trade_id, trade: item.trade_name }],
+          const formattedUsers = res.data.data.map((signedUser) => ({
+            id: signedUser.id,
+            qualification: signedUser.tradesman_sup,
+            trade: signedUser.trade_id,
+            byWhom: signedUser.user_qual_id,
+            cleared_yn: signedUser.cleared_yn,
+            availableTrades: [
+              { id: signedUser.trade_id, trade: signedUser.trade_name },
+            ],
             availableUsers: [
               {
-                id: item.user_qual_id,
-                pno: item.pno,
-                user_name: item.user_qual_name,
-                abbreviation: item.rank,
+                id: signedUser.user_qual_id,
+                pno: signedUser.pno,
+                user_name: signedUser.user_qual_name,
+                abbreviation: signedUser.rank,
+                display: `${signedUser.pno || ""}, ${signedUser.user_qual_name || ""}, ${signedUser.rank || ""}`,
               },
             ],
             showPassKey: false,
@@ -132,10 +143,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
           if (formattedUsers.length !== 0) {
             setFormData({ users: formattedUsers });
           }
-          if (res.data.data1[0].status) {
+          if (res.data.data1[0]?.status) {
             setActualStatus(res.data.data1[0].status);
             setSupervisorBy(
-              res.data.data1[0].user_qual_name + " " + res.data.data1[0].rank,
+              res.data.data1[0].user_qual_name + " , " + res.data.data1[0].rank,
             );
           }
         }
@@ -189,38 +200,43 @@ export default function TradeSupAto({ snowId, authTwo }) {
         Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
       );
     } else {
-      try {
-        const csrfToken = Cookies.get("csrftoken");
-        const res = await fetch("/api/removeUser/", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": csrfToken,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          body: JSON.stringify({
-            snowId: snowId,
-            coslLinesId: removedUsers.id,
-            trade: removedUsers.trade,
-            qualification: removedUsers.qualification,
-            byWhom: removedUsers.byWhom,
-          }),
-        });
-        const data = await res.json();
-        if (data.status == "OK") {
-          const updatedUsers = formData?.users.filter((_, i) => i !== index);
-          setFormData({ ...formData, users: updatedUsers });
-          setErrors((prev) =>
-            Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
-          );
-          console.log("DB updated  :", data);
-          alert("Removed  " + data);
-        } else {
-          console.error("Error updating DB :");
-          alert("Error updating DB :");
+      const confirmRemove = window.confirm(
+        "After removal , The user will be removed from this entry . Are you sure to remove ?",
+      );
+      if (confirmRemove) {
+        try {
+          const csrfToken = Cookies.get("csrftoken");
+          const res = await fetch("/api/removeUser/", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfToken,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+            body: JSON.stringify({
+              snowId: snowId,
+              coslLinesId: removedUsers.id,
+              trade: removedUsers.trade,
+              qualification: removedUsers.qualification,
+              byWhom: removedUsers.byWhom,
+            }),
+          });
+          const data = await res.json();
+          if (data.status == "OK") {
+            const updatedUsers = formData?.users.filter((_, i) => i !== index);
+            setFormData({ ...formData, users: updatedUsers });
+            setErrors((prev) =>
+              Array.isArray(prev) ? prev.filter((_, i) => i !== index) : [],
+            );
+            console.log("DB updated  :", data);
+            alert("Removed  " + data.user.user_name, data.user.rank);
+          } else {
+            console.error("Error updating DB :");
+            alert("Error updating DB :");
+          }
+        } catch (err) {
+          console.error("Error updating DB :", err);
         }
-      } catch (err) {
-        console.error("Error updating DB :", err);
       }
     }
     if (removedUsers.qualification.toUpperCase() === "ATO") {
@@ -234,13 +250,33 @@ export default function TradeSupAto({ snowId, authTwo }) {
     updatedUsers[index][field] = value;
     setFormData({ ...formData, users: updatedUsers });
     validateField(index, field, value);
+    if (field === "byWhom") {
+      updatedUsers[index].passkey = "";
+      const currentUser = updatedUsers[index];
+      const normalize = (val) => (val ?? "").toString().trim().toUpperCase();
+      const duplicate = updatedUsers.find(
+        (u, i) =>
+          i !== index &&
+          normalize(u.qualification) === normalize(currentUser.qualification) &&
+          normalize(u.byWhom) === normalize(currentUser.byWhom) &&
+          normalize(u.trade) === normalize(currentUser.trade),
+      );
+      if (duplicate) {
+        alert("Duplicate entry found.... !");
+        updatedUsers[index].qualification = "";
+        updatedUsers[index].trade = "";
+        updatedUsers[index].byWhom = "";
+        return;
+      }
+    }
 
     // ----------------------- API CALL FOR TRADES ON CHANGE OF QUALIFICATION  -----------------------------------------
     if (field === "qualification") {
       const hasNotSigned = updatedUsers.some(
         (u) =>
-          !["ATO", "FCC", "ACC"].includes(u.qualification?.toUpperCase()) &&
-          u.cleared_yn !== "Y",
+          !["ATO", "FCC", "ACC", "SSS"].includes(
+            u.qualification?.toUpperCase(),
+          ) && u.cleared_yn !== "Y",
       );
       const hasTds = updatedUsers.some(
         (u) => u.qualification === "TDS" && u.cleared_yn === "Y",
@@ -251,8 +287,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
       const hasAto = updatedUsers.some(
         (u) => u.qualification === "ATO" && u.cleared_yn === "Y",
       );
-      if (["ATO", "FCC", "ACC"].includes(value?.toUpperCase())) {
-        console.log("Trades :", value, hasTds, hasSup);
+      if (["ATO", "FCC", "ACC", "SSS"].includes(value?.toUpperCase())) {
         if (!hasTds || !hasSup || hasNotSigned) {
           if (hasTds && hasSup && hasNotSigned) {
             alert(
@@ -277,9 +312,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
           updatedUsers[index].byWhom = "";
           return;
         }
-        updatedUsers[index].trade = "202500012";
+        updatedUsers[index].trade = "00000000";
         setFormData({ ...formData, users: updatedUsers });
-        handleRowChange(index, "trade", "202500012");
+        handleRowChange(index, "trade", "00000000");
         return;
       } else if (value === "TDS") {
         if (!hasSup) {
@@ -320,7 +355,11 @@ export default function TradeSupAto({ snowId, authTwo }) {
           },
         })
         .then((response) => {
-          updatedUsers[index].availableUsers = response.data;
+          const formatted = response.data.map((item) => ({
+            ...item,
+            display: `${item.pno || ""}, ${item.user_name || ""}, ${item.abbreviation || ""}`,
+          }));
+          updatedUsers[index].availableUsers = formatted;
           updatedUsers[index].byWhom = "";
           updatedUsers[index].passkey = "";
           setFormData({ ...formData, users: updatedUsers });
@@ -331,9 +370,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
         });
     }
     // ----------------------- JAVASCRIPT FOR ON CHANGE OF USERS  ------------------------------------------------------
-    if (field === "byWhom") {
-      updatedUsers[index].passkey = "";
-    }
+    //     if (field === "byWhom") {
+    //       updatedUsers[index].passkey = "";
+    //
+    //     }
   };
 
   // ------------------------- TO VALIDATE ALL THE FIELD ON TEMPLATES  -------------------------------------------------
@@ -423,7 +463,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
           }
           setFormData({ ...formData, users: updatedUsers, ...data.user });
           console.log({ ...formData });
-          alert("Authenticated by " + data.user.rank+' , '+ data.user.name);
+          alert("Authenticated by " + data.user.rank + " , " + data.user.name);
         } else if (data.action == "INITIATED") {
           console.log("Authenticated Two :", data.user);
           const updatedUsers = [...formData?.users];
@@ -432,7 +472,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
           updatedUsers[index].showPassKey = false;
           setFormData({ ...formData, users: updatedUsers, ...data.user });
           console.log({ ...formData });
-          alert("Initiated for " + data.user.rank+' , '+ data.user.name);
+          alert("Initiated for " + data.user.rank + " , " + data.user.name);
         }
       } else {
         console.log(data);
@@ -467,9 +507,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
       );
       return;
     }
-    if (!hasTds || !hasSup) {
+    if (!hasSup) {
       alert(
-        "To forward any entry for authorisation at least one tradesman and one supervisor signature is mandatory.",
+        "To forward entry to ATO for authorisation, Supervisor signature is mandatory.",
       );
       return;
     }
@@ -477,6 +517,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
     setIsForwarded(!isForwarded);
     setForwardIndex(formData.users.length);
     setErrors("");
+    console.log(formData.users);
   };
   const handleSetRemove = () => {
     const updatedUsers = [...formData?.users];
@@ -489,6 +530,14 @@ export default function TradeSupAto({ snowId, authTwo }) {
   };
 
   const handleAuthToRemove = async () => {
+    if (!supervisor) {
+      alert("Please select Supervisor name.");
+      return;
+    }
+    if (!supPassword) {
+      alert("Please select Password.");
+      return;
+    }
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskey/", {
@@ -503,7 +552,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
           passkey: supPassword,
         }),
       });
-      if (!res.ok) throw new Error("Invalid Passkey0");
+      if (!res.ok) {
+        setShowSupError("Invalid Passkey");
+        throw new Error("Invalid Passkey");
+      }
       const data = await res.json();
       setIsRemoveOk(true);
       setIsRemove(false);
@@ -528,10 +580,11 @@ export default function TradeSupAto({ snowId, authTwo }) {
           passkey: supPassword,
         }),
       });
-      if (!res.ok) throw new Error("Invalid Passkey0");
+      if (!res.ok) {
+        setShowSupError("Invalid Passkey");
+        throw new Error("Invalid Passkey");
+      }
       const data = await res.json();
-      console.log("Forwarded :", data);
-      console.log("Forwarded :", data.user.name + " " + data.user.rank);
       setSupervisorBy(data.user.name + " " + data.user.rank);
       setIsForwardedOk(true);
       setIsForwarded(true);
@@ -547,18 +600,21 @@ export default function TradeSupAto({ snowId, authTwo }) {
     <>
       <div>
         <button
+          fontFamily="algerian"
+          variant="contained"
           onClick={() => {
             setOpen(true);
             setActualStatus("");
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="flex items-center justify-center px-4 py-2 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
         >
           Authenticate
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
             <div className="absolute inset-0 bg-black/60 "></div>
-            <div className="relative bg-white p-2 rounded-md w-[980px]  border-2 border-indigo-300 shadow-lg z-10">
+            <div className="relative bg-white dark:bg-gray-400 p-2 rounded-md w-[980px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
@@ -569,8 +625,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
                     });
                     setErrors("");
                     setOpen(false);
+                    setIsForwarded(false);
                     setIsRemove(false);
                     setIsRemoveOk(false);
+                    setShowSupError("");
                   }}
                   className="absolute top-3 right-3 border border-gray-400 rounded bg-red-200"
                 >
@@ -578,7 +636,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                 </button>
                 <h2
                   style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-12 rounded-lg text-xl"
+                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
                 >
                   👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
@@ -586,6 +644,12 @@ export default function TradeSupAto({ snowId, authTwo }) {
               {/* ------------------------------ Authentication Form -------------------------------- */}
               <div>
                 <form className="mt-2 space-y-4 ">
+                  <div className="col-span-3">
+                    {/*                     <h3 className="flex py-1 justify-center font-bold bg-green-100 dark:bg-gray-500 text-black dark:text-white border-gray-400 rounded-md"> */}
+                    <div className=" text-black dark:text-white text-center font-bold flex item-center justify-center w-[90%] h-8 rounded-full mx-auto px-4 py-1 [clip-path:ellipse(50%_50%_at_50%_50%)] bg-green-100 dark:bg-gray-500 ">
+                      ➤ Signed by Tradesman and Supervisor
+                    </div>
+                  </div>
                   {formData?.users.map((row, index) => (
                     <>
                       <div
@@ -594,29 +658,36 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       >
                         {isForwardedOk && index === forwardIndex && (
                           <div className="col-span-3">
-                            <hr className="my-1 border-t-2 border-dashed border-blue-400" />
+                            <hr className="my-1 border-t-2 border-dashed border-blue-400 dark:border-white" />
+                            {supervisorBy && (
+                              <div className="col-span-3">
+                                <div className="shadow-lg text-black dark:text-white text-center font-bold flex item-center justify-center w-[90%] h-8 rounded-full mx-auto px-4 py-1 [clip-path:ellipse(50%_50%_at_50%_50%)] bg-green-100 dark:bg-gray-500 ">
+                                  ➤ Forwarded to ATO By Supervisor :{" "}
+                                  {supervisorBy}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                         <div className="col-span-1">
                           <input type="hidden" name="id" value={row.id || ""} />
                           <div className="grid grid-cols-5 gap-1">
                             <div
-                              className={`${["ATO", "FCC", "ACC"].includes(row.qualification?.toUpperCase()) ? "col-span-5" : "col-span-3"}`}
+                              className={`${["ATO", "FCC", "ACC", "SSS"].includes(row.qualification?.toUpperCase()) ? "col-span-5" : "col-span-3"}`}
                             >
                               <select
                                 name="qualification"
                                 value={row.qualification}
                                 disabled={row.cleared_yn !== "N"}
                                 onChange={(e) => {
-
                                   handleRowChange(
                                     index,
                                     "qualification",
                                     e.target.value,
                                   );
                                 }}
-                                className={`border p-2 text-center w-full rounded border-gray-300 text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${["ATZ", "ATO", "FCC", "ACC", "SSS"].includes(row.qualification?.toUpperCase()) ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-cyan-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
+                                className={`border p-2 text-center w-full rounded border-gray-300 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500
+                                    ${["ATZ", "ATO", "FCC", "ACC", "SSS"].includes(row.qualification?.toUpperCase()) ? "bg-indigo-300" : row.qualification === "SUP" ? "bg-green-100" : row.qualification === "TDS" ? "bg-indigo-100" : ""}`}
                               >
                                 {!availableQualifications.includes(
                                   row.qualification,
@@ -640,7 +711,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   name="trade"
                                   value={row.trade}
                                   disabled={row.cleared_yn !== "N"}
-                                  hidden={["ATO", "FCC", "ACC"].includes(
+                                  hidden={["ATO", "FCC", "ACC", "SSS"].includes(
                                     row.qualification?.toUpperCase(),
                                   )}
                                   onChange={(e) => {
@@ -650,7 +721,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                       e.target.value,
                                     );
                                   }}
-                                  className={`border p-2 text-center w-full rounded border-gray-300  text-gray-800 focus:outline-none focus:border-indigo-500
+                                  className={`border p-2 text-center w-full rounded border-gray-300  bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500
                                       ${
                                         row.trade == "202500007"
                                           ? "bg-orange-100"
@@ -678,27 +749,29 @@ export default function TradeSupAto({ snowId, authTwo }) {
                         <div className="col-span-2">
                           <div className="grid grid-cols-2 lg:grid-cols-8 gap-1">
                             <div className="col-span-4">
-                              <select
+                              <Controller
                                 name="byWhom"
-                                value={row.byWhom}
-                                disabled={row.cleared_yn !== "N"}
-                                onChange={(e) => {
-                                  handleRowChange(
-                                    index,
-                                    "byWhom",
-                                    e.target.value,
-                                  );
-                                }}
-                                className="border p-2  w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
-                              >
-                                <option value="">- -  Select Name - - </option>
-                                {row.availableUsers &&
-                                  row.availableUsers.map((d) => (
-                                    <option key={d.id} value={d.id}>
-                                      {d.pno}, {d.user_name},{d.abbreviation}
-                                    </option>
-                                  ))}
-                              </select>
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="border w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500">
+                                    <Select3
+                                      items={row.availableUsers}
+                                      placeholder="- - Select Name - -"
+                                      disabled={
+                                        row.cleared_yn === "I" ||
+                                        row.cleared_yn === "Y"
+                                      }
+                                      value={row.byWhom}
+                                      onChange={(value) => {
+                                        handleRowChange(index, "byWhom", value);
+                                      }}
+                                      valueKey="id"
+                                      displayKey="display"
+                                      className="border p-1 w-full rounded border-gray-300 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
+                                    />
+                                  </div>
+                                )}
+                              />
                             </div>
                             <div className="col-span-2 relative">
                               <input
@@ -718,13 +791,13 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                   );
                                 }}
                                 placeholder="* 06 Digit Pin *"
-                                className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
+                                className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                               />
                               <button
                                 type="button"
                                 disabled={row.cleared_yn === "Y"}
                                 onClick={() => handleChangeShowPasskey(index)}
-                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 hover: text-gray-700"
+                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white hover: text-gray-700"
                               >
                                 {row.showPassKey ? (
                                   <EyeOff size={20} />
@@ -741,8 +814,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                     type="button"
                                     disabled={row.cleared_yn === "Y"}
                                     onClick={() => handleCheck(index)}
-                                    className={`p-1 w-32 font-bold border border-gray-400 rounded  text-gray-800 focus:outline-none focus:border-indigo-500
-                                    ${row.cleared_yn === "Y" ? "bg-green-100 " : row.cleared_yn === "I" ? "bg-purple-100 " : " bg-blue-200 "}`}
+                                    className={`p-1 w-32 font-bold text-gray-800 dark:text-yellow-500 border rounded  border-gray-400 dark:border-yellow-500 dark:from-gray-500 dark:to-gray-600 focus:outline-none focus:border-indigo-500
+                                    ${row.cleared_yn === "Y" ? "bg-gradient-to-r from-green-100 to-green-300 " : row.cleared_yn === "I" ? "bg-gradient-to-r from-purple-100 to-purple-300 " : " bg-gradient-to-r from-blue-100 to-blue-300 "}`}
                                   >
                                     {row.cleared_yn === "Y"
                                       ? "️️☑️ Signed "
@@ -799,13 +872,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                     </>
                   ))}
                 </form>
-                {supervisorBy && (
-                  <div className="col-span-3">
-                    <h3 className="flex bg-green-100 py-1 justify-center font-bold border-gray-400 ">
-                      ➤ Forwarded By Supervisor : {supervisorBy}
-                    </h3>
-                  </div>
-                )}
+
                 <div class="flex flex-col space-y-4">
                   <div>
                     {!isATO && (
@@ -825,7 +892,6 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       id="forwardToAtoBtn"
                       onClick={handleForwardToAto}
                       disabled={isRemove}
-                      //                       hidden={isForwardedOk}
                       className="hidden px-2 mr-6 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 "
                     >
                       Forward to ATO
@@ -850,27 +916,42 @@ export default function TradeSupAto({ snowId, authTwo }) {
                           className="border p-2  rounded border-gray-300 bg-gray-200 text-gray-800  focus:border-indigo-500"
                         >
                           <option value="">Select Supervisor</option>
-                          {formData.users
-                            .filter(
-                              (group) =>
-                                group.qualification === "SUP" &&
-                                group.cleared_yn === "Y",
-                            )
-                            .flatMap((group) => group.availableUsers)
-                            .map((user) => (
-                              <option key={user.id} value={user.id}>
-                                {user.pno}, {user.user_name},{user.abbreviation}
-                              </option>
-                            ))}
+                          {[
+                            ...new Map(
+                              formData.users
+                                .filter(
+                                  (group) =>
+                                    group.qualification === "SUP" &&
+                                    group.cleared_yn === "Y",
+                                )
+                                .map((group) => [group.byWhom, group]),
+                            ).values(),
+                          ].flatMap((group) =>
+                            group.availableUsers
+                              .filter((user) => user.id === group.byWhom)
+                              .map((user) => (
+                                <option key={user.id} value={user.id}>
+                                  {user.pno}, {user.user_name},
+                                  {user.abbreviation}
+                                </option>
+                              )),
+                          )}
                         </select>
                       </div>
                       <div className="col-span-3 relative">
                         <input
                           type={showSupPassKey ? "text " : "password"}
                           onChange={(e) => {
+                            if (!supervisor) {
+                              setShowSupError("Please select supervisor");
+                              return;
+                            }
                             setSupPassword(e.target.value);
+                            e.target.value.length > 6
+                              ? setShowSupError("Max 06 digit only")
+                              : setShowSupError("");
                           }}
-                          placeholder="* Signature pin *"
+                          placeholder="* 06 Digit Pin *"
                           className="border pr-8 p-1 w-full text-center rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500"
                         />
                         <button
@@ -901,9 +982,48 @@ export default function TradeSupAto({ snowId, authTwo }) {
                           Auth To Forward
                         </button>
                       </div>
+                      <div className="col-span-2">
+                        {/*                           <div>X</div> */}
+                        <button
+                          onClick={() => {
+                            setIsForwarded(false);
+                            setIsRemove(false);
+                            setShowSupError("");
+                          }}
+                          className=" ml-12 px-2 py-1  font-bold text-black dark:text-white border border-gray-400 rounded bg-gradient-to-r from-red-200 to-red-400"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {showSupError && (
+                    <div>
+                      <p className="text-sm text-red-500">{showSupError}</p>
                     </div>
                   )}
                 </div>
+              </div>
+              <div>
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      users: [...formData?.users],
+                    });
+                    setErrors("");
+                    setOpen(false);
+                    setIsForwarded(false);
+                    setIsRemove(false);
+                    setIsRemoveOk(false);
+                    setShowSupError("");
+                  }}
+                  //                   disabled={isForwardedOk || isRemove}
+                  className="px-2 mt-4 mr-6 float-right font-bold text-black dark:text-yellow-500 bg-gradient-to-r from-blue-200 to-blue-400 dark:from-gray-500 dark:to-gray-600
+                   border rounded border-gray-400 dark:border-yellow-500 disabled:opacity-30"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
