@@ -13,7 +13,9 @@ import {
   CssBaseline,
   Paper,
 } from "@mui/material";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LockOutlineIcon from "@mui/icons-material/LockOutlined";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthContext";
@@ -213,122 +215,131 @@ const LoginPage = () => {
               </motion.div>
             </Box>
 
-            <Box
-              sx={{
-                flex: 1,
-                p: "4%",
-                display: "flex",
-              }}
-            >
+            <Box sx={{ flex: 1, p: "2%", display: "flex" }}>
               <motion.div
                 initial={{ opacity: 0, x: 0 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
                 style={{ width: "100%" }}
               >
-                <Grid className="flex item-center justify-center font-bold text-3xl text-purple-500  ">
-                  Welcome to e-700
-                </Grid>
+                <div className="border rounded-lg mt-2 ">
+                  <Grid className="flex item-center justify-center font-bold text-3xl text-purple-500 mt-1 font-algerian italic">
+                    Welcome to e-700
+                  </Grid>
+                  {error && (
+                    <Alert severity="error" sx={{ ml: 4, mr: 4 }}>
+                      <b>{error}</b>
+                    </Alert>
+                  )}
 
-                {error && (
-                  <Alert severity="error" sx={{ mt: 1, mb: 1 }}>
-                    {error}
-                  </Alert>
-                )}
-
-                {/*  ------------------------------------------ For login with login password -------------------------------------------- */}
-                <Grid component="form" onSubmit={handleLogin} noValidate>
-                  <Grid
-                    container
-                    className="flex item-center justify-center p-6"
-                  >
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label="PNO"
-                        type="text"
-                        value={pno}
-                        onChange={(e) => setPno(e.target.value)}
-                        autoComplete="username"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <AccountCircleOutlinedIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                        size="small"
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} marginTop={3}>
-                      <TextField
-                        fullWidth
-                        label="Password"
-                        type="password"
-                        value={login_pwd}
-                        onChange={(e) => setLogin_pwd(e.target.value)}
-                        autoComplete="username"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <LockOutlineIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} marginTop={2}>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          sx={{
-                            fontWeight: 700,
-                            textTransform: "none",
-                            alignItems: "center",
-                            background:
-                              "linear-gradient(90deg,#17A39A,#2DB7C4)",
-                            boxShadow: "0 6px 18px rgba(37,150,148,0.18)",
+                  {/*  ------------------------------------------ For login with login password -------------------------------------------- */}
+                  <Grid component="form" onSubmit={handleLogin} noValidate>
+                    <Grid
+                      container
+                      className="flex item-center justify-center p-6 mt-1"
+                    >
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="PNO"
+                          type="text"
+                          value={pno}
+                          onChange={(e) => {
+                            e.target.value.length > 9
+                              ? setError("PNO is exceeding range")
+                              : setError("");
+                            setPno(e.target.value.toUpperCase());
                           }}
-                          disabledElevation
+                          autoComplete="username"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <AccountCircleOutlinedIcon color="action" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          size="small"
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} marginTop={3}>
+                        <TextField
+                          fullWidth
+                          label="Password"
+                          type="password"
+                          value={login_pwd}
+                          onChange={(e) => {
+                            if (!pno) {
+                              setError("Select Personal Number");
+                              return;
+                            }
+                            setLogin_pwd(e.target.value);
+                          }}
+                          autoComplete="username"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <LockOutlineIcon color="action" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} marginTop={3}>
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                         >
-                          <LockOutlineIcon sx={{ mr: 1 }} />
-                          Sign In
-                        </Button>
-                      </motion.div>
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{
+                              fontWeight: 700,
+                              textTransform: "none",
+                              alignItems: "center",
+                              background:
+                                "linear-gradient(90deg,#17A39A,#2DB7C4)",
+                              boxShadow: "0 6px 18px rgba(37,150,148,0.18)",
+                            }}
+                            disabledElevation
+                          >
+                            <LockOutlineIcon sx={{ mr: 1 }} />
+                            Sign In
+                          </Button>
+                        </motion.div>
+                      </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
+                </div>
                 {/*  ------------------------------------------ For reset signature pin -------------------------------------------- */}
-                <Grid className="flex item-center justify-center text-sm text-purple-500  ">
-                  👉 To reset 06 digit signature pin only.
-                </Grid>
-                <Grid className="flex item-center justify-center p-1">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    style={{ marginTop: "1%" }}
-                  >
-                    <Button
-                      variant="contained"
-                      sx={{
-                        fontWeight: "bold",
-                        background: "linear-gradient(90deg,#17A39A,#1565c0)",
-                        boxShadow: "0 6px 18px rgba(37,150,148,0.18)",
-                        minWidth: 140,
-                      }}
-                      disabledElevation
-                      onClick={() => navigate("/PasswordReset")}
+                <div className="grid grid-rows-2 border rounded-lg mt-2 ">
+                  <div className="flex item-center justify-center text-sm text-purple-500 mt-2 ">
+                    👉 To reset 06 digit signature pin only.
+                  </div>
+                  <div className="flex item-center justify-center p-1 mb-1">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      style={{ marginTop: "1%" }}
                     >
-                      SIGNATURE PIN RESET
-                    </Button>
-                  </motion.div>
-                </Grid>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          fontWeight: "bold",
+                          background: "linear-gradient(90deg,#17A39A,#1565c0)",
+                          boxShadow: "0 6px 18px rgba(37,150,148,0.18)",
+                          minWidth: 140,
+                        }}
+                        disabledElevation
+                        onClick={() => navigate("/PasswordReset")}
+                      >
+                        <LockResetIcon sx={{ mr: 1 }} />
+                        SIGNATURE PIN RESET
+                      </Button>
+                    </motion.div>
+                  </div>
+                </div>
               </motion.div>
             </Box>
           </Paper>
@@ -340,7 +351,9 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-{/*  ------------------------------------------ code dump -------------------------------------------- */}
+{
+  /*  ------------------------------------------ code dump -------------------------------------------- */
+}
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import Cookies from "js-cookie";

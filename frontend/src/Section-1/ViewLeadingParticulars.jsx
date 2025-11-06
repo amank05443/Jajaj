@@ -47,7 +47,6 @@ const ViewLeadingParticulars = () => {
     setShowAircraftClock(!showAircraftClock);
   };
 
-
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [aircraftDetails, setAircraftDetails] = useState(null);
   const { params, loading } = useParams();
@@ -73,22 +72,15 @@ const ViewLeadingParticulars = () => {
   }, [selectedAircraft, params, loading]);
   return (
     <div>
-      <div className="bg-gray-100 min-h-screen items-center justify-center border border-gray-300 dark:border-yellow-400">
+      <div className="bg-gray-100 min-h-[calc(100vh-4 rem)] items-center justify-center border border-gray-300 dark:border-yellow-400">
         {/*<h1>------------------------------Headings ----------------------------------</h1>*/}
-        <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-16 p-1 m-1 ml-2 mr-2">
-          <h2
-            className=" absolute text-md font-bold"
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              fontSize: "35px",
-              margin: 0,
-              fontFamily: "algerian",
-            }}
-          >
+        <div className="flex items-center justify-center rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-16 p-1 m-1 ml-2 mr-2">
+          <h2 className="text-[35px] font-bold font-algerian">
             LEADING PARTICULARS
           </h2>
+          <div className="absolute right-2">
+            <ModForm701 />
+          </div>
         </div>
         {/*<h1>------------------------------------------Body---------------------------------------------</h1>*/}
         <div
@@ -618,9 +610,6 @@ const ViewLeadingParticulars = () => {
           )}
         </div>
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
-        <div className="flex justify-center gap-5">
-          <ModForm701 />
-        </div>
       </div>
     </div>
   );

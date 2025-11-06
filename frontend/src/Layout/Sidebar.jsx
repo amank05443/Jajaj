@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/AuthContext";
@@ -179,10 +179,10 @@ const sidebarLinks = [
       },
     ],
   },
-   {
+  {
     label: "View/Download E-700",
     icon: <Eye size={23} />,
-    to:  '/WeasyPrint',
+    to: "/WeasyPrint",
   },
 ];
 
@@ -191,13 +191,11 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
   const isActive = item.to && location.pathname === item.to;
   const hasChildren = item.children && item.children.length > 0;
   const isExpanded = expandedItems.includes(item.label);
-
   const handleToggle = useCallback(() => {
     if (hasChildren && open) {
       toggleExpand(item.label);
     }
   }, [hasChildren, item.label, toggleExpand, open]);
-
 
   return (
     <div>
@@ -294,9 +292,10 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
   );
 }
 
-export default function Sidebar({ open, toggleSidebar }) {
+export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
   const [expandedItems, setExpandedItems] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
+  const sidebarRef = useRef(null);
   const shouldBeOpen = open;
   const toggleExpand = useCallback((label) => {
     setExpandedItems((prev) => {
@@ -335,7 +334,19 @@ export default function Sidebar({ open, toggleSidebar }) {
   const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
   }, []);
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        if (shouldBeOpen) {
+          closeSidebar();
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [shouldBeOpen]);
   return (
     <motion.aside
       animate={{ width: shouldBeOpen ? 280 : 60 }}
@@ -344,6 +355,7 @@ export default function Sidebar({ open, toggleSidebar }) {
        to-blue-50 shadow-lg flex flex-col select-none z-20 overflow-hidden shadow-2xl shadow-cyan-500/5"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      ref={sidebarRef}
     >
       {/*       <div className="absolute inset-0 overflow-hidden"> */}
       {/*         <div className="absolute top-10 left-4 w-20 h-20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl animate-pulse"></div> */}
@@ -409,7 +421,7 @@ export default function Sidebar({ open, toggleSidebar }) {
               <ListItemIcon>
                 <Edit />
               </ListItemIcon>
-                T-PIN Reset
+              T-PIN Reset
             </MenuItem>
             <MenuItem>
               <ListItemIcon>

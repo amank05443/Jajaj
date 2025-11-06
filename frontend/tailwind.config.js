@@ -5,13 +5,13 @@ module.exports = {
   ],
   theme: {
     extend: {
-    fontFamily: {
-    sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-    serif: ['Merriweather', 'serif'],
-    },
+      fontFamily: {
+        sans: ["Inter", "ui-sans-serif", "system-ui"],
+        serif: ["Merriweather", "serif"],
+        algerian: ["Algerian"],
+      },
     },
   },
   plugins: [],
-  darkMode: 'class',
-}
-
+  darkMode: "class",
+};

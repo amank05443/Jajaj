@@ -29,7 +29,7 @@ export default function AppLayout() {
       )}
       <div className={`flex flex-1 ${isAuthenticated ? "pt-14" : ""}`}>
         {showSidebar && (
-          <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+          <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} closeSidebar={closeSidebar}/>
         )}
         <main
           className={`flex-1 overflow-auto transition-all duration-300 ease-in-out
