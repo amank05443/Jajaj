@@ -32,17 +32,17 @@ export default function AtoOnly({ auth }) {
       document.body.style.overflow = "auto";
     }
   }, [open]);
-   const methods = useForm({
+  const methods = useForm({
     defaultValues: {},
     mode: "onChange", //Validate on every blur
   });
   const { control, setError, clearErrors, formState, watch } = methods;
   const handleChangeByWhom = (field, value) => {
-    setFormData({...formData, [field]: value});
+    setFormData({ ...formData, [field]: value });
   };
   useEffect(() => {
     const aircraft_type_id = params.aircraft_type_id;
-    const qualificationValue = formData.qualification ? '': "ATO";
+    const qualificationValue = formData.qualification ? "" : "ATO";
     if (!loading && open && qualificationValue) {
       axios
         .get("/api/userAllDetailsForAuthenticationTwo/", {
@@ -58,7 +58,7 @@ export default function AtoOnly({ auth }) {
             display: `${item.pno || ""}, ${item.user_name || ""}, ${item.abbreviation || ""}`,
           }));
           setData(formatted);
-          setFormData({qualification: qualificationValue});
+          setFormData({ qualification: qualificationValue });
           console.log("User (ATO) data found :");
           console.log(response.data);
         })
@@ -98,7 +98,7 @@ export default function AtoOnly({ auth }) {
       }
       setOpen(false);
       setErrors("");
-      setFormData({qualification:"",  byWhom: "", passkey: "" });
+      setFormData({ qualification: "", byWhom: "", passkey: "" });
     } catch (err) {
       setErrors((prev) => ({
         ...prev,
@@ -112,20 +112,23 @@ export default function AtoOnly({ auth }) {
     <>
       <div>
         <button
+          fontFamily="algerian"
+          variant="contained"
           onClick={() => setOpen(true)}
-          className="px-14 py-2 bg-blue-600 text-white rounded-lg"
+          className="flex items-center justify-center px-12 py-2 font-bold text-black dark:text-yellow-400 !bg-gradient-to-r from-sky-400  to-red-300 dark:from-gray-400 dark:to-gray-500 dark:border-white  shadow-lg
+                         !rounded-md border border-green-500 dark:border-yellow-500 !backdrop-blur-lg"
         >
           ATO
         </button>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center ">
             <div className="absolute inset-0 bg-black/60 "></div>
-            <div className="relative bg-white p-2 rounded-md w-[700px]  border-2 border-indigo-300 shadow-lg z-10">
+            <div className="relative bg-white dark:bg-gray-400 p-2 rounded-md w-[700px]  border-2 border-indigo-300 shadow-lg z-10">
               {/* ---------------------------- Heading & close Button-------------------------------- */}
               <div className=" rounded-md shadow-md">
                 <button
                   onClick={() => {
-                    setFormData({qualification: "", byWhom: "", passkey: "" });
+                    setFormData({ qualification: "", byWhom: "", passkey: "" });
                     setErrors("");
                     setOpen(false);
                   }}
@@ -135,9 +138,9 @@ export default function AtoOnly({ auth }) {
                 </button>
                 <h2
                   style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 rounded-lg text-xl"
+                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black rounded-lg text-xl"
                 >
-                 👮🏻‍♂️ ATO's AUTHENTICATION
+                  👮🏻‍♂️ ATO's AUTHENTICATION
                 </h2>
               </div>
               {/* ------------------------------ Authentication Form -------------------------------- */}
@@ -145,14 +148,14 @@ export default function AtoOnly({ auth }) {
                 <form className=" p-1 space-y-4 ">
                   <div className="grid md:grid-cols-4 sm:grid-cols-1 gap-4">
                     <div>
-                      <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 dark:text-white font-semibold hover:bg-blue-300 transition">
                         Qualification
                       </label>
                       <select
                         name="qualification"
                         value={formData.qualification}
                         onChange={handleChange}
-                        className="border p-2 text-center w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        className="border p-2 text-center w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                       >
                         <option value="">Select Name</option>
                         <option value="ATO">ATO</option>
@@ -160,7 +163,7 @@ export default function AtoOnly({ auth }) {
                       </select>
                     </div>
                     <div className="col-span-2">
-                      <label className="inline-block px-2 py-1 rounded-xl text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 dark:text-white font-semibold hover:bg-blue-300 transition">
                         Authorised by ATO
                       </label>
                       {data && (
@@ -178,6 +181,7 @@ export default function AtoOnly({ auth }) {
                                 }}
                                 valueKey="id"
                                 displayKey="display"
+                                className="border p-1 w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                               />
                             </div>
                           )}
@@ -185,7 +189,7 @@ export default function AtoOnly({ auth }) {
                       )}
                     </div>
                     <div>
-                      <label className="inline-block px-2 py-1 rounded-full text-blue-900 font-semibold hover:bg-blue-300 transition">
+                      <label className="inline-block px-2 py-1 rounded-md text-blue-900 dark:text-white font-semibold hover:bg-blue-300 transition">
                         Signature Pin
                       </label>
                       <input
@@ -194,7 +198,7 @@ export default function AtoOnly({ auth }) {
                         value={formData.passkey}
                         onChange={handleChange}
                         placeholder="* 06 Digit Pin *"
-                        className="border p-1  w-full rounded border-gray-300 bg-transparent text-gray-800 focus:outline-none focus:border-indigo-500"
+                        className="border p-1  w-full rounded border-gray-300 bg-transparent dark:bg-gray-600 text-gray-800 dark:text-white focus:outline-none focus:border-indigo-500"
                       />
                       <button
                         type="button"

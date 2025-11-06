@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "../Utils/CustomHooks/useParams";
-import AtoOnly from "../Authentication/AuthenticationAto";
-import AllUsers from "../Authentication/AuthenticationOne";
-import TradeSupAto from "../Authentication/AuthenticationTwo";
-import LimitationAuth from "../Authentication/LimAuthentication";
 import { ModForm701 } from "../WeasyPrintReports/WeasyPrint";
 import { FuelGrid, OilAndGasesGrid } from "./Mygrid";
 
@@ -50,32 +46,7 @@ const ViewLeadingParticulars = () => {
     setShowEngineGrid(false);
     setShowAircraftClock(!showAircraftClock);
   };
-  const handleDataFromAtoOnly = (data) => {
-    const { authenticated, user_id } = data;
-    setAircraftDetails((prev) => ({
-      ...prev,
-      authenticated: authenticated,
-      user_id: user_id,
-    }));
-  };
-  const handleDataFromAllUsers = (data) => {
-    const { authenticated, user_qual_id } = data;
-    setAircraftDetails((prev) => ({
-      ...prev,
-      authenticated: authenticated,
-      user_id: user_qual_id,
-    }));
-  };
-  //   const handleDataFromTradeSupAto = (data) => {
-  //     console.log("payloadArray :", data);
-  //     const { byWhom, trade, qualification } = data;
-  //     setAircraftDetails((prev) => ({
-  //       ...prev,
-  //       qualification: qualification,
-  //       trade: trade,
-  //       byWhom: byWhom,
-  //     }));
-  //   };
+
 
   const [selectedAircraft, setSelectedAircraft] = useState("");
   const [aircraftDetails, setAircraftDetails] = useState(null);
@@ -102,7 +73,7 @@ const ViewLeadingParticulars = () => {
   }, [selectedAircraft, params, loading]);
   return (
     <div>
-      <div className="bg-gray-100 min-h-screen items-center justify-center">
+      <div className="bg-gray-100 min-h-screen items-center justify-center border border-gray-300 dark:border-yellow-400">
         {/*<h1>------------------------------Headings ----------------------------------</h1>*/}
         <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-16 p-1 m-1 ml-2 mr-2">
           <h2
@@ -649,18 +620,6 @@ const ViewLeadingParticulars = () => {
         {/*<h1>----------- Row 3 ---------------------------- Other System Details ----------------------------------</h1>*/}
         <div className="flex justify-center gap-5">
           <ModForm701 />
-        </div>
-        <div className="flex justify-center mt-5 gap-5">
-          <AllUsers auth={handleDataFromAllUsers} />
-          <AtoOnly auth={handleDataFromAtoOnly} />
-          <TradeSupAto snowId={202520385} />
-          {/*           <TradeSupAto snowId={202520380} /> */}
-          <LimitationAuth snowId={202520385} />
-          <div>
-            <h2>{aircraftDetails?.qualification}</h2>
-            <h2>{aircraftDetails?.trade}</h2>
-            <h2>{aircraftDetails?.byWhom}</h2>
-          </div>
         </div>
       </div>
     </div>

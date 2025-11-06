@@ -149,7 +149,7 @@ def saveUsLogData(request):
             entry_type_id=formData['entryType'],
             system_time_date=datetime.now(),
             user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
-            defect_code=formData['code'],
+            # defect_code=formData['code'],
         )
         return_res["cosLog"] = {
             "snow": cosLog.snow,
