@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import useTableApi from "../Utils/CustomHooks/useTableApi";
@@ -6,14 +6,17 @@ import { useAlert } from "../Utils/Alerts/AlertContext";
 import axios from "axios";
 import useValidation from "../Utils/CustomHooks/useValidation";
 
-const CompassLog = ({ compassData }) => {
+const CompassLog = () => {
   const { create, error } = useTableApi("compass_calibration_logs");
   const { showAlert } = useAlert();
-  const rules = {
-    occasion: { capsOnly: true, maxLength: 5 },
-    date: { dateNotBeforeToday: true },
-  };
-  const { validateField } = useValidation({}, rules);
+    const messages = [ "**All details are to be entered manually. No automatic calculation undertaken**"];
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+      const interval = setInterval(() => {
+          setIndex((prev) => (prev + 1) % messages.length);
+          }, 2500);
+      return () => clearInterval(interval);
+      }, []);
 
   const [errors, setErrors] = useState([{}]);
   const navigate = useNavigate();
@@ -40,6 +43,8 @@ const CompassLog = ({ compassData }) => {
     coeff_a: "",
     coeff_b: "",
     coeff_c: "",
+
+    remarks: "",
   });
 
   const { data, loading } = useTableApi("compass_calibration_logs");
@@ -48,11 +53,24 @@ const CompassLog = ({ compassData }) => {
   }
   const handleFormChange = (e) => {
     const { index, name, value } = e.target;
+    const numericRegex = /^[0-9]*\.?[0-9]*$/;
+    if (value === "" || numericRegex.test(value)) {
+        const digitsOnly = value.replace(".", "");
+        if (digitsOnly.length <= 9) {
+            setForm({ ...form, [name]: value });
+        setErrors({ ...errors, [name]: "" });
+        } else {
+            setErrors({ ...errors, [name]: "Maximum 9 digits allowed"});
+            }
+        } else {
+            setErrors({ ...errors, [name]: "Only numeric values allowed"});
+            }
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-    compassData(form);
+//     compassData(form);
   };
   const handleSubmit = () => {
     create(form);
@@ -80,9 +98,29 @@ const CompassLog = ({ compassData }) => {
   };
 
   return (
+
     <div className="bg-gray-100 p-2 space-y-3 dark:from-black dark:via-black dark:to-black dark:text-white">
+        <div className="absolute bottom-1 right overflow-hidden whitespace-nowrap">
+        <div
+        key={index}
+        className="inline-block text-red-500 font-semibold animate-marquee">
+        {messages[index]}
+        </div>
+        </div>
+        <style>{` @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+            }
+        .animate-marquee {
+            animation: marquee 60s linear infinite;
+            white-space: nowrap;
+            }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+            }
+        `}</style>
       <div className="rounded-lg bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] dark:from-black dark:via-black dark:to-black dark:text-gray-400  h-14 mt-1 mb-1">
-        <h2
+      <h2
           className="font-bold"
           style={{
             textAlign: "center",
@@ -90,9 +128,9 @@ const CompassLog = ({ compassData }) => {
             fontFamily: "algerian",
           }}
         >
-          COMPASS CALIBRATION LOG
+          UPDATE COMPASS CALIBRATION DETAILS
         </h2>
-{/*         <div className="col-span-2 flex justify-end"> */}
+        {/*         <div className="col-span-2 flex justify-end"> */}
 {/*           <button */}
 {/*             onClick={() => navigate("/CompassLogView")} */}
 {/*             className="bg-green-600 text-white rounded hover:bg-green-700" */}
@@ -107,7 +145,7 @@ const CompassLog = ({ compassData }) => {
             <thead>
               <tr className="bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/60 to-[#FFD5E0] font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
                 <th className="border border-gray-400 p-2" colSpan="2">
-                  Compass Particular
+                  Compass Particulars
                 </th>
               </tr>
             </thead>
@@ -199,6 +237,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.actual_east && (
+                  <span className="text-red-500">{errors.actual_east}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -208,6 +249,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.actual_south && (
+                  <span className="text-red-500">{errors.actual_south}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -217,6 +261,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.actual_west && (
+                  <span className="text-red-500">{errors.actual_west}</span>
+                )}
               </td>
             </tr>
             <tr className="bg-gradient-to-r from-orange-300 via-cyan-100 to-indigo-300 font-bold text-black dark:from-black dark:via-black dark:to-black dark:text-white">
@@ -240,6 +287,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_north && (
+                  <span className="text-red-500">{errors.a_c_north}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -249,6 +299,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_north_east && (
+                  <span className="text-red-500">{errors.a_c_north_east}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -258,6 +311,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_east && (
+                  <span className="text-red-500">{errors.a_c_east}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -267,6 +323,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_south_east && (
+                  <span className="text-red-500">{errors.a_c_south_east}</span>
+                )}
               </td>
             </tr>
             <tr>
@@ -284,6 +343,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_south && (
+                  <span className="text-red-500">{errors.a_c_south}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -293,6 +355,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_south_west && (
+                  <span className="text-red-500">{errors.a_c_south_west}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -302,6 +367,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_west && (
+                  <span className="text-red-500">{errors.a_c_west}</span>
+                )}
               </td>
               <td className="border p-2">
                 <input
@@ -311,6 +379,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="w-14 border p-1 dark:bg-black"
                 />
+                {errors.a_c_north_west && (
+                  <span className="text-red-500">{errors.a_c_north_west}</span>
+                )}
               </td>
             </tr>
           </tbody>
@@ -334,6 +405,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="border p-1 w-full dark:bg-black"
                 />
+                {errors.coeff_a && (
+                  <span className="text-red-500">{errors.coeff_a}</span>
+                )}
               </td>
             </tr>
             <tr>
@@ -346,6 +420,9 @@ const CompassLog = ({ compassData }) => {
                   onChange={handleFormChange}
                   className="border p-1 w-full dark:bg-black"
                 />
+                {errors.coeff_b && (
+                  <span className="text-red-500">{errors.coeff_b}</span>
+                )}
               </td>
             </tr>
             <tr>
@@ -357,30 +434,35 @@ const CompassLog = ({ compassData }) => {
                   name="coeff_c"
                   onChange={handleFormChange}
                   className="border p-1 w-full dark:bg-black"
-                />{" "}
+                />
+                {errors.coeff_c && (
+                  <span className="text-red-500">{errors.coeff_c}</span>
+                )}
+                {" "}
               </td>
             </tr>
           </tbody>
         </table>
         <div className="w-[180%] text-gray-800 font-semibold text-lg dark:from-black dark:via-black dark:to-black dark:text-white">
-            <div className="flex items-center mb-4">
+            {data && (
+            <div className="flex items-center mb-40">
             <label className="w-32 font-bold text-black block ml-[24px] dark:text-white">Remarks:</label>
-            <textarea
-              type="text"
-              name="Remarks"
-//               value={formData.heading}
-//               onChange={handleChange}
-              rows={1}
-              placeholder="Enter Remarks"
-              className="flex-2 border border-gray-300 rounded px-3 py-2 w-full h-12 resize-none focus:outline-none focus:ring focus:ring-blue-300 dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black"
-            />
-          </div>
-{/*           <button */}
-{/*             onClick={handleSubmit} */}
-{/*             className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer" */}
-{/*           > */}
-{/*             Authenticate */}
-{/*           </button> */}
+                 <input
+                  type="text"
+                  value={form.remarks}
+                  name="remarks"
+                  onChange={handleFormChange}
+                  placeholder="Enter Remarks"
+                  className="flex-2 border border-gray-300 rounded px-3 py-2 w-full h-12 resize-none focus:outline-none focus:ring focus:ring-blue-300 dark:from-black dark:via-black dark:to-black dark:text-white dark:bg-black"
+                />
+             </div>
+        )}
+          <button
+            onClick={handleSubmit}
+            className="absolute bottom-32 left-1/2 transform -translate-x-1/2 bg-gradient-to-br from-green-300 to-blue-500 w-60 h-10 rounded-t-full shadow-x1 flex items-center justify-center cursor-pointer"
+          >
+            Authenticate
+          </button>
         </div>
       </div>
     </div>
