@@ -42,9 +42,9 @@ def getLatestUsLogEntry(request, aircraft_master_id):
             "lastSnow": latest_entry.snow if latest_entry.snow else "",
             "entryType": latest_entry.entry_type.occasion if latest_entry.entry_type else "",
             "howFound": latest_entry.how_found_defect.occasion if latest_entry.how_found_defect else "",
-            "dateTime": latest_entry.user_time_date if latest_entry.user_time_date else "",
+            "dateTime": latest_entry.user_created_date if latest_entry.user_created_date else "",
             # "dateAndTime": latest_entry.user_time_date.strftime(
-            #     "%Y-%m-%d %H:%M:%S") if latest_entry.user_time_date else "",
+            #     "%Y-%m-%d %H:%M:%S") if latest_entry.user_created_date else "",
             "airframeHrs": latest_entry.airframe_hrs,
             "reason_for_placing_unserviceable": latest_entry.reason_for_placing_unserviceable,
             "entered_by": latest_entry.by_whom.user.user_name if latest_entry.by_whom else "",
@@ -147,13 +147,14 @@ def saveUsLogData(request):
             how_found_defect_id=formData['howFound'],
             status=2,
             entry_type_id=formData['entryType'],
-            system_time_date=datetime.now(),
-            user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
+            system_created_date_time=datetime.now(),
+            # system_time_date=datetime.now(),
+            user_created_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
             # defect_code=formData['code'],
         )
         return_res["cosLog"] = {
             "snow": cosLog.snow,
-            "userTimeDate": cosLog.user_time_date,
+            "userTimeDate": cosLog.user_created_date,
             "reason": cosLog.reason_for_placing_unserviceable,
         }
 
@@ -166,13 +167,14 @@ def saveUsLogData(request):
                 reason_for_placing_unserviceable='Independent Check to be carried out i.a.w. NAMM Art-20/22',
                 snow=new_snow_no + 1,
                 status=2,
-                system_time_date=datetime.now(),
-                user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
+                system_created_date_time=datetime.now(),
+                # system_time_date=datetime.now(),
+                user_created_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
             )
             new_snow_no = new_snow_no + 1
             return_res["indCheck"] = {
                 "snow": indCheckEntry.snow,
-                "userTimeDate": indCheckEntry.user_time_date,
+                "userTimeDate": indCheckEntry.user_created_date,
                 "reason": indCheckEntry.reason_for_placing_unserviceable,
             }
 
@@ -185,13 +187,15 @@ def saveUsLogData(request):
                 reason_for_placing_unserviceable='Loose Articles Check to be carried out i.a.w. NAMM Art-21/25',
                 snow=new_snow_no + 1,
                 status=2,
-                system_time_date=datetime.now(),
-                user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
+                system_created_date_time=datetime.now(),
+                # system_time_date=datetime.now(),
+                user_created_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
+                # user_time_date=datetime.strptime(formData['dateAndTime'], "%Y-%m-%dT%H:%M"),
             )
             new_snow_no = new_snow_no + 1
             return_res["lartCheck"] = {
                 "snow": lartCheckEntry.snow,
-                "userTimeDate": lartCheckEntry.user_time_date,
+                "userTimeDate": lartCheckEntry.user_created_date,
                 "reason": lartCheckEntry.reason_for_placing_unserviceable,
             }
 
@@ -222,11 +226,11 @@ def saveUsLogData(request):
                 main_system_id=1,
                 demand_no='1',
                 aircraft_role_id='1',
-                change_of_serviceability_log_id='1',
+                cosl_id='1',
             )
             return_res["lim"] = {
                 "snow": lim.snow,
-                "userTimeDate": lim.user_time_date,
+                "userTimeDate": lim.user_created_date,
                 "reason": lim.reason_for_placing_unserviceable,
             }
 

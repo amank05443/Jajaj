@@ -35,7 +35,8 @@ class CompassCalibrationLogs(models.Model):
     coeff_a = models.BigIntegerField(blank=True, null=True)
     coeff_b = models.BigIntegerField(blank=True, null=True)
     coeff_c = models.BigIntegerField(blank=True, null=True)
-    change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True,
+    cosl = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True,
+    # change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING, blank=True,
                                                      null=True)
     pull = models.ForeignKey('Pulls', models.DO_NOTHING, blank=True, null=True)
 

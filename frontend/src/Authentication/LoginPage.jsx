@@ -8,11 +8,13 @@ import {
   Container,
   Box,
   InputAdornment,
+  IconButton,
   Grid,
   Alert,
   CssBaseline,
   Paper,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LockOutlineIcon from "@mui/icons-material/LockOutlined";
 import LockResetIcon from "@mui/icons-material/LockReset";
@@ -24,6 +26,7 @@ const LoginPage = () => {
   const [pno, setPno] = useState("");
   const [login_pwd, setLogin_pwd] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, setIsAuthenticated, setUser, user } = useAuth();
 
@@ -40,6 +43,9 @@ const LoginPage = () => {
       .catch((err) => console.error("CSRF error", err));
   }, []);
 
+  const handleChangePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -246,7 +252,7 @@ const LoginPage = () => {
                           value={pno}
                           onChange={(e) => {
                             e.target.value.length > 9
-                              ? setError("PNO is exceeding range")
+                              ? setError("PNO is exceeding the range")
                               : setError("");
                             setPno(e.target.value.toUpperCase());
                           }}
@@ -266,7 +272,7 @@ const LoginPage = () => {
                         <TextField
                           fullWidth
                           label="Password"
-                          type="password"
+                          type={showPassword ? "text " : "password"}
                           value={login_pwd}
                           onChange={(e) => {
                             if (!pno) {
@@ -276,14 +282,29 @@ const LoginPage = () => {
                             setLogin_pwd(e.target.value);
                           }}
                           autoComplete="username"
+                          size="small"
+                          sx={{ width: "255px" }}
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
                                 <LockOutlineIcon color="action" />
                               </InputAdornment>
                             ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={handleChangePassword}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
                           }}
-                          size="small"
                         />
                       </Grid>
                       <Grid item xs={12} marginTop={3}>

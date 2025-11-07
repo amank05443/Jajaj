@@ -83,7 +83,7 @@ def check_passkey_authentication_right_side(request):
                     user_qual = UserQuals.objects.get(id=ids)
                     trade = Trades.objects.get(id=trade_id)
                     new_entry=ChangeOfServiceabilityLogLines(
-                        change_of_serviceability_log=snow,
+                        cosl=snow,
                         trade=trade,
                         user_qual=user_qual,
                         tradesman_sup=qualification,
@@ -112,7 +112,7 @@ def check_passkey_authentication_right_side(request):
                 user_qual = UserQuals.objects.get(id=ids)
                 trade = Trades.objects.get(id=trade_id)
                 new_entry=ChangeOfServiceabilityLogLines(
-                    change_of_serviceability_log=snow,
+                    cosl=snow,
                     trade=trade,
                     user_qual=user_qual,
                     tradesman_sup=qualification,
@@ -154,7 +154,7 @@ def check_passkey_authentication_right_side_limitation(request):
             cosl_instance.supervisor = UserQuals.objects.get(id=ids)
             cosl_instance.save()
             new_entry = ChangeOfServiceabilityLogLines(
-                change_of_serviceability_log=cosl_instance,
+                cosl=cosl_instance,
                 trade=trade,
                 user_qual=user_qual,
                 tradesman_sup=qualification,
@@ -171,7 +171,7 @@ def check_passkey_authentication_right_side_limitation(request):
             user_qual = UserQuals.objects.get(id=ids)
             trade = Trades.objects.get(id=trade_id)
             cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=snow_id)
-            # cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=cosl_lines_id.change_of_serviceability_log)
+            # cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=cosl_lines_id.cosl)
             cosl_instance.supervisor =  UserQuals.objects.get(id=ids)
             cosl_instance.status = "2"
             cosl_instance.save()
@@ -212,7 +212,7 @@ def remove_user(request):
             cosl_lines_instance.cleared_yn = "N"
             cosl_lines_instance.save()
         else:
-            cosl_lines_instance= ChangeOfServiceabilityLogLines.objects.filter(user_qual_id=ids, trade=trade_id, tradesman_sup=qualification, change_of_serviceability_log_id=snow_id)
+            cosl_lines_instance= ChangeOfServiceabilityLogLines.objects.filter(user_qual_id=ids, trade=trade_id, tradesman_sup=qualification, cosl_id=snow_id)
             cosl_lines_instance[0].cleared_yn = "N"
             cosl_lines_instance[0].save()
         return JsonResponse({"status": "OK", "user": {"id": ids, "user_name": UserQuals.objects.get(id=ids).user.user_name, "rank": UserQuals.objects.get(id=ids).rank.abbreviation}})
@@ -248,7 +248,7 @@ def user_authentication_for_trade(request):
 @require_GET
 def fetch_authenticated_data(request):
     snow_id= request.GET.get("snowId")
-    tdsSupEntries = ChangeOfServiceabilityLogLines.objects.filter(change_of_serviceability_log_id=snow_id, cleared_yn__in= ['Y', 'I']).select_related('trade', 'user_qual').order_by('-tradesman_sup')
+    tdsSupEntries = ChangeOfServiceabilityLogLines.objects.filter(cosl_id=snow_id, cleared_yn__in= ['Y', 'I']).select_related('trade', 'user_qual').order_by('-tradesman_sup')
     supEntries = ChangeOfServiceabilityLogs.objects.filter(id=snow_id, supervisor__isnull=False).select_related('supervisor')
     atoEntries = ChangeOfServiceabilityLogs.objects.filter(id=snow_id, authorised_by__isnull=False).select_related('authorised_by')
     data = []

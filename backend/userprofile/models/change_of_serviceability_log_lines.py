@@ -10,7 +10,8 @@ from django.db import models
 
 class ChangeOfServiceabilityLogLines(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING,related_name="change_of_serviceability_log_lines", db_column='change_of_serviceability_log_id',blank=True, null=True)
+    cosl = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING,related_name="change_of_serviceability_log_lines", db_column='cosl_id',blank=True, null=True)
+    # change_of_serviceability_log = models.ForeignKey('ChangeOfServiceabilityLogs', models.DO_NOTHING,related_name="change_of_serviceability_log_lines", db_column='change_of_serviceability_log_id',blank=True, null=True)
     trade = models.ForeignKey('Trades', models.DO_NOTHING, blank=True, null=True)
     user_qual = models.ForeignKey('UserQuals', models.DO_NOTHING, blank=True, null=True)
     date_cleared = models.TimeField(blank=True, null=True)
