@@ -65,6 +65,7 @@ export default function PasswordReset() {
       if (json && json.user_name && json.rank) {
         setData(json);
         setPnoError("");
+        setStep(2);
       } else {
         setData(null);
         setPnoError("Invalid PNo, please check and try again");
@@ -84,6 +85,7 @@ export default function PasswordReset() {
 
   const fetchValidationPassword = async () => {
     if (!pno || !currentPassword) return;
+    setIsLoading(true);
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch(`/api/validate_password/`, {
@@ -98,6 +100,7 @@ export default function PasswordReset() {
       if (json.valid) {
         setValidationMsg("Password validated successfully");
         setCanReset(true);
+        setStep(3);
       } else {
         setValidationMsg("Incorrect password,please try again");
         setCanReset(false);
@@ -109,36 +112,68 @@ export default function PasswordReset() {
   };
 
   const fetchValidationSecurity = async () => {
-    if (!pno || !selectedQ || !securityAns) return;
-
+    if (!pno || !selectedQ || !securityAns) {
+      setValidationMsg("Please select a question and enter the answer");
+      return;
+    }
     try {
+      setIsLoading(true);
       const csrfToken = Cookies.get("csrftoken");
+      const payload = {
+        pno,
+        security_question_id: parseInt(selectedQ, 10),
+        security_question_ans: securityAns.trim(),
+      };
       const res = await fetch(`/api/validate_security_answer/`, {
         method: "POST",
         headers: {
           "X-CSRFToken": csrfToken || "",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          pno,
-          security_question_id: selectedQ,
-          validate_security_answer: securityAns,
-        }),
+        body: JSON.stringify(payload),
       });
-
-      const json = await res.json();
-      if (json.valid) {
+      const raw = await res.text();
+      let json = null;
+      try {
+        json = raw ? JSON.parse(raw) : null;
+      } catch {
+        json = null;
+      }
+      console.log(
+        "validate_security_answer status",
+        res.status,
+        json,
+        "raw:",
+        raw,
+      );
+      if (!res.ok) {
+        if (!res.status === 403) {
+          setValidationMsg(
+            json?.error || "Forbidden (CSRF). Please refresh try again.",
+          );
+        } else {
+          setValidationMsg(json?.error || `Server error (${res.status}).`);
+        }
+        setCanReset(false);
+        return;
+      }
+      if (json?.valid === true) {
         setValidationMsg("Security answer validated successfully");
         setCanReset(true);
+        setStep(3);
       } else {
-        setValidationMsg("Incorrect answer, please try again");
+        setValidationMsg(json?.error || "Incorrect answer, please try again");
         setCanReset(false);
       }
     } catch (err) {
-      setValidationMsg("Error validating security answer");
+      console.error("fetchValidationSecurity error:", err);
+      setValidationMsg("Network error. Please try again");
+      setCanReset(false);
     } finally {
       setIsLoading(false);
     }
   };
+
   const submitReset = async () => {
     setResetMsg("");
     if (!newPass || !confirmPass) {
@@ -194,6 +229,30 @@ export default function PasswordReset() {
       setIsLoading(false);
     }
   };
+  const [step, setStep] = useState(1);
+
+  const handleButtonClick = () => {
+    if (step === 1) {
+      fetchUser();
+    } else if (step === 2) {
+      if (option === "security") fetchValidationSecurity();
+      else if (option === "password") fetchValidationPassword();
+      else alert("Please select an option");
+    } else if (step === 3) {
+      submitReset();
+    }
+  };
+
+  const buttonText =
+    step === 1
+      ? "Next"
+      : step === 2
+        ? "Validate"
+        : step === 3
+          ? "Save"
+          : isLoading
+            ? "Saving..."
+            : "Save";
 
   useEffect(() => {
     return () => {};
@@ -202,7 +261,7 @@ export default function PasswordReset() {
   return (
     <div>
       {/* Top App Bar */}
-      <AppBar position="fixed" sx={{ background: "#1565c0" }}>
+      <AppBar position="fixed" sx={{ background: "#24133" }}>
         <Toolbar>
           <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}>
             e-700
@@ -210,10 +269,10 @@ export default function PasswordReset() {
           <Typography variant="subtitle1">CNAMS</Typography>
         </Toolbar>
       </AppBar>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white shadow-lg rounded-2x1 p-8 w-full max-w-md">
-          <h2 className="text-2x1 font-semibold text-center text-gray-700 mb-6">
-            SIGNATURE PASSWORD RESET
+      <div className="flex items-center justify-center min-h-screen bg-violet-400">
+        <div className="bg-white/30 shadow-lg rounded-2x1 p-8 w-full max-w-md">
+          <h2 className="text-2x1 font-semibold text-center text-white-400 mb-6">
+            SIGNATURE PIN RESET
           </h2>
           <div className="space-y-4">
             <div>
@@ -223,7 +282,8 @@ export default function PasswordReset() {
                 placeholder="Enter PNO"
                 value={pno}
                 onChange={(e) => setPno(e.target.value)}
-                onBlur={fetchUser}
+                disabled={!!data}
+                //                onBlur={fetchUser}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none
         focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
               />
@@ -256,13 +316,22 @@ export default function PasswordReset() {
             {data && (
               <div>
                 <label className="block text-gray-600 mb-1">
-                  Select Option For Signature Passcode Reset
+                  Select Option For Signature PIN Reset
                 </label>
                 <select
                   value={option}
                   onChange={(e) => {
-                    setOption(e.target.value);
-                    if (e.target.value === "security") fetchSecurityQuestion();
+                    const val = e.target.value;
+                    setOption(val);
+                    setCanReset(false);
+                    setValidationMsg("");
+                    setNewPass("");
+                    setConfirmPass("");
+                    setSelectedQ("");
+                    setSecurityQ("");
+                    setSecurityAns("");
+                    setStep(2);
+                    if (val === "security") fetchSecurityQuestion();
                   }}
                   className="w-full border border-gray-300  rounded-lg px-4 py-2 focus:outline-none
                 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
@@ -281,12 +350,20 @@ export default function PasswordReset() {
                   </label>
                   <select
                     value={selectedQ}
-                    onChange={(e) => setSelectedQ(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedQ(e.target.value);
+                      setSecurityAns("");
+                      setValidationMsg("");
+                      setCanReset(false);
+                      setNewPass("");
+                      setConfirmPass("");
+                      setStep(2);
+                    }}
                     className="w-full border border-gray-300 bg-gray-100 rounded-lg px-4 py-2"
                   >
                     <option value="">--Select Questions --</option>
                     {securityQ.map((q) => (
-                      <option key={q.id} value={q.sec_questions}>
+                      <option key={q.id} value={q.id}>
                         {q.sec_questions}
                       </option>
                     ))}
@@ -304,7 +381,7 @@ export default function PasswordReset() {
                       setSecurityAns(e.target.value);
                       if (validationMsg) setValidationMsg("");
                     }}
-                    onBlur={fetchValidationSecurity}
+                    //                    onBlur={fetchValidationSecurity}
                     className="w-full border border-gray-300  rounded-lg px-4 py-2 focus:outline-none
                 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                   />
@@ -331,8 +408,9 @@ export default function PasswordReset() {
                   onChange={(e) => {
                     setCurrentPassword(e.target.value);
                     if (validationMsg) setValidationMsg("");
+                    setCanReset(false);
                   }}
-                  onBlur={fetchValidationPassword}
+                  //                  onBlur={fetchValidationPassword}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2"
                 />
                 {validationMsg && (
@@ -350,7 +428,7 @@ export default function PasswordReset() {
               <div className="flex space-x-4">
                 <div className="flex-1">
                   <label className="block text-gray-600 mb-1">
-                    New Passcode
+                    New Signature PIN
                   </label>
                   <input
                     type="password"
@@ -363,11 +441,11 @@ export default function PasswordReset() {
                 </div>
                 <div className="flex-1">
                   <label className="block text-gray-600 mb-1">
-                    Confirm Passcode
+                    Confirm Signature PIN
                   </label>
                   <input
                     type="password"
-                    placeholder="Confirm Passcode"
+                    placeholder="Confirm Signature PIN"
                     value={confirmPass}
                     maxLength={6}
                     onChange={(e) => setConfirmPass(e.target.value)}
@@ -377,11 +455,12 @@ export default function PasswordReset() {
               </div>
             )}
             <button
-              onClick={submitReset}
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 hover:bg-blue-600 text-white rounded-lg px-4 py-2"
+              onClick={handleButtonClick}
               disabled={isLoading}
+              className="bg-violet-500 hover:bg-blue-600 text-white rounded-lg px-4
+              hover:bg-blue-600 text-white rounded-lg px-4 py-2"
             >
-              {isLoading ? "Saving..." : "Submit"}
+              {buttonText}
             </button>
 
             {showPopup && (

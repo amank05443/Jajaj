@@ -24,9 +24,11 @@ class Users(models.Model):
     pin_valid_upto = models.DateField(blank=True, null=True)
     fsi_yn = models.CharField(blank=True, null=True)
     active_yn = models.CharField(blank=True, null=True)
-
-    security_question = models.ForeignKey('SecurityQuestions', models.DO_NOTHING, blank=True, null=True)
+    security_question_id = models.BigIntegerField(blank=True, null=True)
     security_question_ans = models.CharField(blank=True, null=True)
+
+    # security_question = models.ForeignKey('SecurityQuestions', models.DO_NOTHING, blank=True, null=True)
+    # security_question_ans = models.CharField(blank=True, null=True)
 
     class Meta:
         managed = False
