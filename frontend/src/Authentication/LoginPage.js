@@ -210,7 +210,7 @@ const LoginPage = () => {
                           }}
                           onClick={() => navigate("/PasswordReset")}
                         >
-                          PASSCODE RESET
+                          SIGNATURE PIN RESET
                         </Button>
                       </motion.div>
                     </Grid>
