@@ -429,6 +429,10 @@ export default function TradeSupAto({ snowId, authTwo }) {
       alert("Enter passkey");
       return;
     }
+    if (!row.passkey && row.id) {
+      alert("Enter passkey");
+      return;
+    }
 
     try {
       const csrfToken = Cookies.get("csrftoken");
@@ -493,6 +497,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
   };
   //----------------- when user or passkey changes we must reset isPasskeyValid for that row ---------------------------
   const handleForwardToAto = () => {
+    setSupervisor("");
+    setSupPassword("");
     const updatedUsers = [...formData?.users];
     const hasNotSigned = updatedUsers.some((u) => u.cleared_yn !== "Y");
     const hasTds = updatedUsers.some(
@@ -520,6 +526,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
     console.log(formData.users);
   };
   const handleSetRemove = () => {
+    setSupervisor("");
+    setSupPassword("");
     const updatedUsers = [...formData?.users];
     const hasSigned = updatedUsers.some((u) => u.cleared_yn === "Y");
     console.log(hasSigned);
@@ -564,6 +572,14 @@ export default function TradeSupAto({ snowId, authTwo }) {
     }
   };
   const handleAuthToForward = async () => {
+    if (!supervisor) {
+      alert("Please select Supervisor name.");
+      return;
+    }
+    if (!supPassword) {
+      alert("Please select Password.");
+      return;
+    }
     try {
       const csrfToken = Cookies.get("csrftoken");
       const res = await fetch("/api/checkPasskey/", {
@@ -635,8 +651,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                   ❌
                 </button>
                 <h2
-                  style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
+                  className="flex items-center justify-center font-bold font-algerian bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
                 >
                   👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
@@ -797,7 +812,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                                 type="button"
                                 disabled={row.cleared_yn === "Y"}
                                 onClick={() => handleChangeShowPasskey(index)}
-                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white hover: text-gray-700"
+                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white"
                               >
                                 {row.showPassKey ? (
                                   <EyeOff size={20} />
@@ -846,7 +861,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div className="ml-[40%]">
                         {errors[index]?.qualification && (
                           <p className="text-sm text-red-500">
                             {errors[index].qualification}
@@ -881,9 +896,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
                         id="addUserBtn"
                         disabled={isRemove || isForwarded}
                         onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.
-                        className="px-8 ml-1 float-left font-bold border border-gray-400 rounded text-gray-800 focus:outline-none focus:border-indigo-500 bg-blue-200 disabled:opacity-30 "
+                        className="px-8 py-[0.1rem] ml-1 float-left font-bold border rounded border-gray-400 dark:border-yellow-500 text-gray-800 dark:text-yellow-500 bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-gray-500 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
                       >
-                        + Add user
+                        ✚ Add user
                       </button>
                     )}
 
@@ -892,9 +907,9 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       id="forwardToAtoBtn"
                       onClick={handleForwardToAto}
                       disabled={isRemove}
-                      className="hidden px-2 mr-6 float-right font-bold border border-gray-400 rounded bg-green-300 disabled:opacity-30 "
+                      className="hidden px-2 py-[0.1rem] mr-6 float-right font-bold border rounded border-gray-400 dark:border-yellow-500 text-gray-800 dark:text-yellow-500 bg-gradient-to-r from-green-200 to-green-400 dark:from-green-800 dark:to-gray-500 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
                     >
-                      Forward to ATO
+                     ➤ Forward to ATO
                     </button>
                     <button
                       type="button"
@@ -902,7 +917,7 @@ export default function TradeSupAto({ snowId, authTwo }) {
                       disabled={isForwarded}
                       onClick={handleSetRemove}
                       hidden={""}
-                      className="hidden px-2 mr-60 float-right font-bold border border-gray-400 rounded bg-red-500 text-gray-800 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
+                      className="hidden px-2 py-[0.1rem] mr-60 float-right font-bold border rounded border-gray-400 dark:border-yellow-500 text-gray-800 dark:text-yellow-500 bg-gradient-to-r from-red-200 to-red-400 dark:from-red-700 dark:to-gray-500 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
                     >
                       ✘ Remove signed user
                     </button>
@@ -989,6 +1004,8 @@ export default function TradeSupAto({ snowId, authTwo }) {
                             setIsForwarded(false);
                             setIsRemove(false);
                             setShowSupError("");
+                            setSupervisor("");
+                            setSupPassword("");
                           }}
                           className=" ml-12 px-2 py-1  font-bold text-black dark:text-white border border-gray-400 rounded bg-gradient-to-r from-red-200 to-red-400"
                         >

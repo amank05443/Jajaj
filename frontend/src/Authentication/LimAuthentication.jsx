@@ -413,8 +413,7 @@ export default function LimitationAuth({ snowId }) {
                   ❌
                 </button>
                 <h2
-                  style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
+                  className="flex items-center justify-center font-bold font-algerian bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black h-12 rounded-lg text-xl"
                 >
                   👮🏻‍♂️ USERS AUTHENTICATION
                 </h2>
@@ -529,32 +528,6 @@ export default function LimitationAuth({ snowId }) {
                                 )}
                               />
                             </div>
-                            {/*                             <div className="col-span-4"> */}
-                            {/*                               <select */}
-                            {/*                                 name="byWhom" */}
-                            {/*                                 value={row.byWhom} */}
-                            {/*                                 disabled={ */}
-                            {/*                                   row.cleared_yn === "I" || */}
-                            {/*                                   row.cleared_yn === "Y" */}
-                            {/*                                 } */}
-                            {/*                                 onChange={(e) => { */}
-                            {/*                                   handleRowChange( */}
-                            {/*                                     index, */}
-                            {/*                                     "byWhom", */}
-                            {/*                                     e.target.value, */}
-                            {/*                                   ); */}
-                            {/*                                 }} */}
-                            {/*                                 className="border p-2  w-full rounded border-gray-300 bg-gray-200 text-gray-800 focus:outline-none focus:border-indigo-500" */}
-                            {/*                               > */}
-                            {/*                                 <option value="">- -  Select Name - - </option> */}
-                            {/*                                 {row.availableUsers && */}
-                            {/*                                   row.availableUsers.map((d) => ( */}
-                            {/*                                     <option key={d.id} value={d.id}> */}
-                            {/*                                       {d.pno}, {d.user_name}, {d.abbreviation} */}
-                            {/*                                     </option> */}
-                            {/*                                   ))} */}
-                            {/*                               </select> */}
-                            {/*                             </div> */}
                             <div className="col-span-2 relative ">
                               <input
                                 type={row.showPassKey ? "text " : "password"}
@@ -579,7 +552,7 @@ export default function LimitationAuth({ snowId }) {
                                 type="button"
                                 disabled={row.cleared_yn === "Y"}
                                 onClick={() => handleChangeShowPasskey(index)}
-                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white hover: text-gray-700"
+                                className=" absolute inset-y-0 right-1 flex items-center text-grey-500 dark:text-white"
                               >
                                 {row.showPassKey ? (
                                   <EyeOff size={20} />
@@ -621,7 +594,7 @@ export default function LimitationAuth({ snowId }) {
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div className="ml-[40%]">
                         {errors[index]?.qualification && (
                           <p className="text-sm text-red-500">
                             {errors[index].qualification}
@@ -655,7 +628,7 @@ export default function LimitationAuth({ snowId }) {
                         id="addUserBtn"
                         disabled={isRemove}
                         onClick={addRow} // 'Add user' button will be disabled if authorised by any authorizer.
-                        className="px-8 ml-1 float-left font-bold border border-gray-400 rounded text-gray-800 focus:outline-none focus:border-indigo-500 bg-blue-200 disabled:opacity-30 "
+                        className="px-8 py-[0.1rem] ml-1 float-left font-bold border rounded border-gray-400 dark:border-yellow-500 text-gray-800 dark:text-yellow-500 bg-gradient-to-r from-blue-200 to-blue-400 dark:from-blue-400 dark:to-gray-500 focus:outline-none focus:border-indigo-500 disabled:opacity-30 "
                       >
                         + Add user
                       </button>
