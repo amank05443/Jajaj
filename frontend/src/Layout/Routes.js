@@ -61,9 +61,7 @@ const NewEntryForHusbandryLog = lazy(
 );
 
 //--SECTION->4--//
-const PrepareAircraft = lazy(() => import("../Section-4/PrepareAircraft"));
-const PilotAcceptance = lazy(() => import("../Section-4/PilotAcceptance"));
-const PostFlying = lazy(() => import("../Section-4/PostFlying"));
+
 const FlyingOperations = lazy(() => import("../Section-4/FlyingOperations"));
 
 //--SECTION->5--//

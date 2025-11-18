@@ -162,7 +162,7 @@ export default function PasswordReset() {
         setCanReset(true);
         setStep(3);
       } else {
-        setValidationMsg(json?.error || "Incorrect answer, please try again");
+        setValidationMsg("Incorrect answer, please try again");
         setCanReset(false);
       }
     } catch (err) {
@@ -259,18 +259,13 @@ export default function PasswordReset() {
   }, []);
 
   return (
-    <div>
-      {/* Top App Bar */}
-      <AppBar position="fixed" sx={{ background: "#24133" }}>
-        <Toolbar>
-          <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}>
-            e-700
-          </Typography>
-          <Typography variant="subtitle1">CNAMS</Typography>
-        </Toolbar>
-      </AppBar>
-      <div className="flex items-center justify-center min-h-screen bg-violet-400">
-        <div className="bg-white/30 shadow-lg rounded-2x1 p-8 w-full max-w-md">
+    <div className="relative flex items-center justify-center p-1 min-h-screen">
+      <div className="p-1 absolute inset-0 bg-cover bg-center opacity-70">
+        <img src="./images/vkd.png" />
+      </div>
+      <CssBaseline />
+      <div className="flex items-center justify-center min-h-screen absolute inset-0 bg-black/40">
+        <div className="bg-white shadow-lg rounded-2x1 p-8 w-full max-w-md rounded-md">
           <h2 className="text-2x1 font-semibold text-center text-white-400 mb-6">
             SIGNATURE PIN RESET
           </h2>
@@ -281,9 +276,11 @@ export default function PasswordReset() {
                 type="text"
                 placeholder="Enter PNO"
                 value={pno}
-                onChange={(e) => setPno(e.target.value)}
+                onChange={(e) => {
+                  setPno(e.target.value.toUpperCase());
+                }}
                 disabled={!!data}
-                //                onBlur={fetchUser}
+//                 onBlur={fetchUser}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none
         focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
               />
@@ -382,13 +379,11 @@ export default function PasswordReset() {
                       if (validationMsg) setValidationMsg("");
                     }}
                     //                    onBlur={fetchValidationSecurity}
-                    className="w-full border border-gray-300  rounded-lg px-4 py-2 focus:outline-none
-                focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                    className="w-full border border-gray-300  rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                   />
                   {validationMsg && (
                     <p
-                      className={`mt-2 text-setValidationMsg $ {validationMsg.includes("validated") ?
-                "text-green-600": "text-red-600"}`}
+                      className={`mt-2 text-setValidationMsg $ {validationMsg.includes("validated") ? "text-green-600": "text-red-600"}`}
                     >
                       {validationMsg}
                     </p>
@@ -501,3 +496,16 @@ export default function PasswordReset() {
     </div>
   );
 }
+
+
+
+
+{/* Top App Bar */}
+      {/*       <AppBar position="fixed" sx={{ background: "#24133" }}> */}
+      {/*         <Toolbar> */}
+      {/*           <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: "bold" }}> */}
+      {/*             e-700 */}
+      {/*           </Typography> */}
+      {/*           <Typography variant="subtitle1">CNAMS</Typography> */}
+      {/*         </Toolbar> */}
+      {/*       </AppBar> */}

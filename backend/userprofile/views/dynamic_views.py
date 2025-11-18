@@ -1,9 +1,13 @@
+from email.contentmanager import raw_data_manager
 from gc import is_finalized
+from logging import exception
+from selectors import SelectSelector
+
 from django.db.models import F
 from http.cookiejar import MISSING_FILENAME_TEXT
 from importlib.metadata import pass_none
 from pydoc import stripid
-
+import bcrypt
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.hashers import check_password
@@ -258,42 +262,66 @@ def get_security_questions(request):
         return JsonResponse({'error':'No security questions found'}, status=404)
     return JsonResponse({'questions': questions}, safe=False)
 
+def _normalize_bcrypt_hash(stored_hash):
+    if not stored_hash:
+        return stored_hash
+    if isinstance(stored_hash, bytes):
+        try:
+            stored_hash = stored_hash.decode('utf-8',errors='ignore')
+        except Exception:
+            stored_hash = str(stored_hash)
+    stored_hash = stored_hash.strip()
+    if stored_hash.startswith("$2y$"):
+        stored_hash = "$2b$" + stored_hash[4:]
+    return stored_hash
+
+@require_POST
 def validate_password(request):
-    if request.method != 'POST':
-        return JsonResponse({'error':'Invalid request'}, status=400)
     try:
-        data = json.loads(request.body)
+        raw= request.body
+        body_text = raw.decode('utf-8') if isinstance(raw_data_manager,(bytes,bytearray)) else raw
+        data = json.loads(body_text)
     except Exception as e:
-        print("validate_password:failed to parse JSON:",e)
-        return JsonResponse({'error':'Bad Json'}, status=400)
-    print ("validate_password payload:",data)
-    pno= data.get("pno")
+        print("Validate_password:failed to parse JSON:",e)
+        return JsonResponse({'valid':False}, status=400)
+
+    print ("Validate_password payload:",data)
+
+    pno = data.get("pno")
     incoming = data.get("password") if data.get("password") is not None else data.get("login_pwd")
 
     print("pno",pno,"password present?:",bool(incoming))
-
     print("incoming password repr:",repr(incoming))
 
     if not pno or incoming is None:
         print("missing pno or incoming password in payload")
         return JsonResponse({"valid":False})
+
+    incoming_clean = incoming.strip() if isinstance(incoming,str) else incoming
+    print ("incoming_clean repr:",repr(incoming_clean))
+
     try:
         user = Users.objects.get(pno=pno)
-        print("found user:",user)
-        stored_hashed_pwd = user.login_pwd
-        print("stored_hashed_pwd preview",(stored_hashed_pwd[:60] + "...") if stored_hashed_pwd else None)
-        incoming_clean = incoming.strip() if isinstance(incoming,str) else incoming
-        print ("incoming_clean repr:",repr(incoming_clean))
-        ok = False
-        try :
-            ok = check_password(incoming_clean,stored_hashed_pwd )
-        except Exception as e:
-            print("check_password threw exception:",e)
-        print ("check_password result:",ok)
-        return JsonResponse({"valid":bool(ok)})
+        print("found user",user)
     except Users.DoesNotExist:
-        print("user does not exist for pno:",pno)
-        return JsonResponse({"valid":False})
+        print ("user does not exist for pno",pno)
+        return JsonResponse({'valid':False})
+
+    stored_hashed_pwd = getattr(user,"login_pwd",None)
+    print("stored_hashed_pwd preview:",(stored_hashed_pwd[:60] + "...") if stored_hashed_pwd else None)
+
+    stored_hashed_pwd = _normalize_bcrypt_hash(stored_hashed_pwd)
+
+    ok = False
+    try:
+        incoming_bytes = incoming_clean.encode('utf-8') if isinstance(incoming_clean,str) else incoming_clean
+        stored_bytes = stored_hashed_pwd.encode('utf-8') if isinstance(stored_hashed_pwd, str) else stored_hashed_pwd
+
+        ok = bcrypt.checkpw(incoming_bytes, stored_bytes)
+    except Exception as e:
+        print("check_password threw exception:",e)
+    print("check_password ok:",ok)
+    return JsonResponse({'valid':bool(ok)})
 
 def validate_security_answer(request):
     if request.method != "POST":
@@ -356,10 +384,14 @@ def reset_passcode(request):
     except Users.DoesNotExist:
         return JsonResponse({"success":False,"error":"User not found"})
 
-    user.pin = make_password(new_pass)
-    user.save()
-    return JsonResponse({"success":True})
+    try:
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(new_pass.encode('utf-8'), salt).decode('utf-8')
+        user.save()
+    except Exception as e:
 
+        return JsonResponse({"success":False,"error":"Server Error"},status=500)
+    return JsonResponse({"success":True})
 
 class Quals_view(ListAPIView):
     # queryset = AircraftMasters.objects.all()

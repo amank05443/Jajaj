@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import CreateProfile from "../PrepareE700/CreateProfile";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -360,6 +361,7 @@ const LoginPage = () => {
                       </Button>
                     </motion.div>
                   </div>
+
                 </div>
               </motion.div>
             </Box>

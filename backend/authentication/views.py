@@ -1,3 +1,4 @@
+import bcrypt
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -25,11 +26,12 @@ def get_csrf_token(request):
     return JsonResponse({'success': True, 'message': 'CSRF cookie set'})
 
 # Login View: Handles user authentication
+# Password Created in NAMS will be matched in e700 by using the bcrypt
 @require_POST
 def login_view(request):
     try:
         # Parse the incoming JSON request body
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         pno = data.get('pno')
         password = data.get('login_pwd')
 
@@ -40,8 +42,21 @@ def login_view(request):
         # Attempt to find the user by PNO
         user = Users.objects.filter(pno=pno).first()
 
-        if not user or not check_password(password, user.login_pwd):
+        if not user :
             return JsonResponse({'success': False, 'message': 'Invalid credentials'}, status=401)
+
+        #Get stored bcrypt hash (from Grails)
+        stored_hash = user.login_pwd
+
+        #Normalize Grails $2y$ prefix - $2bb$ (Python bcrypt uses $2b$)
+        if stored_hash.startswith('$2y$'):
+            stored_hash = "$2b$" +  stored_hash[4]
+
+        #Verify password using bcrypt
+        password_match = bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+
+        if not password_match:
+            return JsonResponse({'success': False, 'message': 'Invalid password'}, status=401)
 
         # Set the user in the session after successful login
         request.session['user_id'] = user.id  # This stores the user_id in the session
@@ -101,8 +116,12 @@ def register_view(request):
         if Users.objects.filter(pno=pno).exists():
             return JsonResponse({'success': False, 'message': 'PNO already exists'}, status=409)
 
-        hashed_password = make_password(login_pwd)
+        #hash password using bcrypt
+        #generate salt and hash
+        salt = bcrypt.gensalt() #default cost factor = 12 (safe)
+        hashed_password = bcrypt.hashpw(login_pwd.encode('utf-8'),salt).decode('utf-8')
 
+        #create user record
         Users.objects.create(user_name=user_name, rank_id=rank_id, pno=pno, login_pwd=hashed_password)
 
         return JsonResponse({'success': True, 'message': 'Profile created successfully'}, status=201)

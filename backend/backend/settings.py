@@ -76,11 +76,14 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '700NAMS',
-        'USER': 'ilmsair',
+        'NAME': 'e700',
+        'USER': 'postgres',
         'PASSWORD': 'ilmsair',
-        'HOST': '172.17.1.131',
+        'HOST': '172.17.1.174',
         'PORT': '5432',
+        'OPTIONS' : {
+            'options':'-c search_path=ilmsair_owner,public'
+        },
     }
 }
 
