@@ -96,7 +96,7 @@ def check_passkey_authentication_right_side(request):
                     return JsonResponse({"status": "OK","action": "AUTHENTICATED" , "cosl_line_id": new_id, "user": {"name": user.user_name, "rank": user.rank.abbreviation}})
                 # -------- if qualification is 'ATO' >> Then entry of that snow will be updated in COSL_table --------------#
                 # -------- authorised_by_id, status, and date will be captured in cosl table w.r.to that snow id -----------#
-                elif qualification in ['ATO']:
+                elif qualification in ['ATO','FCC', 'ACC', 'SSS']:
                     cosl_instance = ChangeOfServiceabilityLogs.objects.get(id=snow_id)
                     cosl_instance.authorised_by=UserQuals.objects.get(id=ids)
                     cosl_instance.status="3"

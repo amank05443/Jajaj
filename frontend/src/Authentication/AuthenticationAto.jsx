@@ -137,8 +137,7 @@ export default function AtoOnly({ auth }) {
                   ❌
                 </button>
                 <h2
-                  style={{ fontFamily: "algerian" }}
-                  className="font-bold flex items-center justify-center bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black rounded-lg text-xl"
+                  className="flex items-center justify-center font-bold font-algerian bg-gradient-to-r from-[#FFE6CC] via-[#87CEEB]/40 to-[#FFD5E0] h-10 dark:from-gray-600 dark:via-gray-600 dark:to-gray-600 dark:text-white text-black rounded-lg text-xl"
                 >
                   👮🏻‍♂️ ATO's AUTHENTICATION
                 </h2>
@@ -203,7 +202,7 @@ export default function AtoOnly({ auth }) {
                       <button
                         type="button"
                         onClick={() => setShowPassKey((prev) => !prev)}
-                        className=" absolute right-4  mt-2 text-grey-500 hover: text-gray-700"
+                        className=" absolute right-4  mt-2 text-grey-500 dark:text-white"
                       >
                         {showPassKey ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
@@ -216,7 +215,7 @@ export default function AtoOnly({ auth }) {
                   </div>
                   <button
                     onClick={handleSubmit}
-                    className="px-2 float-right font-bold border border-gray-400 rounded bg-green-300"
+                    className="px-2 py-1 float-right font-bold border rounded border-gray-400 dark:border-yellow-500 text-gray-800 dark:text-yellow-500 bg-gradient-to-r from-green-200 to-green-400 dark:from-green-800 dark:to-gray-500"
                   >
                     Authenticate
                   </button>
