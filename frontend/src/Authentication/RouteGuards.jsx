@@ -23,7 +23,7 @@ function InlineLoader() {
 
 export function PublicRoute({ children }) {
   const { isAuthenticated,authChecked } = useAuth();
-  const { params,initialized:paramsInitialized } = useParamsHook();
+  const { params, loading: paramsLoading } = useParamsHook();
 
     if(!authChecked){
         return<InlineLoader />
@@ -33,7 +33,7 @@ export function PublicRoute({ children }) {
         return children;
         }
 
-    if(!paramsInitialized) {
+    if(paramsLoading) {
         return <InlineLoader />
         }
 

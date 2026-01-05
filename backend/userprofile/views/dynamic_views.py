@@ -17,12 +17,13 @@ from django.views.decorators.http import require_POST, require_GET
 from rest_framework import status
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status,generics
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 import json
 from django.views.decorators.csrf import csrf_protect
 from userprofile.serializers import  (RanksSerializer,AircraftMastersSerializer,UsersSerializer,QualsSerializer,
@@ -113,8 +114,12 @@ class AircraftDetailView(APIView):
 class AircraftTypeDetailsView(ListAPIView):
     queryset = AircraftTypes.objects.all()
     serializer_class = AircraftTypesSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []  # Allow unauthenticated access
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def AircraftDetailsView(request,aircraft_type_id):
     try:
         data = list(AircraftMasters.objects.filter(aircraft_type_id=aircraft_type_id).values())

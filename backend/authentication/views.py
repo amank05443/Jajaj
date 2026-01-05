@@ -110,8 +110,8 @@ def register_view(request):
         pno = data.get('pno')
         login_pwd = data.get('login_pwd')
 
-        if not all([user_name, rank_id, pno, login_pwd]):
-            return JsonResponse({'success': False, 'message': 'All fields are required'}, status=400)
+        if not all([user_name, pno, login_pwd]):
+            return JsonResponse({'success': False, 'message': 'Name, PNO and Password are required'}, status=400)
 
         if Users.objects.filter(pno=pno).exists():
             return JsonResponse({'success': False, 'message': 'PNO already exists'}, status=409)
@@ -121,16 +121,29 @@ def register_view(request):
         salt = bcrypt.gensalt() #default cost factor = 12 (safe)
         hashed_password = bcrypt.hashpw(login_pwd.encode('utf-8'),salt).decode('utf-8')
 
+        # Generate new ID (max existing id + 1)
+        max_id = Users.objects.order_by('-id').first()
+        new_id = (max_id.id + 1) if max_id else 1
+
+        # Handle rank_id - check if rank exists, otherwise set to None
+        rank_instance = None
+        if rank_id:
+            rank_instance = Ranks.objects.filter(id=rank_id).first()
+
         #create user record
-        Users.objects.create(user_name=user_name, rank_id=rank_id, pno=pno, login_pwd=hashed_password)
+        Users.objects.create(
+            id=new_id,
+            user_name=user_name,
+            rank=rank_instance,
+            pno=pno,
+            login_pwd=hashed_password,
+            active_yn='Y'
+        )
 
         return JsonResponse({'success': True, 'message': 'Profile created successfully'}, status=201)
 
     except Exception as e:
-        print('[REGISTER ERROR]', e)
-        return JsonResponse({'success': False, 'message': 'Server error'}, status=500)
-
         import traceback
-        print('[REGISTER ERROR]',e)
+        print('[REGISTER ERROR]', e)
         traceback.print_exc()
-        return JsonResponse({'success':False,'message':'Server error'},status=500)
+        return JsonResponse({'success': False, 'message': 'Server error'}, status=500)

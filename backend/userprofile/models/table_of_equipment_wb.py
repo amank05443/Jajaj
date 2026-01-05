@@ -12,5 +12,5 @@ class TableOfEquipmentWb(models.Model):
     station = models.ForeignKey('AircraftStations', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'table_of_equipment_wb'

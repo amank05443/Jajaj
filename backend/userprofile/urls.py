@@ -10,6 +10,7 @@ from userprofile.views import (
 )
 from userprofile.views.section_5_views import getLatestUsLogEntry
 from userprofile.views.section_5_views import get_items
+from userprofile.views.section_4_views import select_search
 
 # ---------------------------------------------- For Dynamic View ---------------------------------------------------#
 dynamic_view = DynamicModelView.as_view({
@@ -64,6 +65,9 @@ urlpatterns = [
 
     # ---------------------------------------------- Section 2  ---------------------------------------------------------#
     path('api/limGridData/<int:id>/', LimGridData.as_view(), name='LimGridData'),
+
+    # ---------------------------------------------- Section 4 ----------------------------------------------------------#
+    path("api/selectSearch/",select_search),
 
     # ---------------------------------------------- Section 5  ---------------------------------------------------------#
     path('api/usLogDropDowns/', usLogDropDowns),

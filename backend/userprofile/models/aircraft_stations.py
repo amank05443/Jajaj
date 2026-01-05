@@ -9,5 +9,5 @@ class AircraftStations(models.Model):
     station_number = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'aircraft_stations'

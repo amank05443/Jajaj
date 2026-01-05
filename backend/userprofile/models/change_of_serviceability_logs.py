@@ -28,7 +28,7 @@ class ChangeOfServiceabilityLogs(models.Model):
     system_completed_date_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'change_of_serviceability_logs'
 
 # from django.db import models
@@ -59,5 +59,5 @@ class ChangeOfServiceabilityLogs(models.Model):
 #     pull = models.ForeignKey('Pulls', models.DO_NOTHING, blank=True, null=True)
 #
 #     class Meta:
-#         managed = False
+#         managed = True
 #         db_table = 'change_of_serviceability_logs'

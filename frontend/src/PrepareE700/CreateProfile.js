@@ -26,8 +26,8 @@ const CreateProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !rank || !pno || !password) {
-      setError('All fields are required');
+    if (!name || !pno || !password) {
+      setError('Name, PNO and Password are required');
       return;
     }
 
@@ -106,11 +106,12 @@ const CreateProfilePage = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    label="Rank"
+                    label="Rank (Optional)"
                     fullWidth
                     value={rank}
                     onChange={(e) => setRank(e.target.value)}
                     sx={{ backgroundColor: '#fff', borderRadius: 1 }}
+                    helperText="Leave blank if not applicable"
                   />
                 </Grid>
                 <Grid item xs={12}>

@@ -1,4 +1,6 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,7 +16,11 @@ class Quals_view(ListAPIView):
 class AircraftTypeDetailsView(ListAPIView):
     queryset = AircraftTypes.objects.all()
     serializer_class = AircraftTypesSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []  # Allow unauthenticated access
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def AircraftDetailsView(request,aircraft_type_id):
     try:
         data = list(AircraftMasters.objects.filter(aircraft_type_id=aircraft_type_id).values())

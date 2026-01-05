@@ -15,5 +15,5 @@ class ItemSerialTrails(models.Model):
     item_serial = models.ForeignKey('ItemSerials', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'item_serial_trails'

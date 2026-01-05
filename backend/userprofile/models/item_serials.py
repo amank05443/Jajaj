@@ -14,5 +14,5 @@ class ItemSerials(models.Model):
     customer = models.ForeignKey('Customers', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'item_serials'

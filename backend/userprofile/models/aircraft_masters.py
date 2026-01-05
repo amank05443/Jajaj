@@ -28,7 +28,6 @@ class AircraftMasters(models.Model):
     last_snow_no = models.BigIntegerField(blank=True, null=True)
     airframe_hrs = models.CharField(blank=True, null=True)
 
-    #   * Rearrange models' order
     class Meta:
-        managed = False
+        managed = True
         db_table = 'aircraft_masters'

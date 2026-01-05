@@ -1,0 +1,543 @@
+================================================================================
+                JWT AUTHENTICATION IMPLEMENTATION GUIDE
+                    For Offline + Sync Architecture
+================================================================================
+
+Created: December 2025
+Purpose: Secure authentication system with httpOnly cookies for e700 application
+
+================================================================================
+                            TABLE OF CONTENTS
+================================================================================
+
+1. Overview
+2. Architecture Diagram
+3. Why JWT with httpOnly Cookies?
+4. Backend Implementation
+5. Frontend Implementation
+6. Storage Strategy
+7. Token Refresh Flow
+8. Cross-System Sync Authentication
+9. API Endpoints Reference
+10. Security Considerations
+11. Troubleshooting Guide
+12. File Reference
+
+================================================================================
+                            1. OVERVIEW
+================================================================================
+
+This implementation provides a secure JWT authentication system designed for
+the offline + sync architecture where:
+
+- Users work OFFLINE on laptops during the day
+- Users SYNC with main server over LAN in the evening
+- The SAME authentication token must work on both local and main server
+
+Key Features:
+- JWT tokens stored in httpOnly cookies (XSS protection)
+- Shared secret key across all systems (laptop + server)
+- Automatic token refresh before expiry
+- Redux state management with persist for non-sensitive data
+- Backward compatibility with existing session-based auth
+
+================================================================================
+                        2. ARCHITECTURE DIAGRAM
+================================================================================
+
++-------------------------------------------------------------------+
+|                    AUTHENTICATION FLOW                             |
++-------------------------------------------------------------------+
+|                                                                    |
+|  1. USER LOGIN                                                     |
+|     +--------+      POST /api/auth/jwt/login/      +-----------+  |
+|     |  User  | ---------------------------------> | Django    |  |
+|     | (React)|      { pno, login_pwd }            | Backend   |  |
+|     +--------+                                     +-----------+  |
+|         |                                               |         |
+|         |    <-- Set-Cookie: access_token (httpOnly) ---|         |
+|         |    <-- Set-Cookie: refresh_token (httpOnly)---|         |
+|         |    <-- { success: true, user: {...} }         |         |
+|         v                                                          |
+|                                                                    |
+|  2. SUBSEQUENT REQUESTS (Token sent automatically via cookies)     |
+|     +--------+      GET /api/some-endpoint/        +-----------+  |
+|     |  User  | ---------------------------------> | Django    |  |
+|     | (React)|  Cookie: access_token=xxx          | Backend   |  |
+|     +--------+                                     +-----------+  |
+|         |                                               |         |
+|         |    <-- { data: [...] }                        |         |
+|         v                                                          |
+|                                                                    |
+|  3. TOKEN EXPIRY & REFRESH (Automatic via interceptor)             |
+|     +--------+      401 Unauthorized               +-----------+  |
+|     |  User  | ---------------------------------> | Django    |  |
+|     | (React)|                                     | Backend   |  |
+|     +--------+                                     +-----------+  |
+|         |                                                          |
+|         |      POST /api/auth/jwt/refresh/                        |
+|         | --------------------------------------->                 |
+|         |      Cookie: refresh_token=xxx                          |
+|         |                                                          |
+|         |    <-- Set-Cookie: access_token (new)                   |
+|         |    <-- Set-Cookie: refresh_token (new)                  |
+|         |                                                          |
+|         |      Retry original request                             |
+|         | --------------------------------------->                 |
+|         v                                                          |
+|                                                                    |
++-------------------------------------------------------------------+
+
+================================================================================
+                    3. WHY JWT WITH HTTPONLY COOKIES?
+================================================================================
+
+PROBLEM: Two different servers need to validate the same token
+-----------------------------------------------------------------
+
+  DAYTIME (Offline)              EVENING (LAN Sync)
+  +-------------------+          +-------------------+
+  | User logs into    |          | Same user syncs   |
+  | LOCAL Django      |    ?     | with MAIN SERVER  |
+  |                   | -------- |                   |
+  | JWT issued by     |          | JWT valid on      |
+  | LOCAL server      |          | MAIN server?      |
+  +-------------------+          +-------------------+
+
+SOLUTION: Shared JWT Secret Key
+-----------------------------------------------------------------
+
+Both local laptop Django and main server Django use the SAME
+JWT_SECRET_KEY, so tokens issued by one are valid on the other.
+
+
+WHY httpOnly COOKIES instead of localStorage?
+-----------------------------------------------------------------
+
++------------------+------------+------------------+----------------+
+| Storage Method   | XSS Safe   | Survives Refresh | Use For        |
++------------------+------------+------------------+----------------+
+| httpOnly Cookie  | YES        | YES              | JWT Tokens     |
+| localStorage     | NO         | YES              | Non-sensitive  |
+| sessionStorage   | NO         | YES              | Temp data      |
+| Redux (memory)   | YES        | NO               | Display data   |
++------------------+------------+------------------+----------------+
+
+httpOnly cookies CANNOT be accessed by JavaScript, protecting against
+XSS attacks that could steal tokens.
+
+================================================================================
+                        4. BACKEND IMPLEMENTATION
+================================================================================
+
+FILES CREATED/MODIFIED:
+-----------------------
+
+1. backend/backend/settings.py
+   - Added JWT configuration
+   - Added REST_FRAMEWORK settings
+   - Added JWT_COOKIE_SETTINGS
+
+2. backend/authentication/jwt_authentication.py (NEW)
+   - CookieJWTAuthentication class
+   - JWTTokenGenerator class
+
+3. backend/authentication/jwt_views.py (NEW)
+   - JWTLoginView
+   - JWTLogoutView
+   - JWTRefreshView
+   - JWTUserView
+   - JWTVerifyView
+
+4. backend/authentication/urls.py
+   - Added JWT endpoint routes
+
+5. backend/requirements.txt
+   - Added djangorestframework-simplejwt
+   - Added PyJWT
+
+
+SETTINGS CONFIGURATION (settings.py):
+-------------------------------------
+
+# IMPORTANT: This SECRET must be the SAME on all laptops and main server
+JWT_SECRET_KEY = 'e700-shared-jwt-secret-key-change-in-production'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=12),
+    'ROTATE_REFRESH_TOKENS': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': JWT_SECRET_KEY,
+}
+
+JWT_COOKIE_SETTINGS = {
+    'ACCESS_TOKEN_COOKIE_NAME': 'access_token',
+    'REFRESH_TOKEN_COOKIE_NAME': 'refresh_token',
+    'COOKIE_HTTPONLY': True,      # XSS Protection
+    'COOKIE_SECURE': False,       # True for HTTPS
+    'COOKIE_SAMESITE': 'Lax',     # CSRF Protection
+}
+
+================================================================================
+                        5. FRONTEND IMPLEMENTATION
+================================================================================
+
+FILES CREATED/MODIFIED:
+-----------------------
+
+1. frontend/src/Store/index.js
+   - Added Redux persist configuration
+   - Auth state NOT persisted (security)
+   - aircraft and params ARE persisted (non-sensitive)
+
+2. frontend/src/Store/authSlice.js (NEW)
+   - Redux slice for auth state
+   - Async thunks: jwtLogin, jwtLogout, jwtRefresh, jwtGetUser
+
+3. frontend/src/Authentication/axiosSetup.js
+   - Added JWT token refresh interceptor
+   - Automatic retry on 401
+
+4. frontend/src/Authentication/AuthContext.js
+   - Updated to support both JWT and session auth
+   - AUTH_MODE flag to switch between modes
+
+5. frontend/src/index.js
+   - Added Redux Provider
+   - Added PersistGate
+
+
+REDUX STORE STRUCTURE:
+----------------------
+
+store = {
+  auth: {                    // NOT persisted (security)
+    isAuthenticated: boolean,
+    user: {
+      id: number,
+      pno: string,
+      user_name: string,
+      rank_abbr: string,
+      quals: array
+    },
+    loading: boolean,
+    authChecked: boolean,
+    error: string | null
+  },
+
+  aircraft: {...},           // PERSISTED to localStorage
+  params: {...},             // PERSISTED to localStorage
+}
+
+
+USING THE AUTH CONTEXT:
+-----------------------
+
+import { useAuth } from './Authentication/AuthContext';
+
+function MyComponent() {
+  const {
+    isAuthenticated,
+    user,
+    login,
+    logout,
+    loading
+  } = useAuth();
+
+  const handleLogin = async () => {
+    const result = await login('PNO123', 'password');
+    if (result.success) {
+      // Redirect to dashboard
+    }
+  };
+
+  return (
+    <div>
+      {isAuthenticated ? (
+        <p>Welcome, {user.user_name}</p>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
+  );
+}
+
+================================================================================
+                        6. STORAGE STRATEGY
+================================================================================
+
++------------------------+-------------------+---------------------------+
+| Data Type              | Storage Location  | Reason                    |
++------------------------+-------------------+---------------------------+
+| Access Token           | httpOnly Cookie   | XSS safe, auto-sent       |
+| Refresh Token          | httpOnly Cookie   | XSS safe, auto-sent       |
+| User Info (display)    | Redux (memory)    | Re-fetched on load        |
+| aircraft_master_id     | localStorage      | Non-sensitive, persists   |
+| aircraft_type_id       | localStorage      | Non-sensitive, persists   |
+| UI preferences         | localStorage      | Non-sensitive, persists   |
++------------------------+-------------------+---------------------------+
+
+WHAT NOT TO STORE IN localStorage:
+----------------------------------
+- JWT tokens (access or refresh)
+- Passwords or PINs
+- Sensitive user data
+- Session secrets
+
+================================================================================
+                        7. TOKEN REFRESH FLOW
+================================================================================
+
+The axios interceptor automatically handles token refresh:
+
+1. Request made to API
+2. If 401 response received:
+   a. Check if it's an auth endpoint (skip refresh for these)
+   b. If already refreshing, queue the request
+   c. Call /api/auth/jwt/refresh/ endpoint
+   d. If refresh successful:
+      - New tokens set as cookies automatically
+      - Retry original request
+   e. If refresh fails:
+      - Clear auth state
+      - Redirect to login
+
+INTERCEPTOR CODE LOCATION:
+frontend/src/Authentication/axiosSetup.js
+
+================================================================================
+                    8. CROSS-SYSTEM SYNC AUTHENTICATION
+================================================================================
+
+For the offline + sync architecture to work:
+
+1. SAME JWT_SECRET_KEY on all systems
+   - Main server
+   - All laptops
+   - Set in: backend/backend/settings.py
+
+2. Users table synced from server to laptops
+   - User credentials must exist on local DB
+   - User IDs must match between systems
+
+3. Token issued locally works on main server
+   - Because same secret key validates the signature
+   - User ID in token maps to same user on both systems
+
+SYNC FLOW:
+----------
+
+  +-------------+                      +-------------+
+  |   Laptop    |                      | Main Server |
+  | Django      |                      | Django      |
+  +-------------+                      +-------------+
+        |                                     |
+        |  User logs in locally               |
+        |  JWT issued with shared secret      |
+        |                                     |
+        |  ........ work offline ........     |
+        |                                     |
+        |  Connect to LAN for sync            |
+        | ----------------------------------> |
+        |  Cookie: access_token=xxx           |
+        |                                     |
+        |  Server validates JWT               |
+        |  (same secret key = valid!)         |
+        |                                     |
+        |  <-- Sync data exchanged            |
+        |                                     |
+
+================================================================================
+                        9. API ENDPOINTS REFERENCE
+================================================================================
+
+JWT AUTHENTICATION ENDPOINTS:
+-----------------------------
+
+POST /api/auth/jwt/login/
+  Request:  { "pno": "AF1234", "login_pwd": "password" }
+  Response: { "success": true, "user": {...} }
+  Cookies:  Sets access_token and refresh_token
+
+POST /api/auth/jwt/logout/
+  Request:  {} (empty body)
+  Response: { "success": true, "message": "Logout successful" }
+  Cookies:  Clears access_token and refresh_token
+
+POST /api/auth/jwt/refresh/
+  Request:  {} (reads refresh_token from cookie)
+  Response: { "success": true, "message": "Token refreshed" }
+  Cookies:  Sets new access_token and refresh_token
+
+GET /api/auth/jwt/me/
+  Request:  (reads access_token from cookie)
+  Response: { "success": true, "user": {...} }
+  Auth:     Required
+
+GET /api/auth/jwt/verify/
+  Request:  (reads access_token from cookie)
+  Response: { "success": true, "valid": true/false }
+  Auth:     Not required
+
+
+EXISTING SESSION ENDPOINTS (still available):
+---------------------------------------------
+
+POST /login/         - Session-based login
+POST /logout/        - Session-based logout
+GET /user-profile/   - Get user via session
+
+================================================================================
+                        10. SECURITY CONSIDERATIONS
+================================================================================
+
+1. httpOnly COOKIES
+   - Tokens cannot be read by JavaScript
+   - Protects against XSS attacks
+
+2. SameSite='Lax' COOKIES
+   - Prevents CSRF from external sites
+   - Cookies only sent with same-site requests
+
+3. SHORT ACCESS TOKEN LIFETIME (30 minutes)
+   - Limits damage if token is somehow compromised
+   - Automatic refresh keeps user logged in
+
+4. LONG REFRESH TOKEN LIFETIME (12 hours)
+   - Covers full work day
+   - User doesn't need to re-login frequently
+
+5. TOKEN ROTATION
+   - New refresh token issued on each refresh
+   - Old tokens become invalid
+
+6. SHARED SECRET KEY SECURITY
+   - CHANGE the default key in production!
+   - Store securely, don't commit to git
+   - Same key must be on all authorized systems only
+
+================================================================================
+                        11. TROUBLESHOOTING GUIDE
+================================================================================
+
+ISSUE: "Not authenticated" after login
+---------------------------------------
+Cause: Cookies not being sent with requests
+Fix:   Ensure axios has withCredentials: true
+Check: axiosSetup.js line: axios.defaults.withCredentials = true;
+
+
+ISSUE: Token refresh loop
+-------------------------
+Cause: Refresh endpoint returning 401
+Fix:   Check refresh_token cookie is set
+Check: Browser DevTools > Application > Cookies
+
+
+ISSUE: CORS errors on auth requests
+-----------------------------------
+Cause: Missing CORS configuration
+Fix:   In settings.py:
+       CORS_ALLOW_CREDENTIALS = True
+       CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+
+ISSUE: Token valid on laptop but not on server
+----------------------------------------------
+Cause: Different JWT_SECRET_KEY
+Fix:   Ensure SAME key in settings.py on both systems
+
+
+ISSUE: User not found after token validation
+--------------------------------------------
+Cause: User doesn't exist in local/server database
+Fix:   Sync users table from server to laptop
+
+
+ISSUE: Redux state lost on refresh
+----------------------------------
+Expected: Auth state is NOT persisted (security)
+Fix:      App should call checkAuth() on load to restore state
+
+================================================================================
+                        12. FILE REFERENCE
+================================================================================
+
+BACKEND FILES:
+--------------
+backend/
+  backend/
+    settings.py              # JWT config, REST_FRAMEWORK settings
+  authentication/
+    __init__.py
+    views.py                 # Existing session auth (unchanged)
+    urls.py                  # Added JWT routes
+    jwt_authentication.py    # NEW: Custom JWT auth class
+    jwt_views.py             # NEW: JWT endpoints
+  requirements.txt           # Added JWT packages
+
+
+FRONTEND FILES:
+---------------
+frontend/src/
+  Store/
+    index.js                 # Redux store with persist config
+    authSlice.js             # NEW: Auth state management
+    aircraftSlice.js         # Existing (persisted)
+    paramsSlice.js           # Existing (persisted)
+  Authentication/
+    AuthContext.js           # Updated: JWT + session support
+    axiosSetup.js            # Updated: Token refresh interceptor
+    RouteGuards.jsx          # Unchanged (uses AuthContext)
+    LoginPage.jsx            # Can use new login() from context
+  index.js                   # Added Redux Provider, PersistGate
+
+
+CONFIGURATION FILES:
+--------------------
+backend/requirements.txt     # Python dependencies
+frontend/package.json        # Already has redux-persist
+
+
+================================================================================
+                            INSTALLATION STEPS
+================================================================================
+
+1. BACKEND:
+   cd backend
+   pip install -r requirements.txt
+
+2. FRONTEND:
+   cd frontend
+   npm install  (redux-persist already in package.json)
+
+3. UPDATE JWT_SECRET_KEY:
+   Edit backend/backend/settings.py
+   Change: JWT_SECRET_KEY = 'your-production-secret-key'
+
+   IMPORTANT: Use the SAME key on all systems!
+
+4. RUN MIGRATIONS (if needed):
+   python manage.py migrate
+
+5. START SERVERS:
+   Backend: python manage.py runserver
+   Frontend: npm start
+
+================================================================================
+                            SWITCHING AUTH MODES
+================================================================================
+
+To switch between JWT and session-based authentication:
+
+Edit: frontend/src/Authentication/AuthContext.js
+
+Change line 16:
+  const AUTH_MODE = 'jwt';     // For JWT with httpOnly cookies
+  OR
+  const AUTH_MODE = 'session'; // For backward compatibility
+
+================================================================================
+                                END OF GUIDE
+================================================================================

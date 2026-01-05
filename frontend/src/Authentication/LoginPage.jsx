@@ -19,6 +19,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LockOutlineIcon from "@mui/icons-material/LockOutlined";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthContext";
@@ -29,7 +30,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated, setUser, user } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, setUser, user, login } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -57,30 +58,16 @@ const LoginPage = () => {
     }
 
     try {
-      const csrfToken = Cookies.get("csrftoken");
-      const response = await axios.post(
-        "http://localhost:8000/login/",
-        { pno, login_pwd },
-        {
-          headers: {
-            "X-CSRFToken": csrfToken,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        },
-      );
+      // Use login function from AuthContext (handles both JWT and session modes)
+      const result = await login(pno, login_pwd);
 
-      if (response.data.success) {
-        setUser(response.data.user);
-        setIsAuthenticated(true);
+      if (result.success) {
         navigate("/e700", { replace: true });
       } else {
-        setError("Invalid credentials");
-        setIsAuthenticated(false);
-        setUser(null);
+        setError(result.message || "Invalid credentials");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.message || "Login failed");
     }
   };
 
@@ -362,6 +349,34 @@ const LoginPage = () => {
                     </motion.div>
                   </div>
 
+                </div>
+                {/*  ------------------------------------------ For create profile -------------------------------------------- */}
+                <div className="grid grid-rows-2 border rounded-lg mt-2 ">
+                  <div className="flex item-center justify-center text-sm text-purple-500 mt-2 ">
+                    👉 New user? Create your profile here.
+                  </div>
+                  <div className="flex item-center justify-center p-1 mb-1">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      style={{ marginTop: "1%" }}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{
+                          fontWeight: "bold",
+                          background: "linear-gradient(90deg,#6366F1,#8B5CF6)",
+                          boxShadow: "0 6px 18px rgba(99,102,241,0.18)",
+                          minWidth: 140,
+                        }}
+                        disabledElevation
+                        onClick={() => navigate("/create-profile")}
+                      >
+                        <PersonAddIcon sx={{ mr: 1 }} />
+                        CREATE PROFILE
+                      </Button>
+                    </motion.div>
+                  </div>
                 </div>
               </motion.div>
             </Box>

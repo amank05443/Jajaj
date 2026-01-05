@@ -29,17 +29,22 @@ export default function AppLayout() {
       )}
       <div className={`flex flex-1 ${isAuthenticated ? "pt-14" : ""}`}>
         {showSidebar && (
-          <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} closeSidebar={closeSidebar}/>
+          <Sidebar
+            open={sidebarOpen}
+            toggleSidebar={toggleSidebar}
+            closeSidebar={closeSidebar}
+          />
         )}
         <main
-          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out
-                        ${showSidebar ? (sidebarOpen ? "ml-[287px]" : "ml-[67px]") : "ml-0"} `}
+          className="flex-1 overflow-auto transition-all duration-300 ease-in-out ml-0"
+          /*  className={`flex-1 overflow-auto transition-all duration-300 ease-in-out
+                         ${showSidebar ? (sidebarOpen ? "ml-[287px]" : "ml-[67px]") : "ml-0"} `} */ /* this is commented in order to change the sidebar-related page shrinking removal */
         >
           <div
             className="h-full pl-0 pt-3 pr-2 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-cyan-500/30
             scrollbar-track-transparent hover:scrollbar-thumb-cyan-500/50"
           >
-              <Outlet />
+            <Outlet />
           </div>
         </main>
       </div>

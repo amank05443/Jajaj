@@ -24,5 +24,5 @@ class CurrentOperatingDataWb(models.Model):
     date_authenticated = models.DateField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'current_operating_data_wb'

@@ -1,6 +1,6 @@
 # userprofile/serializers.py
 from rest_framework import serializers
-# from .models import  Users, Quals, Trades ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
+# from .models import  Users, Quals ,Ranks, UserQuals, AircraftMasters, AircraftTypes, AircraftRoles,ChangeOfServiceabilityLogs, FuelTanks, EcuMasters, TyrePressures, Pols, Systems,Customers
 
 from .models import Users, Quals, Ranks, AircraftMasters, AircraftTypes, AircraftRoles, ChangeOfServiceabilityLogs, \
     FuelTanks, EcuMasters,SecurityQuestions, TyrePressures, Pols, Systems, Customers, HowFoundDefects, EntryTypes,Items,Trades,UserQuals,LimDefrDefHusLogs,ChangeOfServiceabilityLogLines, Softwares, SoftwareLines
@@ -54,8 +54,6 @@ class UsersSerializer(serializers.ModelSerializer):
         model = Users
         fields = '__all__'
 
-
-
 class QualsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quals
@@ -70,6 +68,21 @@ class UserQualsSerializer(serializers.ModelSerializer):
     user = UsersSerializer(read_only=True)
     class Meta:
         model = UserQuals
+        fields = '__all__'
+
+class UserQualsSerializerForFlyingOps(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
+    qual = QualsSerializer(read_only=True)
+    # trade = TradesSerializer(read_only=True)
+    class Meta:
+        model = UserQuals
+        fields = '__all__'
+
+class UsersSerializerForFlyingOps(serializers.ModelSerializer):
+    userQualsTrade=UserQualsSerializerForFlyingOps(many=True, read_only=True)
+    rank = RanksSerializer(read_only=True)
+    class Meta:
+        model = Users
         fields = '__all__'
 
 class AircraftMastersSerializer(serializers.ModelSerializer):

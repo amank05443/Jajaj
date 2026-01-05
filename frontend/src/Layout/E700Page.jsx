@@ -52,8 +52,11 @@ const E700Page = () => {
   useEffect(() => {
     if (selectedAircraftType) {
       axios
-        .get(`/api/aircraft-details/${selectedAircraftType}`)
-        .then((response) => setAircraftDetails(response.data));
+        .get(`http://localhost:8000/api/aircraft-details/${selectedAircraftType}`)
+        .then((response) => setAircraftDetails(response.data))
+        .catch((error) => {
+          console.error("Error fetching Aircraft Details", error);
+        });
     } else {
       setAircraftDetails([]);
     }

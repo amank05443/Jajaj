@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 from corsheaders.defaults import default_headers
 
 
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
 
     # Your apps
@@ -77,13 +79,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'e700',
-        'USER': 'postgres',
+        'USER': 'aman',
         'PASSWORD': 'ilmsair',
-        'HOST': '172.17.1.174',
+        'HOST': 'localhost',
         'PORT': '5432',
-        'OPTIONS' : {
-            'options':'-c search_path=ilmsair_owner,public'
-        },
+       
     }
 }
 
@@ -137,3 +137,63 @@ SESSION_COOKIE_SECURE = False# Set True only for HTTPS in production
 SESSION_COOKIE_AGE = 9000 #inactivity based log out set session expiry time
 SESSION_SAVE_EVERY_REQUEST = True # Reset timer for each request
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# =====================================================
+# JWT AUTHENTICATION CONFIGURATION
+# For offline + sync architecture with httpOnly cookies
+# =====================================================
+
+# IMPORTANT: This SECRET_KEY must be the SAME on all laptops and the main server
+# for JWT tokens to be valid across all systems during sync
+JWT_SECRET_KEY = 'e700-shared-jwt-secret-key-change-in-production-must-be-same-on-all-systems'
+
+# REST Framework configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'authentication.jwt_authentication.CookieJWTAuthentication',  # Custom JWT from httpOnly cookie
+        'rest_framework.authentication.SessionAuthentication',  # Keep existing session auth
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# Simple JWT Configuration
+SIMPLE_JWT = {
+    # Token lifetimes - designed for offline work scenario
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),      # Short-lived for security
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=12),       # 12 hours covers full work day
+    'ROTATE_REFRESH_TOKENS': True,                       # New refresh token on each refresh
+    'BLACKLIST_AFTER_ROTATION': False,                   # Don't blacklist (no DB dependency)
+
+    # Signing configuration - MUST be same across all systems
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': JWT_SECRET_KEY,                       # Use shared secret
+    'VERIFYING_KEY': None,
+
+    # Token type
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    # Token claims
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    # Sliding token (not used, but configured)
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(hours=12),
+}
+
+# JWT Cookie Configuration (for httpOnly cookies)
+JWT_COOKIE_SETTINGS = {
+    'ACCESS_TOKEN_COOKIE_NAME': 'access_token',
+    'REFRESH_TOKEN_COOKIE_NAME': 'refresh_token',
+    'COOKIE_HTTPONLY': True,           # Cannot be accessed by JavaScript (XSS safe)
+    'COOKIE_SECURE': False,            # False for localhost (no HTTPS), True in production
+    'COOKIE_SAMESITE': 'Lax',          # Prevents CSRF from external sites
+    'COOKIE_PATH': '/',                # Available for all paths
+    'COOKIE_DOMAIN': None,             # None = current domain only
+}
