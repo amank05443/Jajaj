@@ -204,11 +204,11 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
           {item.to ? (
             <Link
               to={item.to}
-              className={`group flex items-center h-11 px-4 rounded-2xl transition-all duration-300 relative overflow-hidden border
+              className={`group flex items-center h-11 px-4 rounded-lg transition-all duration-300 relative overflow-hidden border
                         ${
                           isActive
-                            ? "bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 text-cyan-300 border-cyan-500/40 shadow-lg shadow-cyan-500/20"
-                            : "text-slate-400 hover:text-cyan-300 hover:bg-gradient-to-r hover:from-cyan-500/5 hover:to-purple-500/5 border-transparent hover:border-cyan-500/20 hover:shadow-md"
+                            ? "bg-blue-600 dark:bg-blue-500 text-white border-blue-400 dark:border-blue-600 shadow-lg shadow-blue-500/30"
+                            : "text-slate-300 dark:text-slate-700 hover:text-white dark:hover:text-slate-900 hover:bg-blue-500/80 dark:hover:bg-blue-200 border-transparent hover:border-blue-400/50 dark:hover:border-blue-500/50 hover:shadow-md"
                         }`}
             >
               <div
@@ -220,7 +220,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
                   </span>
                 )}
                 {open && (
-                  <span className="font-semibold truncate relative z-10 text-lg ml-3">
+                  <span className="font-semibold truncate relative z-10 text-sm ml-3">
                     {item.label}
                   </span>
                 )}
@@ -229,11 +229,11 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
           ) : (
             <button
               onClick={handleToggle}
-              className={`group flex items-center justify-between w-full h-11 px-4 rounded-2xl transition-all duration-300 relative overflow-hidden border
+              className={`group flex items-center justify-between w-full h-11 px-4 rounded-lg transition-all duration-300 relative overflow-hidden border
                         ${
                           isExpanded
-                            ? "bg-gradient-to-r from-purple-500/15 to-indigo-500/15 text-purple-300 border-purple-500/30 shadow-lg shadow-purple-500/10"
-                            : "text-slate-400 hover:text-purple-300 hover:bg-gradient-to-r hover:from-purple-500/5 hover:to-indigo-500/5 border-transparent hover:border-purple-500/20"
+                            ? "bg-sky-600 dark:bg-sky-400 text-white dark:text-slate-900 border-sky-500 dark:border-sky-500 shadow-lg shadow-sky-500/20"
+                            : "text-slate-300 dark:text-slate-700 hover:text-white dark:hover:text-slate-900 hover:bg-sky-500/80 dark:hover:bg-sky-200 border-transparent hover:border-sky-400/50 dark:hover:border-sky-500/50"
                         }`}
               type="button"
               disabled={!open}
@@ -247,14 +247,14 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
                   </span>
                 )}
                 {open && (
-                  <span className="font-semibold truncate text-lg ml-3">
+                  <span className="font-semibold truncate text-sm ml-3">
                     {item.label}
                   </span>
                 )}
               </div>
               {open && hasChildren && (
                 <motion.span
-                  className="flex-shrink-0 relative z-10 text-purple-400"
+                  className="flex-shrink-0 relative z-10"
                   animate={{ rotate: isExpanded ? 90 : 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                 >
@@ -272,7 +272,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="ml-5 border-l border-gray-200 overflow-hidden"
+            className="ml-5 border-l-2 border-blue-400 dark:border-blue-500 overflow-hidden"
           >
             <div className="py-1 pl-2">
               {item.children.map((child) => (
@@ -351,17 +351,17 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
     <motion.aside
       animate={{ width: shouldBeOpen ? 280 : 60 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed top-16 left-0 h-[calc(100vh-4rem)] bg-gradient-to-br from-slate-900 to-gray-50 via-slate-800 to-slate-900
-       to-blue-50 shadow-lg flex flex-col select-none z-20 overflow-hidden shadow-2xl shadow-cyan-500/5"
+      className="fixed top-16 left-0 h-[calc(100vh-4rem)]
+      bg-gradient-to-b from-slate-800 via-slate-900 to-slate-800
+      dark:from-slate-50 dark:via-slate-100 dark:to-slate-50
+      border-r-2 border-blue-500/30 dark:border-blue-600/40
+      shadow-xl shadow-blue-900/20 dark:shadow-blue-500/10
+      flex flex-col select-none z-20 overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={sidebarRef}
     >
-      {/*       <div className="absolute inset-0 overflow-hidden"> */}
-      {/*         <div className="absolute top-10 left-4 w-20 h-20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl animate-pulse"></div> */}
-      {/*         <div className="absolute bottom-20 right-4 w-16 h-16 bg-gradient-ro-r from-purple-500/10 to-indigo-500/10 rounded-full blur-xl animate-pulse delay-1000"></div> */}
-      {/*       </div> */}
-      <nav className="flex flex-col p-2 space-y-1 overflow-y-auto flex-1">
+      <nav className="flex flex-col p-3 space-y-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
         {sidebarLinks.map((item) => (
           <SidebarItem
             key={item.label}
@@ -372,13 +372,15 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
           />
         ))}
       </nav>
-      <div className="mt-auto p-2 border-t border-cyan-500/20 relative z-10">
+      <div className="mt-auto p-3 border-t-2 border-blue-500/30 dark:border-blue-600/40 relative z-10
+      bg-slate-900/50 dark:bg-slate-100/50">
         <div className="flex items-center space-x-2">
-          <motion.div whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
             <Tooltip title="Account Settings">
               <IconButton
                 onClick={handleAccountClick}
-                className="p-0 hover:bg-cyan-500/20 transition-all duration-300 rounded-xl"
+                className="p-0 hover:bg-blue-500/20 dark:hover:bg-blue-200/50 transition-all duration-300 rounded-xl"
+                sx={{ backgroundColor: 'transparent' }}
               >
                 <Avatar
                   src={user.avatarUrl}
@@ -386,8 +388,9 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
                   sx={{
                     width: shouldBeOpen ? 40 : 32,
                     height: shouldBeOpen ? 40 : 32,
-                    border: "2px solid rgba(34,211,238,0.5)",
-                    boxShadow: "0 0 20px rgba(34,211,238,0.6)",
+                    border: "2px solid rgba(59,130,246,0.6)",
+                    bgcolor: "primary.main",
+                    fontWeight: 'bold'
                   }}
                 >
                   {user.name?.[0]}
@@ -403,7 +406,7 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             <Box sx={{ px: 2, py: 1 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                 {user.name}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -445,9 +448,9 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
             <Divider />
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
-                <Logout />{" "}
+                <Logout />
               </ListItemIcon>
-              logout
+              Logout
             </MenuItem>
           </Menu>
 
@@ -458,10 +461,10 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
               transition={{ delay: 0.1 }}
               className="flex-1 min-w-0"
             >
-              <div className="text-white text-sm font-medium truncate">
+              <div className="text-white dark:text-slate-900 text-sm font-semibold truncate">
                 {user.name}
               </div>
-              <div className="text-cyan-400 text-xs truncate">{user.rank}</div>
+              <div className="text-blue-300 dark:text-blue-600 text-xs truncate font-medium">{user.rank}</div>
             </motion.div>
           )}
 
@@ -470,19 +473,17 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
               <Tooltip title="Logout">
                 <IconButton
                   onClick={handleLogout}
-                  className="transition-all duration-300 rounded-xl shadow-lg"
+                  className="transition-all duration-300 rounded-lg"
                   sx={{
                     backgroundColor: "transparent",
-                    color: "#f87171",
-                    border: "1px solid rgba(239,68,68,0.3)",
-                    boxShadow: "0 0 10px rgba(239,68,68,0.7)",
+                    color: "#ef4444",
+                    border: "1px solid rgba(239,68,68,0.4)",
                     "&:hover": {
                       backgroundColor: "rgba(239,68,68,0.15)",
-                      color: "#fecaca",
-                      boxShadow: "0 0 20px rgba(239,68,68,0.9)",
+                      borderColor: "rgba(239,68,68,0.6)",
                     },
                   }}
-                  size="medium"
+                  size="small"
                 >
                   <Logout size={18} />
                 </IconButton>
