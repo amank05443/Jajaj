@@ -1,17 +1,58 @@
 /* DashboardCards.css */
 
 /**
- * UPDATED CODE - Aircraft Theme Redesign
- * Changes: Larger cards (280px), enhanced gradients, improved hover effects
- * Modified: Card styling with aircraft-themed colors and dark mode support
+ * PREMIUM AIRLINE DASHBOARD STYLES
+ * Enterprise-grade design for professional aviation operations
+ * Features: Modern glass-morphism, professional animations, airline industry aesthetics
  */
 
-.card-grid {
+/* Premium Dashboard Container */
+.premium-dashboard-container {
+  padding: 32px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Dark mode support */
+.dark .premium-dashboard-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
+}
+
+/* Status Metrics Cards */
+.metric-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Premium Card Grid */
+.premium-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 30px;
-  padding: 30px;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card {
@@ -130,7 +171,239 @@
   box-shadow: 0 12px 30px rgba(250, 204, 21, 0.5);
 }
 
+/* Premium Aviation Cards */
+.premium-card {
+  position: relative;
+  text-decoration: none;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  animation: cardSlideIn 0.6s ease-out backwards;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--card-color), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+.premium-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Card Badge */
+.card-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Icon Wrapper */
+.card-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--card-color), var(--card-color-dark));
+  border-radius: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px var(--card-shadow);
+  transition: all 0.3s;
+}
+
+.premium-card:hover .card-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 32px var(--card-shadow);
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Card Content */
+.card-title {
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.3px;
+}
+
+.card-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  flex-grow: 1;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.access-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.arrow {
+  color: var(--card-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: transform 0.3s;
+}
+
+.premium-card:hover .arrow {
+  transform: translateX(6px);
+}
+
+/* Aviation Color Themes */
+.aviation-blue {
+  --card-color: #3b82f6;
+  --card-color-dark: #2563eb;
+  --card-shadow: rgba(59, 130, 246, 0.4);
+}
+
+.aviation-red {
+  --card-color: #ef4444;
+  --card-color-dark: #dc2626;
+  --card-shadow: rgba(239, 68, 68, 0.4);
+}
+
+.aviation-green {
+  --card-color: #10b981;
+  --card-color-dark: #059669;
+  --card-shadow: rgba(16, 185, 129, 0.4);
+}
+
+.aviation-purple {
+  --card-color: #8b5cf6;
+  --card-color-dark: #7c3aed;
+  --card-shadow: rgba(139, 92, 246, 0.4);
+}
+
+.aviation-orange {
+  --card-color: #f97316;
+  --card-color-dark: #ea580c;
+  --card-shadow: rgba(249, 115, 22, 0.4);
+}
+
+.aviation-cyan {
+  --card-color: #06b6d4;
+  --card-color-dark: #0891b2;
+  --card-shadow: rgba(6, 182, 212, 0.4);
+}
+
+.aviation-gold {
+  --card-color: #f59e0b;
+  --card-color-dark: #d97706;
+  --card-shadow: rgba(245, 158, 11, 0.4);
+}
+
+.aviation-teal {
+  --card-color: #14b8a6;
+  --card-color-dark: #0d9488;
+  --card-shadow: rgba(20, 184, 166, 0.4);
+}
+
 /* Dark Mode Support */
+.dark .premium-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-title {
+  color: #0f172a;
+}
+
+.dark .card-description {
+  color: #475569;
+}
+
+.dark .access-text {
+  color: #64748b;
+}
+
+.dark .card-badge {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+}
+
+.dark .card-footer {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .premium-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .premium-dashboard-container {
+    padding: 20px;
+  }
+
+  .premium-card-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .premium-card {
+    padding: 24px;
+  }
+}
+
+/* Old card styles (kept for compatibility) */
 @media (prefers-color-scheme: dark) {
   .card {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
