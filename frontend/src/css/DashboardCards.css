@@ -1,5 +1,11 @@
 /* DashboardCards.css */
 
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Larger cards (280px), enhanced gradients, improved hover effects
+ * Modified: Card styling with aircraft-themed colors and dark mode support
+ */
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

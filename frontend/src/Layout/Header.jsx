@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Professional blue color scheme, improved dark/light mode support
+ * Modified: Header component with aircraft branding and theme toggle
+ */
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useThemeMode } from "./ThemeProvider";

@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Updated background colors for dark/light mode, blue-themed scrollbar
+ * Modified: Main layout container with consistent background gradients
+ */
+
 import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";

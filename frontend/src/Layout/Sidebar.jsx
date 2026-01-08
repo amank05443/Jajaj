@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Blue navigation theme, improved text visibility in both light/dark modes
+ * Modified: Sidebar navigation items, user profile section, and expandable menus
+ */
+
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";

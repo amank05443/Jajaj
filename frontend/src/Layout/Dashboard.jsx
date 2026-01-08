@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Added dark/light mode background support with blue gradient theme
+ * Modified: Dashboard container styling and video opacity for better visibility
+ */
+
 import React, { useEffect, useRef } from "react";
 import DashboardCards from "./DashboardCards";
 import "../css/Dashboard.css";
