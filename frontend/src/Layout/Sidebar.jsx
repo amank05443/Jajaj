@@ -210,11 +210,11 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
           {item.to ? (
             <Link
               to={item.to}
-              className={`group flex items-center h-11 px-4 rounded-lg transition-all duration-300 relative overflow-hidden border
+              className={`group flex items-center h-11 px-3 rounded-xl transition-all duration-300 relative overflow-hidden
                         ${
                           isActive
-                            ? "bg-blue-600 dark:bg-blue-500 text-white border-blue-400 dark:border-blue-600 shadow-lg shadow-blue-500/30"
-                            : "text-slate-300 dark:text-slate-700 hover:text-white dark:hover:text-slate-900 hover:bg-blue-500/80 dark:hover:bg-blue-200 border-transparent hover:border-blue-400/50 dark:hover:border-blue-500/50 hover:shadow-md"
+                            ? "bg-blue-500/20 dark:bg-blue-500/15 text-white dark:text-slate-900 shadow-lg backdrop-blur-sm border border-blue-400/30 dark:border-blue-500/30"
+                            : "text-slate-300 dark:text-slate-600 hover:text-white dark:hover:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50 border border-transparent hover:border-white/20 dark:hover:border-slate-300"
                         }`}
             >
               <div
@@ -235,11 +235,11 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
           ) : (
             <button
               onClick={handleToggle}
-              className={`group flex items-center justify-between w-full h-11 px-4 rounded-lg transition-all duration-300 relative overflow-hidden border
+              className={`group flex items-center justify-between w-full h-11 px-3 rounded-xl transition-all duration-300 relative overflow-hidden
                         ${
                           isExpanded
-                            ? "bg-sky-600 dark:bg-sky-400 text-white dark:text-slate-900 border-sky-500 dark:border-sky-500 shadow-lg shadow-sky-500/20"
-                            : "text-slate-300 dark:text-slate-700 hover:text-white dark:hover:text-slate-900 hover:bg-sky-500/80 dark:hover:bg-sky-200 border-transparent hover:border-sky-400/50 dark:hover:border-sky-500/50"
+                            ? "bg-blue-500/20 dark:bg-blue-500/15 text-white dark:text-slate-900 border border-blue-400/30 dark:border-blue-500/30 backdrop-blur-sm"
+                            : "text-slate-300 dark:text-slate-600 hover:text-white dark:hover:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50 border border-transparent hover:border-white/20 dark:hover:border-slate-300"
                         }`}
               type="button"
               disabled={!open}
@@ -278,7 +278,7 @@ function SidebarItem({ item, open, expandedItems, toggleExpand }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="ml-5 border-l-2 border-blue-400 dark:border-blue-500 overflow-hidden"
+            className="ml-5 border-l-2 border-blue-400/30 dark:border-blue-500/30 overflow-hidden"
           >
             <div className="py-1 pl-2">
               {item.children.map((child) => (
@@ -358,15 +358,23 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
       animate={{ width: shouldBeOpen ? 280 : 60 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed top-16 left-0 h-[calc(100vh-4rem)]
-      bg-gradient-to-b from-slate-800 via-slate-900 to-slate-800
-      dark:from-slate-50 dark:via-slate-100 dark:to-slate-50
-      border-r-2 border-blue-500/30 dark:border-blue-600/40
-      shadow-xl shadow-blue-900/20 dark:shadow-blue-500/10
       flex flex-col select-none z-20 overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={sidebarRef}
+      style={{
+        background: 'rgba(15, 23, 42, 0.7)',
+        backdropFilter: 'blur(20px)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '4px 0 24px rgba(0, 0, 0, 0.1)'
+      }}
     >
+      <style>{`
+        .dark aside {
+          background: rgba(248, 250, 252, 0.95) !important;
+          border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+      `}</style>
       <nav className="flex flex-col p-3 space-y-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
         {sidebarLinks.map((item) => (
           <SidebarItem
@@ -378,15 +386,28 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
           />
         ))}
       </nav>
-      <div className="mt-auto p-3 border-t-2 border-blue-500/30 dark:border-blue-600/40 relative z-10
-      bg-slate-900/50 dark:bg-slate-100/50">
+      <div className="mt-auto p-3 border-t border-white/10 dark:border-slate-300/50 relative z-10"
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <style>{`
+          .dark aside > div:last-child {
+            background: rgba(226, 232, 240, 0.5) !important;
+          }
+        `}</style>
         <div className="flex items-center space-x-2">
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Tooltip title="Account Settings">
               <IconButton
                 onClick={handleAccountClick}
-                className="p-0 hover:bg-blue-500/20 dark:hover:bg-blue-200/50 transition-all duration-300 rounded-xl"
-                sx={{ backgroundColor: 'transparent' }}
+                sx={{
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  '&:hover': {
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                  }
+                }}
               >
                 <Avatar
                   src={user.avatarUrl}
@@ -394,9 +415,10 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
                   sx={{
                     width: shouldBeOpen ? 40 : 32,
                     height: shouldBeOpen ? 40 : 32,
-                    border: "2px solid rgba(59,130,246,0.6)",
-                    bgcolor: "primary.main",
-                    fontWeight: 'bold'
+                    border: "2px solid rgba(59,130,246,0.4)",
+                    bgcolor: "#3b82f6",
+                    fontWeight: 'bold',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
                   }}
                 >
                   {user.name?.[0]}
@@ -475,23 +497,25 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
           )}
 
           {shouldBeOpen && (
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Tooltip title="Logout">
                 <IconButton
                   onClick={handleLogout}
-                  className="transition-all duration-300 rounded-lg"
                   sx={{
-                    backgroundColor: "transparent",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
                     color: "#ef4444",
-                    border: "1px solid rgba(239,68,68,0.4)",
+                    border: "1px solid rgba(239,68,68,0.3)",
+                    borderRadius: '10px',
+                    padding: '8px',
                     "&:hover": {
-                      backgroundColor: "rgba(239,68,68,0.15)",
-                      borderColor: "rgba(239,68,68,0.6)",
+                      backgroundColor: "rgba(239,68,68,0.2)",
+                      borderColor: "rgba(239,68,68,0.5)",
                     },
+                    transition: 'all 0.3s'
                   }}
                   size="small"
                 >
-                  <Logout size={18} />
+                  <Logout size={16} />
                 </IconButton>
               </Tooltip>
             </motion.div>

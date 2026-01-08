@@ -94,118 +94,140 @@ export default function Header({
   };
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900
-      dark:from-slate-100 dark:via-blue-50 dark:to-slate-100
-      backdrop-blur-xl border-b-2 border-blue-500/30 dark:border-blue-600/50
-      flex items-center px-4 z-30 shadow-xl shadow-blue-900/20 dark:shadow-blue-500/10"
+      className="fixed top-0 left-0 right-0 h-16
+      bg-white/10 dark:bg-white/90
+      backdrop-blur-2xl
+      border-b border-white/20 dark:border-slate-200
+      flex items-center px-6 z-30
+      shadow-lg shadow-black/5 dark:shadow-slate-200/20"
       initial={{ y: -56 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
+      style={{
+        background: 'rgba(15, 23, 42, 0.7)',
+      }}
     >
+      <style>{`
+        .dark header {
+          background: rgba(248, 250, 252, 0.95) !important;
+        }
+      `}</style>
       <div className="flex items-center justify-between w-full gap-4">
-        {" "}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {showSidebarToggle && (
             <IconButton
               onClick={toggleSidebar}
               edge="start"
               aria-label="toggle sidebar"
               size="large"
-              className="text-blue-300 dark:text-blue-700 hover:text-white dark:hover:text-blue-900
-              hover:bg-blue-500/20 dark:hover:bg-blue-200/50
-              transition-all duration-300 border border-blue-400/30 dark:border-blue-600/40 rounded-xl"
               sx={{
-                color: 'inherit',
-                '&:hover': { backgroundColor: 'transparent' }
+                color: 'white',
+                backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                borderRadius: '12px',
+                '&:hover': {
+                  backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                  border: '1px solid rgba(59, 130, 246, 0.5)',
+                },
+                '.dark &': {
+                  color: '#1e293b',
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                },
+                transition: 'all 0.3s'
               }}
             >
-              <MenuIcon size={24} />
+              <MenuIcon size={22} />
             </IconButton>
           )}
           <div
-            className="w-10 h-10 mr-1 bg-gradient-to-br from-blue-500 via-sky-400 to-blue-600
-            dark:from-blue-600 dark:via-sky-500 dark:to-blue-700
-            rounded-lg flex items-center justify-center
-            shadow-lg shadow-blue-500/50 dark:shadow-blue-600/40
-            rotate-3 hover:rotate-0 transition-transform duration-300 cursor-pointer
-            border-2 border-blue-400/50 dark:border-blue-500/60"
+            className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate("/exp1")}
           >
-            <Plane size={24} className="text-white" />
-          </div>
-          <div>
-            <Typography
-              variant="h6"
-              component="h1"
-              className="font-bold text-white dark:text-slate-900 text-lg tracking-wide uppercase"
-              sx={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}
+            <div
+              className="w-11 h-11 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700
+              dark:from-blue-500 dark:via-blue-600 dark:to-blue-700
+              rounded-xl flex items-center justify-center
+              shadow-lg shadow-blue-500/40 dark:shadow-blue-500/30
+              hover:scale-105 transition-transform duration-300
+              border border-blue-400/30"
             >
-              E-700
-            </Typography>
-            <div className="text-blue-300 dark:text-blue-600 text-xs font-mono font-semibold">
-              Aircraft Log
+              <Plane size={22} className="text-white" />
+            </div>
+            <div>
+              <Typography
+                variant="h6"
+                component="h1"
+                className="font-bold text-white dark:text-slate-900 text-lg tracking-wide"
+                sx={{
+                  fontFamily: 'system-ui, -apple-system, sans-serif',
+                  letterSpacing: '0.02em',
+                  fontWeight: 700
+                }}
+              >
+                E-700 SYSTEM
+              </Typography>
+              <div className="text-blue-200 dark:text-blue-600 text-[10px] font-semibold tracking-wider uppercase">
+                Aircraft Management
+              </div>
             </div>
           </div>
         </div>
-        {
-          <div>
-            {!loading && data.side_no && data.aircraft_name && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
-                <Box display="flex" gap={3} flexWrap="wrap" alignItems="center">
-                  <Typography
-                    variant="h5"
-                    className="font-bold text-white dark:text-slate-900 tracking-wide"
-                    sx={{
-                      fontFamily: 'Arial, sans-serif',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                    }}
-                  >
-                    {data.aircraft_name} - {data.side_no}
-                  </Typography>
-                </Box>
-              </motion.div>
-            )}
-          </div>
-        }
-        {/* Notifications */}
-        <div className="flex items-center gap-3">
-          <Menu
-            anchorE1={notifAnchor}
-            open={Boolean(notifAnchor)}
-            onClose={handleNotifClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "bottom", horizontal: "right" }}
-            PaperProps={{ sx: { mt: 1.2, minWidth: 240 } }}
-          >
-            <MenuItem>New System Update Available.</MenuItem>
-            <Divider />
-            <MenuItem>Task Completed Successfully.</MenuItem>
-            <Divider />
-            <MenuItem>Server load high.</MenuItem>
-          </Menu>
 
+        {/* Aircraft Info */}
+        <div className="flex-1 flex justify-center">
+          {!loading && data.side_no && data.aircraft_name && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <Box
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  padding: '8px 24px',
+                }}
+                className="dark:bg-white/80 dark:border-slate-300"
+              >
+                <Typography
+                  variant="h6"
+                  className="font-bold text-white dark:text-slate-900 tracking-wide text-center"
+                  sx={{
+                    fontFamily: 'system-ui, sans-serif',
+                    fontSize: '1.1rem',
+                    fontWeight: 700
+                  }}
+                >
+                  {data.aircraft_name} - {data.side_no}
+                </Typography>
+              </Box>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Theme Toggle */}
+        <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg
-            bg-slate-800 dark:bg-slate-200
-            text-blue-300 dark:text-blue-700
-            border border-blue-400/30 dark:border-blue-500/50
-            hover:bg-slate-700 dark:hover:bg-slate-300
-            shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl
+            bg-white/10 dark:bg-slate-800/80
+            text-white dark:text-slate-900
+            border border-white/20 dark:border-slate-300
+            hover:bg-white/20 dark:hover:bg-slate-700/80
+            backdrop-blur-md
+            shadow-md hover:shadow-lg transition-all duration-300 font-semibold text-sm"
           >
             {mode === "light" ? (
               <>
-                <Moon className="w-5 h-5" />
-                <span className="text-sm">Dark</span>
+                <Moon className="w-4 h-4" />
+                <span>Dark</span>
               </>
             ) : (
               <>
-                <Sun className="w-5 h-5" />
-                <span className="text-sm">Light</span>
+                <Sun className="w-4 h-4" />
+                <span>Light</span>
               </>
             )}
           </button>
