@@ -15,8 +15,9 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-body">
+    <div className="dashboard-container bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900
+    dark:from-slate-100 dark:via-blue-50 dark:to-slate-100 min-h-screen">
+      <div className="dashboard-body relative">
         <video
           /* src="/images/migVideo.mp4" */
           type="video/mp4"
@@ -25,7 +26,7 @@ function Dashboard() {
           muted
           loop
           playsInline
-          className="dashboard-video"
+          className="dashboard-video opacity-20 dark:opacity-10"
           style={{
             borderRadius: "20px",
             filter: "blur(0px)",
@@ -37,8 +38,6 @@ function Dashboard() {
             WebkitMaskComposite: "intersect",
             maskComposite: "intersect",
             WebkitMaskRepeat: "no-repeat",
-            width: "auto",
-            height: "auto",
             width: "100%",
             objectFit: "cover",
             display: "block",

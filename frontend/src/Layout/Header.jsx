@@ -88,8 +88,10 @@ export default function Header({
   };
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 dark:from-gray-600 dark:via-gray-800 dark:to-gray-600
-    backdrop-blur-xl border-b border-cyan-500/20 flex items-center px-4 z-30 shadow-2xl shadow-purple-500/10"
+      className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900
+      dark:from-slate-100 dark:via-blue-50 dark:to-slate-100
+      backdrop-blur-xl border-b-2 border-blue-500/30 dark:border-blue-600/50
+      flex items-center px-4 z-30 shadow-xl shadow-blue-900/20 dark:shadow-blue-500/10"
       initial={{ y: -56 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
@@ -101,32 +103,42 @@ export default function Header({
             <IconButton
               onClick={toggleSidebar}
               edge="start"
-              color="inherit"
               aria-label="toggle sidebar"
               size="large"
-              className="text-cyan-300 dark:text-white hover:text-white hover:bg-cyan-500/20 transition-all duration-300 border border-cyan-500/30
-            rounded-xl"
+              className="text-blue-300 dark:text-blue-700 hover:text-white dark:hover:text-blue-900
+              hover:bg-blue-500/20 dark:hover:bg-blue-200/50
+              transition-all duration-300 border border-blue-400/30 dark:border-blue-600/40 rounded-xl"
+              sx={{
+                color: 'inherit',
+                '&:hover': { backgroundColor: 'transparent' }
+              }}
             >
               <MenuIcon size={24} />
             </IconButton>
           )}
           <div
-            className="w-10 h-10 mr-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600  dark:from-white dark:via-white dark:to-white rounded-3xl flex items-center
-            justify-center shadow-lg shadow-cyan-500/30 rotate-3 hover:rotate-0 transition-transform duration-300"
+            className="w-10 h-10 mr-1 bg-gradient-to-br from-blue-500 via-sky-400 to-blue-600
+            dark:from-blue-600 dark:via-sky-500 dark:to-blue-700
+            rounded-lg flex items-center justify-center
+            shadow-lg shadow-blue-500/50 dark:shadow-blue-600/40
+            rotate-3 hover:rotate-0 transition-transform duration-300 cursor-pointer
+            border-2 border-blue-400/50 dark:border-blue-500/60"
             onClick={() => navigate("/exp1")}
           >
-            <Plane size={24} />
+            <Plane size={24} className="text-white" />
           </div>
           <div>
             <Typography
               variant="h6"
               component="h1"
-              className="font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent
-            text-lg tracking-tight dark:text-white"
+              className="font-bold text-white dark:text-slate-900 text-lg tracking-wide uppercase"
+              sx={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}
             >
-              e700
+              E-700
             </Typography>
-            <div className="text-cyan-400 text-xs font-mono dark:text-white ">v1.0</div>
+            <div className="text-blue-300 dark:text-blue-600 text-xs font-mono font-semibold">
+              Aircraft Log
+            </div>
           </div>
         </div>
         {
@@ -137,57 +149,24 @@ export default function Header({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               >
-                <Box
-                  className="font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text
-                    text-transparent text-lg tracking-tight"
-                  space-y-1
-                >
-                  {" "}
-                  <Box display="flex" gap={3} flexWrap="wrap">
-                    <Typography
-                      variant="h4"
-                      sx={{ color: "white", fontWeight: "bold" }}
-                    >
-                      {data.aircraft_name} - {data.side_no}
-                    </Typography>
-
-                    {/*                     <Typography variant="subtitle4" sx={{ color: "white" }}> */}
-                    {/*                       {loading ? "" : "A/F Hrs: " + data.airframe_hrs} */}
-                    {/*                     </Typography> */}
-                    {/*                     <Typography variant="subtitle4"> */}
-                    {/*                       <span style={{ color: "white" }}> Status: </span> */}
-                    {/*                       {""} */}
-                    {/*                       {dataCoSLog && ( */}
-                    {/*                         <span */}
-                    {/*                           style={{ */}
-                    {/*                             color: "lightgreen", */}
-                    {/*                           }} */}
-                    {/*                         > */}
-                    {/*                           {dataCoSLog[0].status} */}
-                    {/*                         </span> */}
-                    {/*                       )} */}
-                    {/*                     </Typography> */}
-
-                  </Box>
+                <Box display="flex" gap={3} flexWrap="wrap" alignItems="center">
+                  <Typography
+                    variant="h5"
+                    className="font-bold text-white dark:text-slate-900 tracking-wide"
+                    sx={{
+                      fontFamily: 'Arial, sans-serif',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                    }}
+                  >
+                    {data.aircraft_name} - {data.side_no}
+                  </Typography>
                 </Box>
               </motion.div>
             )}
           </div>
         }
         {/* Notifications */}
-        <div className="flex items-center gap-2">
-          {" "}
-          {/*           <IconButton */}
-          {/*             color="inherit" */}
-          {/*             onClick={handleNotifClick} */}
-          {/*             aria-label="notifications" */}
-          {/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
-          {/*           > */}
-          {/*             <Badge badgeContent={3} color="error"> */}
-          {/*               {" "} */}
-          {/*               <Bell size={20} /> */}
-          {/*             </Badge> */}
-          {/*           </IconButton> */}
+        <div className="flex items-center gap-3">
           <Menu
             anchorE1={notifAnchor}
             open={Boolean(notifAnchor)}
@@ -196,66 +175,34 @@ export default function Header({
             transformOrigin={{ vertical: "bottom", horizontal: "right" }}
             PaperProps={{ sx: { mt: 1.2, minWidth: 240 } }}
           >
-            {" "}
             <MenuItem>New System Update Available.</MenuItem>
             <Divider />
             <MenuItem>Task Completed Successfully.</MenuItem>
             <Divider />
             <MenuItem>Server load high.</MenuItem>
-          </Menu>{" "}
-          {/*           <IconButton */}
-          {/*             color="inherit" */}
-          {/*             aria-label="info" */}
-          {/*             className="text-cyan-300 hover:text-white hover:bg-cyan-500/20 transition-all duration-300 rounded-xl" */}
-          {/*           > */}
-          {/*             <Info size={20} />{" "} */}
-          {/*           </IconButton> */}
-          {/* Search Bar */}
-          {/*           <div className="flex-grow max-w-md hidden md:block"> */}
-          {/*             <TextField */}
-          {/*               placeholder="Search..." */}
-          {/*               size="small" */}
-          {/*               fullWidth */}
-          {/*               variant="outlined" */}
-          {/*               sx={{ */}
-          {/*                 "& .MuiOutlinedInput-root": { */}
-          {/*                   borderRadius: 2, */}
-          {/*                   background: "rgba(255,255,255,0.1)", */}
-          {/*                   color: "white", */}
-          {/*                   "& fieldset": { borderColor: "rgba(255,255,255,0.2)" }, */}
-          {/*                   "&:hover fieldset": { borderColor: "cyan" }, */}
-          {/*                 }, */}
-          {/*                 input: { color: "white" }, */}
-          {/*               }} */}
-          {/*               InputProps={{ */}
-          {/*                 startAdornment: ( */}
-          {/*                   <InputAdornment position="start"> */}
-          {/*                     <SearchIcon size={18} className="text-cyan-300" /> */}
-          {/*                   </InputAdornment> */}
-          {/*                 ), */}
-          {/*               }} */}
-          {/*             /> */}
-          {/*           </div> */}
-          <div>
-                      <button
-                        onClick={toggleTheme}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800 dark:bg-gray-200 text-gray-100 dark:text-gray-900 shadow hover:shadow-lg transition-all duration-500"
-                      >
-                        {mode === "light" ? (
-                          <>
-                            {" "}
-                            <Moon className="w-5 h-5 text-yellow-500" />
-                            <span> Dark </span>{" "}
-                          </>
-                        ) : (
-                          <>
-                            {" "}
-                            <Sun className="w-5 h-5 text-yellow-500" />
-                            <span> Light </span>{" "}
-                          </>
-                        )}
-                      </button>
-                    </div>
+          </Menu>
+
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg
+            bg-slate-800 dark:bg-slate-200
+            text-blue-300 dark:text-blue-700
+            border border-blue-400/30 dark:border-blue-500/50
+            hover:bg-slate-700 dark:hover:bg-slate-300
+            shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+          >
+            {mode === "light" ? (
+              <>
+                <Moon className="w-5 h-5" />
+                <span className="text-sm">Dark</span>
+              </>
+            ) : (
+              <>
+                <Sun className="w-5 h-5" />
+                <span className="text-sm">Light</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </motion.header>
