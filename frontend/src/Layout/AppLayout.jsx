@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Updated background colors for dark/light mode, blue-themed scrollbar
+ * Modified: Main layout container with consistent background gradients
+ */
+
 import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
@@ -23,7 +29,9 @@ export default function AppLayout() {
   const showSidebar = isAuthenticated && params.aircraft_master_id;
 
   return (
-    <div className="h-screen flex flex-col overflow-auto-scroll bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
+    <div className="h-screen flex flex-col overflow-auto-scroll
+    bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900
+    dark:from-slate-50 dark:via-slate-100 dark:to-slate-50">
       {isAuthenticated && (
         <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       )}
@@ -41,8 +49,9 @@ export default function AppLayout() {
                          ${showSidebar ? (sidebarOpen ? "ml-[287px]" : "ml-[67px]") : "ml-0"} `} */ /* this is commented in order to change the sidebar-related page shrinking removal */
         >
           <div
-            className="h-full pl-0 pt-3 pr-2 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-cyan-500/30
-            scrollbar-track-transparent hover:scrollbar-thumb-cyan-500/50"
+            className="h-full pl-0 pt-3 pr-2 overflow-y-auto overflow-x-hidden
+            scrollbar-thin scrollbar-thumb-blue-500/40 dark:scrollbar-thumb-blue-600/50
+            scrollbar-track-transparent hover:scrollbar-thumb-blue-500/60 dark:hover:scrollbar-thumb-blue-600/70"
           >
             <Outlet />
           </div>

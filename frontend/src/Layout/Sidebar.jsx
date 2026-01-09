@@ -1,3 +1,9 @@
+/**
+ * UPDATED CODE - Aircraft Theme Redesign
+ * Changes: Blue navigation theme, improved text visibility in both light/dark modes
+ * Modified: Sidebar navigation items, user profile section, and expandable menus
+ */
+
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -27,6 +33,7 @@ import {
   Sparkles,
   Shield,
   Gauge,
+  Logout,
 } from "lucide-react";
 
 import {
@@ -37,7 +44,15 @@ import {
   Typography,
   MenuItem,
   Tooltip,
+  IconButton,
+  ListItemIcon,
 } from "@mui/material";
+
+import {
+  AccountCircle,
+  FileCopy,
+  HelpOutline,
+} from "@mui/icons-material";
 
 const sidebarLinks = [
   {
@@ -135,69 +150,71 @@ function SidebarItem({ item, open, expandedItems, toggleExpand, depth = 0 }) {
     }
   }, [hasChildren, item.label, toggleExpand, open]);
 
-  const content = (
-    <motion.div
-      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200
-        ${isActive
-          ? "bg-gradient-to-r from-white/10 to-white/5"
-          : "hover:bg-white/[0.05]"
-        }
-        ${depth > 0 ? "ml-3" : ""}`}
-      whileHover={{ x: depth === 0 ? 4 : 2 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      {/* Hover glow effect - placed first so it's behind content */}
-      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${item.color || "from-purple-500/10 to-blue-500/10"} opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none -z-10`} />
-
-      {/* Active indicator */}
-      {isActive && (
-        <motion.div
-          layoutId="activeIndicator"
-          className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-gradient-to-b ${item.color || "from-purple-500 to-blue-500"}`}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        />
-      )}
-
-      {/* Icon */}
-      <div className="flex-shrink-0 relative z-10">
-        <span className={`transition-colors duration-200 ${isActive ? "text-purple-400" : "text-gray-400 group-hover:text-white"}`}>
-          {item.icon}
-        </span>
-      </div>
-
-      {/* Label */}
-      {open && (
-        <motion.span
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          className={`relative z-10 flex-1 text-sm font-medium truncate transition-colors duration-200 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}
-        >
-          {item.label}
-        </motion.span>
-      )}
-
-      {/* Expand Arrow */}
-      {open && hasChildren && (
-        <motion.div
-          animate={{ rotate: isExpanded ? 90 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="flex-shrink-0 relative z-10"
-        >
-          <ChevronRight size={14} className={`transition-colors duration-200 ${isExpanded ? "text-gray-300" : "text-gray-500 group-hover:text-gray-300"}`} />
-        </motion.div>
-      )}
-    </motion.div>
-  );
-
   return (
     <div className="mb-1 group">
       <Tooltip title={!open ? item.label : ""} placement="right" arrow>
         <div>
           {item.to ? (
-            <Link to={item.to}>{content}</Link>
+            <Link
+              to={item.to}
+              className={`group flex items-center h-11 px-3 rounded-xl transition-all duration-300 relative overflow-hidden
+                        ${
+                          isActive
+                            ? "bg-blue-500/20 dark:bg-blue-500/15 text-white dark:text-slate-900 shadow-lg backdrop-blur-sm border border-blue-400/30 dark:border-blue-500/30"
+                            : "text-slate-300 dark:text-slate-600 hover:text-white dark:hover:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50 border border-transparent hover:border-white/20 dark:hover:border-slate-300"
+                        }`}
+            >
+              <div
+                className={`flex items-center w-full ${open ? "justify-start" : "justify-center"}`}
+              >
+                {item.icon && (
+                  <span className="flex-shrink-0 relative z-10">
+                    {item.icon}
+                  </span>
+                )}
+                {open && (
+                  <span className="font-semibold truncate relative z-10 text-sm ml-3">
+                    {item.label}
+                  </span>
+                )}
+              </div>
+            </Link>
           ) : (
-            <div onClick={handleToggle}>{content}</div>
+            <button
+              onClick={handleToggle}
+              className={`group flex items-center justify-between w-full h-11 px-3 rounded-xl transition-all duration-300 relative overflow-hidden
+                        ${
+                          isExpanded
+                            ? "bg-blue-500/20 dark:bg-blue-500/15 text-white dark:text-slate-900 border border-blue-400/30 dark:border-blue-500/30 backdrop-blur-sm"
+                            : "text-slate-300 dark:text-slate-600 hover:text-white dark:hover:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50 border border-transparent hover:border-white/20 dark:hover:border-slate-300"
+                        }`}
+              type="button"
+              disabled={!open}
+            >
+              <div
+                className={`flex items-center w-full ${open ? "justify-start" : "justify-center"}`}
+              >
+                {item.icon && (
+                  <span className="flex-shrink-0 relative z-10">
+                    {item.icon}
+                  </span>
+                )}
+                {open && (
+                  <span className="font-semibold truncate text-sm ml-3">
+                    {item.label}
+                  </span>
+                )}
+              </div>
+              {open && hasChildren && (
+                <motion.span
+                  className="flex-shrink-0 relative z-10"
+                  animate={{ rotate: isExpanded ? 90 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <ChevronRight size={16} />
+                </motion.span>
+              )}
+            </button>
           )}
         </div>
       </Tooltip>
@@ -209,13 +226,10 @@ function SidebarItem({ item, open, expandedItems, toggleExpand, depth = 0 }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="overflow-hidden"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="ml-5 border-l-2 border-blue-400/30 dark:border-blue-500/30 overflow-hidden"
           >
             <div className="relative mt-1 ml-4 pl-4 border-l border-white/[0.05]">
-              {/* Gradient line */}
-              <div className={`absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b ${item.color || "from-purple-500/50 to-transparent"}`} />
-
               {item.children.map((child) => (
                 <SidebarItem
                   key={child.label}
@@ -265,6 +279,9 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
     navigate("/login");
   };
 
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
   useEffect(() => {
     if (!shouldBeOpen) {
       setExpandedItems([]);
@@ -287,130 +304,132 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
 
   return (
     <motion.aside
-      animate={{
-        width: shouldBeOpen ? 280 : 0,
-      }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-16 left-0 h-[calc(100vh-4rem)] bg-[#0d0d14] flex flex-col select-none z-20 overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      animate={{ width: shouldBeOpen ? 280 : 60 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed top-16 left-0 h-[calc(100vh-4rem)]
+      flex flex-col select-none z-20 overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       ref={sidebarRef}
+      style={{
+        background: 'rgba(15, 23, 42, 0.7)',
+        backdropFilter: 'blur(20px)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '4px 0 24px rgba(0, 0, 0, 0.1)'
+      }}
     >
-      {/* Border gradient */}
-      <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/20 via-white/5 to-transparent" />
-
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-purple-500/5 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-blue-500/5 to-transparent" />
-      </div>
-
-      {/* Header */}
-      <div className="relative flex items-center justify-between px-4 py-4 border-b border-white/[0.03]">
-        <div className="flex items-center gap-3">
-          {/* Status indicators */}
-          <div className="flex gap-1.5">
-            <motion.div
-              className="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/30"
-              whileHover={{ scale: 1.2 }}
-            />
-            <motion.div
-              className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/30"
-              whileHover={{ scale: 1.2 }}
-            />
-            <motion.div
-              className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/30"
-              whileHover={{ scale: 1.2 }}
-            />
-          </div>
-          {shouldBeOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2"
-            >
-              <span className="text-white font-bold text-lg tracking-tight">Navigation</span>
-              <span className="px-2 py-0.5 text-[10px] font-medium bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/20 rounded-full text-purple-300">
-                {sidebarLinks.length}
-              </span>
-            </motion.div>
-          )}
-        </div>
-        {shouldBeOpen && (
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 180 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={toggleSidebar}
-            className="p-2 rounded-xl bg-white/[0.03] border border-white/[0.05] text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all"
-          >
-            <ChevronLeft size={16} />
-          </motion.button>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-        {/* Section label */}
-        {shouldBeOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="px-3 mb-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider"
-          >
-            Main Menu
-          </motion.div>
-        )}
-
-        {sidebarLinks.map((item, index) => (
-          <motion.div
+      <style>{`
+        .dark aside {
+          background: rgba(248, 250, 252, 0.95) !important;
+          border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+      `}</style>
+      <nav className="flex flex-col p-3 space-y-2 overflow-y-auto flex-1 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
+        {sidebarLinks.map((item) => (
+          <SidebarItem
             key={item.label}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.03 }}
-          >
-            <SidebarItem
-              item={item}
-              open={shouldBeOpen}
-              expandedItems={expandedItems}
-              toggleExpand={toggleExpand}
-            />
-          </motion.div>
+            item={item}
+            open={shouldBeOpen}
+            expandedItems={expandedItems}
+            toggleExpand={toggleExpand}
+          />
         ))}
       </nav>
-
-      {/* User Section */}
-      <div className="relative p-3 border-t border-white/[0.03]">
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-500/5 to-transparent pointer-events-none" />
-
-        <motion.div
-          className="relative flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-white/[0.03] to-white/[0.01]
-            border border-white/[0.05] hover:border-white/[0.1] cursor-pointer transition-all group"
-          onClick={handleAccountClick}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          {/* Avatar with glow */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
-            <Avatar
-              src={user?.avatarUrl}
-              alt={user?.name}
-              sx={{
-                width: 40,
-                height: 40,
-                bgcolor: "transparent",
-                background: "linear-gradient(135deg, #8b5cf6, #3b82f6)",
-                fontSize: "1rem",
-                fontWeight: 600,
-                border: "2px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              {user?.name?.[0] || "U"}
-            </Avatar>
-            {/* Online indicator */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0d0d14] shadow-lg shadow-emerald-400/50" />
-          </div>
+      <div className="mt-auto p-3 border-t border-white/10 dark:border-slate-300/50 relative z-10"
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <style>{`
+          .dark aside > div:last-child {
+            background: rgba(226, 232, 240, 0.5) !important;
+          }
+        `}</style>
+        <div className="flex items-center space-x-2">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Tooltip title="Account Settings">
+              <IconButton
+                onClick={handleAccountClick}
+                sx={{
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  '&:hover': {
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                  }
+                }}
+              >
+                <Avatar
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  sx={{
+                    width: shouldBeOpen ? 40 : 32,
+                    height: shouldBeOpen ? 40 : 32,
+                    border: "2px solid rgba(59,130,246,0.4)",
+                    bgcolor: "#3b82f6",
+                    fontWeight: 'bold',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}
+                >
+                  {user.name?.[0]}
+                </Avatar>
+              </IconButton>
+            </Tooltip>
+          </motion.div>
+          <Menu
+            anchorEl={accountAnchor}
+            open={Boolean(accountAnchor)}
+            onClose={handleAccountClose}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          >
+            <Box sx={{ px: 2, py: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {user.name}
+              </Typography>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                {user.rank}
+              </Typography>
+            </Box>
+            <Divider />
+            <MenuItem>
+              <ListItemIcon>
+                <AccountCircle />
+              </ListItemIcon>
+              Profile
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/PasswordReset")}>
+              <ListItemIcon>
+                <Edit size={20} />
+              </ListItemIcon>
+              T-PIN Reset
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <FileCopy />
+              </ListItemIcon>
+              Integrations
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <Settings size={20} />
+              </ListItemIcon>
+              Settings
+            </MenuItem>
+            <Divider />
+            <MenuItem>
+              <ListItemIcon>
+                <HelpOutline />
+              </ListItemIcon>
+              Help Center
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <Logout size={20} />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          </Menu>
 
           {shouldBeOpen && (
             <motion.div
@@ -418,130 +437,38 @@ export default function Sidebar({ open, toggleSidebar, closeSidebar }) {
               animate={{ opacity: 1, x: 0 }}
               className="flex-1 min-w-0"
             >
-              <div className="text-white text-sm font-semibold truncate">
-                {user?.name || "User"}
+              <div className="text-white dark:text-slate-900 text-sm font-semibold truncate">
+                {user.name}
               </div>
-              <div className="text-gray-500 text-xs truncate flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                {user?.rank || "Operator"}
-              </div>
+              <div className="text-blue-300 dark:text-blue-600 text-xs truncate font-medium">{user.rank}</div>
             </motion.div>
           )}
 
           {shouldBeOpen && (
-            <motion.div
-              animate={{ rotate: accountAnchor ? 90 : 0 }}
-              className="flex-shrink-0"
-            >
-              <ChevronRight size={14} className="text-gray-500 group-hover:text-gray-300 transition-colors" />
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Tooltip title="Logout">
+                <IconButton
+                  onClick={handleLogout}
+                  sx={{
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    color: "#ef4444",
+                    border: "1px solid rgba(239,68,68,0.3)",
+                    borderRadius: '10px',
+                    padding: '8px',
+                    "&:hover": {
+                      backgroundColor: "rgba(239,68,68,0.2)",
+                      borderColor: "rgba(239,68,68,0.5)",
+                    },
+                    transition: 'all 0.3s'
+                  }}
+                  size="small"
+                >
+                  <Logout size={16} />
+                </IconButton>
+              </Tooltip>
             </motion.div>
           )}
-        </motion.div>
-
-        {/* Account Menu */}
-        <Menu
-          anchorEl={accountAnchor}
-          open={Boolean(accountAnchor)}
-          onClose={handleAccountClose}
-          transformOrigin={{ horizontal: "left", vertical: "bottom" }}
-          anchorOrigin={{ horizontal: "left", vertical: "top" }}
-          slotProps={{
-            paper: {
-              sx: {
-                bgcolor: "#13131f",
-                color: "white",
-                borderRadius: "16px",
-                border: "1px solid rgba(255,255,255,0.05)",
-                minWidth: "220px",
-                mt: -1,
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
-                backdropFilter: "blur(20px)",
-              },
-            },
-          }}
-        >
-          <Box sx={{ px: 2, py: 2, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: "white" }}>
-              {user?.name || "User"}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "#9ca3af" }}>
-              {user?.rank || "Operator"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ py: 1 }}>
-            <MenuItem
-              sx={{
-                py: 1.5,
-                mx: 1,
-                borderRadius: "8px",
-                "&:hover": { bgcolor: "rgba(255,255,255,0.03)" },
-              }}
-            >
-              <User size={16} className="mr-3 text-gray-400" />
-              <span className="text-sm">Profile</span>
-            </MenuItem>
-
-            <MenuItem
-              onClick={() => { navigate("/PasswordReset"); handleAccountClose(); }}
-              sx={{
-                py: 1.5,
-                mx: 1,
-                borderRadius: "8px",
-                "&:hover": { bgcolor: "rgba(255,255,255,0.03)" },
-              }}
-            >
-              <Edit size={16} className="mr-3 text-gray-400" />
-              <span className="text-sm">T-PIN Reset</span>
-            </MenuItem>
-
-            <MenuItem
-              sx={{
-                py: 1.5,
-                mx: 1,
-                borderRadius: "8px",
-                "&:hover": { bgcolor: "rgba(255,255,255,0.03)" },
-              }}
-            >
-              <Settings size={16} className="mr-3 text-gray-400" />
-              <span className="text-sm">Settings</span>
-            </MenuItem>
-          </Box>
-
-          <Divider sx={{ borderColor: "rgba(255,255,255,0.05)" }} />
-
-          <Box sx={{ py: 1 }}>
-            <MenuItem
-              sx={{
-                py: 1.5,
-                mx: 1,
-                borderRadius: "8px",
-                "&:hover": { bgcolor: "rgba(255,255,255,0.03)" },
-              }}
-            >
-              <HelpCircle size={16} className="mr-3 text-gray-400" />
-              <span className="text-sm">Help Center</span>
-            </MenuItem>
-          </Box>
-
-          <Divider sx={{ borderColor: "rgba(255,255,255,0.05)" }} />
-
-          <Box sx={{ p: 1 }}>
-            <MenuItem
-              onClick={handleLogout}
-              sx={{
-                py: 1.5,
-                mx: 0,
-                borderRadius: "8px",
-                background: "linear-gradient(135deg, rgba(239,68,68,0.1), rgba(239,68,68,0.05))",
-                "&:hover": { bgcolor: "rgba(239,68,68,0.15)" },
-              }}
-            >
-              <LogOut size={16} className="mr-3 text-red-400" />
-              <span className="text-sm text-red-400 font-medium">Logout</span>
-            </MenuItem>
-          </Box>
-        </Menu>
+        </div>
       </div>
     </motion.aside>
   );
