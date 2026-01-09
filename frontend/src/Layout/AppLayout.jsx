@@ -1,7 +1,6 @@
 /**
- * UPDATED CODE - Aircraft Theme Redesign
- * Changes: Updated background colors for dark/light mode, blue-themed scrollbar
- * Modified: Main layout container with consistent background gradients
+ * UPDATED CODE - Light Theme with Dark Mode Support
+ * Changes: Light background by default, proper dark mode toggle
  */
 
 import { useState, useCallback } from "react";
@@ -10,11 +9,12 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { useParams } from "../Utils/CustomHooks/useParams";
 import { useAuth } from "../Authentication/AuthContext";
-import TopBar from "../Layout/TopBar";
+import { useThemeMode } from "./ThemeProvider";
 
 export default function AppLayout() {
   const { isAuthenticated } = useAuth();
   const { params } = useParams();
+  const { mode } = useThemeMode();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -29,9 +29,12 @@ export default function AppLayout() {
   const showSidebar = isAuthenticated && params.aircraft_master_id;
 
   return (
-    <div className="h-screen flex flex-col overflow-auto-scroll
-    bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900
-    dark:from-slate-50 dark:via-slate-100 dark:to-slate-50">
+    <div className={`h-screen flex flex-col overflow-auto-scroll transition-colors duration-300
+      ${mode === 'dark'
+        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
+        : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'
+      }`}
+    >
       {isAuthenticated && (
         <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       )}
@@ -45,13 +48,14 @@ export default function AppLayout() {
         )}
         <main
           className="flex-1 overflow-auto transition-all duration-300 ease-in-out ml-0"
-          /*  className={`flex-1 overflow-auto transition-all duration-300 ease-in-out
-                         ${showSidebar ? (sidebarOpen ? "ml-[287px]" : "ml-[67px]") : "ml-0"} `} */ /* this is commented in order to change the sidebar-related page shrinking removal */
         >
           <div
-            className="h-full pl-0 pt-3 pr-2 overflow-y-auto overflow-x-hidden
-            scrollbar-thin scrollbar-thumb-blue-500/40 dark:scrollbar-thumb-blue-600/50
-            scrollbar-track-transparent hover:scrollbar-thumb-blue-500/60 dark:hover:scrollbar-thumb-blue-600/70"
+            className={`h-full pl-0 pt-3 pr-2 overflow-y-auto overflow-x-hidden
+              scrollbar-thin scrollbar-track-transparent
+              ${mode === 'dark'
+                ? 'scrollbar-thumb-blue-500/40 hover:scrollbar-thumb-blue-500/60'
+                : 'scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400'
+              }`}
           >
             <Outlet />
           </div>
